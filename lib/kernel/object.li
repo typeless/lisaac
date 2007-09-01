@@ -1,0 +1,186 @@
+////////////////////////////////////////////////////////////////////////////////
+//                            Lisaac Librairy                                 //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name    := OBJECT;
+
+  - comment := "Root object.";
+  
+Section Insert
+  
+  - parent_bad_reflex:Expanded BAD_REFLEX;
+    
+Section Public
+        
+  //
+  // Compiler consideration.
+  //
+  
+  - object_size:INTEGER <- `12`;
+  
+  //- pointer_size:INTEGER <- POINTER.pointer_size;
+
+  - is_debug_mode:BOOLEAN <- debug_level != 0;
+    
+  - debug_level:INTEGER <- `11`;
+  
+  - is_ansi:BOOLEAN := SYSTEM.is_ansi;
+  
+  //
+  // Control Error.
+  //
+  
+  - top_runtime_stack:POINTER <- `14`;
+  
+  - print_runtime_stack_on ptr:POINTER <- 
+  (
+    (debug_level != 0).if {
+      `stack_print((_____CONTEXT *)@ptr)`;
+    };
+  );
+  
+  - print_runtime_stack <- print_runtime_stack_on top_runtime_stack;
+  
+  - crash_on ptr:POINTER with_message msg:ABSTRACT_STRING <-
+  (
+    print_runtime_stack_on ptr;
+    msg.print;
+    '\n'.print;
+    die_with_code exit_failure_code;    
+  );
+  
+  - crash_with_message msg:ABSTRACT_STRING <-
+  ( 
+    crash_on top_runtime_stack with_message msg;
+  );
+
+  - die_with_code code:INTEGER <- SYSTEM.exit code;
+  // Terminate execution with exit status code `code'.
+  
+  - exit_success_code:INTEGER := 0;
+  
+  - exit_failure_code:INTEGER := 1;
+  
+  - deferred <-
+  ( + ptr:POINTER;
+    ptr := top_runtime_stack;
+    crash_on ptr with_message "Slot deferred.";
+  );
+    
+  - crash <-
+  ( + ptr:POINTER;
+    ptr := top_runtime_stack;
+    crash_on ptr with_message "Crash system.";
+  );
+  
+  - not_yet_implemented <-
+  ( + ptr:POINTER;
+    ptr := top_runtime_stack;
+    crash_on ptr with_message "Sorry, Some Feature is Not Yet Implemented.";
+  );
+  
+  //
+  // Common Function.
+  //
+  
+  - '=='  Right 60 other:SELF :BOOLEAN <- ( deferred; FALSE);
+  
+  - '!==' Right 60 other:SELF :BOOLEAN <- (! (Self == other));
+  
+  
+  - clone_allocation_size:UINTEGER_32;
+  
+  - clone:SELF <- 
+  ( + result:SELF;
+    + ptr:POINTER;
+    + sz:UINTEGER_32;
+    + typ_id:INTEGER;
+  
+    sz := object_size.to_uinteger_32;        
+    (sz = 0).if {      
+      result := Self;
+    } else {      
+      typ_id := type_id_intern;      
+      //ptr := `malloc((@sz + 3)&0xFFFFFFFC)`:POINTER;                  
+      clone_allocation_size := clone_allocation_size + sz;            
+      (typ_id = -1).if {
+	ptr := MEMORY.alloc_size sz;
+      } else {
+	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
+      };                       
+      MEMORY.copy to_pointer to ptr size (sz.align_power (POINTER.object_size.to_uinteger_32));
+      //ptr.print_hex; '\n'.print;
+      result := CONVERT[POINTER,SELF].on ptr;
+    };
+    result
+  );
+  
+  - free_allocation_memory <- 
+  // Manual free, don't use with GC.
+  ( + ptr:POINTER;
+    + sz:UINTEGER_32;
+    + typ_id:INTEGER;
+      
+    sz := object_size.to_uinteger_32;        
+    (sz != 0).if {      
+      typ_id := type_id_intern;      
+      //ptr := `free(@Self)`;                  
+      clone_allocation_size := clone_allocation_size - sz;      
+      ptr := to_pointer;
+      (typ_id = -1).if {
+	MEMORY.free ptr size sz;
+      } else {
+	MEMORY.free ptr type (typ_id.to_uinteger_32);
+      };                       
+    };
+  );
+    
+  - to_pointer:POINTER <- CONVERT[SELF,POINTER].on Self;
+  
+  - same_dynamic_type other:OBJECT :BOOLEAN <-
+  ( + convert:SELF;
+    convert ?= other;
+    convert != NULL        
+  );
+  
+  - to_self_on obj:OBJECT :SELF <-
+  [
+    -? {obj != NULL};
+  ]      
+  ( + result:SELF;
+    
+    result ?= obj;
+    result
+  )
+  [
+    +? {Result != NULL};
+  ];    
+  
+  //
+  // The Guru section (Don't touch, don't use !)
+  //
+    
+  - is_expanded_type:BOOLEAN <- `0`;
+  
+  - type_id_intern:INTEGER   <- `1`;
+  
+ // - force_conversion obj:OBJECT :SELF <- `13`;
+  

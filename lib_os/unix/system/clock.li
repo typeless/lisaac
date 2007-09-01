@@ -1,0 +1,83 @@
+////////////////////////////////////////////////////////////////////////////////
+//                           Lisaac OS library                                //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+
+  - name    := CLOCK;
+  
+  - category:=MICRO;
+  
+  - bibliography:="http://IsaacOS.com";
+
+  - author      := "Benoit Sonntag (bsonntag@loria.fr)";
+
+  - comment     :="X11 - Clock management.";
+
+  - version :="1.0";  
+
+  - date    :="2003/04";
+  
+  - external := `#include <time.h>`;
+  
+Section Inherit  
+  
+  - parent_input:INPUT := INPUT;
+      
+Section Public  
+  
+  - date:DATE <-
+  ( + wd,d,mo:UINTEGER_8;    
+    + y:UINTEGER_16;
+    
+    `{ 
+      struct tm *t; time_t tt;
+      tt = time(NULL);
+      t = localtime(&tt)`;      
+      wd := `t->tm_wday`:UINTEGER_8 + 1;
+      d  := `t->tm_mday`:UINTEGER_8;
+      mo := `t->tm_mon` :UINTEGER_8 + 1;
+      y  := `t->tm_year`:UINTEGER_16 + 1900;    
+    `}`;
+    DATE.create (y,mo,d,wd)
+  );
+    
+  - time:TIME <-
+  ( + s,m,h:UINTEGER_8;
+        
+    `{ 
+      struct tm *t; time_t tt;
+      tt = time(NULL);
+      t = localtime(&tt)`;      
+      h := `t->tm_hour`:UINTEGER_8;
+      m := `t->tm_min` :UINTEGER_8;
+      s := `t->tm_sec` :UINTEGER_8;      
+    `}`;    
+    TIME.create (h,m,s,0)
+  );
+  
+  - make <-
+  (
+    // Nothing.
+  );
+
+
+
+
+

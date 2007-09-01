@@ -1,0 +1,75 @@
+////////////////////////////////////////////////////////////////////////////////
+//                            Lisaac Librairy                                 //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        :=STD_INPUT_OUTPUT;
+  
+  - comment     :="To have the useful `io'";
+  
+Section Inherit
+  
+  - parent_input_stream:INPUT_STREAM := INPUT_STREAM;
+
+  - parent_output_stream:OUTPUT_STREAM := OUTPUT_STREAM;
+  
+Section Public
+
+  - is_connected:BOOLEAN := TRUE;
+
+  - make <-
+  (
+  );
+
+  - read_character <-
+  (
+    std_input.read_character;
+  );
+
+  - unread_character <-
+  (
+    std_input.unread_character;
+  );
+
+  - push_back_flag:BOOLEAN <-
+  (
+    std_input.push_back_flag
+  );
+
+  - last_character:CHARACTER <-
+  (
+    std_input.last_character
+  );
+
+  - put_character c:CHARACTER <-
+  (
+    std_output.put_character c;
+  );
+
+  - end_of_input:BOOLEAN <-
+  (
+    std_input.end_of_input
+  );
+  
+  - read_line_in str:STRING <-
+  (
+    std_input.read_line_in str;
+  );
+

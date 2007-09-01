@@ -1,0 +1,100 @@
+////////////////////////////////////////////////////////////////////////////////
+//                           Lisaac Compiler                                  //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        := CASE;
+  
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     := "Case for Switch.";
+  
+Section Inherit
+  
+  - parent_any:ANY := ANY;
+  
+Section Public
+  
+  + id:TYPE;
+  
+  + code:LIST; 
+  
+  - set_code new_code:LIST <-
+  (
+    code := new_code;
+  );
+  
+  //
+  // Creation.
+  //
+  
+  - create val:TYPE with c:LIST :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make val with c;
+    result
+  );
+  
+  - make val:TYPE with c:LIST <-
+  ( + tb:PROFIL_BLOCK;
+    id   := val;    
+    code := c;
+    //
+    tb ?= val;
+    (tb != NULL).if {
+      tb.inc_id;
+    };
+  );
+  
+  - my_copy:SELF <-
+  ( + result:SELF;
+    
+    result := SELF.create id with (code.my_copy);
+    result    
+  );
+  
+  - remove <-
+  ( + tb:PROFIL_BLOCK;
+    code.remove;
+    tb ?= id;
+    (tb != NULL).if {
+      tb.dec_id;
+    };
+  );
+  
+  //
+  // Execute
+  //
+  
+  - execute <-
+  (             
+    id.set_late_binding;
+    code.execute_case;
+  );
+  
+  //
+  // Genere
+  //
+  
+  - genere buffer:STRING <-
+  (  
+    code.genere buffer;
+  );
+  

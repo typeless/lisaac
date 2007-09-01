@@ -1,0 +1,82 @@
+////////////////////////////////////////////////////////////////////////////////
+//                           Lisaac Compiler                                  //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        := ITM_TYPE_SELF;
+  
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     := "Type Self";
+  
+Section Inherit
+  
+  + parent_itm_type_simple:Expanded ITM_TYPE_SIMPLE;
+  
+Section ITM_TYPE_SIMPLE
+  
+  - make <-
+  (
+    name   := ALIAS_STR.prototype_self;
+  );
+  
+Section Public
+  
+  - run_value:TYPE_FULL;
+  
+  - is_self:BOOLEAN <- TRUE;
+  
+  - to_run:TYPE_FULL <-
+  ( 
+    (run_value = NULL).if {
+      ANY.semantic_error (ANY.last_position,"SELF type result for data slot is not possible.");
+    };
+    run_value
+  );
+        
+  //
+  // Self_up
+  //
+  
+  - self_up:TYPE;
+  
+Section NODE, SLOT  
+
+  - set_run t:TYPE_FULL <-
+  (    
+    run_value := t;
+  );
+  
+Section SLOT  
+  
+  - set_self_up t:TYPE <-
+  (
+    self_up := t;
+  );
+  
+Section SLOT_DATA
+  
+  - set_run t1:TYPE_FULL self_up t2:TYPE <-
+  (
+    run_value := t1;
+    self_up   := t2;
+  );
+
+  
+  

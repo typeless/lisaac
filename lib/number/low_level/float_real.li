@@ -1,0 +1,193 @@
+////////////////////////////////////////////////////////////////////////////////
+//                            Lisaac Librairy                                 //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+
+Section Header
+  
+  + name    := FLOAT_REAL;
+    
+  - comment := "Real number of variable decimal part.";
+  
+  - external := `#include <math.h>`; 
+  
+Section Insert
+  
+  - parent_float_map:FLOAT_MAP := FLOAT_MAP;
+  
+  - parent_real:REAL := REAL;
+  
+Section Public
+      
+  //
+  // Convertion format with test.
+  //
+  
+  - floor:INTEGER <-
+  // Greatest integral value no greater than Current.
+  (     
+    to_raw_integer
+  );
+  
+  - ceiling:INTEGER <-
+  // Smallest integral value no smaller than Current.
+  (     
+    (Self + 0.9999).floor
+  );
+  
+  - rounded:INTEGER <-
+  // Rounded integral value.
+  (
+    (Self + 0.5).floor
+  );
+  
+  - truncated_to_integer:INTEGER <- floor;
+  // Integer part (largest absolute value no greater than Current).
+  
+  //
+  // Comparaison.
+  //
+  
+  - '~=' other:SELF :BOOLEAN <-
+  (
+    (Self - other).abs < 0.001
+  );
+  
+  - is_not_a_number:BOOLEAN <- deferred;
+  
+  - is_infinity:BOOLEAN <- deferred;
+  
+  //  
+  // Functions.
+  //
+  
+  - pi:SELF   <- 3.14159265358979323846;
+  
+  - atan:SELF <- `atan(@self)`:SELF;
+  
+  - sqrt:SELF <- `sqrt(@self)`:SELF;
+  
+  - log:SELF  <- `log(@self)`:SELF;
+  
+  - sin:SELF  <- `sin(@self)`:SELF;
+  
+  - cos:SELF  <- `cos(@self)`:SELF;
+  
+  //
+  // Print.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    append_in buffer decimal 4;
+  );
+  
+  - append_in buffer:STRING decimal n:INTEGER <-
+  ( + val:SELF;
+    + val_10:INTEGER;    
+    + char:CHARACTER;
+    + i:INTEGER;
+    
+    get_map Self;
+    // Sign.
+    (sign).if {
+      val := Self;
+    } else {
+      buffer.add_last '-';
+      val := - Self;
+    };
+    (is_zero).if {
+      // Zero case.
+      buffer.add_last '0';
+    }.elseif {is_infinite} then {
+      // Infinite case.
+      buffer.append "Infinite";
+    }.elseif {is_nan} then {
+      // Nan case.
+      buffer.append "Nan";
+    } else {    
+      // Value case = 1.mantisse x 2^(exp-127)
+      (val > INTEGER.maximum.to_real_32).if {
+	scientific_append_in buffer;
+      } else {
+	val_10 := val.to_integer;	  
+	val_10.append_in buffer;
+	val := val - val_10;	  
+	buffer.add_last '.';
+	{(val != 0) && {i < n}}.while_do {	  
+	  val := val * 10;
+	  val_10 := val.to_integer;
+	  char := val_10.decimal_digit;
+	  buffer.add_last char;
+	  val := val - val_10;
+	  i := i + 1;
+	};	  
+      };
+    };    
+  );
+  
+  - scientific_append_in buffer:STRING <- 
+  ( + val:SELF;
+    + val_10:INTEGER;
+    + exp_10:INTEGER;
+    + char:CHARACTER;
+    
+    get_map Self;
+    // Sign.
+    (sign).if {
+      val := Self;
+    } else {
+      buffer.add_last '-';
+      val := - Self;
+    };    
+    (is_zero).if {
+      // Zero case.
+      buffer.add_last '0';
+    }.elseif {is_infinite} then {
+      // Infinite case.
+      buffer.append "Infinite";
+    }.elseif {is_nan} then {
+      // Nan case.
+      buffer.append "Nan";
+    } else {
+      // Value case.
+      {val > 10}.while_do {
+	val    := val / 10;
+	exp_10 := exp_10 + 1;
+      };
+      {val < 0}.while_do {
+	val    := val * 10;
+	exp_10 := exp_10 - 1;
+      };
+      val_10 := val.to_integer;
+      char := val_10.decimal_digit;
+      buffer.add_last char;
+      buffer.add_last '.';
+      val := val - val_10;
+      {val != 0}.while_do {	  
+	val := val * 10;
+	val_10 := val.to_integer;
+	char := val_10.decimal_digit;
+	buffer.add_last char;
+	val := val - val_10;
+      };
+      buffer.add_last 'E';
+      exp_10.append_in buffer;
+    };
+  );

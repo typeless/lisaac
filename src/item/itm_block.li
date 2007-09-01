@@ -1,0 +1,66 @@
+////////////////////////////////////////////////////////////////////////////////
+//                           Lisaac Compiler                                  //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        := ITM_BLOCK;
+  
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     := "Instruction block";
+  
+Section Inherit
+  
+  - parent_itm_type_simple:ITM_TYPE_SIMPLE := ITM_TYPE_SIMPLE;
+  
+Section Private 
+        
+  - make lst:ITM_LIST argument arg:ITM_ARGUMENT <-
+  (
+    list     := lst;
+    argument := arg;
+  );
+  
+Section Public
+  
+  - hash_code:INTEGER <- 0; // Chépa
+  
+  + list:ITM_LIST;
+  
+  + argument:ITM_ARGUMENT;
+  
+  - get lst:ITM_LIST argument arg:ITM_ARGUMENT :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make lst argument arg;
+    result
+  );
+  
+  - display buffer:STRING <-
+  (
+    buffer.add_last '{';
+    buffer.append (ALIAS_STR.prototype_block);
+    buffer.add_last '}';
+  );
+  
+  - to_run:TYPE_FULL <-
+  (    
+    PROFIL_BLOCK.create Self.default
+  );

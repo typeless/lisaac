@@ -1,0 +1,126 @@
+////////////////////////////////////////////////////////////////////////////////
+//                           Lisaac Compiler                                  //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        := ACCESS_SLOT;
+  
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     := "Access R/W for slot.";
+  
+Section Inherit
+  
+  + parent_access_global:Expanded ACCESS_GLOBAL;
+  
+Section Public
+  
+  + receiver:EXPR;
+  
+  - my_copy_receiver:EXPR <- receiver.my_copy;
+  
+  //
+  // Creation.
+  //
+  
+  - create v:SLOT_DATA with r:EXPR :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make v with r;
+    result
+  );
+  
+  - make v:SLOT_DATA with r:EXPR <-
+  (
+    receiver := r;
+    slot     := v;
+  );
+  
+  //
+  // Execute.
+  //
+    
+  - is_equal other:ACCESS :BOOLEAN <- 
+  ( + acc_slot:ACCESS_SLOT;
+        
+    acc_slot ?= other;
+    (acc_slot != NULL) && 
+    {variable = acc_slot.variable} &&
+    {receiver == acc_slot.receiver}    
+  );
+    
+  - execute_access_unlink:INSTR <- 
+  (
+    (slot.value != NULL).if {
+      slot.execute;
+    };
+    receiver.execute_unlink
+  );
+    
+  - execute_access_link <- 
+  ( 
+    (slot.value != NULL).if {
+      slot.execute;
+    };
+    receiver := receiver.execute_link;        
+  );
+  
+  - remove_access <- receiver.remove;
+  
+  //
+  // Display.
+  //
+  
+  - display_access buffer:STRING <-
+  (
+    receiver.display buffer;
+    buffer.append "->";
+  );
+  
+  //
+  // Genere
+  //
+  
+  - genere_receiver buffer:STRING <-
+  ( + tf:TYPE_FULL;
+    + t:TYPE;
+    
+    tf := receiver.static_type;    
+    ((tf.is_strict) || {tf.is_expanded_ref}).if {
+      receiver.genere buffer;
+      buffer.append "->";
+    }.elseif {tf.is_expanded} then {      
+      receiver.genere buffer;
+      buffer.add_last '.';          
+    } else {
+      buffer.append "((";
+      t := slot.receiver_type;
+      t.put_reference_declaration buffer;	
+      buffer.add_last ' ';
+      t.put_reference_star_declaration buffer;	
+      buffer.add_last ')';
+      receiver.genere buffer;
+      buffer.append ")->";
+    };
+  );
+
+
+
+

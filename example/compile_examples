@@ -1,0 +1,3 @@
+#!/bin/bash
+
+for i in `find -name "*.li"` ; do cat $i | grep "main" && echo Compile $i && ~/lisaac/src/lisaac $i -O ; done

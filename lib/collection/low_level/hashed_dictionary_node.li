@@ -1,0 +1,75 @@
+////////////////////////////////////////////////////////////////////////////////
+//                            Lisaac Librairy                                 //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name    := HASHED_DICTIONARY_NODE[V,K];
+  
+  - comment :="Auxilliary class to implement DICTIONARY[V,K].";
+    
+Section Inherit
+  
+  - parent_any_hashed_dictionary_node:ANY_HASHED_DICTIONARY_NODE := ANY_HASHED_DICTIONARY_NODE;
+  
+Section Public
+  
+  + item:V;
+  
+  + key:K;
+  
+  + next:HASHED_DICTIONARY_NODE[V,K];
+  // The `next' one when some clash occurs.
+  
+  - set_item i:V <-
+  (
+    item := i;
+  )
+  [
+    +? {item = i};
+  ];
+    
+  - set_next n:HASHED_DICTIONARY_NODE[V,K] <-
+  (
+    next := n;
+  )
+  [
+    +? {next = n};
+  ];  
+  
+  - create i:V to k:K next n:HASHED_DICTIONARY_NODE[V,K] :SELF<-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make i to k next n;
+    result
+  );
+  
+  - make i:V to k:K next n:HASHED_DICTIONARY_NODE[V,K] <-
+  (
+    item := i;
+    key  := k;
+    next := n;
+  )
+  [
+    +? {item = i};
+    +? {key  = k};
+    +? {next = n};
+  ];
+

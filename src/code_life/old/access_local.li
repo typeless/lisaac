@@ -1,0 +1,89 @@
+////////////////////////////////////////////////////////////////////////////////
+//                           Lisaac Compiler                                  //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        := ACCESS_LOCAL;
+  
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     := "Access R/W for local slot.";
+  
+Section Inherit
+  
+  + parent_access:Expanded ACCESS;
+  
+Section Public
+  
+  + local:VARIABLE;
+
+  - variable:VARIABLE <- local;
+  
+  - set_variable v:VARIABLE <-
+  (
+    local := v;    
+  );
+  
+  - is_local:BOOLEAN <- TRUE;
+  
+  //
+  // Creation.
+  //
+  
+  - create v:VARIABLE :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make v;
+    result
+  );
+  
+  - make v:VARIABLE <-
+  (
+    local := v;
+  );
+  
+  //
+  // Genere.
+  //
+  
+  - genere_access_for_local buffer:STRING <-
+  (
+    genere_access buffer;
+  );
+  
+  - genere_access_for_slot buffer:STRING <-
+  ( + t:TYPE_FULL;
+    
+    t := variable.type;
+    buffer.add_last '(';
+    (t.is_false_expanded).if {      
+      buffer.add_last '*';
+    };
+    buffer.append (variable.intern_name);    
+    buffer.add_last ')';
+  );
+  
+  - genere_access buffer:STRING <-
+  ( 
+    (variable.ensure_count = -1).if {
+      buffer.add_last '*';
+    };
+    buffer.append (variable.intern_name);    
+  );
