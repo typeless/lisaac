@@ -23,7 +23,7 @@ Section Header
   + name         := RECURSIVE;
   
   - bibliography := "http://IsaacOS.com";
-  - author       := "Pierre-Alex";
+  - author       := "Pierre-Alexandre Voye (ontologiae@gmail.com)";
   - comment      := "Language shootout - Recursive"; 
   
 Section Inherit

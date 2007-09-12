@@ -64,8 +64,11 @@ Section Private
     {exit = FALSE}.while_do {
       // write-out the first 30 permutations
       (check < 30).if {
-        0.to m do { i:INTEGER;
-          ((perm1.item i) + 1).print;
+      //  0.to m do { i:INTEGER;
+      //    ((perm1.item i) + 1).print;
+      //  };
+        perm1.foreach { elt : INTEGER;
+          (elt+1).print;
         };
         '\n'.print;
         check := check + 1;
@@ -80,6 +83,7 @@ Section Private
         0.to m do { i:INTEGER;
           perm.put (perm1.item i) to i;
         };
+       // perm.copy perm1;
 
         flips_count := 0;
         k := 0;
