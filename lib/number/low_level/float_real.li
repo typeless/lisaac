@@ -79,15 +79,15 @@ Section Public
   
   - pi:SELF   <- 3.14159265358979323846;
   
-  - atan:SELF <- `atan(@self)`:SELF;
+  - atan:SELF <- `atan(@Self)`:SELF;
   
-  - sqrt:SELF <- `sqrt(@self)`:SELF;
+  - sqrt:SELF <- `sqrt(@Self)`:SELF;
   
-  - log:SELF  <- `log(@self)`:SELF;
+  - log:SELF  <- `log(@Self)`:SELF;
   
-  - sin:SELF  <- `sin(@self)`:SELF;
+  - sin:SELF  <- `sin(@Self)`:SELF;
   
-  - cos:SELF  <- `cos(@self)`:SELF;
+  - cos:SELF  <- `cos(@Self)`:SELF;
   
   //
   // Print.
