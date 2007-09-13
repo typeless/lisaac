@@ -92,17 +92,18 @@ Section Public
     };
   );
   
-  /*
-  - while_do body:BLOCK and_while test:BLOCK <-
+  - while_do body:BLOCK ensure test:BLOCK <-
+  // Mix loop version beetween `while_do' and `do_while'
   (
     value.if {
       body.value;
       test.value.if {
-	while_do body and_while test;
+	while_do body ensure test;
       };
     };
   );
   
+  /*
   - until_do body:BLOCK or_until test:BLOCK <-
   (
     (! value).if {
