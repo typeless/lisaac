@@ -269,3 +269,12 @@ Section Public
 
   - is_sub_type other:TYPE :BOOLEAN <- Self == other;
   
+  //
+  // Display.
+  //
+    
+  - display buffer:STRING <-
+  (    
+    buffer.append "BLOCK SEND ";
+    append_type buffer;
+  );    
