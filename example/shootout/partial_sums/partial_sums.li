@@ -37,35 +37,27 @@ Section Public
   ( + n :INTEGER;
     + a1, a2, a3, a4, a5   :REAL_64;
     + a6, a7, a8, a9, alt  :REAL_64;
-    + k2, k3, sk, ck, temp :REAL_64;
+    + k2, k3, sk, ck       :REAL_64;
     + kr64 :REAL_64;
     + dec :STRING;
 
     dec := STRING.create 9;
-    a1 := a2 := a3 := a4 := a5 :=0.0;
-    a6 := a7 := a8 := a9 := 0.0;
     alt := -1.0;
 
     (COMMAND_LINE.upper = 1).if {
       n := COMMAND_LINE.item 1.to_integer;
-    } else {
-      n := 0;
     };
 
     1.to n do { k:INTEGER;
       kr64 := k.to_real_64;
       k2 := kr64*kr64;
       k3 := k2*kr64;
-      `@sk = sin(@kr64);`;
-      `@ck = cos(@kr64);`;
+      sk := `sin(@k)` :REAL_64;
+      ck := `cos(@k)` :REAL_64;
       alt := -alt;
 
-      `@temp = pow(2.0/3.0, @kr64-1);`;
-      a1 := a1 + temp;
-
-      `@temp = pow(@kr64, -0.5);`;
-      a2 := a2 + temp;
-
+      a1 := a1 + `pow(2.0/3.0, @k-1)` :REAL_64; 
+      a2 := a2 + `pow(@k, -0.5)`      :REAL_64;
       a3 := a3 + 1.0/(kr64*(kr64+1.0));
       a4 := a4 + 1.0/(k3 * sk*sk);
       a5 := a5 + 1.0/(k3 * ck*ck);
@@ -75,37 +67,38 @@ Section Public
       a9 := a9 + alt/(2.0*kr64 -1.0);
     };
     
+    //TODO : implement .print with a decimal value !
     a1.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\t(2/3)^k\n".print;
     a2.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\tk^-0.5\n".print;
     a3.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\t1/k(k+1)\n".print;
     a4.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\tFlint Hills\n".print;
     a5.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\tCookson Hills\n".print;
     a6.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\tHarmonic\n".print;
     a7.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\tRiemann Zeta\n".print;
     a8.append_in dec decimal 9;
     dec.print;
-    dec.make_empty;
+    dec.clear;
     "\tAlternating Harmonic\n".print;
     a9.append_in dec decimal 9;
     dec.print;
