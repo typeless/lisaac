@@ -32,9 +32,9 @@ Section Inherit
   
 Section Public
   
-  - key:E <- item;
+  - key:K <- item;
   
-  - set_key i:E <- set_item i;
+  - set_key i:K <- set_item i;
   
 Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
   
@@ -48,13 +48,13 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
     +? {value = v};
   ];
 
-  - fast_at k:E :AVL_DICTIONARY_NODE[V, K] <-
+  - fast_at k:K :AVL_DICTIONARY_NODE[V, K] <-
   // Is element `e' in the tree?
   ( + result:AVL_DICTIONARY_NODE[V, K];
     
     (key = k).if {
       result := Self;
-    }.elseif {SAFE_EQUAL[K].test key and k} then {
+    }.elseif {key == k /*SAFE_EQUAL[K].test key and k*/} then {
       // because otherwise there would be an infinite recursion
       // result := NULL
     }.elseif {k < key} then {
@@ -82,7 +82,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
   - key_at v:V :K <-
   ( + result:K;
     
-    (SAFE_EQUAL[V_].test v and value).if {
+    (v == value /*SAFE_EQUAL[V].test v and value*/).if {
       result := key;
     }.elseif {left != NULL} then {
       result := left.key_at v;
@@ -111,7 +111,7 @@ Section AVL_DICTIONARY_NODE
   ( + result:INTEGER;
 
     result := cnt;
-    (SAFE_EQUAL[V_].test v and value).if {
+    (v == value /*SAFE_EQUAL[V].test v and value*/).if {
       result := result + 1;
     };
     (left != NULL).if {

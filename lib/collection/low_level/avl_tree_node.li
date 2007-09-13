@@ -111,7 +111,7 @@ Section Public
   // Is element `e' in the tree?
   ( + result:BOOLEAN;
 		
-    result := SAFE_EQUAL[E].test item and e;
+    result := item == e; //SAFE_EQUAL[E].test item and e;
     (! result).if {
       (e < item).if {
 	result := (left != NULL) && {left.has e};
@@ -127,7 +127,7 @@ Section Public
   ( + result:BOOLEAN;
 		
     result := item = e;
-    ((! result) && {! SAFE_EQUAL[E].test item and e}).if {
+    ((! result) && {! item == e /*SAFE_EQUAL[E].test item and e*/}).if {
       (e < item).if {
 	result := (left != NULL) && {left.fast_has e};
       } else {
@@ -144,7 +144,7 @@ Section Public
   // Is element `e' in the tree?
   ( + result:AVL_TREE_NODE[E];
 			
-    (SAFE_EQUAL[E].test item and e).if {
+    (item == e /*SAFE_EQUAL[E].test item and e*/).if {
       result := Self;
     }.elseif {e < item} then {
       (left != NULL).if {
@@ -185,7 +185,7 @@ Section Public
 
   - set_right r:AVL_TREE_NODE[E] <-
   [
-    -? {(r != NULL) -> {r.item > item}};
+    -? {(r != NULL) ->> {r.item > item}};
   ]
   (
     right := r;
@@ -202,7 +202,7 @@ Section Public
     +? {balance = b};
   ];
 
-Section AVL_TREE
+Section AVL_TREE, AVL_DICTIONARY, AVL_SET
   
   //
   // Rotations:

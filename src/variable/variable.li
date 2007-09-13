@@ -183,7 +183,7 @@ Section Public
   - write_direct p:POSITION with r:EXPR value val:EXPR :WRITE <-
   ( + e:WRITE;
     + tmp_type:TYPES_TMP;    
-        
+    
     e := new_write p with r value val;        
     // Update require list.
     (require_first = NULL).if {
@@ -206,12 +206,6 @@ Section Public
     };         
     
     e.set_create;
-    /*
-    (intern_name == "Self__3YWK").if {
-      e.to_pointer.print; ' '.print;
-      e.debug_display;
-    };
-    */
     e
   );
     
@@ -294,12 +288,14 @@ Section Public
         
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
+        
     result
   );
   //[ ? {ensure_count := Old ensure_count + 1}; ];
   
   - unread e:READ <-
   (    
+        
     ensure_count := ensure_count - 1;
     (ensure_count < 0).if {
       "C'est : ".print;

@@ -90,6 +90,7 @@ Section NODE, DTA
       (switch = NULL).if {
 	(slot.style = '-').if {
 	  e := slot.slot_id.read position;
+	  expr.remove;
 	} else {
 	  e := slot.slot_id.read position with expr;
 	};

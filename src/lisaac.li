@@ -23,7 +23,7 @@ Section Header
   + name     := LISAAC;
   
   - author   := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment  := "The main prototype 06.87.34.30.93";
+  - comment  := "The main prototype";
   
   - external := `#include "path.h"`;
   
@@ -54,7 +54,7 @@ Section Private
 
   - usage: STRING_CONSTANT :=
   "----------------------------------------------------------------\n\
-  \--            Lisaac IS A Advanced Compiler V.0.12 (Beta A)   --\n\
+  \--            Lisaac IS An Advanced Compiler V.0.12 (Beta B)  --\n\
   \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
   \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
   \--                   http://www.IsaacOS.com                   --\n\

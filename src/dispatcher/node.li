@@ -246,11 +246,11 @@ Section Public
   
   - execute:INSTR <-
   ( + result:INSTR;
-     
+
     data.remove;
     (switch != NULL).if {
-      result := switch.execute;
-    } else {      
+      result := switch.execute;      
+    } else {            
       expr.remove;
       (first_code != NULL).if { // Warning: Dead Code!
 	result := first_code.execute_unlink;

@@ -195,7 +195,28 @@ Section Public
   );
   
   - genere_value buffer:STRING <-
-  (
+  (            
+    (
+      (static_type.is_expanded_ref) && 
+      {! value.static_type.is_expanded_ref}
+    ).if {
+      ? {value.static_type.is_expanded};
+      buffer.append "&(";
+      value.genere buffer;    
+      buffer.add_last ')';
+    }.elseif {
+      (static_type.is_expanded) && {! static_type.is_expanded_ref} &&
+      {(! value.static_type.is_expanded) || {value.static_type.is_expanded_ref}} &&
+      {value.static_type.raw != TYPE_NULL} // For Pointer := NULL
+    } then {
+      buffer.append "*(";
+      value.genere buffer;    
+      buffer.add_last ')';
+    } else {
+      value.genere buffer;
+    };
+      
+    /*
     ((static_type.is_expanded) && {! static_type.is_expanded_c}).if {
       ((static_type.is_expanded_ref) && {! value.static_type.is_expanded_ref}).if {
 	buffer.append "&(";
@@ -210,7 +231,7 @@ Section Public
       };
     } else {
       value.genere buffer;    
-    };
+    };*/
   );
   
   - genere_argument_result buffer:STRING <-

@@ -213,7 +213,8 @@ Section SELF
     -? {n != NULL};
     -? {node_height (n.right) - 1 - node_height (n.left) = n.balance};
   ]
-  (	
+  ( + result:AVL_TREE_NODE[E];
+    
     (n.balance)
     .when imbalanced_right then {
       (n.right.balance = imbalanced_right).if {
@@ -550,14 +551,14 @@ Section SELF
     "build_needed" -? {map_dirty};
   ]
   (
-    map.clear_count;
+    map.clear; //_count;
     (count > 0).if {
       root.map_in map;
     };
     map_dirty := FALSE;
   )
   [
-    "build_done" +? {not map_dirty};
+    "build_done" +? {! map_dirty};
   ];
 
   + map:FAST_ARRAY[AVL_TREE_NODE[E]];

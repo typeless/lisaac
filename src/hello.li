@@ -23,21 +23,19 @@ Section Header
   
   + name := HELLO;
   
-  - default := HELLO;
-  
 Section Inherit
   
   - parent_object:OBJECT := OBJECT;
   
 Section Public
-  
-  - truc:UINTEGER_32;
-  
-  - main <-
-  ( + tab:FAST_ARRAY[STRING];
     
-    tab := FAST_ARRAY[STRING].create_with_capacity 10;
-    tab.add_last ("truc\n".to_string);
-    `/* BUG */`;
-    tab.first.print;
+  - main <-
+  ( + dico:AVL_DICTIONARY[STRING_CONSTANT,INTEGER_32];
+    
+    dico := AVL_DICTIONARY[STRING_CONSTANT,INTEGER_32].create;
+    dico.add "HI" to 10;
+    
+    (dico.lower).to (dico.upper) do { j:INTEGER;
+      dico.item j.print; '\n'.print;
+    };    
   );
