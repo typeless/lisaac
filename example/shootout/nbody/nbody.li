@@ -18,11 +18,14 @@
 //                                                                            //
 //                    http://isaacproject.u-strasbg.fr/                       //
 ////////////////////////////////////////////////////////////////////////////////
+ 
 Section Header
 
-	+ name   := NBODY;
+	+ name := NBODY;
 
-  - author := "Anthony Pajot";
+	- comment := "Main prototype for the N-Body shootout benchmark. Based on the C version.";
+
+	- author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>";
 	
 Section Inherit
 

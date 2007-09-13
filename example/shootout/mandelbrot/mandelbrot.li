@@ -18,79 +18,87 @@
 //                                                                            //
 //                    http://isaacproject.u-strasbg.fr/                       //
 ////////////////////////////////////////////////////////////////////////////////
-Section Header                                                                              
-                                                                                            
-  + name := MANDELBROT;                                                               
-                                                                                            
-Section Inherit                                                                             
-                                                                                            
-  - parent_object : OBJECT := OBJECT;                                                 
-                                                                                            
-Section Public                                                                              
-                                                                                            
-  - main <-                                                                           
-  ( + w, h, bit_num : INTEGER;                                                  
-    + iter : INTEGER;                                                           
-    + byte_acc : INTEGER_8;                                                     
-    + limit : REAL_64;                                                          
 
-    iter := 50;                                                                 
-    limit := 2.0;                                                               
+Section Header
 
-    bit_num := 0;                                                               
-                                                                                            
-    byte_acc := 0;                                                              
-                                                                                            
-    w := COMMAND_LINE.item 1.to_integer;                                        
-    h := w;                                                                     
+	+ name := MANDELBROT;
 
-    "P4\n".print;                                                               
-    w.print;                                                                    
-    " ".print;                                                                  
-    h.print; //should be the same as w,                                         
-    //but in the C version it's also printed.                                   
-    "\n".print;                                                                 
+	- comment := "Mandelbrot set generation shootout benchmarck, based on the C version";
 
-    0.to (h - 1) do {y : INTEGER;                                               
-      0.to (w - 1) do {x : INTEGER;                                       
-        + zr, zi, tr, ti, cr, ci : REAL_64;                         
-        + i : INTEGER;                                              
+	- author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>";
+	
+Section Inherit
 
-        zr := 0.0;                                                  
-        zi := 0.0;                                                  
-        tr := 0.0;                                                  
-        ti := 0.0;                                                  
+	- parent_object : OBJECT := OBJECT;
+	
+Section Public
 
-        cr := (2.0 * x / w - 1.5);                                  
-        ci := (2.0 * y / h - 1.0);                                  
-                                                                                            
-        i := 0;                                                     
-
-        {(i < iter) && {tr + ti <= limit * limit}}.while_do {       
-          zi := 2.0 * zr * zi + ci;                           
-          zr := tr - ti + cr;                                 
-          tr := zr * zr;                                      
-          ti := zi * zi;                                      
-          i := i + 1;                                         
-        };                                                 
-        byte_acc := byte_acc << 1;                                  
-
-        (tr + ti <= limit * limit).if {                             
-          byte_acc := byte_acc | 01h;                         
-        };                                                          
-                                                                                            
-        bit_num := bit_num + 1;                                     
-
-        (bit_num = 8).if {                                          
-          byte_acc.to_character.print;                        
-          byte_acc := 0;                                      
-          bit_num := 0;                                       
-        }.elseif {x = w - 1} then {                                 
-          byte_acc := byte_acc << (8 - w % 8);                
-          byte_acc.to_character.print;                        
-          byte_acc := 0;                                      
-          bit_num := 0;                                       
-        };                                                          
-      };                                                                  
-    };                                                                          
-  );                                                  
+	- main <-
+	( 	+ w, h, bit_num : INTEGER;
+		+ iter : INTEGER;
+		+ byte_acc : INTEGER_8;
+		+ limit : REAL_64;
+		
+		iter := 50;
+		limit := 2.0;
+		
+		bit_num := 0;
+		
+		byte_acc := 0;
+	
+		w := COMMAND_LINE.item 1.to_integer;
+		h := w;
+		
+		
+		"P4\n".print;
+		w.print;
+		" ".print;
+		h.print; //should be the same as w,
+		//but in the C version it's also printed.
+		"\n".print;
+		
+		0.to (h - 1) do {y : INTEGER;
+			0.to (w - 1) do {x : INTEGER;
+				+ zr, zi, tr, ti, cr, ci : REAL_64;
+				+ i : INTEGER;
+				
+				zr := 0.0;
+				zi := 0.0;
+				tr := 0.0;
+				ti := 0.0;
+				
+				cr := (2.0 * x / w - 1.5);
+				ci := (2.0 * y / h - 1.0);
+				
+				i := 0;
+				
+				{(i < iter) && {tr + ti <= limit * limit}}.while_do {
+					zi := 2.0 * zr * zi + ci;
+					zr := tr - ti + cr;
+					tr := zr * zr;
+					ti := zi * zi;
+					i := i + 1;				
+				};
+				
+				byte_acc := byte_acc << 1;
+				
+				(tr + ti <= limit * limit).if {
+					byte_acc := byte_acc | 01h;
+				};
+				
+				bit_num := bit_num + 1;
+				
+				(bit_num = 8).if {
+					byte_acc.to_character.print;
+					byte_acc := 0;
+					bit_num := 0;
+				}.elseif {x = w - 1} then {
+					byte_acc := byte_acc << (8 - w % 8);
+					byte_acc.to_character.print;
+					byte_acc := 0;
+					bit_num := 0;
+				};
+			};
+		};		
+	
+	);
