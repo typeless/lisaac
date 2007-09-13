@@ -32,11 +32,11 @@ Section Inherit
 
 Section Private
 
-  - left  :TREENODE;
+  + left  :TREENODE;
 
-  - right :TREENODE;
+  + right :TREENODE;
 
-  - item  :INTEGER;
+  + item  :INTEGER;
 
 Section Public
   
@@ -61,7 +61,7 @@ Section Public
                    bottom_up_tree(2*item, depth-1),
 		               item);
     } else {
-      result.make_item_only(item);
+      result.make_item_only item;
     };
     result
   );
@@ -73,7 +73,7 @@ Section Public
     item  := i;
   );
 
-  - make_item_only (i :INTEGER) <-
+  - make_item_only i:INTEGER <-
   (
     item := i;
   );
