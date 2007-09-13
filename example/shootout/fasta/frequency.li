@@ -24,7 +24,7 @@ Section Header
   
   - bibliography := "http://IsaacOS.com";
   - author       := "Xavier Oswald (x.oswald@free.fr)";
-  - comment      := "Language shootout - fasta"; 
+  - comment      := "Language shootout - fasta (based on the java version)"; 
   
 Section Inherit
   
@@ -50,7 +50,7 @@ Section Public
     p := p_p;
   );
 
-  - put_p (r:REAL_64)  <-
+  - put_p r:REAL_64  <-
   (
     p := r;
   );
