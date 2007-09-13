@@ -1,1 +1,1 @@
-#define LISAAC_DIRECTORY "/home/sonntag/svn/isaac/trunk/lisaac"
+#define LISAAC_DIRECTORY "/home/montaigne/lisaac/svn/isaac/trunk/lisaac"
