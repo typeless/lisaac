@@ -445,8 +445,12 @@ Section Public
 	  4.downto 0 do { j:INTEGER;
 	    tab := slot_size.item j;
 	    (tab.lower).to (tab.upper) do { i:INTEGER;
-	      slot_data := tab.item i;
-	      string_tmp.append "  ";	    
+	      slot_data := tab.item i;	      
+	      ((prototype.is_mapping) && {slot_data.type.is_expanded_c}).if {
+		string_tmp.append "  volatile ";
+	      } else {
+		string_tmp.append "  ";	    
+	      };
 	      slot_data.genere string_tmp;
 	    };
 	    tab.clear;

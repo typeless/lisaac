@@ -111,9 +111,9 @@ Section Public
     } else {
       buffer.add_last '-';
       val := - Self;
-    };
+    };    
     (is_zero).if {
-      // Zero case.
+      // Zero case.      
       buffer.add_last '0';
     }.elseif {is_infinite} then {
       // Infinite case.
@@ -127,7 +127,7 @@ Section Public
 	scientific_append_in buffer;
       } else {
 	val_10 := val.to_integer;	  
-	val_10.append_in buffer;
+	val_10.append_in buffer;		
 	val := val - val_10;	  
 	buffer.add_last '.';
 	{(val != 0) && {i < n}}.while_do {	  
