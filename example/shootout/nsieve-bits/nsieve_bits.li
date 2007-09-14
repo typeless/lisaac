@@ -54,10 +54,11 @@ Section Private
   );
 
   - bflip(p: FAST_ARRAY[UINTEGER_32], x :UINTEGER_32) :UINTEGER_32 <-
-  ( + t :UINTEGER_32;
-    t := p.item(x / bbits);
-    t := t ^ bmask(x);
-    p.put t to (p.item(x / bbits));
+  ( + t,idx :UINTEGER_32;
+    
+    idx := x / bbits;
+    t := p.item idx ^ bmask x;
+    p.put t to idx;
     t
   );
 
@@ -78,36 +79,34 @@ Section Public
     sz := 10000 << param;
     primes := FAST_ARRAY[UINTEGER_32].create (bsize(sz));
     
-    (!primes.is_empty).if {
-      0.to 2 do { m:UINTEGER_32;
-        count := 0;
-        n := sz >> m;
-
-        // rempli les bsize(n) premier carateres de primes par 0xff
-        //memset(primes, 0xff,bsize(n));
-        size := bsize(n);
-        {size > 0}.while_do {
-          primes.put 255 to (size - 1);
-          size := size - 1;
-        };
-
-        2.to n do { i:UINTEGER_32;
-          (btest(primes,i) > 0).if {
-            count := count + 1;
-            j := i + i;
-            {j <= n}.while_do {
-              (btest(primes,j) > 0).if {
-                bflip(primes,j);
-              };
-              j := j + i;
-            };
-          };
-        };
-        "Primes up to ".print;
-        n.print;
-        ' '.print;
-        count.print;
-        '\n'.print;
+    0.to 2 do { m:UINTEGER_32;
+      count := 0;
+      n := sz >> m;
+      
+      // rempli les bsize(n) premier carateres de primes par 0xff
+      //memset(primes, 0xff,bsize(n));
+      size := bsize(n);
+      ? {size & 3 = 0};
+      0.to (size / 4) do { j:INTEGER;
+	primes.put (~0) to j;
       };
+      
+      2.to n do { i:UINTEGER_32;
+	(btest(primes,i) != 0).if {
+	  count := count + 1;
+	  j := i + i;
+	  {j <= n}.while_do {
+	    (btest(primes,j) != 0).if {
+	      bflip(primes,j);
+	    };
+	    j := j + i;
+	  };
+	};
+      };
+      "Primes up to ".print;
+      n.print;
+      ' '.print;
+      count.print;
+      '\n'.print;
     };
   );
