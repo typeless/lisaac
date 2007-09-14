@@ -89,6 +89,8 @@ Section Public
   
   - cos:SELF  <- `cos(@Self)`:SELF;
   
+  - '^' Right 120 other:SELF :SELF <- `pow(@Self,@other)`:SELF;
+  
   //
   // Print.
   //
@@ -96,6 +98,22 @@ Section Public
   - append_in buffer:STRING <-
   (
     append_in buffer decimal 4;
+  );
+  
+  - append_in buffer:STRING format n:INTEGER decimal d:INTEGER <-
+  (
+    append_in buffer format n with ' ' decimal d;
+  );
+  
+  - append_in buffer:STRING format n:INTEGER with c:CHARACTER decimal d:INTEGER <-
+  [ 
+    -? {n >= 3};
+  ]
+  ( + old_count:INTEGER;
+    
+    old_count := buffer.count;
+    append_in buffer decimal d;
+    buffer.insert c to old_count on (n - (buffer.count - old_count));
   );
   
   - append_in buffer:STRING decimal n:INTEGER <-
@@ -130,14 +148,16 @@ Section Public
 	val_10.append_in buffer;		
 	val := val - val_10;	  
 	buffer.add_last '.';
-	{(val != 0) && {i < n}}.while_do {	  
+	i := n;
+	{(val != 0) && {i > 0}}.while_do {	  
 	  val := val * 10;
 	  val_10 := val.to_integer;
 	  char := val_10.decimal_digit;
 	  buffer.add_last char;
 	  val := val - val_10;
-	  i := i + 1;
+	  i := i - 1;
 	};	  
+	buffer.extend_multiple '0' by i;
       };
     };    
   );
@@ -190,4 +210,34 @@ Section Public
       buffer.add_last 'E';
       exp_10.append_in buffer;
     };
+  );
+    
+  - print_decimal s:INTEGER <-
+  (
+    string_tmp.clear;
+    append_in string_tmp decimal s;
+    string_tmp.print;
+  );
+  
+  - print_int i:INTEGER decimal d:INTEGER <-
+  (
+    print_format (i+d+1) decimal d;
+  );
+  
+  - print_format s:INTEGER decimal d:INTEGER <-
+  [
+    -? {s > d};
+  ]
+  ( 
+    print_format s with ' ' decimal d;
+  );
+
+  - print_format s:INTEGER with c:CHARACTER decimal d:INTEGER <-
+  [
+    -? {s > d};
+  ]
+  ( 
+    string_tmp.clear;
+    append_in string_tmp format s with c decimal d;
+    string_tmp.print;
   );

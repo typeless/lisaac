@@ -221,7 +221,7 @@ Section Public
   
   - to_string:STRING <-
   // Convert the decimal view of `self' into a new allocated STRING.
-  // For example, if `self' is -1 the new STRING is "-1".
+  // For example, if `self' is -1 the new STRING is -1.
   // Note: see also `append_in' to save memory.
   ( + result:STRING;
     
@@ -288,6 +288,20 @@ Section Public
   (
     string_tmp.clear;
     append_in string_tmp;
+    string_tmp.print;
+  );
+  
+  - print_format s:SELF <-
+  (
+    string_tmp.clear;
+    append_in string_tmp format s;
+    string_tmp.print;
+  );
+    
+  - print_format s:SELF with c:CHARACTER <-
+  (
+    string_tmp.clear;
+    append_in string_tmp format s with c;
     string_tmp.print;
   );
     
