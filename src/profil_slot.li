@@ -133,3 +133,8 @@ Section Public
     slot_code.remove_profil Self;            
   );
   
+  //
+  // Genere.
+  //
+  
+  - is_static:BOOLEAN <- (! slot.id_section.is_interrupt) && {! slot.id_section.is_external};

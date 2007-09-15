@@ -141,6 +141,8 @@ Section Public
   // Genere Profil.
   //
   
+  - is_static:BOOLEAN <- TRUE;
+  
   - genere_handler buffer:STRING <-
   (
     (is_context_sensitive).if {

@@ -334,11 +334,13 @@ Section Public
   // Genere.
   //
   
+  - is_static:BOOLEAN <- deferred;
+  
   - genere_handler buffer:STRING <-
   ( + ts:TYPE_FULL;    
     + v:LOCAL;
     
-    ((! slot.id_section.is_interrupt) && {! slot.id_section.is_external}).if {
+    (is_static).if {
       buffer.append "static ";
     };
     
