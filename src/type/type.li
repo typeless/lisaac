@@ -393,7 +393,10 @@ Section Public
 	};
       };
       
-      (prototype.name = ALIAS_STR.prototype_native_array).if {
+      (
+	(prototype.name = ALIAS_STR.prototype_native_array) || 
+	{prototype.name = ALIAS_STR.prototype_native_array_volatile}
+      ).if {
 	tg ?= Self;
 	tg.generic_list.first.raw.genere_struct;
       } else {      

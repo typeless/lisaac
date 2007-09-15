@@ -135,6 +135,8 @@ Section MEMORY
     //
     //(capacity_max >> 20).print; "MB\n".print;
     
+    //'['.print; begin_memory.print_hex; '-'.print; (begin_memory+capacity_max).print_hex; "]\n".print;
+    
     //
     {begin_memory != NULL} ? "Memory: Not memory.";
     {(begin_memory & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
@@ -159,10 +161,12 @@ Section MEMORY
     {nb_page < 64} ? "Memory: 4GB limit.";    
         
     block := CONVERT[POINTER,MEMORY].on (begin_memory + old_size);    
+    
     block.set_previous_linear 0FFFF_FFFFh;
     block.set_size_and_id ((64.mb - object_size) | id_free | id_end);
-    block.add_link_free;
+    block.add_link_free;    
     put_last block to (nb_page - 1);
+    
     /*    
     (nb_page < 7).if {
       new_page;
@@ -197,13 +201,13 @@ Section MEMORY
   );
   
   - add_link_free <-
-  (
+  (    
     next_free     := first_free;
     previous_free := NULL;
-    (first_free != NULL).if {
+    (first_free != NULL).if {      
       first_free.set_previous_free Self;
-    };
-    first_free := Self;
+    };    
+    first_free := Self;    
   );
       
 Section MEMORY
@@ -354,11 +358,13 @@ Section MEMORY
     }.while_do {
       idx := idx + 1;
     };
+    
     (idx >= nb_page).if {    
       blc := new_page;
     };        
     blc.set_size_and_id (blc.size_and_id - 4096);
     result := blc.next_linear.this;        
+ 
     (blc.size < minimum_size).if {
       blc.delete_link_free;
       pv := blc.previous_linear;
@@ -418,7 +424,7 @@ Section Private
       result := new_lab lab_type;          
       next := result + new_size;            
       put NULL to next;
-      put next to ptr_table;      
+      put next to ptr_table;          
     } else {      
       // Next Linked list.
       next := read result;
@@ -438,7 +444,7 @@ Section Private
 	put next2 to result;	
 	result := next;	
       };		
-    };            
+    }; 
     result
   );
   
@@ -459,15 +465,16 @@ Section Private
 Section Public
 
   - copy src:POINTER to dst:POINTER size sz:UINTEGER_32 <-
-  ( + na_src,na_dst:NATIVE_ARRAY[POINTER];
+  ( + na_src,na_dst:NATIVE_ARRAY_VOLATILE[POINTER];
     + siz:INTEGER;
     
     siz := sz.to_integer;
     {(siz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
-    na_src := CONVERT[POINTER, NATIVE_ARRAY[POINTER]].on src;
-    na_dst := CONVERT[POINTER, NATIVE_ARRAY[POINTER]].on dst;
-    //
-    ((siz / POINTER.object_size)-1).downto 0 do { j:INTEGER;      
+    siz := siz / POINTER.object_size;
+    na_src := CONVERT[POINTER, NATIVE_ARRAY_VOLATILE[POINTER]].on src;
+    na_dst := CONVERT[POINTER, NATIVE_ARRAY_VOLATILE[POINTER]].on dst;
+    //    
+    (siz - 1).downto 0 do { j:INTEGER;      
       na_dst.put (na_src.item j) to j;
     };        
   );
@@ -499,6 +506,7 @@ Section Public
     new_size  := sz.align_power (POINTER.object_size.to_uinteger_32); 
     
     {(new_size & (POINTER.object_size.to_uinteger_32 - 1)) = 0} ? "Memory: Alignment.";        
+        
     ptr_table := table_type t;
     result := micro_alloc new_size table ptr_table lab (t | 1b);        
     result

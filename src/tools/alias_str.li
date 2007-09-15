@@ -75,6 +75,7 @@ Section Public
   - prototype_character       :STRING_CONSTANT := "CHARACTER";
   - prototype_string_constant :STRING_CONSTANT := "STRING_CONSTANT";  
   - prototype_native_array    :STRING_CONSTANT := "NATIVE_ARRAY";
+  - prototype_native_array_volatile:STRING_CONSTANT := "NATIVE_ARRAY_VOLATILE";
   - prototype_block           :STRING_CONSTANT := "BLOCK";
   - prototype_boolean         :STRING_CONSTANT := "BOOLEAN";
   - prototype_true            :STRING_CONSTANT := "TRUE";
@@ -296,6 +297,7 @@ Section Public
     list.add prototype_character;
     list.add prototype_string_constant;
     list.add prototype_native_array;
+    list.add prototype_native_array_volatile;
     list.add prototype_block;
     list.add prototype_boolean;
     list.add prototype_true;

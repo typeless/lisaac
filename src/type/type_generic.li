@@ -151,6 +151,9 @@ Section Public
   (    
     (prototype.name = ALIAS_STR.prototype_native_array).if {      
       generic_list.first.genere_declaration buffer;
+    }.elseif {prototype.name = ALIAS_STR.prototype_native_array_volatile} then {
+      buffer.append "volatile ";
+      generic_list.first.genere_declaration buffer;
     } else {
       parent_type.put_reference_declaration buffer;
     };
@@ -158,7 +161,10 @@ Section Public
   
   - put_reference_star_declaration buffer:STRING <-
   (     
-    (prototype.name = ALIAS_STR.prototype_native_array).if {      
+    (
+      (prototype.name = ALIAS_STR.prototype_native_array) ||
+      {prototype.name = ALIAS_STR.prototype_native_array_volatile}
+    ).if {      
       buffer.add_last '*';
       generic_list.first.genere_star_declaration buffer;
     } else {

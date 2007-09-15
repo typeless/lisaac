@@ -25,7 +25,7 @@ Section Header
   
   - comment  := "Float (C `float' mapping).";
     
-  - type     := `float`;
+  - type     := `volatile float`;
   - default  := (0.to_raw_real_32);
     
 Section Insert

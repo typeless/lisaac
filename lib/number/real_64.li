@@ -25,7 +25,7 @@ Section Header
   
   - comment  := "Float (C `double' mapping).";
     
-  - type     := `double`;
+  - type     := `volatile double`;
   - default  := (0.to_raw_real_64);
     
 Section Insert
