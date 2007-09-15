@@ -465,18 +465,19 @@ Section Private
 Section Public
 
   - copy src:POINTER to dst:POINTER size sz:UINTEGER_32 <-
-  ( + na_src,na_dst:NATIVE_ARRAY_VOLATILE[POINTER];
+  ( + na_src,na_dst:NATIVE_ARRAY[POINTER];
     + siz:INTEGER;
     
     siz := sz.to_integer;
     {(siz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
     siz := siz / POINTER.object_size;
-    na_src := CONVERT[POINTER, NATIVE_ARRAY_VOLATILE[POINTER]].on src;
-    na_dst := CONVERT[POINTER, NATIVE_ARRAY_VOLATILE[POINTER]].on dst;
+    na_src := CONVERT[POINTER, NATIVE_ARRAY[POINTER]].on src;
+    na_dst := CONVERT[POINTER, NATIVE_ARRAY[POINTER]].on dst;
     //    
     (siz - 1).downto 0 do { j:INTEGER;      
       na_dst.put (na_src.item j) to j;
     };        
+    `malloc(0)`; // BSBS: BUG GCC (test: Example/shootout/fasta) !!!!!!!!
   );
   
   - fill_memory src:POINTER size sz:UINTEGER_32 <-

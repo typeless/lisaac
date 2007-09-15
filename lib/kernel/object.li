@@ -120,12 +120,12 @@ Section Public
     } else {      
       typ_id := type_id_intern;      
       //ptr := `malloc((@sz + 3)&0xFFFFFFFC)`:POINTER;                  
-      clone_allocation_size := clone_allocation_size + sz;            
+      clone_allocation_size := clone_allocation_size + sz;                  
       (typ_id = -1).if {
 	ptr := MEMORY.alloc_size sz;
       } else {
 	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
-      };                       
+      };                             
       MEMORY.copy to_pointer to ptr size (sz.align_power (POINTER.object_size.to_uinteger_32));
       //ptr.print_hex; '\n'.print;
       result := CONVERT[POINTER,SELF].on ptr;
