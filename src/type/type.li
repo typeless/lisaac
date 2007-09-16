@@ -324,6 +324,7 @@ Section Public
     + tg:TYPE_GENERIC;
    
     ((slot_run.is_empty) || {slot_run.first != NULL}).if {            
+            
       // Depending.
       (slot_run.lower).to (slot_run.upper) do { j:INTEGER;
 	slot := slot_run.item j;
@@ -333,7 +334,9 @@ Section Public
 	      (
 		(s.ensure_count > 0) || 
 		{s.id_section.is_mapping}
-	      ) && {(s.type.is_expanded) || {s.type.is_strict} || {s.type.raw = type_block}}
+	      ) && 
+	      {s.type.raw != Self} &&
+	      {(s.type.is_expanded) || {s.type.is_strict} || {s.type.raw = type_block}}
 	    ).if {	      
 	      s.type.raw.genere_struct;
 	    };

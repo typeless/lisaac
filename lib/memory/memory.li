@@ -20,7 +20,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name     := MEMORY;
+  + name     := Strict MEMORY;
   
   - comment  := "Memory manager.";
   
