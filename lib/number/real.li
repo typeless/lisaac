@@ -41,8 +41,18 @@ Section Public
     TRUE
   );
 
+  - pi:SELF   <- 3.14159265358979323846;
 
+  - atan:SELF <- `atan(@Self)`:SELF;
 
+  - sqrt:SELF <- `sqrt(@Self)`:SELF;
 
+  - log:SELF  <- `log(@Self)`:SELF;
 
+  - sin:SELF  <- `sin(@Self)`:SELF;
 
+  - cos:SELF  <- `cos(@Self)`:SELF;
+
+  - pow y:SELF :SELF <- `pow(@Self,@y)`:SELF;
+
+  - '^' Right 120 other:SELF :SELF <- `pow(@Self,@other)`:SELF;

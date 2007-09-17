@@ -73,24 +73,6 @@ Section Public
   
   - is_infinity:BOOLEAN <- deferred;
   
-  //  
-  // Functions.
-  //
-  
-  - pi:SELF   <- 3.14159265358979323846;
-  
-  - atan:SELF <- `atan(@Self)`:SELF;
-  
-  - sqrt:SELF <- `sqrt(@Self)`:SELF;
-  
-  - log:SELF  <- `log(@Self)`:SELF;
-  
-  - sin:SELF  <- `sin(@Self)`:SELF;
-  
-  - cos:SELF  <- `cos(@Self)`:SELF;
-  
-  - '^' Right 120 other:SELF :SELF <- `pow(@Self,@other)`:SELF;
-  
   //
   // Print.
   //
