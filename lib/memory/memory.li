@@ -477,7 +477,6 @@ Section Public
     (siz - 1).downto 0 do { j:INTEGER;      
       na_dst.put (na_src.item j) to j;
     };        
-    `malloc(0)`; // BSBS: BUG GCC (test: Example/shootout/fasta) !!!!!!!!
   );
   
   - fill_memory src:POINTER size sz:UINTEGER_32 <-

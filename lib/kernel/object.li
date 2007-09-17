@@ -113,7 +113,7 @@ Section Public
     + ptr:POINTER;
     + sz:UINTEGER_32;
     + typ_id:INTEGER;
-  
+      
     sz := object_size.to_uinteger_32;        
     (sz = 0).if {      
       result := Self;
@@ -125,10 +125,9 @@ Section Public
 	ptr := MEMORY.alloc_size sz;
       } else {
 	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
-      };                             
-      MEMORY.copy to_pointer to ptr size (sz.align_power (POINTER.object_size.to_uinteger_32));
-      //ptr.print_hex; '\n'.print;
-      result := CONVERT[POINTER,SELF].on ptr;
+      };                                   
+      result := CONVERT[POINTER,SELF].on ptr;      
+      result.copy_intern Self;      
     };
     result
   );
@@ -181,6 +180,5 @@ Section Public
   - is_expanded_type:BOOLEAN <- `0`;
   
   - type_id_intern:INTEGER   <- `1`;
-  
- // - force_conversion obj:OBJECT :SELF <- `13`;
-  
+    
+  - copy_intern other:SELF <- `*@Self = *@other`;
