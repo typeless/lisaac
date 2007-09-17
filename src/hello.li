@@ -28,12 +28,40 @@ Section Inherit
  // - parent_object:HELLO := HELLO;
   
 Section Public
-    
+  
+  - string_l:STRING := STRING.create 64;
+  - string_c:STRING := STRING.create 64;
+  
   - main <-
-  ( + a:REAL_64;
+  ( + a,b:REAL_32;
+    + i:INTEGER;
+    + nc:NATIVE_ARRAY[CHARACTER];
     
-    a := (((2.0.to_real_64/3.0).to_real_64)^(2));
-    a.print_decimal 10;
-    '\n'.print;
-    `printf("%2.10f\n",@a)`;    
+    {
+      i := i + 1;
+      a := 1.to_real_32 / i;
+            
+      // Lisaac Version :
+      string_l.clear;
+      b := a + 0.00000499999999999;
+      b.append_in string_l decimal 5;            
+      // C version :
+      string_c.copy "       ";      
+      nc := string_c.to_external;
+      `sprintf(@nc,"%2.5f\n",@a)`;    
+      //
+      (string_l !== string_c).if {
+	"-----------\n".print;      
+	`printf("%2.10f\n",@a)`;          
+	"L : ".print;
+	(a*100_000+0.5).print_decimal 5;
+	' '.print;	
+	a.mantissa.print; ' '.print;
+	a.exponent.print; ' '.print;
+	'\n'.print;
+	"C : ".print;
+	string_c.print;
+	'\n'.print;
+      };
+    }.do_while {i < 100_000};
   );

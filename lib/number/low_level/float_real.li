@@ -129,17 +129,19 @@ Section Public
 	val_10 := val.to_integer;	  
 	val_10.append_in buffer;		
 	val := val - val_10;	  
-	buffer.add_last '.';
-	i := n;
-	{(val != 0) && {i > 0}}.while_do {	  
-	  val := val * 10;
-	  val_10 := val.to_integer;
-	  char := val_10.decimal_digit;
-	  buffer.add_last char;
-	  val := val - val_10;
-	  i := i - 1;
-	};	  
-	buffer.extend_multiple '0' by i;
+	(n != 0).if {
+	  buffer.add_last '.';
+	  i := n;
+	  {(val != 0) && {i > 0}}.while_do {	  
+	    val := val * 10;
+	    val_10 := val.to_integer;
+	    char := val_10.decimal_digit;
+	    buffer.add_last char;
+	    val := val - val_10;
+	    i := i - 1;
+	  };	  	  
+	  buffer.extend_multiple '0' by i;
+	};
       };
     };    
   );
