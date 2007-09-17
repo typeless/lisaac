@@ -56,7 +56,7 @@ Section Public
 	"L : ".print;
 	(a*100_000+0.5).print_decimal 5;
 	' '.print;	
-	a.mantissa.print; ' '.print;
+	a.mantissa.prin t; ' '.print;
 	a.exponent.print; ' '.print;
 	'\n'.print;
 	"C : ".print;
