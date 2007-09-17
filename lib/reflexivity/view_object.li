@@ -20,9 +20,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 Section Header
  
-  + name        := VIEW_OBJECT;
+  + name    := VIEW_OBJECT[E];
     
-  - comment     :="Reflexivity view object.";
+  - comment := "Reflexivity view object.";
   
 Section Public  
   
@@ -38,24 +38,6 @@ Section Public
   
   - is_natif_expanded:BOOLEAN <- `FUCK`; 
 
-  //
-  // Method slot access.
-  //
-  
-  //- lower:INTEGER := 0;
-  
-  //- upper:INTEGER <- `FUCK`;
-  
-  //- count:INTEGER <- (upper_method - lower_method + 1);
-  
-  //- item idx:INTEGER :VIEW_SLOT <- 
-  //[ 
-  //  -? {idx.in_range lower_method to upper_method};
-  //]
-  //(
-  //  `FUCK`:VIEW_SLOT
-  //);
-      
   //
   // Data action.
   //  
@@ -124,7 +106,7 @@ Section MEMORY
   )
   [ +? {  is_free}; ];
   
-  - deep_clone:VIEW_OBJECT <-
+  - deep_clone:VIEW_OBJECT[E] <-
   ( + result:VIEW_OBJECT;
         
     ((! is_separate) && {! is_non_mutable}).if {
@@ -132,7 +114,7 @@ Section MEMORY
 	+ new_clone:VIEW_OBJECT;
 	
 	new_clone := clone;
-	new_clone.for_all_set_data { obj:VIEW_OBJECT;
+	new_clone.for_all_set_data { obj:VIEW_OBJECT[F];
 	  obj.deep_clone
 	};
 	new_clone

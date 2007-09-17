@@ -60,7 +60,7 @@ Section Public
   - '%'  Left 100 other:SELF    :SELF <- Self - ((Self / other) * other);
   
   - '%#' Left 100 other:INTEGER :SELF <- Self % other;
-
+  
   - '**' Right 120 exp:SELF :SELF <-
   ( + result:SELF;
     
@@ -254,7 +254,12 @@ Section Public
   [
     +? {result == other.gcd self};
   ];
-    
+  
+  - random : SELF <-
+  ( - r_seed:INTEGER;
+    r_seed := ( 110351524 * r_seed + 12345) % 214748364
+  );
+  
   //
   // Convertion
   //

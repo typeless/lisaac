@@ -25,17 +25,15 @@ Section Header
   
 Section Inherit
   
-  - parent_object:OBJECT := OBJECT;
+ // - parent_object:HELLO := HELLO;
   
 Section Public
     
   - main <-
-  ( + dico:AVL_DICTIONARY[STRING_CONSTANT,INTEGER_32];
+  ( + a:REAL_64;
     
-    dico := AVL_DICTIONARY[STRING_CONSTANT,INTEGER_32].create;
-    dico.add "HI" to 10;
-    
-    (dico.lower).to (dico.upper) do { j:INTEGER;
-      dico.item j.print; '\n'.print;
-    };    
+    a := (((2.0.to_real_64/3.0).to_real_64)^(2));
+    a.print_decimal 10;
+    '\n'.print;
+    `printf("%2.10f\n",@a)`;    
   );
