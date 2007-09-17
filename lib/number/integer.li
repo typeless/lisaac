@@ -68,12 +68,17 @@ Section Public
       result := 1;
     } else {
       ((exp & 1) = 0).if {
-	result := (Self * Self) ** (exp / 2);
+        result := (Self * Self) ** (exp / 2);
       } else {
-	result := Self * (Self ** (exp - 1));
+        result := Self * (Self ** (exp - 1));
       };
     };
     result
+  );
+
+  - pow exp:SELF :SELF <-
+  (
+    Self ** exp
   );
 
   //
