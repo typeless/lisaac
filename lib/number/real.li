@@ -53,6 +53,14 @@ Section Public
 
   - cos:SELF  <- `cos(@Self)`:SELF;
 
-  - pow y:SELF :SELF <- `pow(@Self,@y)`:SELF;
+  - pow exp:SELF :SELF <- `pow(@Self,@exp)`:SELF;
 
-  - '^' Right 120 other:SELF :SELF <- `pow(@Self,@other)`:SELF;
+  - '**' Right 120 exp:SELF :SELF <-
+  (
+    Self.pow exp
+  );
+
+  - '^' Right 120 exp:SELF :SELF <- 
+  (
+    Self.pow exp
+  );
