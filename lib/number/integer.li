@@ -259,10 +259,37 @@ Section Public
   [
     +? {result == other.gcd self};
   ];
-  
+ 
+  //
+  // Random
+  //
+
   - random : SELF <-
   ( - r_seed:INTEGER;
     r_seed := ( 110351524 * r_seed + 12345) % 214748364
+  );
+
+  - random_upper upper:INTEGER :SELF <-
+  (
+    random % upper
+  );
+
+  // Please improve it !!! ;)
+  - random_between lower:INTEGER and upper:INTEGER :SELF <-
+  ( + return:INTEGER;
+    + tmp:INTEGER;
+
+    tmp := upper;
+    return := random % tmp;
+
+    {(return < lower) || {return > upper}}.while_do {
+      return := random % tmp;
+      tmp := tmp - 1;
+      (tmp = lower).if {
+        tmp := upper;
+      };
+    };
+    return
   );
   
   //
