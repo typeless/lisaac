@@ -462,7 +462,7 @@ Section Private
     put p to last;
   );
   
-Section Public
+Section Private
 
   - copy src:POINTER to dst:POINTER size sz:UINTEGER_32 <-
   ( + na_src,na_dst:NATIVE_ARRAY[POINTER];
@@ -492,6 +492,8 @@ Section Public
     };    
   );  
   
+Section Public
+
   //
   // MICRO ALLOCATOR
   //
