@@ -183,6 +183,115 @@ Section Public
     to_raw_real_80 / (1 << shift_bits)
   );
 
+  - bound_test low:INTEGER_64 to up:UINTEGER_64 :BOOLEAN <-  
+  (
+    not_yet_implemented;
+  );
+
+  - pi:SELF   <- 3.14159265358979323846;
+
+  - atan:SELF <- not_yet_implemented;
+
+  - sqrt:SELF <- not_yet_implemented;
+
+  - log:SELF  <- not_yet_implemented;
+
+  - sin:SELF  <- not_yet_implemented;
+
+  - cos:SELF  <- not_yet_implemented;
+
+  - pow exp:SELF :SELF <- not_yet_implemented;
+
+  - '**' Right 120 exp:SELF :SELF <-
+  (
+    not_yet_implemented;
+  );
+
+  - '^' Right 120 exp:SELF :SELF <- 
+  (
+    not_yet_implemented;
+  );
+
+  //
+  // Convertion format with test.
+  //
   
+  - ceiling:INTEGER <-
+  // Smallest integral value no smaller than Current.
+  (     
+    not_yet_implemented;
+  );
+  
+  - rounded:INTEGER <-
+  // Rounded integral value.
+  (
+    not_yet_implemented;
+  );
+  
+  - truncated_to_integer:INTEGER <- not_yet_implemented;
+  // Integer part (largest absolute value no greater than Current).
+  
+  //
+  // Comparaison.
+  //
+  
+  - '~=' other:SELF :BOOLEAN <-
+  (
+    not_yet_implemented;
+  );
+  
+  - is_not_a_number:BOOLEAN <- not_yet_implemented;
+  
+  - is_infinity <- 
+  (
+    crash_with_message "FIXED_REAL cannot be infinity !";
+  );
+ 
+  //
+  // Print.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    not_yet_implemented
+  );
+  
+  - append_in buffer:STRING format n:INTEGER decimal d:INTEGER <-
+  (
+    not_yet_implemented;
+  );
+  
+  - append_in buffer:STRING format n:INTEGER with c:CHARACTER decimal d:INTEGER <-
+  ( 
+    not_yet_implemented
+  );
+  
+  - append_in buffer:STRING decimal n:INTEGER <-
+  ( 
+    not_yet_implemented;
+  );
+  
+  - scientific_append_in buffer:STRING <- 
+  ( 
+    not_yet_implemented;
+  );
+    
+  - print_decimal s:INTEGER <-
+  (
+    not_yet_implemented;
+  );
+  
+  - print_int i:INTEGER decimal d:INTEGER <-
+  (
+    not_yet_implemented;
+  );
+  
+  - print_format s:INTEGER decimal d:INTEGER <-
+  ( 
+    not_yet_implemented;
+  );
 
-
+  - print_format s:INTEGER with c:CHARACTER decimal d:INTEGER <-
+  ( 
+    not_yet_implemented;
+  );
