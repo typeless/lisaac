@@ -36,25 +36,22 @@ Section Inherit
 Section Public
 
   - main <-
-  ( + button:G_WIN_OUT;
+  ( + button:G_BUTTON;
     + action1:BLOCK;
 
     VIDEO.make(150,80);
     
     action1 := { b:G_BUTTON;
-      + w:G_WIN_OUT;
-      w ?= b.parent.parent;
-      w.close;
+      die_with_code exit_success_code;
     };
 
-    button := G_WIN_OUT.create 
-    (
-      G_BUTTON.create (G_OUT.create "Lisaac is GREAT !!!.") action action1 
-    );
+    button := 
+    G_BUTTON.create (G_OUT.create "Exit" justify (G_OUT.center)) action action1;
 
     INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with 
     (
-      button
+      G_OUT.create "Lisaac is GREAT !!!" justify (G_OUT.center) /
+      button.fix_height
     );
     INTERFACE.run;
   );
