@@ -46,7 +46,7 @@ Section Private
   - face_to_color n:UINTEGER_8 :UINTEGER_32 <-
   ( + result:UINTEGER_32;
 
-    n.    
+    n
     .when 1 then { result := 02020E0h; }  // Blue.
     .when 2 then { result := 0E07020h; }  // Orange.
     .when 3 then { result := 0E0E020h; }  // Yellow.
