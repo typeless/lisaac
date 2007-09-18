@@ -1,0 +1,60 @@
+////////////////////////////////////////////////////////////////////////////////
+//                            Lisaac Example                                  //
+//                                                                            //
+//                  LSIIT - ULP - CNRS - INRIA - FRANCE                       //
+//                                                                            //
+//    This program is free software; you can redistribute it and/or modify    //
+//    it under the terms of the CeCILL v2 License as published by the         //
+//    CEA - CNRS - INRIA.                                                     //
+//                                                                            //
+//    This program is distributed in the hope that it will be useful,         //
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the            //
+//    CeCILL v2 License for more details.                                     //
+//                                                                            //
+//    You should have received a copy of the CeCILL v2 license along with     //
+//    this program.                                                           //
+//    If not, see <http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt>  //
+//                                                                            //
+//                    http://isaacproject.u-strasbg.fr/                       //
+////////////////////////////////////////////////////////////////////////////////
+
+Section Header
+  
+  + name         := MY_WIN;
+  
+  - bibliography := "http://IsaacOS.com";
+
+  - author       := "Xavier Oswald (x.oswald@free.fr)";
+
+  - comment      := "First graphical interface";
+  
+Section Inherit
+  
+  - parent_object:OBJECT := OBJECT;
+  
+Section Public
+
+  - main <-
+  ( + button:G_WIN_OUT;
+    + action1:BLOCK;
+
+    VIDEO.make(150,80);
+    
+    action1 := { b:G_BUTTON;
+      + w:G_WIN_OUT;
+      w ?= b.parent.parent;
+      w.close;
+    };
+
+    button := G_WIN_OUT.create 
+    (
+      G_BUTTON.create (G_OUT.create "Lisaac is GREAT !!!.") action action1 
+    );
+
+    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with 
+    (
+      button
+    );
+    INTERFACE.run;
+  );

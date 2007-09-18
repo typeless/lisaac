@@ -1,0 +1,65 @@
+Section Header
+  
+  + name := ACTION;
+  
+Section Public
+  
+  - main <-
+  ( + col1:FIXED_ARRAY[INTEGER];
+    + col2:LINKED_LIST[INTEGER];
+    + parcours,action1:BLOCK;
+    //+ action2:BLOCK;
+    + somme:INTEGER;
+    
+    // Creation d'un tableau de 5 elements de 0 à 4 :
+    col1 := FIXED_ARRAY[INTEGER].create_with_capacity 5;
+    // Création d'une liste chainee:
+    col2 := LINKED_LIST[INTEGER].create;
+    
+    // Rempli la première collection.
+    1.to 10 do { j:INTEGER;
+      col1.add_last j;
+      col2.add_last (j+j);
+    };
+    
+    // QUESTION 1
+    
+    // Un bloc qui réalise une action sur chaque élément d'une collection:
+    parcours := { 
+      col:COLLECTION[INTEGER]; // Premier argument du bloc.
+      action:BLOCK; // Second argument du bloc.
+      
+      "Parcours : ".print;
+      (col.lower).to (col.upper) do { j:INTEGER; // Argument de compteur
+        action.value col,j;	
+      };
+      '\n'.print;
+    };
+        
+    // Action d'afficher un élément:
+    action1 := { 
+      col:COLLECTION[INTEGER]; // Premier argument
+      i:INTEGER;  // Second argument
+      
+      col.item i.print;
+      ','.print;
+    };
+    
+    // Affichage de `col1' et `col2' avec `action1':
+    parcours.value col1,action1;
+    parcours.value col2,action1;
+    
+    // POINT 2
+    
+    // QUESTION 3    
+    
+    //action2 := { 
+    // ... A vous de jouer ...
+    //};
+    
+    //parcours.value col2,action2;
+    
+    "Somme : ".print;
+    somme.print;
+    '\n'.print;
+  );
