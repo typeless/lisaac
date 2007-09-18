@@ -751,3 +751,11 @@ Section Public
     ? {idx <= upper};
     item idx.to_uinteger_8
   );
+  
+  - restore_after_external <-
+  (
+    count := 0;
+    {storage.item count = '\0'}.until_do {
+      count := count + 1;
+    };
+  );
