@@ -268,20 +268,32 @@ Section Public
   ( - r_seed:UINTEGER_32;
     r_seed := (110351524 * r_seed + 12345) % 214748364;
     CONVERT[UINTEGER_64,SELF].on (maximum & r_seed)
-  );
+  )
+  [
+    +? {Result >= 0};
+  ];
 
   - random_upper upper:SELF :SELF <-
+  [ 
+    -? {upper > 0}; 
+  ]
   (
     random % (upper+1)
-  );
+  )
+  [
+    +? {Result.in_range 0 to upper};
+  ];
 
   - random_between lower:SELF and upper:SELF :SELF <-
   [
-    -?{lower < upper};
+    -? {lower < upper};
   ]
   ( 
-    lower + random_upper(upper-lower)
-  );
+    lower + random_upper (upper-lower)
+  )
+  [
+    +? {Result.in_range lower to upper};
+  ];
   
   //
   // Convertion
