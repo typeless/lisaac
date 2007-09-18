@@ -206,7 +206,7 @@ Section Public
   
   - is_not_a_number:BOOLEAN <- FALSE;
   
-  - is_infinity <- FALSE;
+  - is_infinity:BOOLEAN <- FALSE;
  
   //
   // Print.
