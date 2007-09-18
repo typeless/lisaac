@@ -497,6 +497,6 @@ Section Public
 
 Section Private
   
-  - string_tmp:STRING := STRING.create 11;
+  - string_tmp:STRING := STRING.create 32;
   
 
