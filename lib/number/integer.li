@@ -267,21 +267,20 @@ Section Public
   - random :SELF <-
   ( - r_seed:UINTEGER_32;
     r_seed := (110351524 * r_seed + 12345) % 214748364;
-    convert[UINTEGER_32,SELF].on (MAXIMUM & r_seed)
+    CONVERT[UINTEGER_64,SELF].on (maximum & r_seed)
   );
 
-  - random_upper upper:INTEGER :SELF <-
+  - random_upper upper:SELF :SELF <-
   (
-    random % (upper + 1)
+    random % (upper+1)
   );
 
-  // Please improve it !!! ;)
-  - random_between lower:INTEGER and upper:INTEGER :SELF <-
+  - random_between lower:SELF and upper:SELF :SELF <-
   [
     -?{lower < upper};
   ]
   ( 
-    lower + random_upper(upper - lower)
+    lower + random_upper(upper-lower)
   );
   
   //
