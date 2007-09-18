@@ -31,8 +31,8 @@ Section Inherit
   - parent_any:OBJECT := OBJECT;
 
 Section Public
-
-  - two_third :REAL_64 := (2.3/3.0).to_real_64;
+  
+  - two_third :REAL_64 := 2.0/3.0;
 
   - main <-
   ( + n :INTEGER;
@@ -55,8 +55,8 @@ Section Public
       ck := kr64.cos;
       alt := -alt;
 
-      a1 := a1 + (two_third.pow(kr64-1)); 
-      a2 := a2 + (kr64.pow(kr64-0.5));
+      a1 := a1 + two_third.pow(kr64-1); 
+      a2 := a2 + kr64.pow (-0.5);
       a3 := a3 + 1.0/(kr64*(kr64+1.0));
       a4 := a4 + 1.0/(k3 * sk*sk);
       a5 := a5 + 1.0/(k3 * ck*ck);
@@ -66,22 +66,22 @@ Section Public
       a9 := a9 + alt/(2.0*kr64 -1.0);
     };
     
-    a1.print_decimal 9;
+    a1.print_format_c "%.9f";
     "\t(2/3)^k\n".print;
-    a2.print_decimal 9;
+    a2.print_format_c "%.9f";
     "\tk^-0.5\n".print;
-    a3.print_decimal 9;
+    a3.print_format_c "%.9f";
     "\t1/k(k+1)\n".print;
-    a4.print_decimal 9;
+    a4.print_format_c "%.9f";
     "\tFlint Hills\n".print;
-    a5.print_decimal 9;
+    a5.print_format_c "%.9f";
     "\tCookson Hills\n".print;
-    a6.print_decimal 9;
+    a6.print_format_c "%.9f";
     "\tHarmonic\n".print;
-    a7.print_decimal 9;
+    a7.print_format_c "%.9f";
     "\tRiemann Zeta\n".print;
-    a8.print_decimal 9;
+    a8.print_format_c "%.9f";
     "\tAlternating Harmonic\n".print;
-    a9.print_decimal 9;
+    a9.print_format_c "%.9f";
     "\tGregory\n".print;
   );
