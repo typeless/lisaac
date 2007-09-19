@@ -129,6 +129,7 @@ Section Public
   - slot_main         :STRING_CONSTANT := "main";
   - slot_infix        :STRING_CONSTANT := "__infix";
   - slot_prefix       :STRING_CONSTANT := "__prefix";
+  - slot_storage      :STRING_CONSTANT := "storage";
   
   - c_void           :STRING_CONSTANT := "void";
   - c_struct         :STRING_CONSTANT := "struct __";
@@ -353,6 +354,7 @@ Section Public
     list.add slot_main;
     list.add slot_infix;
     list.add slot_prefix;
+    list.add slot_storage;
     
     // Type C :
     list.add c_void;

@@ -83,6 +83,15 @@ Section Public
 
   - genere buffer:STRING <-
   ( + idx,val,cur:INTEGER;    
+    - is_storage:INTEGER;
+    
+    (is_storage = 0).if {
+      (type_string_constant.get_local_slot (ALIAS_STR.slot_storage).slot_data_intern.ensure_count = 0).if {
+	is_storage := 1;
+      } else {
+	is_storage := 2;
+      };
+    };
     
     // BSBS: Franchement c'est trop bidouille ce truc ...
     // Il vaudrait mieux parser la chaine plus rapidement sans calcul de
@@ -103,13 +112,16 @@ Section Public
 	output.append "__STRING_CONSTANT__,";	
       };
       val.append_in output;
-      output.append ",\"";            
-      output.append string;
-      {(output.count - cur) > 78}.while_do {
-	output.insert_string "\\\n" to (cur+78);
-	cur := cur + 78;
-      };            
-      output.append "\"};\n";
+      (is_storage = 2).if {
+	output.append ",\"";            
+	output.append string;
+	{(output.count - cur) > 78}.while_do {
+	  output.insert_string "\\\n" to (cur+78);
+	  cur := cur + 78;
+	};            
+	output.add_last '"';
+      };
+      output.append "};\n";
       ITM_STRING.dico_string.fast_put (-idx) to string;
     } else {
       idx := -val;
