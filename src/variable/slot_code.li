@@ -87,7 +87,11 @@ Section Public
       i := pro_list.lower;
       {(i <= pro_list.upper) && {result = NULL}}.while_do {
 	pro := pro_list.item i;
-	(pro.slot = Self).if {
+	(
+	  (pro.slot = Self) && {
+	    (pro.type_self = NULL) || {pro.type_self == ITM_TYPE_SELF.to_run}
+	  } // BSBS: il fo aussi tester les args comme plus bas...
+	).if {
 	  result := pro; // Rmq. : It's limit for dispatching (See...)
 	};
 	i := i + 1;

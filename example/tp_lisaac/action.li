@@ -7,7 +7,7 @@ Section Public
   - main <-
   ( + col1:FAST_ARRAY[INTEGER];
     + col2:LINKED_LIST[INTEGER];
-    + parcours,action1:BLOCK;
+    + action1:BLOCK;
     //+ action2:BLOCK;
     + somme:INTEGER;
     
@@ -23,31 +23,18 @@ Section Public
     };
     
     // QUESTION 1
-    
-    // Un bloc qui réalise une action sur chaque élément d'une collection:
-    parcours := { 
-      (col:COLLECTION[INTEGER], // Premier argument du bloc.
-       action:BLOCK); // Second argument du bloc.
-      
-      "Parcours : ".print;
-      (col.lower).to (col.upper) do { j:INTEGER; // Argument de compteur
-        action.value (col,j);	
-      };
-      '\n'.print;
-    };
-        
+                
     // Action d'afficher un élément:
-    action1 := { 
-      (col:COLLECTION[INTEGER], // Premier argument
-      i:INTEGER);  // Second argument
+    action1 := {       
+      i:INTEGER;  // argument
       
-      col.item i.print;
+      i.print;
       ','.print;
     };
     
     // Affichage de `col1' et `col2' avec `action1':
-    parcours.value (col1,action1);
-    parcours.value (col2,action1);
+    col1.foreach action1;
+    col2.foreach action1;
     
     // POINT 2
     
@@ -57,7 +44,7 @@ Section Public
     // ... A vous de jouer ...
     //};
     
-    //parcours.value col2,action2;
+    // col2.foreach action2;
     
     "Somme : ".print;
     somme.print;
