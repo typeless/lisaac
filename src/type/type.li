@@ -469,50 +469,39 @@ Section Public
 	  };
 	  
 	  (string_tmp.is_empty).if {
-	    output_decl.append "typedef struct {} __";
-	    output_decl.append intern_name;
-	    output_decl.append ";\n";
-	    //
-	    output_decl.append "#define ";
-	    output_decl.append intern_name;
-	    output_decl.append "_ 1\n";
-	    //
-	    output_decl.append "#define ";
-	    output_decl.append intern_name;
-	    output_decl.append "__ ((void *)1)\n";
+	    string_tmp.append "  void *Nothing;\n";
+	  };
+	  	  
+	  output_decl.append "typedef struct ";
+	  output_decl.append intern_name;
+	  output_decl.append "_struct __";
+	  output_decl.append intern_name;	    
+	  output_decl.append ";\nstruct ";
+	  output_decl.append intern_name;
+	  output_decl.append "_struct {\n";
+	  output_decl.append string_tmp;
+	  (prototype.is_mapping).if {
+	    output_decl.append "} __attribute__ ((packed));\n";
 	  } else {
-	    output_decl.append "typedef struct ";
+	    output_decl.append "};\n";
+	  };	    
+	  // Prototype declaration.
+	  output_decl.append "__";
+	  output_decl.append intern_name;
+	  output_decl.add_last ' ';
+	  output_decl.append intern_name;
+	  output_decl.add_last '_';
+	  (is_late_binding).if {
+	    output_decl.append "={__";
 	    output_decl.append intern_name;
-	    output_decl.append "_struct __";
-	    output_decl.append intern_name;	    
-	    output_decl.append ";\nstruct ";
-	    output_decl.append intern_name;
-	    output_decl.append "_struct {\n";
-	    output_decl.append string_tmp;
-	    (prototype.is_mapping).if {
-	      output_decl.append "} __attribute__ ((packed));\n";
-	    } else {
-	      output_decl.append "};\n";
-	    };	    
-	    // Prototype declaration.
-	    output_decl.append "__";
-	    output_decl.append intern_name;
-	    output_decl.add_last ' ';
-	    output_decl.append intern_name;
-	    output_decl.add_last '_';
-	    (is_late_binding).if {
-	      output_decl.append "={__";
-	      output_decl.append intern_name;
-	      output_decl.append "__}";
-	    };
-	    output_decl.append ";\n"; 	  
-	    output_decl.append "#define ";
-	    output_decl.append intern_name;
-	    output_decl.append "__ (&";
-	    output_decl.append intern_name;
-	    output_decl.append "_)\n";
-	  };      
-	  output_decl.add_last '\n';
+	    output_decl.append "__}";
+	  };
+	  output_decl.append ";\n"; 	  
+	  output_decl.append "#define ";
+	  output_decl.append intern_name;
+	  output_decl.append "__ (&";
+	  output_decl.append intern_name;
+	  output_decl.append "_)\n\n";	  
 	};
       };
       
