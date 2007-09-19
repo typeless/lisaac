@@ -200,10 +200,11 @@ Section Private
   - system_windows  :STRING_CONSTANT := "Windows - DOS";
   - system_unknown  :STRING_CONSTANT := "Unknown";
   
-  - file_bashrc  :STRING_CONSTANT := "/.bashrc";
-  - file_cshrc   :STRING_CONSTANT := "/.cshrc";
-  - file_zshenv  :STRING_CONSTANT := "/.zshenv";
-  - file_autoexec:STRING_CONSTANT := "C:\\autoexec.bat";
+  - file_bashrc   :STRING_CONSTANT := "/.bashrc";
+  - file_cshrc    :STRING_CONSTANT := "/.cshrc";
+  - file_zshenv   :STRING_CONSTANT := "/.zshenv";
+  - file_autoexec :STRING_CONSTANT := "C:\\autoexec.bat";
+  - file_msdos_sys:STRING_CONSTANT := "C:\\msdos.sys";
   
   - comment_windows :STRING_CONSTANT := "\r\nREM **** LISAAC COMPILER ****\r\n";
   - comment_unix    :STRING_CONSTANT := "\n# **** LISAAC COMPILER ****\n";
@@ -267,7 +268,7 @@ Section Private
       };
     } else {
       // On other shell
-      std_file := open_read file_autoexec;
+      std_file := open_read file_msdos_sys;
       (std_file != NULL).if {
         // Windows
         close std_file;

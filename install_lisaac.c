@@ -61,8 +61,8 @@ typedef struct STRING_struct __STRING;
 struct STRING_struct {
   unsigned long __id;
   __INTEGER count__CB;
-  __INTEGER capacity__CJD;
-  __CHARACTER *storage__5JD;
+  __INTEGER capacity__GFD;
+  __CHARACTER *storage__DGD;
 };
 __STRING STRING_={__STRING__};
 #define STRING__ (&STRING_)
@@ -73,7 +73,7 @@ typedef struct STRING_CONSTANT_struct __STRING_CONSTANT;
 struct STRING_CONSTANT_struct {
   unsigned long __id;
   __INTEGER count__AD;
-  __CHARACTER *storage__KEC;
+  __CHARACTER *storage__K3B;
 };
 __STRING_CONSTANT STRING_CONSTANT_={__STRING_CONSTANT__};
 #define STRING_CONSTANT__ (&STRING_CONSTANT_)
@@ -88,31 +88,40 @@ typedef unsigned long __UINTEGER_32;
 #define __MEMORY__ 0
 typedef struct MEMORY_struct __MEMORY;
 struct MEMORY_struct {
-  __UINTEGER_32 previous_linear__3W;
-  __UINTEGER_32 size_and_id__4W;
-  void *next_free__5W;
-  void *previous_free__AX;
+  volatile __UINTEGER_32 previous_linear__4W;
+  volatile __UINTEGER_32 size_and_id__5W;
+  __MEMORY *next_free__AX;
+  __MEMORY *previous_free__BX;
 } __attribute__ ((packed));
 __MEMORY MEMORY_;
 #define MEMORY__ (&MEMORY_)
 
 // NUMERIC
 #define __NUMERIC__ 1
-typedef struct {} __NUMERIC;
-#define NUMERIC_ 1
-#define NUMERIC__ ((void *)1)
+typedef struct NUMERIC_struct __NUMERIC;
+struct NUMERIC_struct {
+  void *Nothing;
+};
+__NUMERIC NUMERIC_;
+#define NUMERIC__ (&NUMERIC_)
 
 // OBJECT
 #define __OBJECT__ 2
-typedef struct {} __OBJECT;
-#define OBJECT_ 1
-#define OBJECT__ ((void *)1)
+typedef struct OBJECT_struct __OBJECT;
+struct OBJECT_struct {
+  void *Nothing;
+};
+__OBJECT OBJECT_;
+#define OBJECT__ (&OBJECT_)
 
 // INSTALL_LISAAC
 #define __INSTALL_LISAAC__ 3
-typedef struct {} __INSTALL_LISAAC;
-#define INSTALL_LISAAC_ 1
-#define INSTALL_LISAAC__ ((void *)1)
+typedef struct INSTALL_LISAAC_struct __INSTALL_LISAAC;
+struct INSTALL_LISAAC_struct {
+  void *Nothing;
+};
+__INSTALL_LISAAC INSTALL_LISAAC_;
+#define INSTALL_LISAAC__ (&INSTALL_LISAAC_)
 
 // TRUE
 #define TRUE__ 1
@@ -134,11 +143,11 @@ void *table_type[4];
 //==========================//
 
 void *parent_numeric__G;
-__POINTER begin_memory__YJC;
-__UINTEGER_32 nb_page__5XC;
-__UINTEGER_32 capacity_max__ZKF;
-void *first_free__XTI;
-__UINTEGER_32 clone_allocation_size__TW;
+__POINTER begin_memory__SDC;
+__UINTEGER_32 nb_page__DUC;
+__UINTEGER_32 capacity_max__GGF;
+__MEMORY *first_free__YQI;
+__UINTEGER_32 clone_allocation_size__UW;
 void *string_tmp__2;
 void *path_current__GB;
 void *path_home__KB;
@@ -176,161 +185,162 @@ __STRING_CONSTANT __string_19={__STRING_CONSTANT__,8,"/.zshenv"};
 __STRING_CONSTANT __string_20={__STRING_CONSTANT__,10,"Unix - zsh"};
 __STRING_CONSTANT __string_21={__STRING_CONSTANT__,24,"  Shell not recognize\
 d: "};
-__STRING_CONSTANT __string_22={__STRING_CONSTANT__,15,"C:\\autoexec.bat"};
-__STRING_CONSTANT __string_23={__STRING_CONSTANT__,13,"Windows - DOS"};
-__STRING_CONSTANT __string_24={__STRING_CONSTANT__,33,"\r\nREM **** LISAAC C\
+__STRING_CONSTANT __string_22={__STRING_CONSTANT__,12,"C:\\msdos.sys"};
+__STRING_CONSTANT __string_23={__STRING_CONSTANT__,15,"C:\\autoexec.bat"};
+__STRING_CONSTANT __string_24={__STRING_CONSTANT__,13,"Windows - DOS"};
+__STRING_CONSTANT __string_25={__STRING_CONSTANT__,33,"\r\nREM **** LISAAC C\
 OMPILER ****\r\n"};
-__STRING_CONSTANT __string_25={__STRING_CONSTANT__,9,"set path="};
-__STRING_CONSTANT __string_26={__STRING_CONSTANT__,15,"\\bin;%path%\r\n\r\n"};
-__STRING_CONSTANT __string_27={__STRING_CONSTANT__,17,"  System detect: "};
-__STRING_CONSTANT __string_28={__STRING_CONSTANT__,7,"path.li"};
-__STRING_CONSTANT __string_29={__STRING_CONSTANT__,10,"  + target"};
-__STRING_CONSTANT __string_30={__STRING_CONSTANT__,23,"  + target := WINDOWS\
+__STRING_CONSTANT __string_26={__STRING_CONSTANT__,9,"set path="};
+__STRING_CONSTANT __string_27={__STRING_CONSTANT__,15,"\\bin;%path%\r\n\r\n"};
+__STRING_CONSTANT __string_28={__STRING_CONSTANT__,17,"  System detect: "};
+__STRING_CONSTANT __string_29={__STRING_CONSTANT__,7,"path.li"};
+__STRING_CONSTANT __string_30={__STRING_CONSTANT__,10,"  + target"};
+__STRING_CONSTANT __string_31={__STRING_CONSTANT__,23,"  + target := WINDOWS\
 ;\n"};
-__STRING_CONSTANT __string_31={__STRING_CONSTANT__,34,"\n  Note: Use `mingw'\
+__STRING_CONSTANT __string_32={__STRING_CONSTANT__,34,"\n  Note: Use `mingw'\
  for Windows.\n"};
-__STRING_CONSTANT __string_32={__STRING_CONSTANT__,20,"  + target := UNIX;\n"};
-__STRING_CONSTANT __string_33={__STRING_CONSTANT__,49,"\n  Search path for `\
+__STRING_CONSTANT __string_33={__STRING_CONSTANT__,20,"  + target := UNIX;\n"};
+__STRING_CONSTANT __string_34={__STRING_CONSTANT__,49,"\n  Search path for `\
 libX11.a' : (please wait...)\n"};
-__STRING_CONSTANT __string_34={__STRING_CONSTANT__,55,"find /usr -name \"lib\
+__STRING_CONSTANT __string_35={__STRING_CONSTANT__,55,"find /usr -name \"lib\
 X11.a\" 2> /dev/null > xlib_path.txt"};
-__STRING_CONSTANT __string_35={__STRING_CONSTANT__,13,"xlib_path.txt"};
-__STRING_CONSTANT __string_36={__STRING_CONSTANT__,33," Error : `libX11.a' n\
+__STRING_CONSTANT __string_36={__STRING_CONSTANT__,13,"xlib_path.txt"};
+__STRING_CONSTANT __string_37={__STRING_CONSTANT__,33," Error : `libX11.a' n\
 ot found !\n\n"};
-__STRING_CONSTANT __string_37={__STRING_CONSTANT__,21,"  + path_lib_x11 := \""};
-__STRING_CONSTANT __string_38={__STRING_CONSTANT__,3,"\";\n"};
-__STRING_CONSTANT __string_39={__STRING_CONSTANT__,16,"  + path_lib_x11"};
-__STRING_CONSTANT __string_40={__STRING_CONSTANT__,19,"rm -f xlib_path.txt"};
-__STRING_CONSTANT __string_41={__STRING_CONSTANT__,38,"Installation of envir\
+__STRING_CONSTANT __string_38={__STRING_CONSTANT__,21,"  + path_lib_x11 := \""};
+__STRING_CONSTANT __string_39={__STRING_CONSTANT__,3,"\";\n"};
+__STRING_CONSTANT __string_40={__STRING_CONSTANT__,16,"  + path_lib_x11"};
+__STRING_CONSTANT __string_41={__STRING_CONSTANT__,19,"rm -f xlib_path.txt"};
+__STRING_CONSTANT __string_42={__STRING_CONSTANT__,38,"Installation of envir\
 onment variables."};
-__STRING_CONSTANT __string_42={__STRING_CONSTANT__,98,"  Auto-install fail !\
+__STRING_CONSTANT __string_43={__STRING_CONSTANT__,98,"  Auto-install fail !\
 \n  You have to change your environment variables as following: \n    set pa\
 th="};
-__STRING_CONSTANT __string_43={__STRING_CONSTANT__,13,"\\bin;%path%\n\n"};
-__STRING_CONSTANT __string_44={__STRING_CONSTANT__,36,"Installation of Lisaa\
+__STRING_CONSTANT __string_44={__STRING_CONSTANT__,13,"\\bin;%path%\n\n"};
+__STRING_CONSTANT __string_45={__STRING_CONSTANT__,36,"Installation of Lisaa\
 c library path."};
-__STRING_CONSTANT __string_45={__STRING_CONSTANT__,26,"#define LISAAC_DIRECT\
+__STRING_CONSTANT __string_46={__STRING_CONSTANT__,26,"#define LISAAC_DIRECT\
 ORY \""};
-__STRING_CONSTANT __string_46={__STRING_CONSTANT__,2,"\"\n"};
-__STRING_CONSTANT __string_47={__STRING_CONSTANT__,10,"bin/path.h"};
-__STRING_CONSTANT __string_48={__STRING_CONSTANT__,24,"#define LISAAC_DIRECT\
+__STRING_CONSTANT __string_47={__STRING_CONSTANT__,2,"\"\n"};
+__STRING_CONSTANT __string_48={__STRING_CONSTANT__,10,"bin/path.h"};
+__STRING_CONSTANT __string_49={__STRING_CONSTANT__,24,"#define LISAAC_DIRECT\
 ORY"};
-__STRING_CONSTANT __string_49={__STRING_CONSTANT__,10,"src/path.h"};
-__STRING_CONSTANT __string_50={__STRING_CONSTANT__,40,"Installation of `lisa\
+__STRING_CONSTANT __string_50={__STRING_CONSTANT__,10,"src/path.h"};
+__STRING_CONSTANT __string_51={__STRING_CONSTANT__,40,"Installation of `lisa\
 ac-mode' for Emacs."};
-__STRING_CONSTANT __string_51={__STRING_CONSTANT__,67,"  Do you want to inst\
+__STRING_CONSTANT __string_52={__STRING_CONSTANT__,67,"  Do you want to inst\
 all the `lisaac-mode' for Emacs editor ? (y/n)"};
-__STRING_CONSTANT __string_52={__STRING_CONSTANT__,47,"  Not install `lisaac\
+__STRING_CONSTANT __string_53={__STRING_CONSTANT__,47,"  Not install `lisaac\
 -mode' for Emacs editor.\n\n"};
-__STRING_CONSTANT __string_53={__STRING_CONSTANT__,2,"C:"};
-__STRING_CONSTANT __string_54={__STRING_CONSTANT__,7,"/.emacs"};
-__STRING_CONSTANT __string_55={__STRING_CONSTANT__,24,";; **** LISAAC MODE *\
+__STRING_CONSTANT __string_54={__STRING_CONSTANT__,2,"C:"};
+__STRING_CONSTANT __string_55={__STRING_CONSTANT__,7,"/.emacs"};
+__STRING_CONSTANT __string_56={__STRING_CONSTANT__,24,";; **** LISAAC MODE *\
 ***"};
-__STRING_CONSTANT __string_56={__STRING_CONSTANT__,24,"\n(setq load-path (co\
+__STRING_CONSTANT __string_57={__STRING_CONSTANT__,24,"\n(setq load-path (co\
 ns \""};
-__STRING_CONSTANT __string_57={__STRING_CONSTANT__,28,"/editor/emacs/\" load\
+__STRING_CONSTANT __string_58={__STRING_CONSTANT__,28,"/editor/emacs/\" load\
 -path))\n"};
-__STRING_CONSTANT __string_58={__STRING_CONSTANT__,133,"(add-to-list 'auto-m\
+__STRING_CONSTANT __string_59={__STRING_CONSTANT__,133,"(add-to-list 'auto-m\
 ode-alist '(\"\\\\.li\\\\'\" . lisaac-mode))\n(autoload 'lisaac-mode \"lisaa\
 c-mode\" \"Major mode for Lisaac Programs\" t)\n\n"};
-__STRING_CONSTANT __string_59={__STRING_CONSTANT__,41,"Installation of `lisa\
+__STRING_CONSTANT __string_60={__STRING_CONSTANT__,41,"Installation of `lisa\
 ac_v2.xml' for Kate."};
-__STRING_CONSTANT __string_60={__STRING_CONSTANT__,39,"  Sorry, not Kate edi\
+__STRING_CONSTANT __string_61={__STRING_CONSTANT__,39,"  Sorry, not Kate edi\
 tor for windows.\n\n"};
-__STRING_CONSTANT __string_61={__STRING_CONSTANT__,68,"  Do you want to inst\
+__STRING_CONSTANT __string_62={__STRING_CONSTANT__,68,"  Do you want to inst\
 all the `lisaac_v2.xml' for Kate editor ? (y/n)"};
-__STRING_CONSTANT __string_62={__STRING_CONSTANT__,48,"  Not install `lisaac\
+__STRING_CONSTANT __string_63={__STRING_CONSTANT__,48,"  Not install `lisaac\
 _v2.xml' for Kate editor.\n\n"};
-__STRING_CONSTANT __string_63={__STRING_CONSTANT__,42,"mkdir -p ~/.kde/share\
+__STRING_CONSTANT __string_64={__STRING_CONSTANT__,42,"mkdir -p ~/.kde/share\
 /apps/katepart/syntax"};
-__STRING_CONSTANT __string_64={__STRING_CONSTANT__,67,"cp -f editor/kate/lis\
+__STRING_CONSTANT __string_65={__STRING_CONSTANT__,67,"cp -f editor/kate/lis\
 aac_v2.xml ~/.kde/share/apps/katepart/syntax/."};
-__STRING_CONSTANT __string_65={__STRING_CONSTANT__,3,"  `"};
-__STRING_CONSTANT __string_66={__STRING_CONSTANT__,2,"'\t"};
-__STRING_CONSTANT __string_67={__STRING_CONSTANT__,79,"\n  Sorry, auto-insta\
+__STRING_CONSTANT __string_66={__STRING_CONSTANT__,3,"  `"};
+__STRING_CONSTANT __string_67={__STRING_CONSTANT__,2,"'\t"};
+__STRING_CONSTANT __string_68={__STRING_CONSTANT__,79,"\n  Sorry, auto-insta\
 ll fail !\n  You can to read the `editor/kate/README' file.\n"};
-__STRING_CONSTANT __string_68={__STRING_CONSTANT__,4,"OK.\n"};
-__STRING_CONSTANT __string_69={__STRING_CONSTANT__,37,"Installation of `lisa\
+__STRING_CONSTANT __string_69={__STRING_CONSTANT__,4,"OK.\n"};
+__STRING_CONSTANT __string_70={__STRING_CONSTANT__,37,"Installation of `lisa\
 ac.vim' for Vim."};
-__STRING_CONSTANT __string_70={__STRING_CONSTANT__,38,"  Sorry, not Vim edit\
+__STRING_CONSTANT __string_71={__STRING_CONSTANT__,38,"  Sorry, not Vim edit\
 or for windows.\n\n"};
-__STRING_CONSTANT __string_71={__STRING_CONSTANT__,66,"  Do you want to inst\
+__STRING_CONSTANT __string_72={__STRING_CONSTANT__,66,"  Do you want to inst\
 all the Lisaac support for Vim editor ? (y/n)"};
-__STRING_CONSTANT __string_72={__STRING_CONSTANT__,44,"  Not install `lisaac\
+__STRING_CONSTANT __string_73={__STRING_CONSTANT__,44,"  Not install `lisaac\
 .vim' for Vim editor.\n\n"};
-__STRING_CONSTANT __string_73={__STRING_CONSTANT__,22,"mkdir -p ~/.vim/syntax"};
-__STRING_CONSTANT __string_74={__STRING_CONSTANT__,22,"mkdir -p ~/.vim/indent"};
-__STRING_CONSTANT __string_75={__STRING_CONSTANT__,22,"mkdir -p ~/.vim/backup"};
-__STRING_CONSTANT __string_76={__STRING_CONSTANT__,20,"mkdir -p ~/.vim/temp"};
-__STRING_CONSTANT __string_77={__STRING_CONSTANT__,49,"cp -f editor/vim/synt\
+__STRING_CONSTANT __string_74={__STRING_CONSTANT__,22,"mkdir -p ~/.vim/syntax"};
+__STRING_CONSTANT __string_75={__STRING_CONSTANT__,22,"mkdir -p ~/.vim/indent"};
+__STRING_CONSTANT __string_76={__STRING_CONSTANT__,22,"mkdir -p ~/.vim/backup"};
+__STRING_CONSTANT __string_77={__STRING_CONSTANT__,20,"mkdir -p ~/.vim/temp"};
+__STRING_CONSTANT __string_78={__STRING_CONSTANT__,49,"cp -f editor/vim/synt\
 ax/lisaac.vim ~/.vim/syntax/"};
-__STRING_CONSTANT __string_78={__STRING_CONSTANT__,90,"\n  Sorry, auto-insta\
+__STRING_CONSTANT __string_79={__STRING_CONSTANT__,90,"\n  Sorry, auto-insta\
 ll fail !\n  You can read the `editor/vim/install_vim_plugin.sh' file.\n"};
-__STRING_CONSTANT __string_79={__STRING_CONSTANT__,49,"cp -f editor/vim/inde\
+__STRING_CONSTANT __string_80={__STRING_CONSTANT__,49,"cp -f editor/vim/inde\
 nt/lisaac.vim ~/.vim/indent/"};
-__STRING_CONSTANT __string_80={__STRING_CONSTANT__,302,"\n  It is recommande\
+__STRING_CONSTANT __string_81={__STRING_CONSTANT__,302,"\n  It is recommande\
 d to install the default vimrc file provided by the   \n  lisaac installer. \
                                                     \n\n  If you choose not \
 doing this action, your vimrc will only be updated    \n  Do you want to ins\
 tall the default config provided by lisaac installer? (y/n)"};
-__STRING_CONSTANT __string_81={__STRING_CONSTANT__,7,"/.vimrc"};
-__STRING_CONSTANT __string_82={__STRING_CONSTANT__,155,"\nsyntax on         \
+__STRING_CONSTANT __string_82={__STRING_CONSTANT__,7,"/.vimrc"};
+__STRING_CONSTANT __string_83={__STRING_CONSTANT__,155,"\nsyntax on         \
                   \nfiletype plugin on                    \nfiletype indent \
 on                    \nau BufNewFile,BufRead *.li setf lisaac\n"};
-__STRING_CONSTANT __string_83={__STRING_CONSTANT__,31,"cp -f editor/vim/vimr\
+__STRING_CONSTANT __string_84={__STRING_CONSTANT__,31,"cp -f editor/vim/vimr\
 c ~/.vimrc"};
-__STRING_CONSTANT __string_84={__STRING_CONSTANT__,31,"Compilation of Lisaac\
+__STRING_CONSTANT __string_85={__STRING_CONSTANT__,31,"Compilation of Lisaac\
  compiler."};
-__STRING_CONSTANT __string_85={__STRING_CONSTANT__,6,"lisaac"};
-__STRING_CONSTANT __string_86={__STRING_CONSTANT__,28,"Compilation of Shorte\
+__STRING_CONSTANT __string_86={__STRING_CONSTANT__,6,"lisaac"};
+__STRING_CONSTANT __string_87={__STRING_CONSTANT__,28,"Compilation of Shorte\
 r tool."};
-__STRING_CONSTANT __string_87={__STRING_CONSTANT__,7,"shorter"};
-__STRING_CONSTANT __string_88={__STRING_CONSTANT__,31,"Build a librarie docu\
+__STRING_CONSTANT __string_88={__STRING_CONSTANT__,7,"shorter"};
+__STRING_CONSTANT __string_89={__STRING_CONSTANT__,31,"Build a librarie docu\
 mentation."};
-__STRING_CONSTANT __string_89={__STRING_CONSTANT__,60,"  Do you want to buil\
+__STRING_CONSTANT __string_90={__STRING_CONSTANT__,60,"  Do you want to buil\
 d a HTML librarie documentation ? (y/n)"};
-__STRING_CONSTANT __string_90={__STRING_CONSTANT__,39,"  Not install librari\
+__STRING_CONSTANT __string_91={__STRING_CONSTANT__,39,"  Not install librari\
 e documentation.\n\n"};
-__STRING_CONSTANT __string_91={__STRING_CONSTANT__,38,"bin\\shorter -r -f ht\
+__STRING_CONSTANT __string_92={__STRING_CONSTANT__,38,"bin\\shorter -r -f ht\
 ml lib -o lib_html"};
-__STRING_CONSTANT __string_92={__STRING_CONSTANT__,38,"bin/shorter -r -f htm\
+__STRING_CONSTANT __string_93={__STRING_CONSTANT__,38,"bin/shorter -r -f htm\
 l lib -o lib_html"};
-__STRING_CONSTANT __string_93={__STRING_CONSTANT__,12,"  Execute: `"};
-__STRING_CONSTANT __string_94={__STRING_CONSTANT__,2,"'\n"};
-__STRING_CONSTANT __string_95={__STRING_CONSTANT__,60,"  OK, you found this \
+__STRING_CONSTANT __string_94={__STRING_CONSTANT__,12,"  Execute: `"};
+__STRING_CONSTANT __string_95={__STRING_CONSTANT__,2,"'\n"};
+__STRING_CONSTANT __string_96={__STRING_CONSTANT__,60,"  OK, you found this \
 documentation in `lib_html/index.html'\n"};
-__STRING_CONSTANT __string_96={__STRING_CONSTANT__,29,"Welcome to the Lisaac\
+__STRING_CONSTANT __string_97={__STRING_CONSTANT__,29,"Welcome to the Lisaac\
  World !"};
-__STRING_CONSTANT __string_97={__STRING_CONSTANT__,314,"  Installation succe\
+__STRING_CONSTANT __string_98={__STRING_CONSTANT__,314,"  Installation succe\
 ssfull.                               \n  Run `lisaac' to compile.          \
                     \n\n  Note: You'll have to reboot or reloaded environnem\
 ent   \n        to acknowledge the changes.                       \n  Note: \
 For bash users, doing a `source ~/.bashrc' should \n        do the job.\n"};
-__STRING_CONSTANT __string_98={__STRING_CONSTANT__,5,"Step "};
-__STRING_CONSTANT __string_99={__STRING_CONSTANT__,3," : "};
-__STRING_CONSTANT __string_100={__STRING_CONSTANT__,1,"="};
-__STRING_CONSTANT __string_101={__STRING_CONSTANT__,5,"  A `"};
-__STRING_CONSTANT __string_102={__STRING_CONSTANT__,50,"' file has no need t\
+__STRING_CONSTANT __string_99={__STRING_CONSTANT__,5,"Step "};
+__STRING_CONSTANT __string_100={__STRING_CONSTANT__,3," : "};
+__STRING_CONSTANT __string_101={__STRING_CONSTANT__,1,"="};
+__STRING_CONSTANT __string_102={__STRING_CONSTANT__,5,"  A `"};
+__STRING_CONSTANT __string_103={__STRING_CONSTANT__,50,"' file has no need t\
 o change. Current version is:\n"};
-__STRING_CONSTANT __string_103={__STRING_CONSTANT__,39,"' file has been upda\
+__STRING_CONSTANT __string_104={__STRING_CONSTANT__,39,"' file has been upda\
 ted. Old value is:\n"};
-__STRING_CONSTANT __string_104={__STRING_CONSTANT__,16,"  New value is:\n"};
-__STRING_CONSTANT __string_105={__STRING_CONSTANT__,30,"' file has been upda\
+__STRING_CONSTANT __string_105={__STRING_CONSTANT__,16,"  New value is:\n"};
+__STRING_CONSTANT __string_106={__STRING_CONSTANT__,30,"' file has been upda\
 ted with:\n"};
-__STRING_CONSTANT __string_106={__STRING_CONSTANT__,30,"' file has been crea\
+__STRING_CONSTANT __string_107={__STRING_CONSTANT__,30,"' file has been crea\
 ted with:\n"};
-__STRING_CONSTANT __string_107={__STRING_CONSTANT__,7,"Error: "};
-__STRING_CONSTANT __string_108={__STRING_CONSTANT__,16,"Not create file!"};
-__STRING_CONSTANT __string_109={__STRING_CONSTANT__,34,"Not open file (Write\
+__STRING_CONSTANT __string_108={__STRING_CONSTANT__,7,"Error: "};
+__STRING_CONSTANT __string_109={__STRING_CONSTANT__,16,"Not create file!"};
+__STRING_CONSTANT __string_110={__STRING_CONSTANT__,34,"Not open file (Write\
  protection) !"};
-__STRING_CONSTANT __string_110={__STRING_CONSTANT__,12,"gcc -O2 bin/"};
-__STRING_CONSTANT __string_111={__STRING_CONSTANT__,10,".c -o bin/"};
-__STRING_CONSTANT __string_112={__STRING_CONSTANT__,19,"  Execute command `"};
-__STRING_CONSTANT __string_113={__STRING_CONSTANT__,20,"' (please wait ...)\n"};
-__STRING_CONSTANT __string_114={__STRING_CONSTANT__,51,"  Auto-install fail \
+__STRING_CONSTANT __string_111={__STRING_CONSTANT__,12,"gcc -O2 bin/"};
+__STRING_CONSTANT __string_112={__STRING_CONSTANT__,10,".c -o bin/"};
+__STRING_CONSTANT __string_113={__STRING_CONSTANT__,19,"  Execute command `"};
+__STRING_CONSTANT __string_114={__STRING_CONSTANT__,20,"' (please wait ...)\n"};
+__STRING_CONSTANT __string_115={__STRING_CONSTANT__,51,"  Auto-install fail \
 !\n  You want to compile a `bin/"};
-__STRING_CONSTANT __string_115={__STRING_CONSTANT__,10,".c' file.\n"};
-__STRING_CONSTANT __string_116={__STRING_CONSTANT__,19,"Not enough memory.\n"};
+__STRING_CONSTANT __string_116={__STRING_CONSTANT__,10,".c' file.\n"};
+__STRING_CONSTANT __string_117={__STRING_CONSTANT__,19,"Not enough memory.\n"};
 
 //==========================//
 // FUNCTION HEADER          //
@@ -341,42 +351,42 @@ void print_string(char *str);
 // Source code
 static __STRING* create__ZB(__INTEGER needed_capacity__1B);
 static void print__PB(__STRING_CONSTANT *Self__QB);
-static __CHARACTER* to_external__2ID(__STRING *Self__3ID);
-static void from_external__PKD(__STRING *Self__QKD,__CHARACTER *p__RKD);
-static void copy__FMD(__STRING *Self__GMD,void *other__HMD);
+static __CHARACTER* to_external__AFD(__STRING *Self__BFD);
+static void from_external__TGD(__STRING *Self__UGD,__CHARACTER *p__VGD);
+static void copy__JID(__STRING *Self__KID,void *other__LID);
 static void* get_environment_variable__AC(void *variable__CC);
 static void title__XC(void *str__ZC);
-static __STRING* create_from_string__X1(void *str__Z1);
-static __INTEGER first_substring_index__KVD(__STRING *Self__LVD,void *other__MVD);
-static void append__TPD(__STRING *Self__UPD,void *other__VPD);
-static void put_string__VU(void *s__XU);
-static void update__idf__with__I2(void *file__K2,void *id__L2,void *new_text__M2);
-static __INTEGER execute_command__VAB(void *system_command_line__XAB);
-static void prepend__LOD(__STRING *Self__MOD,void *other__NOD);
-static void replace_all__with__RTD(__STRING *Self__STD);
-static void compile_file__KS(void *n__MS);
-static __STRING* clone__0V();
-static __CHARACTER* create__OQH(__INTEGER nb_elements__QQH);
-static void add_last__ZNF(__STRING *Self__0NF,__CHARACTER ch__1NF);
-static void copy_from__until__MPF(__CHARACTER *Self__NPF,__CHARACTER *model__OPF,__INTEGER upper__PPF);
-static void print__IZ(__INTEGER Self__JZ);
-static __CHARACTER* realloc__with__LRH(__CHARACTER *Self__MRH,__INTEGER old_nb_elts__NRH,__INTEGER new_nb_elts__ORH);
-static void copy__to__until__YVJ(__CHARACTER *Self__ZVJ,__CHARACTER *src__0VJ,__INTEGER dest__1VJ,__INTEGER src_capacity__2VJ);
-static __INTEGER fast_occurrences__until__SNC(__CHARACTER *Self__TNC,__INTEGER upper__VNC);
-static void remove__QYF(__STRING *Self__RYF,__INTEGER index__SYF);
-static void resize__WLE(__STRING *Self__XLE,__INTEGER new_count__YLE);
-static void move__to__by__UUF(__CHARACTER *Self__VUF,__INTEGER lower__WUF,__INTEGER upper__XUF,__INTEGER offset__YUF);
-static __POINTER micro_alloc__table__lab__1HC(__UINTEGER_32 new_size__3HC,__POINTER ptr_table__4HC,__UINTEGER_32 lab_type__5HC);
-static void copy__to__size__XUB(__POINTER src__ZUB,__POINTER dst__0UB,__UINTEGER_32 sz__1UB);
-static __POINTER alloc_dynamic__AAI(__UINTEGER_32 sz__CAI);
-static void print_positif__3EL(__INTEGER Self__4EL);
-static void to_busy__index__Z4J(__MEMORY *Self__04J,__UINTEGER_32 sz__14J,__UINTEGER_32 idx__24J);
-static void* search__USI(__UINTEGER_32 new_size__WSI);
-static void add_link_free__LRJ(__MEMORY *Self__MRJ);
-static void delete_link_free__YNK(__MEMORY *Self__ZNK);
-static void clear__to__M2J(__CHARACTER *Self__N2J,__INTEGER lower__O2J,__INTEGER upper__P2J);
-static __POINTER new_lab__NXC(__UINTEGER_32 t__PXC);
-static void* new_page__PKF();
+static __STRING* create_from_string__R1(void *str__T1);
+static __INTEGER first_substring_index__ORD(__STRING *Self__PRD,void *other__QRD);
+static void append__XLD(__STRING *Self__YLD,void *other__ZLD);
+static void put_string__WU(void *s__YU);
+static void update__idf__with__C2(void *file__E2,void *id__F2,void *new_text__G2);
+static __INTEGER execute_command__PAB(void *system_command_line__RAB);
+static void prepend__PKD(__STRING *Self__QKD,void *other__RKD);
+static void replace_all__with__VPD(__STRING *Self__WPD);
+static void compile_file__LS(void *n__NS);
+static __STRING* clone__1V();
+static __CHARACTER* create__LMH(__INTEGER nb_elements__NMH);
+static void add_last__GJF(__STRING *Self__HJF,__CHARACTER ch__IJF);
+static void copy_from__until__ZKF(__CHARACTER *Self__0KF,__CHARACTER *model__1KF,__INTEGER upper__2KF);
+static void print__CZ(__INTEGER Self__DZ);
+static __CHARACTER* realloc__with__INH(__CHARACTER *Self__JNH,__INTEGER old_nb_elts__KNH,__INTEGER new_nb_elts__LNH);
+static void copy__to__until__JVJ(__CHARACTER *Self__KVJ,__CHARACTER *src__LVJ,__INTEGER dest__MVJ,__INTEGER src_capacity__NVJ);
+static __INTEGER fast_occurrences__until__HHC(__CHARACTER *Self__IHC,__INTEGER upper__KHC);
+static void remove__0SF(__STRING *Self__1SF,__INTEGER index__2SF);
+static void resize__FHE(__STRING *Self__GHE,__INTEGER new_count__HHE);
+static void move__to__by__BQF(__CHARACTER *Self__CQF,__INTEGER lower__DQF,__INTEGER upper__EQF,__INTEGER offset__FQF);
+static __POINTER micro_alloc__table__lab__VBC(__UINTEGER_32 new_size__XBC,__POINTER ptr_table__YBC,__UINTEGER_32 lab_type__ZBC);
+static __POINTER alloc_dynamic__31H(__UINTEGER_32 sz__51H);
+static void print_positif__VEL(__INTEGER Self__WEL);
+static void copy__to__size__SII(__POINTER src__UII,__POINTER dst__VII,__UINTEGER_32 sz__WII);
+static void to_busy__index__N4J(__MEMORY *Self__O4J,__UINTEGER_32 sz__P4J,__UINTEGER_32 idx__Q4J);
+static __MEMORY* search__VPI(__UINTEGER_32 new_size__XPI);
+static void add_link_free__ARJ(__MEMORY *Self__BRJ);
+static void delete_link_free__QNK(__MEMORY *Self__RNK);
+static void clear__to__A2J(__CHARACTER *Self__B2J,__INTEGER lower__C2J,__INTEGER upper__D2J);
+static __POINTER new_lab__RTC(__UINTEGER_32 t__TTC);
+static __MEMORY* new_page__2FF();
 
 //==========================//
 // SOURCE CODE              //
@@ -385,31 +395,31 @@ static void* new_page__PKF();
 int main(int argc,char **argv)
 {
   __POINTER std_file__MD;
-  void *new_text__OD,*file__PD,*file_name__XJ,*new_text__YJ;
-  void *file_name__2N;
+  void *new_text__OD,*file__PD,*file_name__YJ,*new_text__ZJ;
+  void *file_name__3N;
   void *comment__QD,*path__RD,*path_next__SD;
-  __INTEGER result__UEQ;
-  __STRING *Self__O1D;
-  __CHARACTER *cwd__Y,*ptr__BWQ;
-  __BOOLEAN __tmp__HE,__tmp__5E,result__HNB,__tmp__WF,result__UNB;
-  __CHARACTER char__WJ,char__2L,char__1N,char__3S;
+  __INTEGER result__MEQ;
+  __STRING *Self__QWD;
+  __CHARACTER *cwd__Y,*ptr__ZVQ;
+  __BOOLEAN __tmp__HE,__tmp__5E,result__BNB,__tmp__WF,result__ONB;
+  __CHARACTER char__XJ,char__3L,char__2N,char__4S;
   arg_count  = argc;
   arg_vector = argv;
   parent_numeric__G=NUMERIC__;
   STRING_CONSTANT__->count__AD=((__INTEGER )((0)));
   STRING__->count__CB= 0;
-  STRING_CONSTANT__->storage__KEC=((__CHARACTER *)(NULL));
-  STRING__->storage__5JD=NULL;
-  clone_allocation_size__TW= 0;
-  nb_page__5XC= 0;
-  MEMORY__->size_and_id__4W= 0;
-  capacity_max__ZKF= 0;
-  begin_memory__YJC=((__POINTER )(NULL));
-  MEMORY__->previous_linear__3W= 0;
-  first_free__XTI=NULL;
-  MEMORY__->next_free__5W=NULL;
-  MEMORY__->previous_free__AX=NULL;
-  STRING__->capacity__CJD= 0;
+  STRING_CONSTANT__->storage__K3B=((__CHARACTER *)(NULL));
+  STRING__->storage__DGD=NULL;
+  clone_allocation_size__UW= 0;
+  nb_page__DUC= 0;
+  MEMORY__->size_and_id__5W= 0;
+  capacity_max__GGF= 0;
+  begin_memory__SDC=((__POINTER )(NULL));
+  MEMORY__->previous_linear__4W= 0;
+  first_free__YQI=NULL;
+  MEMORY__->next_free__AX=NULL;
+  MEMORY__->previous_free__BX=NULL;
+  STRING__->capacity__GFD= 0;
   string_tmp__2=create__ZB( 256);
   path_current__GB=NULL;
   path_home__KB=NULL;
@@ -418,11 +428,11 @@ int main(int argc,char **argv)
   system__FE=NULL;
   print__PB((&__string_1));
   ((__STRING *)string_tmp__2)->count__CB= 0;
-  cwd__Y=to_external__2ID(string_tmp__2);
+  cwd__Y=to_external__AFD(string_tmp__2);
   getcwd((cwd__Y),255);
-  from_external__PKD(string_tmp__2,cwd__Y);
+  from_external__TGD(string_tmp__2,cwd__Y);
   path_current__GB=create__ZB(((__STRING *)string_tmp__2)->count__CB);
-  copy__FMD(path_current__GB,string_tmp__2);
+  copy__JID(path_current__GB,string_tmp__2);
   path_home__KB=get_environment_variable__AC((&__string_2));
   shell__MB=get_environment_variable__AC((&__string_3));
   title__XC((&__string_4));
@@ -433,7 +443,7 @@ int main(int argc,char **argv)
   path__RD=NULL;
   path_next__SD=NULL;
   if (((void *)shell__MB != (void *)NULL)) {
-    file__PD=create_from_string__X1(path_home__KB);
+    file__PD=create_from_string__R1(path_home__KB);
     if ((((__STRING *)shell__MB)->count__CB ==  0)) {
       print__PB((&__string_5));
       system__FE=(&__string_6);
@@ -444,338 +454,338 @@ int main(int argc,char **argv)
     if (__tmp__HE) {
       __tmp__5E=TRUE__;
     } else {
-      result__HNB=(first_substring_index__KVD(((__STRING *)shell__MB),(&__string_7)) !=  0);
-      if (result__HNB) {
-        append__TPD(file__PD,(&__string_8));
+      result__BNB=(first_substring_index__ORD(((__STRING *)shell__MB),(&__string_7)) !=  0);
+      if (result__BNB) {
+        append__XLD(file__PD,(&__string_8));
         system__FE=(&__string_9);
         comment__QD=(&__string_10);
         path__RD=(&__string_11);
         path_next__SD=(&__string_12);
       };
-      __tmp__5E=result__HNB;
+      __tmp__5E=result__BNB;
     };
     if (__tmp__5E) {
       __tmp__WF=TRUE__;
     } else {
-      result__UNB=(first_substring_index__KVD(((__STRING *)shell__MB),(&__string_13)) !=  0);
-      if (result__UNB) {
-        append__TPD(file__PD,(&__string_14));
+      result__ONB=(first_substring_index__ORD(((__STRING *)shell__MB),(&__string_13)) !=  0);
+      if (result__ONB) {
+        append__XLD(file__PD,(&__string_14));
         system__FE=(&__string_15);
         comment__QD=(&__string_10);
         path__RD=(&__string_16);
         path_next__SD=(&__string_17);
       };
-      __tmp__WF=result__UNB;
+      __tmp__WF=result__ONB;
     };
     if ((! __tmp__WF)) {
-      if ((first_substring_index__KVD(((__STRING *)shell__MB),(&__string_18)) !=  0)) {
-        append__TPD(file__PD,(&__string_19));
+      if ((first_substring_index__ORD(((__STRING *)shell__MB),(&__string_18)) !=  0)) {
+        append__XLD(file__PD,(&__string_19));
         system__FE=(&__string_20);
         comment__QD=(&__string_10);
         path__RD=(&__string_11);
         path_next__SD=(&__string_12);
       } else {
         print__PB((&__string_21));
-        put_string__VU(((__STRING *)shell__MB));
+        put_string__WU(((__STRING *)shell__MB));
         fputc((int)('\n'),stdout);
         system__FE=(&__string_6);
       };
     };
   } else {
-    copy__FMD(string_tmp__2,(&__string_22));
-    std_file__MD=((__POINTER )(fopen((char*)(to_external__2ID(string_tmp__2)),"rb")));
+    copy__JID(string_tmp__2,(&__string_22));
+    std_file__MD=((__POINTER )(fopen((char*)(to_external__AFD(string_tmp__2)),"rb")));
     if ((std_file__MD != (void *)NULL)) {
       fclose((FILE*)((std_file__MD)));
-      file__PD=create_from_string__X1((&__string_22));
-      system__FE=(&__string_23);
-      comment__QD=(&__string_24);
-      path__RD=(&__string_25);
-      path_next__SD=(&__string_26);
+      file__PD=create_from_string__R1((&__string_23));
+      system__FE=(&__string_24);
+      comment__QD=(&__string_25);
+      path__RD=(&__string_26);
+      path_next__SD=(&__string_27);
     } else {
       system__FE=(&__string_6);
     };
   };
-  print__PB((&__string_27));
+  print__PB((&__string_28));
   print__PB(system__FE);
   fputc((int)('\n'),stdout);
   if (((void *)system__FE != (void *)(&__string_6))) {
-    if (((void *)system__FE == (void *)(&__string_23))) {
-      update__idf__with__I2((&__string_28),(&__string_29),(&__string_30));
-      print__PB((&__string_31));
+    if (((void *)system__FE == (void *)(&__string_24))) {
+      update__idf__with__C2((&__string_29),(&__string_30),(&__string_31));
+      print__PB((&__string_32));
     } else {
-      update__idf__with__I2((&__string_28),(&__string_29),(&__string_32));
-      print__PB((&__string_33));
-      execute_command__VAB((&__string_34));
-      copy__FMD(string_tmp__2,(&__string_35));
-      std_file__MD=((__POINTER )(fopen((char*)(to_external__2ID(string_tmp__2)),"rb")));
+      update__idf__with__C2((&__string_29),(&__string_30),(&__string_33));
+      print__PB((&__string_34));
+      execute_command__PAB((&__string_35));
+      copy__JID(string_tmp__2,(&__string_36));
+      std_file__MD=((__POINTER )(fopen((char*)(to_external__AFD(string_tmp__2)),"rb")));
       fseek((FILE*)((std_file__MD)),0,SEEK_END);
-      result__UEQ=((__INTEGER )(ftell((FILE *)(std_file__MD))));
+      result__MEQ=((__INTEGER )(ftell((FILE *)(std_file__MD))));
       fseek((FILE*)((std_file__MD)),0,SEEK_SET);
-      if ((result__UEQ ==  0)) {
-        print__PB((&__string_36));
+      if ((result__MEQ ==  0)) {
+        print__PB((&__string_37));
       } else {
-        new_text__OD=create__ZB(result__UEQ);
-        ptr__BWQ=to_external__2ID(new_text__OD);
-        fread((void *)((ptr__BWQ)),(size_t)(1), (size_t)((result__UEQ)),(FILE*)((std_file__MD)));
-        from_external__PKD(new_text__OD,ptr__BWQ);
-        Self__O1D=((__STRING *)new_text__OD);
-        if (( 10 > Self__O1D->count__CB)) {
-          Self__O1D->count__CB= 0;
+        new_text__OD=create__ZB(result__MEQ);
+        ptr__ZVQ=to_external__AFD(new_text__OD);
+        fread((void *)((ptr__ZVQ)),(size_t)(1), (size_t)((result__MEQ)),(FILE*)((std_file__MD)));
+        from_external__TGD(new_text__OD,ptr__ZVQ);
+        Self__QWD=((__STRING *)new_text__OD);
+        if (( 10 > Self__QWD->count__CB)) {
+          Self__QWD->count__CB= 0;
         } else {
-          Self__O1D->count__CB=(__INTEGER)(Self__O1D->count__CB -  10);
+          Self__QWD->count__CB=(__INTEGER)(Self__QWD->count__CB -  10);
         };
-        prepend__LOD(new_text__OD,(&__string_37));
-        append__TPD(new_text__OD,(&__string_38));
-        update__idf__with__I2((&__string_28),(&__string_39),new_text__OD);
+        prepend__PKD(new_text__OD,(&__string_38));
+        append__XLD(new_text__OD,(&__string_39));
+        update__idf__with__C2((&__string_29),(&__string_40),new_text__OD);
       };
       fclose((FILE*)((std_file__MD)));
-      execute_command__VAB((&__string_40));
+      execute_command__PAB((&__string_41));
     };
   };
   fputc((int)('\n'),stdout);
-  title__XC((&__string_41));
+  title__XC((&__string_42));
   if (((void *)system__FE == (void *)(&__string_6))) {
-    print__PB((&__string_42));
-    put_string__VU(((__STRING *)path_current__GB));
     print__PB((&__string_43));
+    put_string__WU(((__STRING *)path_current__GB));
+    print__PB((&__string_44));
   } else {
-    new_text__OD=create_from_string__X1(comment__QD);
-    append__TPD(new_text__OD,path__RD);
-    append__TPD(new_text__OD,path_current__GB);
-    append__TPD(new_text__OD,path_next__SD);
-    update__idf__with__I2(file__PD,comment__QD,new_text__OD);
+    new_text__OD=create_from_string__R1(comment__QD);
+    append__XLD(new_text__OD,path__RD);
+    append__XLD(new_text__OD,path_current__GB);
+    append__XLD(new_text__OD,path_next__SD);
+    update__idf__with__C2(file__PD,comment__QD,new_text__OD);
   };
-  title__XC((&__string_44));
-  new_text__OD=create_from_string__X1(path_current__GB);
-  if (((void *)system__FE == (void *)(&__string_23))) {
-    replace_all__with__RTD(new_text__OD);
+  title__XC((&__string_45));
+  new_text__OD=create_from_string__R1(path_current__GB);
+  if (((void *)system__FE == (void *)(&__string_24))) {
+    replace_all__with__VPD(new_text__OD);
   };
-  prepend__LOD(new_text__OD,(&__string_45));
-  append__TPD(new_text__OD,(&__string_46));
-  update__idf__with__I2((&__string_47),(&__string_48),new_text__OD);
+  prepend__PKD(new_text__OD,(&__string_46));
+  append__XLD(new_text__OD,(&__string_47));
+  update__idf__with__C2((&__string_48),(&__string_49),new_text__OD);
   fputc((int)('\n'),stdout);
-  update__idf__with__I2((&__string_49),(&__string_48),new_text__OD);
+  update__idf__with__C2((&__string_50),(&__string_49),new_text__OD);
   fputc((int)('\n'),stdout);
-  title__XC((&__string_50));
-  char__WJ='\0';
-  file_name__XJ=NULL;
-  new_text__YJ=NULL;
-  print__PB((&__string_51));
-  while (((char__WJ != 'y') && (char__WJ != 'n'))) {
-    char__WJ=((__CHARACTER )(fgetc(stdin)));
+  title__XC((&__string_51));
+  char__XJ='\0';
+  file_name__YJ=NULL;
+  new_text__ZJ=NULL;
+  print__PB((&__string_52));
+  while (((char__XJ != 'y') && (char__XJ != 'n'))) {
+    char__XJ=((__CHARACTER )(fgetc(stdin)));
   };
-  if ((char__WJ == 'n')) {
-    print__PB((&__string_52));
+  if ((char__XJ == 'n')) {
+    print__PB((&__string_53));
   } else {
-    file_name__XJ=create__ZB( 100);
+    file_name__YJ=create__ZB( 100);
     if (((void *)path_home__KB == (void *)NULL)) {
-      copy__FMD(file_name__XJ,(&__string_53));
+      copy__JID(file_name__YJ,(&__string_54));
     } else {
-      copy__FMD(file_name__XJ,path_home__KB);
+      copy__JID(file_name__YJ,path_home__KB);
     };
-    append__TPD(file_name__XJ,(&__string_54));
-    new_text__YJ=create_from_string__X1((&__string_55));
-    append__TPD(new_text__YJ,(&__string_56));
-    append__TPD(new_text__YJ,path_current__GB);
-    if (((void *)system__FE == (void *)(&__string_23))) {
-      replace_all__with__RTD(new_text__YJ);
+    append__XLD(file_name__YJ,(&__string_55));
+    new_text__ZJ=create_from_string__R1((&__string_56));
+    append__XLD(new_text__ZJ,(&__string_57));
+    append__XLD(new_text__ZJ,path_current__GB);
+    if (((void *)system__FE == (void *)(&__string_24))) {
+      replace_all__with__VPD(new_text__ZJ);
     };
-    append__TPD(new_text__YJ,(&__string_57));
-    append__TPD(new_text__YJ,(&__string_58));
-    update__idf__with__I2(file_name__XJ,(&__string_55),new_text__YJ);
+    append__XLD(new_text__ZJ,(&__string_58));
+    append__XLD(new_text__ZJ,(&__string_59));
+    update__idf__with__C2(file_name__YJ,(&__string_56),new_text__ZJ);
   };
-  title__XC((&__string_59));
-  char__2L='\0';
-  if (((void *)system__FE == (void *)(&__string_23))) {
-    print__PB((&__string_60));
-  } else {
+  title__XC((&__string_60));
+  char__3L='\0';
+  if (((void *)system__FE == (void *)(&__string_24))) {
     print__PB((&__string_61));
-    while (((char__2L != 'y') && (char__2L != 'n'))) {
-      char__2L=((__CHARACTER )(fgetc(stdin)));
-    };
-    if ((char__2L == 'n')) {
-      print__PB((&__string_62));
-    } else {
-      execute_command__VAB((&__string_63));
-      copy__FMD(string_tmp__2,(&__string_64));
-      print__PB((&__string_65));
-      put_string__VU(((__STRING *)string_tmp__2));
-      print__PB((&__string_66));
-      if ((execute_command__VAB(string_tmp__2) !=  0)) {
-        print__PB((&__string_67));
-      } else {
-        print__PB((&__string_68));
-      };
-    };
-    fputc((int)('\n'),stdout);
-  };
-  title__XC((&__string_69));
-  char__1N='\0';
-  file_name__2N=NULL;
-  if (((void *)system__FE == (void *)(&__string_23))) {
-    print__PB((&__string_70));
   } else {
-    print__PB((&__string_71));
-    while (((char__1N != 'y') && (char__1N != 'n'))) {
-      char__1N=((__CHARACTER )(fgetc(stdin)));
+    print__PB((&__string_62));
+    while (((char__3L != 'y') && (char__3L != 'n'))) {
+      char__3L=((__CHARACTER )(fgetc(stdin)));
     };
-    if ((char__1N == 'n')) {
-      print__PB((&__string_72));
+    if ((char__3L == 'n')) {
+      print__PB((&__string_63));
     } else {
-      execute_command__VAB((&__string_73));
-      execute_command__VAB((&__string_74));
-      execute_command__VAB((&__string_75));
-      execute_command__VAB((&__string_76));
-      copy__FMD(string_tmp__2,(&__string_77));
-      print__PB((&__string_65));
-      put_string__VU(((__STRING *)string_tmp__2));
+      execute_command__PAB((&__string_64));
+      copy__JID(string_tmp__2,(&__string_65));
       print__PB((&__string_66));
-      if ((execute_command__VAB(string_tmp__2) !=  0)) {
-        print__PB((&__string_78));
-      } else {
+      put_string__WU(((__STRING *)string_tmp__2));
+      print__PB((&__string_67));
+      if ((execute_command__PAB(string_tmp__2) !=  0)) {
         print__PB((&__string_68));
+      } else {
+        print__PB((&__string_69));
       };
-      copy__FMD(string_tmp__2,(&__string_79));
-      print__PB((&__string_65));
-      put_string__VU(((__STRING *)string_tmp__2));
+    };
+    fputc((int)('\n'),stdout);
+  };
+  title__XC((&__string_70));
+  char__2N='\0';
+  file_name__3N=NULL;
+  if (((void *)system__FE == (void *)(&__string_24))) {
+    print__PB((&__string_71));
+  } else {
+    print__PB((&__string_72));
+    while (((char__2N != 'y') && (char__2N != 'n'))) {
+      char__2N=((__CHARACTER )(fgetc(stdin)));
+    };
+    if ((char__2N == 'n')) {
+      print__PB((&__string_73));
+    } else {
+      execute_command__PAB((&__string_74));
+      execute_command__PAB((&__string_75));
+      execute_command__PAB((&__string_76));
+      execute_command__PAB((&__string_77));
+      copy__JID(string_tmp__2,(&__string_78));
       print__PB((&__string_66));
-      if ((execute_command__VAB(string_tmp__2) !=  0)) {
-        print__PB((&__string_78));
+      put_string__WU(((__STRING *)string_tmp__2));
+      print__PB((&__string_67));
+      if ((execute_command__PAB(string_tmp__2) !=  0)) {
+        print__PB((&__string_79));
       } else {
-        print__PB((&__string_68));
+        print__PB((&__string_69));
       };
-      char__1N='?';
-      print__PB((&__string_80));
-      while (((char__1N != 'y') && (char__1N != 'n'))) {
-        char__1N=((__CHARACTER )(fgetc(stdin)));
+      copy__JID(string_tmp__2,(&__string_80));
+      print__PB((&__string_66));
+      put_string__WU(((__STRING *)string_tmp__2));
+      print__PB((&__string_67));
+      if ((execute_command__PAB(string_tmp__2) !=  0)) {
+        print__PB((&__string_79));
+      } else {
+        print__PB((&__string_69));
       };
-      if ((char__1N == 'n')) {
-        file_name__2N=create__ZB( 100);
+      char__2N='?';
+      print__PB((&__string_81));
+      while (((char__2N != 'y') && (char__2N != 'n'))) {
+        char__2N=((__CHARACTER )(fgetc(stdin)));
+      };
+      if ((char__2N == 'n')) {
+        file_name__3N=create__ZB( 100);
         if (((void *)path_home__KB == (void *)NULL)) {
-          copy__FMD(file_name__2N,(&__string_53));
+          copy__JID(file_name__3N,(&__string_54));
         } else {
-          copy__FMD(file_name__2N,path_home__KB);
+          copy__JID(file_name__3N,path_home__KB);
         };
-        append__TPD(file_name__2N,(&__string_81));
-        update__idf__with__I2(file_name__2N,(&__string_82),(&__string_82));
+        append__XLD(file_name__3N,(&__string_82));
+        update__idf__with__C2(file_name__3N,(&__string_83),(&__string_83));
       } else {
-        copy__FMD(string_tmp__2,(&__string_83));
-        print__PB((&__string_65));
-        put_string__VU(((__STRING *)string_tmp__2));
+        copy__JID(string_tmp__2,(&__string_84));
         print__PB((&__string_66));
-        if ((execute_command__VAB(string_tmp__2) !=  0)) {
-          print__PB((&__string_78));
+        put_string__WU(((__STRING *)string_tmp__2));
+        print__PB((&__string_67));
+        if ((execute_command__PAB(string_tmp__2) !=  0)) {
+          print__PB((&__string_79));
         } else {
-          print__PB((&__string_68));
+          print__PB((&__string_69));
         };
       };
     };
     fputc((int)('\n'),stdout);
   };
-  title__XC((&__string_84));
-  compile_file__KS((&__string_85));
-  title__XC((&__string_86));
-  compile_file__KS((&__string_87));
-  title__XC((&__string_88));
-  char__3S='\0';
-  print__PB((&__string_89));
-  while (((char__3S != 'y') && (char__3S != 'n'))) {
-    char__3S=((__CHARACTER )(fgetc(stdin)));
+  title__XC((&__string_85));
+  compile_file__LS((&__string_86));
+  title__XC((&__string_87));
+  compile_file__LS((&__string_88));
+  title__XC((&__string_89));
+  char__4S='\0';
+  print__PB((&__string_90));
+  while (((char__4S != 'y') && (char__4S != 'n'))) {
+    char__4S=((__CHARACTER )(fgetc(stdin)));
   };
-  if ((char__3S == 'n')) {
-    print__PB((&__string_90));
+  if ((char__4S == 'n')) {
+    print__PB((&__string_91));
   } else {
     ((__STRING *)string_tmp__2)->count__CB= 0;
-    if (((void *)system__FE == (void *)(&__string_23))) {
-      copy__FMD(string_tmp__2,(&__string_91));
+    if (((void *)system__FE == (void *)(&__string_24))) {
+      copy__JID(string_tmp__2,(&__string_92));
     } else {
-      copy__FMD(string_tmp__2,(&__string_92));
+      copy__JID(string_tmp__2,(&__string_93));
     };
-    print__PB((&__string_93));
-    put_string__VU(((__STRING *)string_tmp__2));
     print__PB((&__string_94));
-    execute_command__VAB(string_tmp__2);
+    put_string__WU(((__STRING *)string_tmp__2));
     print__PB((&__string_95));
+    execute_command__PAB(string_tmp__2);
+    print__PB((&__string_96));
   };
   fputc((int)('\n'),stdout);
-  title__XC((&__string_96));
-  print__PB((&__string_97));
+  title__XC((&__string_97));
+  print__PB((&__string_98));
   return( 0);
 }
 
 static __STRING* create__ZB(__INTEGER needed_capacity__1B)
 // ({INTEGER}) With resultNo recursive, No inlinable.
 {
-  __STRING *result__3B,*Self__PND;
-  result__3B=clone__0V();
-  Self__PND=((__STRING *)result__3B);
+  __STRING *result__3B,*Self__TJD;
+  result__3B=clone__1V();
+  Self__TJD=((__STRING *)result__3B);
   if ((needed_capacity__1B >  0)) {
-    if ((Self__PND->capacity__CJD < needed_capacity__1B)) {
-      Self__PND->storage__5JD=create__OQH(needed_capacity__1B);
-      Self__PND->capacity__CJD=needed_capacity__1B;
+    if ((Self__TJD->capacity__GFD < needed_capacity__1B)) {
+      Self__TJD->storage__DGD=create__LMH(needed_capacity__1B);
+      Self__TJD->capacity__GFD=needed_capacity__1B;
     };
   };
-  Self__PND->count__CB= 0;
+  Self__TJD->count__CB= 0;
   return(result__3B);
 }
 
 static void print__PB(__STRING_CONSTANT *Self__QB)
 // ({STRING_CONSTANT}) VoidRecursive, No inlinable.
 {
-  put_string__VU(Self__QB);
+  put_string__WU(Self__QB);
 }
 
-static __CHARACTER* to_external__2ID(__STRING *Self__3ID)
+static __CHARACTER* to_external__AFD(__STRING *Self__BFD)
 // ({STRING}) With resultNo recursive, No inlinable.
 {
-  if ((Self__3ID->capacity__CJD > Self__3ID->count__CB)) {
-    Self__3ID->count__CB=(__INTEGER)(Self__3ID->count__CB +  1);
-    if ((((__CHARACTER *)Self__3ID->storage__5JD)[(__INTEGER)(Self__3ID->count__CB -  1)] != '\0')) {
-      ((__CHARACTER *)Self__3ID->storage__5JD)[(__INTEGER)(Self__3ID->count__CB -  1)]='\0';
+  if ((Self__BFD->capacity__GFD > Self__BFD->count__CB)) {
+    Self__BFD->count__CB=(__INTEGER)(Self__BFD->count__CB +  1);
+    if ((((__CHARACTER *)Self__BFD->storage__DGD)[(__INTEGER)(Self__BFD->count__CB -  1)] != '\0')) {
+      ((__CHARACTER *)Self__BFD->storage__DGD)[(__INTEGER)(Self__BFD->count__CB -  1)]='\0';
     };
   } else {
-    add_last__ZNF(Self__3ID,'\0');
+    add_last__GJF(Self__BFD,'\0');
   };
-  Self__3ID->count__CB=(__INTEGER)(Self__3ID->count__CB -  1);
-  return(Self__3ID->storage__5JD);
+  Self__BFD->count__CB=(__INTEGER)(Self__BFD->count__CB -  1);
+  return(Self__BFD->storage__DGD);
 }
 
-static void from_external__PKD(__STRING *Self__QKD,__CHARACTER *p__RKD)
+static void from_external__TGD(__STRING *Self__UGD,__CHARACTER *p__VGD)
 // ({STRING},{NULLxNATIVE_ARRAYoExpanded_CHARACTERo}) VoidNo recursive, No inlinable.
 {
-  Self__QKD->count__CB= 0;
-  while ((((__CHARACTER *)p__RKD)[Self__QKD->count__CB] != '\0')) {
-    Self__QKD->count__CB=(__INTEGER)(Self__QKD->count__CB +  1);
+  Self__UGD->count__CB= 0;
+  while ((((__CHARACTER *)p__VGD)[Self__UGD->count__CB] != '\0')) {
+    Self__UGD->count__CB=(__INTEGER)(Self__UGD->count__CB +  1);
   };
-  if (((void *)Self__QKD->storage__5JD != (void *)p__RKD)) {
-    Self__QKD->storage__5JD=p__RKD;
-    Self__QKD->capacity__CJD=(__INTEGER)(Self__QKD->count__CB +  1);
+  if (((void *)Self__UGD->storage__DGD != (void *)p__VGD)) {
+    Self__UGD->storage__DGD=p__VGD;
+    Self__UGD->capacity__GFD=(__INTEGER)(Self__UGD->count__CB +  1);
   };
 }
 
-static void copy__FMD(__STRING *Self__GMD,void *other__HMD)
+static void copy__JID(__STRING *Self__KID,void *other__LID)
 // ({STRING},{NULLxSTRING_CONSTANTxSTRING}) VoidNo recursive, No inlinable.
 {
-  __INTEGER __tmp__IMD;
-  __CHARACTER *__tmp__3MD,*__tmp__5MD;
-  if (((struct ___OBJ *)other__HMD)->__id==__STRING_CONSTANT__) {
-    __tmp__IMD=((__STRING_CONSTANT *)other__HMD)->count__AD;
+  __INTEGER __tmp__MID;
+  __CHARACTER *__tmp__BJD,*__tmp__DJD;
+  if (((struct ___OBJ *)other__LID)->__id==__STRING_CONSTANT__) {
+    __tmp__MID=((__STRING_CONSTANT *)other__LID)->count__AD;
   } else {
-    __tmp__IMD=((__STRING *)other__HMD)->count__CB;
+    __tmp__MID=((__STRING *)other__LID)->count__CB;
   };
-  Self__GMD->count__CB=__tmp__IMD;
-  if ((__tmp__IMD >  0)) {
-    if ((Self__GMD->capacity__CJD < __tmp__IMD)) {
-      Self__GMD->storage__5JD=create__OQH(__tmp__IMD);
-      Self__GMD->capacity__CJD=Self__GMD->count__CB;
+  Self__KID->count__CB=__tmp__MID;
+  if ((__tmp__MID >  0)) {
+    if ((Self__KID->capacity__GFD < __tmp__MID)) {
+      Self__KID->storage__DGD=create__LMH(__tmp__MID);
+      Self__KID->capacity__GFD=Self__KID->count__CB;
     };
-    __tmp__3MD=Self__GMD->storage__5JD;
-    if (((struct ___OBJ *)other__HMD)->__id==__STRING_CONSTANT__) {
-      __tmp__5MD=((__STRING_CONSTANT *)other__HMD)->storage__KEC;
+    __tmp__BJD=Self__KID->storage__DGD;
+    if (((struct ___OBJ *)other__LID)->__id==__STRING_CONSTANT__) {
+      __tmp__DJD=((__STRING_CONSTANT *)other__LID)->storage__K3B;
     } else {
-      __tmp__5MD=((__STRING *)other__HMD)->storage__5JD;
+      __tmp__DJD=((__STRING *)other__LID)->storage__DGD;
     };
-    copy_from__until__MPF(__tmp__3MD,__tmp__5MD,(__INTEGER)(Self__GMD->count__CB -  1));
+    copy_from__until__ZKF(__tmp__BJD,__tmp__DJD,(__INTEGER)(Self__KID->count__CB -  1));
   };
 }
 
@@ -783,15 +793,15 @@ static void* get_environment_variable__AC(void *variable__CC)
 // ({STRING_CONSTANT}) With resultNo recursive, No inlinable.
 {
   void *result__EC;
-  __STRING *new__CYQ;
+  __STRING *new__0XQ;
   __CHARACTER *p__FC;
   result__EC=NULL;
-  new__CYQ=create__ZB(((__STRING_CONSTANT *)variable__CC)->count__AD);
-  copy__FMD(new__CYQ,variable__CC);
-  p__FC=((__CHARACTER *)(getenv((char*)(to_external__2ID(new__CYQ)))));
+  new__0XQ=create__ZB(((__STRING_CONSTANT *)variable__CC)->count__AD);
+  copy__JID(new__0XQ,variable__CC);
+  p__FC=((__CHARACTER *)(getenv((char*)(to_external__AFD(new__0XQ)))));
   if (((void *)p__FC != (void *)NULL)) {
-    result__EC=clone__0V();
-    from_external__PKD(result__EC,p__FC);
+    result__EC=clone__1V();
+    from_external__TGD(result__EC,p__FC);
   };
   return(result__EC);
 }
@@ -799,848 +809,860 @@ static void* get_environment_variable__AC(void *variable__CC)
 static void title__XC(void *str__ZC)
 // ({STRING_CONSTANT}) VoidNo recursive, No inlinable.
 {
-  __INTEGER Self__O0,limit_up__P0;
+  __INTEGER Self__I0,limit_up__J0;
   step_count__0C=(__INTEGER)(step_count__0C +  1);
-  print__PB((&__string_98));
-  print__IZ(step_count__0C);
-  fputc((int)('/'),stdout);
-  print__IZ( 10);
   print__PB((&__string_99));
+  print__CZ(step_count__0C);
+  fputc((int)('/'),stdout);
+  print__CZ( 10);
+  print__PB((&__string_100));
   print__PB(str__ZC);
   fputc((int)('\n'),stdout);
-  Self__O0= 1;
-  limit_up__P0=(__INTEGER)(((__STRING_CONSTANT *)str__ZC)->count__AD +  11);
-  while ((Self__O0 <= limit_up__P0)) {
-    print__PB((&__string_100));
-    Self__O0=(__INTEGER)(Self__O0 +  1);
+  Self__I0= 1;
+  limit_up__J0=(__INTEGER)(((__STRING_CONSTANT *)str__ZC)->count__AD +  11);
+  while ((Self__I0 <= limit_up__J0)) {
+    print__PB((&__string_101));
+    Self__I0=(__INTEGER)(Self__I0 +  1);
   };
   fputc((int)('\n'),stdout);
 }
 
-static __STRING* create_from_string__X1(void *str__Z1)
+static __STRING* create_from_string__R1(void *str__T1)
 // ({NULLxSTRING_CONSTANTxSTRING}) With resultNo recursive, No inlinable.
 {
-  __INTEGER __tmp__21;
-  __STRING *result__11;
-  if (((struct ___OBJ *)str__Z1)->__id==__STRING_CONSTANT__) {
-    __tmp__21=((__STRING_CONSTANT *)str__Z1)->count__AD;
+  __INTEGER __tmp__W1;
+  __STRING *result__V1;
+  if (((struct ___OBJ *)str__T1)->__id==__STRING_CONSTANT__) {
+    __tmp__W1=((__STRING_CONSTANT *)str__T1)->count__AD;
   } else {
-    __tmp__21=((__STRING *)str__Z1)->count__CB;
+    __tmp__W1=((__STRING *)str__T1)->count__CB;
   };
-  result__11=create__ZB(__tmp__21);
-  copy__FMD(result__11,str__Z1);
-  return(result__11);
+  result__V1=create__ZB(__tmp__W1);
+  copy__JID(result__V1,str__T1);
+  return(result__V1);
 }
 
-static __INTEGER first_substring_index__KVD(__STRING *Self__LVD,void *other__MVD)
+static __INTEGER first_substring_index__ORD(__STRING *Self__PRD,void *other__QRD)
 // ({STRING},{NULLxSTRING_CONSTANT}) With resultNo recursive, No inlinable.
 {
-  __INTEGER i__2RE,result__4RE,s__3RE;
-  i__2RE= 0;
-  result__4RE= 0;
-  s__3RE= 1;
-  while ((! ((result__4RE !=  0) || ((__INTEGER)((__INTEGER)(s__3RE + ((__STRING_CONSTANT *)other__MVD)->count__AD) -  1) > Self__LVD->count__CB)))) {
-    i__2RE= 1;
-    while ((! ((i__2RE > ((__STRING_CONSTANT *)other__MVD)->count__AD) || (((__CHARACTER *)Self__LVD->storage__5JD)[(__INTEGER)((__INTEGER)((__INTEGER)(s__3RE + i__2RE) -  1) -  1)] != ((__CHARACTER *)((__STRING_CONSTANT *)other__MVD)->storage__KEC)[(__INTEGER)(i__2RE -  1)])))) {
-      i__2RE=(__INTEGER)(i__2RE +  1);
+  __INTEGER i__LNE,result__NNE,s__MNE,__tmp__FAS,__tmp__GAS,__tmp__HAS;
+  __INTEGER __tmp__JAS;
+  __CHARACTER *__tmp__IAS,*__tmp__IDS;
+  i__LNE= 0;
+  result__NNE= 0;
+  s__MNE= 1;
+  __tmp__FAS=((__STRING_CONSTANT *)other__QRD)->count__AD;
+  __tmp__GAS=Self__PRD->count__CB;
+  __tmp__HAS=((__STRING_CONSTANT *)other__QRD)->count__AD;
+  __tmp__IAS=Self__PRD->storage__DGD;
+  __tmp__JAS=((__STRING_CONSTANT *)other__QRD)->count__AD;
+  __tmp__IDS=((__STRING_CONSTANT *)other__QRD)->storage__K3B;
+  while ((! ((result__NNE !=  0) || ((__INTEGER)((__INTEGER)(s__MNE + __tmp__FAS) -  1) > __tmp__GAS)))) {
+    i__LNE= 1;
+    while ((! ((i__LNE > __tmp__HAS) || (((__CHARACTER *)__tmp__IAS)[(__INTEGER)((__INTEGER)((__INTEGER)(s__MNE + i__LNE) -  1) -  1)] != ((__CHARACTER *)__tmp__IDS)[(__INTEGER)(i__LNE -  1)])))) {
+      i__LNE=(__INTEGER)(i__LNE +  1);
     };
-    if ((i__2RE > ((__STRING_CONSTANT *)other__MVD)->count__AD)) {
-      result__4RE=s__3RE;
+    if ((i__LNE > __tmp__JAS)) {
+      result__NNE=s__MNE;
     } else {
-      s__3RE=(__INTEGER)(s__3RE +  1);
+      s__MNE=(__INTEGER)(s__MNE +  1);
     };
   };
-  return(result__4RE);
+  return(result__NNE);
 }
 
-static void append__TPD(__STRING *Self__UPD,void *other__VPD)
+static void append__XLD(__STRING *Self__YLD,void *other__ZLD)
 // ({STRING},{NULLxSTRING_CONSTANTxSTRING}) VoidNo recursive, No inlinable.
 {
-  __INTEGER __tmp__4PD,needed_capacity__XPD;
-  __CHARACTER *__tmp__1QD,*__tmp__2QD;
-  if (((struct ___OBJ *)other__VPD)->__id==__STRING_CONSTANT__) {
-    __tmp__4PD=((__STRING_CONSTANT *)other__VPD)->count__AD;
+  __INTEGER __tmp__CMD,needed_capacity__1LD;
+  __CHARACTER *__tmp__5MD,*__tmp__AND;
+  if (((struct ___OBJ *)other__ZLD)->__id==__STRING_CONSTANT__) {
+    __tmp__CMD=((__STRING_CONSTANT *)other__ZLD)->count__AD;
   } else {
-    __tmp__4PD=((__STRING *)other__VPD)->count__CB;
+    __tmp__CMD=((__STRING *)other__ZLD)->count__CB;
   };
-  needed_capacity__XPD=(__INTEGER)(Self__UPD->count__CB + __tmp__4PD);
-  if ((Self__UPD->capacity__CJD < needed_capacity__XPD)) {
-    if ((Self__UPD->capacity__CJD ==  0)) {
-      Self__UPD->capacity__CJD=needed_capacity__XPD;
-      Self__UPD->storage__5JD=create__OQH(needed_capacity__XPD);
+  needed_capacity__1LD=(__INTEGER)(Self__YLD->count__CB + __tmp__CMD);
+  if ((Self__YLD->capacity__GFD < needed_capacity__1LD)) {
+    if ((Self__YLD->capacity__GFD ==  0)) {
+      Self__YLD->capacity__GFD=needed_capacity__1LD;
+      Self__YLD->storage__DGD=create__LMH(needed_capacity__1LD);
     } else {
-      Self__UPD->storage__5JD=realloc__with__LRH(Self__UPD->storage__5JD,Self__UPD->capacity__CJD,needed_capacity__XPD);
-      Self__UPD->capacity__CJD=needed_capacity__XPD;
+      Self__YLD->storage__DGD=realloc__with__INH(Self__YLD->storage__DGD,Self__YLD->capacity__GFD,needed_capacity__1LD);
+      Self__YLD->capacity__GFD=needed_capacity__1LD;
     };
   };
-  __tmp__1QD=Self__UPD->storage__5JD;
-  if (((struct ___OBJ *)other__VPD)->__id==__STRING_CONSTANT__) {
-    __tmp__2QD=((__STRING_CONSTANT *)other__VPD)->storage__KEC;
+  __tmp__5MD=Self__YLD->storage__DGD;
+  if (((struct ___OBJ *)other__ZLD)->__id==__STRING_CONSTANT__) {
+    __tmp__AND=((__STRING_CONSTANT *)other__ZLD)->storage__K3B;
   } else {
-    __tmp__2QD=((__STRING *)other__VPD)->storage__5JD;
+    __tmp__AND=((__STRING *)other__ZLD)->storage__DGD;
   };
-  copy__to__until__YVJ(__tmp__1QD,__tmp__2QD,Self__UPD->count__CB,__tmp__4PD);
-  Self__UPD->count__CB=needed_capacity__XPD;
+  copy__to__until__JVJ(__tmp__5MD,__tmp__AND,Self__YLD->count__CB,__tmp__CMD);
+  Self__YLD->count__CB=needed_capacity__1LD;
 }
 
-static void put_string__VU(void *s__XU)
+static void put_string__WU(void *s__YU)
 // ({STRING_CONSTANTxSTRING}) VoidNo recursive, No inlinable.
 {
-  __INTEGER __tmp__KV,Self__RDB,limit_up__SDB;
-  __CHARACTER __tmp__RV;
-  if (((struct ___OBJ *)s__XU)->__id==__STRING_CONSTANT__) {
+  __INTEGER __tmp__LV,Self__LDB,limit_up__MDB;
+  __CHARACTER *__tmp__JDS,*__tmp__KDS;
+  __CHARACTER __tmp__SV;
+  if (((struct ___OBJ *)s__YU)->__id==__STRING_CONSTANT__) {
   };
-  if (((struct ___OBJ *)s__XU)->__id==__STRING_CONSTANT__) {
-    __tmp__KV=((__STRING_CONSTANT *)s__XU)->count__AD;
+  if (((struct ___OBJ *)s__YU)->__id==__STRING_CONSTANT__) {
+    __tmp__LV=((__STRING_CONSTANT *)s__YU)->count__AD;
   } else {
-    __tmp__KV=((__STRING *)s__XU)->count__CB;
+    __tmp__LV=((__STRING *)s__YU)->count__CB;
   };
-  Self__RDB= 1;
-  limit_up__SDB=__tmp__KV;
-  while ((Self__RDB <= limit_up__SDB)) {
-    if (((struct ___OBJ *)s__XU)->__id==__STRING_CONSTANT__) {
-      __tmp__RV=((__CHARACTER *)((__STRING_CONSTANT *)s__XU)->storage__KEC)[(__INTEGER)(Self__RDB -  1)];
+  Self__LDB= 1;
+  limit_up__MDB=__tmp__LV;
+  __tmp__JDS=((__STRING_CONSTANT *)s__YU)->storage__K3B;
+  __tmp__KDS=((__STRING *)s__YU)->storage__DGD;
+  while ((Self__LDB <= limit_up__MDB)) {
+    if (((struct ___OBJ *)s__YU)->__id==__STRING_CONSTANT__) {
+      __tmp__SV=((__CHARACTER *)__tmp__JDS)[(__INTEGER)(Self__LDB -  1)];
     } else {
-      __tmp__RV=((__CHARACTER *)((__STRING *)s__XU)->storage__5JD)[(__INTEGER)(Self__RDB -  1)];
+      __tmp__SV=((__CHARACTER *)__tmp__KDS)[(__INTEGER)(Self__LDB -  1)];
     };
-    fputc((int)(__tmp__RV),stdout);
-    Self__RDB=(__INTEGER)(Self__RDB +  1);
+    fputc((int)(__tmp__SV),stdout);
+    Self__LDB=(__INTEGER)(Self__LDB +  1);
   };
 }
 
-static void update__idf__with__I2(void *file__K2,void *id__L2,void *new_text__M2)
+static void update__idf__with__C2(void *file__E2,void *id__F2,void *new_text__G2)
 // ({NULLxSTRING_CONSTANTxSTRING},{NULLxSTRING_CONSTANT},{NULLxSTRING_CONSTANTxSTRING}) VoidNo recursive, No inlinable.
 {
-  __INTEGER index__N2,result__ZWB,__tmp__02,__tmp__G3,Self__SEC;
-  __INTEGER limit_up__TEC,__tmp__C0D,__tmp__D0D,__tmp__X0D,i__3WG;
-  __INTEGER j__5VD,__tmp__SWD;
-  void *old_buffer__O2,*input__P2;
-  __POINTER std_file__Q2,stream__UXB;
-  __STRING_CONSTANT *Self__HEC,*Self__ZZQ,*Self__2ZQ;
-  __STRING *Self__GZQ,*Self__YZD,*Self__2VD,*new__0ZQ,*__tmp__Y4;
-  __STRING *new__3ZQ,*__tmp__04;
-  __CHARACTER *ptr__CXB,*__tmp__U0D,*__tmp__V0D,*Self__JWG,*other__KWG;
-  __CHARACTER *__tmp__CXD,*__tmp__DXD;
-  __BOOLEAN result__1ZD,result__WXB;
-  index__N2= 0;
-  old_buffer__O2=NULL;
-  input__P2=NULL;
-  print__PB((&__string_101));
-  if (((struct ___OBJ *)file__K2)->__id==__STRING_CONSTANT__) {
-    print__PB(file__K2);
+  __INTEGER index__H2,result__OUB,__tmp__U2,__tmp__A3,Self__S3B;
+  __INTEGER limit_up__T3B,__tmp__EVD,__tmp__FVD,__tmp__ZVD,i__WSG;
+  __INTEGER j__DSD,__tmp__WSD;
+  void *old_buffer__I2,*input__J2;
+  __POINTER std_file__K2,stream__JVB;
+  __STRING_CONSTANT *Self__H3B,*Self__RZQ,*Self__UZQ;
+  __STRING *Self__4YQ,*Self__0UD,*Self__ASD,*new__SZQ,*__tmp__S4;
+  __STRING *new__VZQ,*__tmp__U4;
+  __CHARACTER *ptr__XUB,*__tmp__WVD,*__tmp__XVD,*Self__CSG,*other__DSG;
+  __CHARACTER *__tmp__GTD,*__tmp__HTD;
+  __BOOLEAN result__3UD,result__LVB;
+  index__H2= 0;
+  old_buffer__I2=NULL;
+  input__J2=NULL;
+  print__PB((&__string_102));
+  if (((struct ___OBJ *)file__E2)->__id==__STRING_CONSTANT__) {
+    print__PB(file__E2);
   } else {
-    put_string__VU(((__STRING *)file__K2));
+    put_string__WU(((__STRING *)file__E2));
   };
-  copy__FMD(string_tmp__2,file__K2);
-  std_file__Q2=((__POINTER )(fopen((char*)(to_external__2ID(string_tmp__2)),"rb")));
-  if ((std_file__Q2 != (void *)NULL)) {
-    fseek((FILE*)((std_file__Q2)),0,SEEK_END);
-    result__ZWB=((__INTEGER )(ftell((FILE *)(std_file__Q2))));
-    fseek((FILE*)((std_file__Q2)),0,SEEK_SET);
-    if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-      __tmp__02=((__STRING_CONSTANT *)new_text__M2)->count__AD;
+  copy__JID(string_tmp__2,file__E2);
+  std_file__K2=((__POINTER )(fopen((char*)(to_external__AFD(string_tmp__2)),"rb")));
+  if ((std_file__K2 != (void *)NULL)) {
+    fseek((FILE*)((std_file__K2)),0,SEEK_END);
+    result__OUB=((__INTEGER )(ftell((FILE *)(std_file__K2))));
+    fseek((FILE*)((std_file__K2)),0,SEEK_SET);
+    if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+      __tmp__U2=((__STRING_CONSTANT *)new_text__G2)->count__AD;
     } else {
-      __tmp__02=((__STRING *)new_text__M2)->count__CB;
+      __tmp__U2=((__STRING *)new_text__G2)->count__CB;
     };
-    input__P2=create__ZB((__INTEGER)(result__ZWB + __tmp__02));
-    ptr__CXB=to_external__2ID(input__P2);
-    fread((void *)((ptr__CXB)),(size_t)(1), (size_t)((result__ZWB)),(FILE*)((std_file__Q2)));
-    from_external__PKD(input__P2,ptr__CXB);
-    fclose((FILE*)((std_file__Q2)));
-    index__N2=first_substring_index__KVD(input__P2,id__L2);
-    if ((index__N2 !=  0)) {
-      old_buffer__O2=create__ZB( 200);
-      if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-        Self__HEC=((__STRING_CONSTANT *)new_text__M2);
-        __tmp__G3=fast_occurrences__until__SNC(Self__HEC->storage__KEC,(__INTEGER)(Self__HEC->count__AD -  1));
+    input__J2=create__ZB((__INTEGER)(result__OUB + __tmp__U2));
+    ptr__XUB=to_external__AFD(input__J2);
+    fread((void *)((ptr__XUB)),(size_t)(1), (size_t)((result__OUB)),(FILE*)((std_file__K2)));
+    from_external__TGD(input__J2,ptr__XUB);
+    fclose((FILE*)((std_file__K2)));
+    index__H2=first_substring_index__ORD(input__J2,id__F2);
+    if ((index__H2 !=  0)) {
+      old_buffer__I2=create__ZB( 200);
+      if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+        Self__H3B=((__STRING_CONSTANT *)new_text__G2);
+        __tmp__A3=fast_occurrences__until__HHC(Self__H3B->storage__K3B,(__INTEGER)(Self__H3B->count__AD -  1));
       } else {
-        Self__GZQ=((__STRING *)new_text__M2);
-        __tmp__G3=fast_occurrences__until__SNC(Self__GZQ->storage__5JD,(__INTEGER)(Self__GZQ->count__CB -  1));
+        Self__4YQ=((__STRING *)new_text__G2);
+        __tmp__A3=fast_occurrences__until__HHC(Self__4YQ->storage__DGD,(__INTEGER)(Self__4YQ->count__CB -  1));
       };
-      Self__SEC= 1;
-      limit_up__TEC=__tmp__G3;
-      while ((Self__SEC <= limit_up__TEC)) {
-        while ((((__CHARACTER *)((__STRING *)input__P2)->storage__5JD)[(__INTEGER)(index__N2 -  1)] != '\n')) {
-          add_last__ZNF(old_buffer__O2,((__CHARACTER *)((__STRING *)input__P2)->storage__5JD)[(__INTEGER)(index__N2 -  1)]);
-          remove__QYF(input__P2,index__N2);
+      Self__S3B= 1;
+      limit_up__T3B=__tmp__A3;
+      while ((Self__S3B <= limit_up__T3B)) {
+        while ((((__CHARACTER *)((__STRING *)input__J2)->storage__DGD)[(__INTEGER)(index__H2 -  1)] != '\n')) {
+          add_last__GJF(old_buffer__I2,((__CHARACTER *)((__STRING *)input__J2)->storage__DGD)[(__INTEGER)(index__H2 -  1)]);
+          remove__0SF(input__J2,index__H2);
         };
-        add_last__ZNF(old_buffer__O2,((__CHARACTER *)((__STRING *)input__P2)->storage__5JD)[(__INTEGER)(index__N2 -  1)]);
-        remove__QYF(input__P2,index__N2);
-        Self__SEC=(__INTEGER)(Self__SEC +  1);
+        add_last__GJF(old_buffer__I2,((__CHARACTER *)((__STRING *)input__J2)->storage__DGD)[(__INTEGER)(index__H2 -  1)]);
+        remove__0SF(input__J2,index__H2);
+        Self__S3B=(__INTEGER)(Self__S3B +  1);
       };
-      Self__YZD=((__STRING *)old_buffer__O2);
-      result__1ZD=FALSE__;
-      __tmp__C0D=Self__YZD->count__CB;
-      if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-        __tmp__D0D=((__STRING_CONSTANT *)new_text__M2)->count__AD;
+      Self__0UD=((__STRING *)old_buffer__I2);
+      result__3UD=FALSE__;
+      __tmp__EVD=Self__0UD->count__CB;
+      if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+        __tmp__FVD=((__STRING_CONSTANT *)new_text__G2)->count__AD;
       } else {
-        __tmp__D0D=((__STRING *)new_text__M2)->count__CB;
+        __tmp__FVD=((__STRING *)new_text__G2)->count__CB;
       };
-      if ((__tmp__C0D == __tmp__D0D)) {
-        if ((Self__YZD->count__CB ==  0)) {
-          result__1ZD=TRUE__;
+      if ((__tmp__EVD == __tmp__FVD)) {
+        if ((Self__0UD->count__CB ==  0)) {
+          result__3UD=TRUE__;
         } else {
-          __tmp__U0D=Self__YZD->storage__5JD;
-          if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-            __tmp__V0D=((__STRING_CONSTANT *)new_text__M2)->storage__KEC;
+          __tmp__WVD=Self__0UD->storage__DGD;
+          if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+            __tmp__XVD=((__STRING_CONSTANT *)new_text__G2)->storage__K3B;
           } else {
-            __tmp__V0D=((__STRING *)new_text__M2)->storage__5JD;
+            __tmp__XVD=((__STRING *)new_text__G2)->storage__DGD;
           };
-          __tmp__X0D=Self__YZD->count__CB;
-          Self__JWG=((__CHARACTER *)__tmp__U0D);
-          other__KWG=__tmp__V0D;
-          i__3WG=(__INTEGER)(__tmp__X0D -  1);
-          while (((i__3WG >=  0) && (Self__JWG[i__3WG] == ((__CHARACTER *)other__KWG)[i__3WG]))) {
-            i__3WG=(__INTEGER)(i__3WG -  1);
+          __tmp__ZVD=Self__0UD->count__CB;
+          Self__CSG=((__CHARACTER *)__tmp__WVD);
+          other__DSG=__tmp__XVD;
+          i__WSG=(__INTEGER)(__tmp__ZVD -  1);
+          while (((i__WSG >=  0) && (Self__CSG[i__WSG] == ((__CHARACTER *)other__DSG)[i__WSG]))) {
+            i__WSG=(__INTEGER)(i__WSG -  1);
           };
-          result__1ZD=(i__3WG <  0);
+          result__3UD=(i__WSG <  0);
         };
       };
-      if (result__1ZD) {
-        print__PB((&__string_102));
-      } else {
+      if (result__3UD) {
         print__PB((&__string_103));
-        put_string__VU(((__STRING *)old_buffer__O2));
+      } else {
         print__PB((&__string_104));
+        put_string__WU(((__STRING *)old_buffer__I2));
+        print__PB((&__string_105));
       };
     } else {
-      print__PB((&__string_105));
-      index__N2=(__INTEGER)(((__STRING *)input__P2)->count__CB +  1);
+      print__PB((&__string_106));
+      index__H2=(__INTEGER)(((__STRING *)input__J2)->count__CB +  1);
     };
-    if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-      print__PB(new_text__M2);
+    if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+      print__PB(new_text__G2);
     } else {
-      put_string__VU(((__STRING *)new_text__M2));
+      put_string__WU(((__STRING *)new_text__G2));
     };
-    Self__2VD=((__STRING *)input__P2);
-    j__5VD=Self__2VD->count__CB;
-    if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-      __tmp__SWD=((__STRING_CONSTANT *)new_text__M2)->count__AD;
+    Self__ASD=((__STRING *)input__J2);
+    j__DSD=Self__ASD->count__CB;
+    if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+      __tmp__WSD=((__STRING_CONSTANT *)new_text__G2)->count__AD;
     } else {
-      __tmp__SWD=((__STRING *)new_text__M2)->count__CB;
+      __tmp__WSD=((__STRING *)new_text__G2)->count__CB;
     };
-    resize__WLE(Self__2VD,(__INTEGER)(j__5VD + __tmp__SWD));
-    if ((index__N2 <= j__5VD)) {
-      move__to__by__UUF(Self__2VD->storage__5JD,(__INTEGER)(index__N2 -  1),(__INTEGER)(j__5VD -  1),__tmp__SWD);
+    resize__FHE(Self__ASD,(__INTEGER)(j__DSD + __tmp__WSD));
+    if ((index__H2 <= j__DSD)) {
+      move__to__by__BQF(Self__ASD->storage__DGD,(__INTEGER)(index__H2 -  1),(__INTEGER)(j__DSD -  1),__tmp__WSD);
     };
-    __tmp__CXD=Self__2VD->storage__5JD;
-    if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-      __tmp__DXD=((__STRING_CONSTANT *)new_text__M2)->storage__KEC;
+    __tmp__GTD=Self__ASD->storage__DGD;
+    if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+      __tmp__HTD=((__STRING_CONSTANT *)new_text__G2)->storage__K3B;
     } else {
-      __tmp__DXD=((__STRING *)new_text__M2)->storage__5JD;
+      __tmp__HTD=((__STRING *)new_text__G2)->storage__DGD;
     };
-    copy__to__until__YVJ(__tmp__CXD,__tmp__DXD,(__INTEGER)(index__N2 -  1),__tmp__SWD);
+    copy__to__until__JVJ(__tmp__GTD,__tmp__HTD,(__INTEGER)(index__H2 -  1),__tmp__WSD);
   } else {
-    print__PB((&__string_106));
-    if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-      print__PB(new_text__M2);
+    print__PB((&__string_107));
+    if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+      print__PB(new_text__G2);
     } else {
-      put_string__VU(((__STRING *)new_text__M2));
+      put_string__WU(((__STRING *)new_text__G2));
     };
-    if (((struct ___OBJ *)new_text__M2)->__id==__STRING_CONSTANT__) {
-      Self__ZZQ=((__STRING_CONSTANT *)new_text__M2);
-      new__0ZQ=create__ZB(Self__ZZQ->count__AD);
-      copy__FMD(new__0ZQ,Self__ZZQ);
-      __tmp__Y4=new__0ZQ;
+    if (((struct ___OBJ *)new_text__G2)->__id==__STRING_CONSTANT__) {
+      Self__RZQ=((__STRING_CONSTANT *)new_text__G2);
+      new__SZQ=create__ZB(Self__RZQ->count__AD);
+      copy__JID(new__SZQ,Self__RZQ);
+      __tmp__S4=new__SZQ;
     } else {
-      __tmp__Y4=create_from_string__X1(((__STRING *)new_text__M2));
+      __tmp__S4=create_from_string__R1(((__STRING *)new_text__G2));
     };
-    input__P2=__tmp__Y4;
-    if (((struct ___OBJ *)file__K2)->__id==__STRING_CONSTANT__) {
-      Self__2ZQ=((__STRING_CONSTANT *)file__K2);
-      new__3ZQ=create__ZB(Self__2ZQ->count__AD);
-      copy__FMD(new__3ZQ,Self__2ZQ);
-      __tmp__04=new__3ZQ;
+    input__J2=__tmp__S4;
+    if (((struct ___OBJ *)file__E2)->__id==__STRING_CONSTANT__) {
+      Self__UZQ=((__STRING_CONSTANT *)file__E2);
+      new__VZQ=create__ZB(Self__UZQ->count__AD);
+      copy__JID(new__VZQ,Self__UZQ);
+      __tmp__U4=new__VZQ;
     } else {
-      __tmp__04=create_from_string__X1(((__STRING *)file__K2));
+      __tmp__U4=create_from_string__R1(((__STRING *)file__E2));
     };
-    stream__UXB=((__POINTER )(fopen((char*)(to_external__2ID(__tmp__04)),"w+b")));
-    result__WXB=(stream__UXB != (void *)NULL);
-    if (result__WXB) {
-      fclose((FILE*)((stream__UXB)));
+    stream__JVB=((__POINTER )(fopen((char*)(to_external__AFD(__tmp__U4)),"w+b")));
+    result__LVB=(stream__JVB != (void *)NULL);
+    if (result__LVB) {
+      fclose((FILE*)((stream__JVB)));
     };
-    if ((! result__WXB)) {
-      print__PB((&__string_107));
+    if ((! result__LVB)) {
       print__PB((&__string_108));
+      print__PB((&__string_109));
       exit(( 1));
     };
   };
-  copy__FMD(string_tmp__2,file__K2);
-  std_file__Q2=((__POINTER )(fopen((char*)(to_external__2ID(string_tmp__2)),"wb")));
-  if ((std_file__Q2 == (void *)NULL)) {
-    print__PB((&__string_107));
-    print__PB((&__string_109));
+  copy__JID(string_tmp__2,file__E2);
+  std_file__K2=((__POINTER )(fopen((char*)(to_external__AFD(string_tmp__2)),"wb")));
+  if ((std_file__K2 == (void *)NULL)) {
+    print__PB((&__string_108));
+    print__PB((&__string_110));
     exit(( 1));
   };
-  fwrite((void *)((to_external__2ID(input__P2))),(size_t)(1), (size_t)((((__STRING *)input__P2)->count__CB)),(FILE*)((std_file__Q2)));
-  fclose((FILE*)((std_file__Q2)));
+  fwrite((void *)((to_external__AFD(input__J2))),(size_t)(1), (size_t)((((__STRING *)input__J2)->count__CB)),(FILE*)((std_file__K2)));
+  fclose((FILE*)((std_file__K2)));
 }
 
-static __INTEGER execute_command__VAB(void *system_command_line__XAB)
+static __INTEGER execute_command__PAB(void *system_command_line__RAB)
 // ({NULLxSTRING_CONSTANTxSTRING}) With resultNo recursive, No inlinable.
 {
-  __STRING_CONSTANT *Self__NY;
-  __STRING *new__5FB;
-  __CHARACTER *__tmp__5AB;
-  if (((struct ___OBJ *)system_command_line__XAB)->__id==__STRING_CONSTANT__) {
-    Self__NY=((__STRING_CONSTANT *)system_command_line__XAB);
-    new__5FB=create__ZB(Self__NY->count__AD);
-    copy__FMD(new__5FB,Self__NY);
-    __tmp__5AB=to_external__2ID(new__5FB);
+  __STRING_CONSTANT *Self__HY;
+  __STRING *new__ZFB;
+  __CHARACTER *__tmp__ZAB;
+  if (((struct ___OBJ *)system_command_line__RAB)->__id==__STRING_CONSTANT__) {
+    Self__HY=((__STRING_CONSTANT *)system_command_line__RAB);
+    new__ZFB=create__ZB(Self__HY->count__AD);
+    copy__JID(new__ZFB,Self__HY);
+    __tmp__ZAB=to_external__AFD(new__ZFB);
   } else {
-    __tmp__5AB=to_external__2ID(system_command_line__XAB);
+    __tmp__ZAB=to_external__AFD(system_command_line__RAB);
   };
-  return(((__INTEGER )(system(((char*)((__tmp__5AB)))))));
+  return(((__INTEGER )(system(((char*)((__tmp__ZAB)))))));
 }
 
-static void prepend__LOD(__STRING *Self__MOD,void *other__NOD)
+static void prepend__PKD(__STRING *Self__QKD,void *other__RKD)
 // ({STRING},{STRING_CONSTANT}) VoidNo recursive, No inlinable.
 {
-  __INTEGER i__OOD,j__POD;
-  i__OOD=Self__MOD->count__CB;
-  j__POD=((__STRING_CONSTANT *)other__NOD)->count__AD;
-  resize__WLE(Self__MOD,(__INTEGER)(i__OOD + j__POD));
-  if (((i__OOD >  0) && (j__POD >  0))) {
-    move__to__by__UUF(Self__MOD->storage__5JD, 0,(__INTEGER)(i__OOD -  1),j__POD);
+  __INTEGER i__SKD,j__TKD;
+  i__SKD=Self__QKD->count__CB;
+  j__TKD=((__STRING_CONSTANT *)other__RKD)->count__AD;
+  resize__FHE(Self__QKD,(__INTEGER)(i__SKD + j__TKD));
+  if (((i__SKD >  0) && (j__TKD >  0))) {
+    move__to__by__BQF(Self__QKD->storage__DGD, 0,(__INTEGER)(i__SKD -  1),j__TKD);
   };
-  copy_from__until__MPF(Self__MOD->storage__5JD,((__STRING_CONSTANT *)other__NOD)->storage__KEC,(__INTEGER)(j__POD -  1));
+  copy_from__until__ZKF(Self__QKD->storage__DGD,((__STRING_CONSTANT *)other__RKD)->storage__K3B,(__INTEGER)(j__TKD -  1));
 }
 
-static void replace_all__with__RTD(__STRING *Self__STD)
+static void replace_all__with__VPD(__STRING *Self__WPD)
 // ({STRING}) VoidNo recursive, No inlinable.
 {
-  __INTEGER __tmp__0TD,Self__SGK;
-  __CHARACTER *__tmp__XTD,*Self__3WJ;
-  __tmp__XTD=Self__STD->storage__5JD;
-  __tmp__0TD=(__INTEGER)(Self__STD->count__CB -  1);
-  Self__3WJ=((__CHARACTER *)__tmp__XTD);
-  Self__SGK=__tmp__0TD;
-  while ((Self__SGK >=  0)) {
-    if (('\\' == Self__3WJ[Self__SGK])) {
-      Self__3WJ[Self__SGK]='/';
+  __INTEGER __tmp__4PD,Self__KGK;
+  __CHARACTER *__tmp__1PD,*Self__OWJ;
+  __tmp__1PD=Self__WPD->storage__DGD;
+  __tmp__4PD=(__INTEGER)(Self__WPD->count__CB -  1);
+  Self__OWJ=((__CHARACTER *)__tmp__1PD);
+  Self__KGK=__tmp__4PD;
+  while ((Self__KGK >=  0)) {
+    if (('\\' == Self__OWJ[Self__KGK])) {
+      Self__OWJ[Self__KGK]='/';
     };
-    Self__SGK=(__INTEGER)(Self__SGK -  1);
+    Self__KGK=(__INTEGER)(Self__KGK -  1);
   };
 }
 
-static void compile_file__KS(void *n__MS)
+static void compile_file__LS(void *n__NS)
 // ({STRING_CONSTANT}) VoidNo recursive, No inlinable.
 {
-  copy__FMD(string_tmp__2,(&__string_110));
-  append__TPD(string_tmp__2,n__MS);
-  append__TPD(string_tmp__2,(&__string_111));
-  append__TPD(string_tmp__2,n__MS);
-  print__PB((&__string_112));
-  put_string__VU(((__STRING *)string_tmp__2));
+  copy__JID(string_tmp__2,(&__string_111));
+  append__XLD(string_tmp__2,n__NS);
+  append__XLD(string_tmp__2,(&__string_112));
+  append__XLD(string_tmp__2,n__NS);
   print__PB((&__string_113));
-  if ((execute_command__VAB(string_tmp__2) !=  0)) {
-    print__PB((&__string_114));
-    print__PB(n__MS);
+  put_string__WU(((__STRING *)string_tmp__2));
+  print__PB((&__string_114));
+  if ((execute_command__PAB(string_tmp__2) !=  0)) {
     print__PB((&__string_115));
+    print__PB(n__NS);
+    print__PB((&__string_116));
   };
   fputc((int)('\n'),stdout);
 }
 
-static __STRING* clone__0V()
+static __STRING* clone__1V()
 // () With resultNo recursive, No inlinable.
 {
-  __STRING *result__3V;
-  __POINTER ptr__4V;
-  __INTEGER typ_id__FW;
-  __UINTEGER_32 sz__CW,a__FBS,new_size__HAC,t__QBC,a__JBS,a__MBS;
-  result__3V=NULL;
-  ptr__4V=((__POINTER )(NULL));
-  typ_id__FW= 0;
-  sz__CW=((__UINTEGER_32 )sizeof(__STRING));
-  if ((sz__CW ==  0)) {
-    result__3V=STRING__;
+  __STRING *result__4V;
+  __POINTER ptr__5V;
+  __INTEGER typ_id__GW;
+  __UINTEGER_32 sz__DW,a__ABS,new_size__Q0B,t__Z1B,a__EBS;
+  result__4V=NULL;
+  ptr__5V=((__POINTER )(NULL));
+  typ_id__GW= 0;
+  sz__DW=((__UINTEGER_32 )sizeof(__STRING));
+  if ((sz__DW ==  0)) {
+    result__4V=STRING__;
   } else {
-    typ_id__FW=-1;
-    clone_allocation_size__TW=(__UINTEGER_32)(clone_allocation_size__TW + sz__CW);
-    if ((typ_id__FW == (__INTEGER)(-  1))) {
-      a__FBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-      new_size__HAC=(__UINTEGER_32)((__UINTEGER_32)(sz__CW + a__FBS) & (__UINTEGER_32)(~ a__FBS));
-      ptr__4V=micro_alloc__table__lab__1HC(new_size__HAC,((__POINTER )(&(table_size[((__UINTEGER_32)(new_size__HAC / ((__UINTEGER_32 )((__INTEGER )(sizeof(void *))))))-1]))),new_size__HAC);
+    typ_id__GW=-1;
+    clone_allocation_size__UW=(__UINTEGER_32)(clone_allocation_size__UW + sz__DW);
+    if ((typ_id__GW == (__INTEGER)(-  1))) {
+      a__ABS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+      new_size__Q0B=(__UINTEGER_32)((__UINTEGER_32)(sz__DW + a__ABS) & (__UINTEGER_32)(~ a__ABS));
+      ptr__5V=micro_alloc__table__lab__VBC(new_size__Q0B,((__POINTER )(&(table_size[((__UINTEGER_32)(new_size__Q0B / ((__UINTEGER_32 )((__INTEGER )(sizeof(void *))))))-1]))),new_size__Q0B);
     } else {
-      t__QBC=((__UINTEGER_32 )typ_id__FW);
-      a__JBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-      ptr__4V=micro_alloc__table__lab__1HC((__UINTEGER_32)((__UINTEGER_32)(sz__CW + a__JBS) & (__UINTEGER_32)(~ a__JBS)),((__POINTER )(&(table_type[(t__QBC)]))),(__UINTEGER_32)(t__QBC |  1));
+      t__Z1B=((__UINTEGER_32 )typ_id__GW);
+      a__EBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+      ptr__5V=micro_alloc__table__lab__VBC((__UINTEGER_32)((__UINTEGER_32)(sz__DW + a__EBS) & (__UINTEGER_32)(~ a__EBS)),((__POINTER )(&(table_type[(t__Z1B)]))),(__UINTEGER_32)(t__Z1B |  1));
     };
-    a__MBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-    copy__to__size__XUB(((__POINTER )STRING__),ptr__4V,(__UINTEGER_32)((__UINTEGER_32)(sz__CW + a__MBS) & (__UINTEGER_32)(~ a__MBS)));
-    result__3V=((__STRING *)ptr__4V);
+    result__4V=((__STRING *)ptr__5V);
+    *(result__4V) = *(STRING__);
   };
-  return(result__3V);
+  return(result__4V);
 }
 
-static __CHARACTER* create__OQH(__INTEGER nb_elements__QQH)
+static __CHARACTER* create__LMH(__INTEGER nb_elements__NMH)
 // ({INTEGER}) With resultNo recursive, No inlinable.
 {
-  __INTEGER Self__ZHK;
-  __CHARACTER *Result__JWH;
-  Result__JWH=((__CHARACTER *)alloc_dynamic__AAI(((__UINTEGER_32 )nb_elements__QQH)));
-  Self__ZHK=(__INTEGER)(nb_elements__QQH -  1);
-  while ((Self__ZHK >=  0)) {
-    Result__JWH[Self__ZHK]='\0';
-    Self__ZHK=(__INTEGER)(Self__ZHK -  1);
+  __INTEGER Self__RHK;
+  __CHARACTER *Result__GSH;
+  Result__GSH=((__CHARACTER *)alloc_dynamic__31H(((__UINTEGER_32 )nb_elements__NMH)));
+  Self__RHK=(__INTEGER)(nb_elements__NMH -  1);
+  while ((Self__RHK >=  0)) {
+    Result__GSH[Self__RHK]='\0';
+    Self__RHK=(__INTEGER)(Self__RHK -  1);
   };
-  return(Result__JWH);
+  return(Result__GSH);
 }
 
-static void add_last__ZNF(__STRING *Self__0NF,__CHARACTER ch__1NF)
+static void add_last__GJF(__STRING *Self__HJF,__CHARACTER ch__IJF)
 // ({STRING},{CHARACTER}) VoidNo recursive, No inlinable.
 {
-  __INTEGER new_capacity__2NF;
-  new_capacity__2NF= 0;
-  if ((Self__0NF->capacity__CJD <= Self__0NF->count__CB)) {
-    if ((Self__0NF->capacity__CJD ==  0)) {
-      Self__0NF->capacity__CJD= 32;
-      Self__0NF->storage__5JD=create__OQH( 32);
+  __INTEGER new_capacity__JJF;
+  new_capacity__JJF= 0;
+  if ((Self__HJF->capacity__GFD <= Self__HJF->count__CB)) {
+    if ((Self__HJF->capacity__GFD ==  0)) {
+      Self__HJF->capacity__GFD= 32;
+      Self__HJF->storage__DGD=create__LMH( 32);
     } else {
-      new_capacity__2NF=(__INTEGER)(Self__0NF->capacity__CJD <<  1);
-      Self__0NF->storage__5JD=realloc__with__LRH(Self__0NF->storage__5JD,Self__0NF->capacity__CJD,new_capacity__2NF);
-      Self__0NF->capacity__CJD=new_capacity__2NF;
+      new_capacity__JJF=(__INTEGER)(Self__HJF->capacity__GFD <<  1);
+      Self__HJF->storage__DGD=realloc__with__INH(Self__HJF->storage__DGD,Self__HJF->capacity__GFD,new_capacity__JJF);
+      Self__HJF->capacity__GFD=new_capacity__JJF;
     };
   };
-  ((__CHARACTER *)Self__0NF->storage__5JD)[Self__0NF->count__CB]=ch__1NF;
-  Self__0NF->count__CB=(__INTEGER)(Self__0NF->count__CB +  1);
+  ((__CHARACTER *)Self__HJF->storage__DGD)[Self__HJF->count__CB]=ch__IJF;
+  Self__HJF->count__CB=(__INTEGER)(Self__HJF->count__CB +  1);
 }
 
-static void copy_from__until__MPF(__CHARACTER *Self__NPF,__CHARACTER *model__OPF,__INTEGER upper__PPF)
+static void copy_from__until__ZKF(__CHARACTER *Self__0KF,__CHARACTER *model__1KF,__INTEGER upper__2KF)
 // ({NATIVE_ARRAYoExpanded_CHARACTERo},{NULLxNATIVE_ARRAYoExpanded_CHARACTERo},{INTEGER}) VoidNo recursive, No inlinable.
 {
-  __INTEGER Self__TCG;
-  Self__TCG=upper__PPF;
-  while ((Self__TCG >=  0)) {
-    Self__NPF[Self__TCG]=((__CHARACTER *)model__OPF)[Self__TCG];
-    Self__TCG=(__INTEGER)(Self__TCG -  1);
+  __INTEGER Self__43F;
+  Self__43F=upper__2KF;
+  while ((Self__43F >=  0)) {
+    Self__0KF[Self__43F]=((__CHARACTER *)model__1KF)[Self__43F];
+    Self__43F=(__INTEGER)(Self__43F -  1);
   };
 }
 
-static void print__IZ(__INTEGER Self__JZ)
+static void print__CZ(__INTEGER Self__DZ)
 // ({INTEGER}) VoidNo recursive, No inlinable.
 {
-  __BOOLEAN __tmp__QZ;
-  if ((Self__JZ ==  0)) {
+  __BOOLEAN __tmp__KZ;
+  if ((Self__DZ ==  0)) {
     fputc((int)('0'),stdout);
-    __tmp__QZ=TRUE__;
+    __tmp__KZ=TRUE__;
   } else {
-    __tmp__QZ=FALSE__;
+    __tmp__KZ=FALSE__;
   };
-  if ((! __tmp__QZ)) {
-    if ((Self__JZ <  0)) {
+  if ((! __tmp__KZ)) {
+    if ((Self__DZ <  0)) {
       fputc((int)('-'),stdout);
-      print_positif__3EL((__INTEGER)(- Self__JZ));
+      print_positif__VEL((__INTEGER)(- Self__DZ));
     } else {
-      print_positif__3EL(Self__JZ);
+      print_positif__VEL(Self__DZ);
     };
   };
 }
 
-static __CHARACTER* realloc__with__LRH(__CHARACTER *Self__MRH,__INTEGER old_nb_elts__NRH,__INTEGER new_nb_elts__ORH)
+static __CHARACTER* realloc__with__INH(__CHARACTER *Self__JNH,__INTEGER old_nb_elts__KNH,__INTEGER new_nb_elts__LNH)
 // ({NATIVE_ARRAYoExpanded_CHARACTERo},{INTEGER},{INTEGER}) With resultNo recursive, No inlinable.
 {
-  __POINTER old_ptr__FSH,result__K1H,p__ZMI,last__JXI;
-  __UINTEGER_32 __tmp__RSH,__tmp__TSH,a__YBS,old_size__A1H;
-  __UINTEGER_32 old_size2__D1H,a__1BS,new_size__G1H,a__MUB,__tmp__12H;
-  __UINTEGER_32 sz__VOI,old_size__SOI,prev__SIJ,new_size__VIJ;
-  void *mem__J1H,*nxt__QOI,*result__ROI,*next__RIJ,*new_free__QIJ;
-  __MEMORY *Self__MOI;
-  __CHARACTER *new__ESH;
-  old_ptr__FSH=((__POINTER )Self__MRH);
-  __tmp__RSH=((__UINTEGER_32 )old_nb_elts__NRH);
-  __tmp__TSH=((__UINTEGER_32 )new_nb_elts__ORH);
-  mem__J1H=NULL;
-  result__K1H=((__POINTER )(NULL));
-  a__YBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-  old_size__A1H=(__UINTEGER_32)((__UINTEGER_32)(__tmp__RSH + a__YBS) & (__UINTEGER_32)(~ a__YBS));
-  old_size2__D1H=(__UINTEGER_32)(old_size__A1H + ((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))));
-  a__1BS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-  new_size__G1H=(__UINTEGER_32)((__UINTEGER_32)(__tmp__TSH + a__1BS) & (__UINTEGER_32)(~ a__1BS));
-  if ((old_size2__D1H <= ((__UINTEGER_32 )(MINIMUM_SIZE)))) {
-    result__K1H=alloc_dynamic__AAI(new_size__G1H);
-    copy__to__size__XUB(old_ptr__FSH,result__K1H,old_size__A1H);
-    p__ZMI=(void *)((unsigned long)old_ptr__FSH - (unsigned long)((__POINTER )((__INTEGER )(sizeof(void *)))));
-    a__MUB=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-    last__JXI=((__POINTER *)((__POINTER )(&(table_size[((__UINTEGER_32)((__UINTEGER_32)((__UINTEGER_32)(old_size2__D1H + a__MUB) & (__UINTEGER_32)(~ a__MUB)) / ((__UINTEGER_32 )((__INTEGER )(sizeof(void *))))))-1]))))[ 0];
-    ((__POINTER *)p__ZMI)[ 0]=(void *)((unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)(void *)((unsigned long)(void *)((unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER *)last__JXI)[ 0]) - (unsigned long)((__POINTER ) 1)) & (unsigned long)(void *)((unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 3)) - (unsigned long)((__POINTER ) 1)))) - (unsigned long)((__POINTER ) 1));
-    ((__POINTER *)last__JXI)[ 0]=p__ZMI;
+  __POINTER old_ptr__COH,result__HXH,p__0JI,last__1VI;
+  __UINTEGER_32 __tmp__OOH,__tmp__QOH,a__QBS,old_size__3WH;
+  __UINTEGER_32 old_size2__AXH,a__TBS,new_size__DXH,a__V5B,__tmp__YYH;
+  __UINTEGER_32 sz__WLI,old_size__TLI,prev__HIJ,new_size__KIJ;
+  __MEMORY *mem__GXH,*Self__NLI,*nxt__RLI,*result__SLI,*next__GIJ;
+  __MEMORY *new_free__FIJ;
+  __CHARACTER *new__BOH;
+  old_ptr__COH=((__POINTER )Self__JNH);
+  __tmp__OOH=((__UINTEGER_32 )old_nb_elts__KNH);
+  __tmp__QOH=((__UINTEGER_32 )new_nb_elts__LNH);
+  mem__GXH=NULL;
+  result__HXH=((__POINTER )(NULL));
+  a__QBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+  old_size__3WH=(__UINTEGER_32)((__UINTEGER_32)(__tmp__OOH + a__QBS) & (__UINTEGER_32)(~ a__QBS));
+  old_size2__AXH=(__UINTEGER_32)(old_size__3WH + ((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))));
+  a__TBS=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+  new_size__DXH=(__UINTEGER_32)((__UINTEGER_32)(__tmp__QOH + a__TBS) & (__UINTEGER_32)(~ a__TBS));
+  if ((old_size2__AXH <= ((__UINTEGER_32 )(MINIMUM_SIZE)))) {
+    result__HXH=alloc_dynamic__31H(new_size__DXH);
+    copy__to__size__SII(old_ptr__COH,result__HXH,old_size__3WH);
+    p__0JI=(void *)((unsigned long)old_ptr__COH - (unsigned long)((__POINTER )((__INTEGER )(sizeof(void *)))));
+    a__V5B=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+    last__1VI=((__POINTER *)((__POINTER )(&(table_size[((__UINTEGER_32)((__UINTEGER_32)((__UINTEGER_32)(old_size2__AXH + a__V5B) & (__UINTEGER_32)(~ a__V5B)) / ((__UINTEGER_32 )((__INTEGER )(sizeof(void *))))))-1]))))[ 0];
+    ((__POINTER *)p__0JI)[ 0]=(void *)((unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)(void *)((unsigned long)(void *)((unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER *)last__1VI)[ 0]) - (unsigned long)((__POINTER ) 1)) & (unsigned long)(void *)((unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 3)) - (unsigned long)((__POINTER ) 1)))) - (unsigned long)((__POINTER ) 1));
+    ((__POINTER *)last__1VI)[ 0]=p__0JI;
   } else {
-    mem__J1H=((void *)(void *)((unsigned long)old_ptr__FSH - (unsigned long)((__POINTER ) 8)));
-    __tmp__12H=(__UINTEGER_32)(((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)old_ptr__FSH - (unsigned long)begin_memory__YJC)))) >>  26);
-    Self__MOI=((__MEMORY *)mem__J1H);
-    nxt__QOI=NULL;
-    result__ROI=NULL;
-    sz__VOI= 0;
-    old_size__SOI=(__UINTEGER_32)(Self__MOI->size_and_id__4W &  4294967292LU);
-    if ((new_size__G1H > old_size__SOI)) {
-      if ((! ((__UINTEGER_32)(Self__MOI->size_and_id__4W &  2) !=  0))) {
-        nxt__QOI=((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__MOI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__MOI->size_and_id__4W &  4294967292LU)))));
-        sz__VOI=(__UINTEGER_32)((__UINTEGER_32)(new_size__G1H - old_size__SOI) -  8);
-        if ((((__UINTEGER_32)(((__MEMORY *)nxt__QOI)->size_and_id__4W &  1) ==  0) && ((__UINTEGER_32)(((__MEMORY *)nxt__QOI)->size_and_id__4W &  4294967292LU) >= sz__VOI))) {
-          to_busy__index__Z4J(nxt__QOI,sz__VOI,__tmp__12H);
-          Self__MOI->size_and_id__4W=(__UINTEGER_32)((__UINTEGER_32)(Self__MOI->size_and_id__4W + (__UINTEGER_32)(((__MEMORY *)nxt__QOI)->size_and_id__4W &  4294967294LU)) +  8);
-          if (((__UINTEGER_32)(Self__MOI->size_and_id__4W &  2) !=  0)) {
-            last_block[(__tmp__12H)] = (Self__MOI);
+    mem__GXH=((__MEMORY *)(void *)((unsigned long)old_ptr__COH - (unsigned long)((__POINTER ) 8)));
+    __tmp__YYH=(__UINTEGER_32)(((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)old_ptr__COH - (unsigned long)begin_memory__SDC)))) >>  26);
+    Self__NLI=((__MEMORY *)mem__GXH);
+    nxt__RLI=NULL;
+    result__SLI=NULL;
+    sz__WLI= 0;
+    old_size__TLI=(__UINTEGER_32)(Self__NLI->size_and_id__5W &  4294967292LU);
+    if ((new_size__DXH > old_size__TLI)) {
+      if ((! ((__UINTEGER_32)(Self__NLI->size_and_id__5W &  2) !=  0))) {
+        nxt__RLI=((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__NLI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__NLI->size_and_id__5W &  4294967292LU)))));
+        sz__WLI=(__UINTEGER_32)((__UINTEGER_32)(new_size__DXH - old_size__TLI) -  8);
+        if ((((__UINTEGER_32)(((__MEMORY *)nxt__RLI)->size_and_id__5W &  1) ==  0) && ((__UINTEGER_32)(((__MEMORY *)nxt__RLI)->size_and_id__5W &  4294967292LU) >= sz__WLI))) {
+          to_busy__index__N4J(nxt__RLI,sz__WLI,__tmp__YYH);
+          Self__NLI->size_and_id__5W=(__UINTEGER_32)((__UINTEGER_32)(Self__NLI->size_and_id__5W + (__UINTEGER_32)(nxt__RLI->size_and_id__5W &  4294967294LU)) +  8);
+          if (((__UINTEGER_32)(Self__NLI->size_and_id__5W &  2) !=  0)) {
+            last_block[(__tmp__YYH)] = (Self__NLI);
           } else {
-            nxt__QOI=((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__MOI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__MOI->size_and_id__4W &  4294967292LU)))));
-            ((__MEMORY *)nxt__QOI)->previous_linear__3W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )Self__MOI) - (unsigned long)begin_memory__YJC))));
+            nxt__RLI=((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__NLI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__NLI->size_and_id__5W &  4294967292LU)))));
+            ((__MEMORY *)nxt__RLI)->previous_linear__4W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )Self__NLI) - (unsigned long)begin_memory__SDC))));
           };
-          result__ROI=Self__MOI;
+          result__SLI=Self__NLI;
         };
       };
-      if (((void *)result__ROI == (void *)NULL)) {
-        result__ROI=search__USI(new_size__G1H);
-        copy__to__size__XUB((void *)((unsigned long)((__POINTER )Self__MOI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))),(void *)((unsigned long)((__POINTER )((__MEMORY *)result__ROI)) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))),old_size__SOI);
-        prev__SIJ=Self__MOI->previous_linear__3W;
-        next__RIJ=((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__MOI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__MOI->size_and_id__4W &  4294967292LU)))));
-        new_free__QIJ=((void *)(void *)((unsigned long)begin_memory__YJC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )prev__SIJ))));
-        new_size__VIJ=(__UINTEGER_32)(Self__MOI->size_and_id__4W &  4294967294LU);
-        if (((prev__SIJ ==  4294967295LU) || ((__UINTEGER_32)(((__MEMORY *)new_free__QIJ)->size_and_id__4W &  1) !=  0))) {
-          new_free__QIJ=Self__MOI;
-          add_link_free__LRJ(Self__MOI);
+      if (((void *)result__SLI == (void *)NULL)) {
+        result__SLI=search__VPI(new_size__DXH);
+        copy__to__size__SII((void *)((unsigned long)((__POINTER )Self__NLI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))),(void *)((unsigned long)((__POINTER )((__MEMORY *)result__SLI)) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))),old_size__TLI);
+        prev__HIJ=Self__NLI->previous_linear__4W;
+        next__GIJ=((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__NLI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__NLI->size_and_id__5W &  4294967292LU)))));
+        new_free__FIJ=((__MEMORY *)(void *)((unsigned long)begin_memory__SDC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )prev__HIJ))));
+        new_size__KIJ=(__UINTEGER_32)(Self__NLI->size_and_id__5W &  4294967294LU);
+        if (((prev__HIJ ==  4294967295LU) || ((__UINTEGER_32)(new_free__FIJ->size_and_id__5W &  1) !=  0))) {
+          new_free__FIJ=Self__NLI;
+          add_link_free__ARJ(Self__NLI);
         } else {
-          new_size__VIJ=(__UINTEGER_32)((__UINTEGER_32)(new_size__VIJ + ((__MEMORY *)new_free__QIJ)->size_and_id__4W) +  8);
+          new_size__KIJ=(__UINTEGER_32)((__UINTEGER_32)(new_size__KIJ + new_free__FIJ->size_and_id__5W) +  8);
         };
-        if (((! ((__UINTEGER_32)(Self__MOI->size_and_id__4W &  2) !=  0)) && ((__UINTEGER_32)(((__MEMORY *)next__RIJ)->size_and_id__4W &  1) ==  0))) {
-          new_size__VIJ=(__UINTEGER_32)((__UINTEGER_32)(new_size__VIJ + ((__MEMORY *)next__RIJ)->size_and_id__4W) +  8);
-          delete_link_free__YNK(next__RIJ);
+        if (((! ((__UINTEGER_32)(Self__NLI->size_and_id__5W &  2) !=  0)) && ((__UINTEGER_32)(next__GIJ->size_and_id__5W &  1) ==  0))) {
+          new_size__KIJ=(__UINTEGER_32)((__UINTEGER_32)(new_size__KIJ + next__GIJ->size_and_id__5W) +  8);
+          delete_link_free__QNK(next__GIJ);
         };
-        ((__MEMORY *)new_free__QIJ)->size_and_id__4W=new_size__VIJ;
-        if (((__UINTEGER_32)(((__MEMORY *)new_free__QIJ)->size_and_id__4W &  2) !=  0)) {
-          last_block[(__tmp__12H)] = (new_free__QIJ);
+        new_free__FIJ->size_and_id__5W=new_size__KIJ;
+        if (((__UINTEGER_32)(new_free__FIJ->size_and_id__5W &  2) !=  0)) {
+          last_block[(__tmp__YYH)] = (new_free__FIJ);
         } else {
-          next__RIJ=((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__MOI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__MOI->size_and_id__4W &  4294967292LU)))));
-          ((__MEMORY *)next__RIJ)->previous_linear__3W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )new_free__QIJ) - (unsigned long)begin_memory__YJC))));
+          next__GIJ=((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__NLI) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__NLI->size_and_id__5W &  4294967292LU)))));
+          next__GIJ->previous_linear__4W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )new_free__FIJ) - (unsigned long)begin_memory__SDC))));
         };
       };
     } else {
-      result__ROI=Self__MOI;
+      result__SLI=Self__NLI;
     };
-    result__K1H=(void *)((unsigned long)((__POINTER )((__MEMORY *)result__ROI)) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8)));
+    result__HXH=(void *)((unsigned long)((__POINTER )((__MEMORY *)result__SLI)) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8)));
   };
-  new__ESH=((__CHARACTER *)result__K1H);
-  clear__to__M2J(new__ESH,old_nb_elts__NRH,(__INTEGER)(new_nb_elts__ORH -  1));
-  return(new__ESH);
+  new__BOH=((__CHARACTER *)result__HXH);
+  clear__to__A2J(new__BOH,old_nb_elts__KNH,(__INTEGER)(new_nb_elts__LNH -  1));
+  return(new__BOH);
 }
 
-static void copy__to__until__YVJ(__CHARACTER *Self__ZVJ,__CHARACTER *src__0VJ,__INTEGER dest__1VJ,__INTEGER src_capacity__2VJ)
+static void copy__to__until__JVJ(__CHARACTER *Self__KVJ,__CHARACTER *src__LVJ,__INTEGER dest__MVJ,__INTEGER src_capacity__NVJ)
 // ({NATIVE_ARRAYoExpanded_CHARACTERo},{NULLxNATIVE_ARRAYoExpanded_CHARACTERo},{INTEGER},{INTEGER}) VoidNo recursive, No inlinable.
 {
-  __INTEGER i2__MWJ,i1__LWJ;
-  i2__MWJ= 0;
-  i1__LWJ=dest__1VJ;
-  while ((i2__MWJ != src_capacity__2VJ)) {
-    Self__ZVJ[i1__LWJ]=((__CHARACTER *)src__0VJ)[i2__MWJ];
-    i2__MWJ=(__INTEGER)(i2__MWJ +  1);
-    i1__LWJ=(__INTEGER)(i1__LWJ +  1);
+  __INTEGER i2__3VJ,i1__2VJ;
+  i2__3VJ= 0;
+  i1__2VJ=dest__MVJ;
+  while ((i2__3VJ != src_capacity__NVJ)) {
+    Self__KVJ[i1__2VJ]=((__CHARACTER *)src__LVJ)[i2__3VJ];
+    i2__3VJ=(__INTEGER)(i2__3VJ +  1);
+    i1__2VJ=(__INTEGER)(i1__2VJ +  1);
   };
 }
 
-static __INTEGER fast_occurrences__until__SNC(__CHARACTER *Self__TNC,__INTEGER upper__VNC)
+static __INTEGER fast_occurrences__until__HHC(__CHARACTER *Self__IHC,__INTEGER upper__KHC)
 // ({NATIVE_ARRAYoExpanded_CHARACTERo},{INTEGER}) With resultNo recursive, No inlinable.
 {
-  __INTEGER count__5NC,Self__TUC;
-  count__5NC= 0;
-  Self__TUC=upper__VNC;
-  while ((Self__TUC >=  0)) {
-    if (('\n' == Self__TNC[Self__TUC])) {
-      count__5NC=(__INTEGER)(count__5NC +  1);
+  __INTEGER count__UHC,Self__0PC;
+  count__UHC= 0;
+  Self__0PC=upper__KHC;
+  while ((Self__0PC >=  0)) {
+    if (('\n' == Self__IHC[Self__0PC])) {
+      count__UHC=(__INTEGER)(count__UHC +  1);
     };
-    Self__TUC=(__INTEGER)(Self__TUC -  1);
+    Self__0PC=(__INTEGER)(Self__0PC -  1);
   };
-  return(count__5NC);
+  return(count__UHC);
 }
 
-static void remove__QYF(__STRING *Self__RYF,__INTEGER index__SYF)
+static void remove__0SF(__STRING *Self__1SF,__INTEGER index__2SF)
 // ({STRING},{INTEGER}) VoidNo recursive, No inlinable.
 {
-  __INTEGER __tmp__UJG,__tmp__VJG,Self__IOH;
-  __tmp__UJG=(__INTEGER)(index__SYF +  1);
-  __tmp__VJG=Self__RYF->count__CB;
-  Self__IOH=__tmp__UJG;
-  while ((Self__IOH <= __tmp__VJG)) {
-    ((__CHARACTER *)Self__RYF->storage__5JD)[(__INTEGER)((__INTEGER)(Self__IOH -  1) -  1)]=((__CHARACTER *)Self__RYF->storage__5JD)[(__INTEGER)(Self__IOH -  1)];
-    Self__IOH=(__INTEGER)(Self__IOH +  1);
+  __INTEGER __tmp__WEG,__tmp__XEG,Self__FKH;
+  __CHARACTER *__tmp__KCS,*__tmp__LCS;
+  __tmp__WEG=(__INTEGER)(index__2SF +  1);
+  __tmp__XEG=Self__1SF->count__CB;
+  Self__FKH=__tmp__WEG;
+  __tmp__KCS=Self__1SF->storage__DGD;
+  __tmp__LCS=Self__1SF->storage__DGD;
+  while ((Self__FKH <= __tmp__XEG)) {
+    ((__CHARACTER *)__tmp__LCS)[(__INTEGER)((__INTEGER)(Self__FKH -  1) -  1)]=((__CHARACTER *)__tmp__KCS)[(__INTEGER)(Self__FKH -  1)];
+    Self__FKH=(__INTEGER)(Self__FKH +  1);
   };
-  Self__RYF->count__CB=(__INTEGER)(Self__RYF->count__CB -  1);
+  Self__1SF->count__CB=(__INTEGER)(Self__1SF->count__CB -  1);
 }
 
-static void resize__WLE(__STRING *Self__XLE,__INTEGER new_count__YLE)
+static void resize__FHE(__STRING *Self__GHE,__INTEGER new_count__HHE)
 // ({STRING},{INTEGER}) VoidNo recursive, No inlinable.
 {
-  if ((! (new_count__YLE <= Self__XLE->count__CB))) {
-    if ((Self__XLE->capacity__CJD < new_count__YLE)) {
-      if ((Self__XLE->capacity__CJD ==  0)) {
-        Self__XLE->storage__5JD=create__OQH(new_count__YLE);
+  if ((! (new_count__HHE <= Self__GHE->count__CB))) {
+    if ((Self__GHE->capacity__GFD < new_count__HHE)) {
+      if ((Self__GHE->capacity__GFD ==  0)) {
+        Self__GHE->storage__DGD=create__LMH(new_count__HHE);
       } else {
-        Self__XLE->storage__5JD=realloc__with__LRH(Self__XLE->storage__5JD,Self__XLE->capacity__CJD,new_count__YLE);
+        Self__GHE->storage__DGD=realloc__with__INH(Self__GHE->storage__DGD,Self__GHE->capacity__GFD,new_count__HHE);
       };
-      Self__XLE->capacity__CJD=new_count__YLE;
+      Self__GHE->capacity__GFD=new_count__HHE;
     } else {
-      clear__to__M2J(Self__XLE->storage__5JD,Self__XLE->count__CB,(__INTEGER)(new_count__YLE -  1));
+      clear__to__A2J(Self__GHE->storage__DGD,Self__GHE->count__CB,(__INTEGER)(new_count__HHE -  1));
     };
   };
-  Self__XLE->count__CB=new_count__YLE;
+  Self__GHE->count__CB=new_count__HHE;
 }
 
-static void move__to__by__UUF(__CHARACTER *Self__VUF,__INTEGER lower__WUF,__INTEGER upper__XUF,__INTEGER offset__YUF)
+static void move__to__by__BQF(__CHARACTER *Self__CQF,__INTEGER lower__DQF,__INTEGER upper__EQF,__INTEGER offset__FQF)
 // ({NATIVE_ARRAYoExpanded_CHARACTERo},{INTEGER},{INTEGER},{INTEGER}) VoidNo recursive, No inlinable.
 {
-  __INTEGER Self__EYK,Self__TYK;
-  if ((offset__YUF !=  0)) {
-    if ((offset__YUF <  0)) {
-      Self__EYK=lower__WUF;
-      while ((Self__EYK <= upper__XUF)) {
-        Self__VUF[(__INTEGER)(Self__EYK + offset__YUF)]=Self__VUF[Self__EYK];
-        Self__EYK=(__INTEGER)(Self__EYK +  1);
+  __INTEGER Self__WXK,Self__FYK;
+  if ((offset__FQF !=  0)) {
+    if ((offset__FQF <  0)) {
+      Self__WXK=lower__DQF;
+      while ((Self__WXK <= upper__EQF)) {
+        Self__CQF[(__INTEGER)(Self__WXK + offset__FQF)]=Self__CQF[Self__WXK];
+        Self__WXK=(__INTEGER)(Self__WXK +  1);
       };
     } else {
-      Self__TYK=upper__XUF;
-      while ((Self__TYK >= lower__WUF)) {
-        Self__VUF[(__INTEGER)(Self__TYK + offset__YUF)]=Self__VUF[Self__TYK];
-        Self__TYK=(__INTEGER)(Self__TYK -  1);
+      Self__FYK=upper__EQF;
+      while ((Self__FYK >= lower__DQF)) {
+        Self__CQF[(__INTEGER)(Self__FYK + offset__FQF)]=Self__CQF[Self__FYK];
+        Self__FYK=(__INTEGER)(Self__FYK -  1);
       };
     };
   };
 }
 
-static __POINTER micro_alloc__table__lab__1HC(__UINTEGER_32 new_size__3HC,__POINTER ptr_table__4HC,__UINTEGER_32 lab_type__5HC)
+static __POINTER micro_alloc__table__lab__VBC(__UINTEGER_32 new_size__XBC,__POINTER ptr_table__YBC,__UINTEGER_32 lab_type__ZBC)
 // ({UINTEGER_32},{POINTER},{UINTEGER_32}) With resultNo recursive, No inlinable.
 {
-  __POINTER next__DIC,result__BIC;
-  next__DIC=((__POINTER )(NULL));
-  result__BIC=((__POINTER *)ptr_table__4HC)[ 0];
-  if ((result__BIC == (void *)NULL)) {
-    result__BIC=new_lab__NXC(lab_type__5HC);
-    next__DIC=(void *)((unsigned long)result__BIC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )new_size__3HC)));
-    ((__POINTER *)next__DIC)[ 0]=NULL;
-    ((__POINTER *)ptr_table__4HC)[ 0]=next__DIC;
+  __POINTER next__3BC,result__1BC;
+  next__3BC=((__POINTER )(NULL));
+  result__1BC=((__POINTER *)ptr_table__YBC)[ 0];
+  if ((result__1BC == (void *)NULL)) {
+    result__1BC=new_lab__RTC(lab_type__ZBC);
+    next__3BC=(void *)((unsigned long)result__1BC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )new_size__XBC)));
+    ((__POINTER *)next__3BC)[ 0]=NULL;
+    ((__POINTER *)ptr_table__YBC)[ 0]=next__3BC;
   } else {
-    next__DIC=((__POINTER *)result__BIC)[ 0];
-    if ((next__DIC == (void *)NULL)) {
-      if (((__UINTEGER_32)((__UINTEGER_32)(((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)result__BIC - (unsigned long)begin_memory__YJC)))) &  4095) + (__UINTEGER_32)(new_size__3HC <<  1)) <=  4096)) {
-        next__DIC=(void *)((unsigned long)result__BIC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )new_size__3HC)));
+    next__3BC=((__POINTER *)result__1BC)[ 0];
+    if ((next__3BC == (void *)NULL)) {
+      if (((__UINTEGER_32)((__UINTEGER_32)(((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)result__1BC - (unsigned long)begin_memory__SDC)))) &  4095) + (__UINTEGER_32)(new_size__XBC <<  1)) <=  4096)) {
+        next__3BC=(void *)((unsigned long)result__1BC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )new_size__XBC)));
       } else {
-        next__DIC=new_lab__NXC(lab_type__5HC);
+        next__3BC=new_lab__RTC(lab_type__ZBC);
       };
-      ((__POINTER *)next__DIC)[ 0]=NULL;
-      ((__POINTER *)ptr_table__4HC)[ 0]=next__DIC;
+      ((__POINTER *)next__3BC)[ 0]=NULL;
+      ((__POINTER *)ptr_table__YBC)[ 0]=next__3BC;
     } else {
-      ((__POINTER *)result__BIC)[ 0]=(void *)((unsigned long)((__POINTER *)next__DIC)[ 0] & (unsigned long)((__POINTER )(__INTEGER)(~  3)));
-      result__BIC=next__DIC;
+      ((__POINTER *)result__1BC)[ 0]=(void *)((unsigned long)((__POINTER *)next__3BC)[ 0] & (unsigned long)((__POINTER )(__INTEGER)(~  3)));
+      result__1BC=next__3BC;
     };
   };
-  return(result__BIC);
+  return(result__1BC);
 }
 
-static void copy__to__size__XUB(__POINTER src__ZUB,__POINTER dst__0UB,__UINTEGER_32 sz__1UB)
-// ({POINTER},{POINTER},{UINTEGER_32}) VoidNo recursive, No inlinable.
-{
-  __INTEGER siz__AVB,Self__A2B;
-  __POINTER *na_src__4UB,*na_dst__5UB;
-  siz__AVB=((__INTEGER )sz__1UB);
-  na_src__4UB=((__POINTER *)src__ZUB);
-  na_dst__5UB=((__POINTER *)dst__0UB);
-  Self__A2B=(__INTEGER)((__INTEGER)(siz__AVB / ((__INTEGER )(sizeof(void *)))) -  1);
-  while ((Self__A2B >=  0)) {
-    na_dst__5UB[Self__A2B]=na_src__4UB[Self__A2B];
-    Self__A2B=(__INTEGER)(Self__A2B -  1);
-  };
-}
-
-static __POINTER alloc_dynamic__AAI(__UINTEGER_32 sz__CAI)
+static __POINTER alloc_dynamic__31H(__UINTEGER_32 sz__51H)
 // ({UINTEGER_32}) With resultNo recursive, No inlinable.
 {
-  __POINTER result__KAI;
-  __UINTEGER_32 a__M5R,new_size__EAI,new_size2__HAI,a__R5R;
-  __UINTEGER_32 new_size__P5R;
-  result__KAI=((__POINTER )(NULL));
-  a__M5R=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-  new_size__EAI=(__UINTEGER_32)((__UINTEGER_32)(sz__CAI + a__M5R) & (__UINTEGER_32)(~ a__M5R));
-  new_size2__HAI=(__UINTEGER_32)(new_size__EAI + ((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))));
-  if ((new_size2__HAI <= ((__UINTEGER_32 )(MINIMUM_SIZE)))) {
-    a__R5R=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
-    new_size__P5R=(__UINTEGER_32)((__UINTEGER_32)(new_size2__HAI + a__R5R) & (__UINTEGER_32)(~ a__R5R));
-    result__KAI=micro_alloc__table__lab__1HC(new_size__P5R,((__POINTER )(&(table_size[((__UINTEGER_32)(new_size__P5R / ((__UINTEGER_32 )((__INTEGER )(sizeof(void *))))))-1]))),new_size__P5R);
-    ((__POINTER *)result__KAI)[ 0]=((__POINTER ) 3);
-    result__KAI=(void *)((unsigned long)result__KAI - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )((__INTEGER )(sizeof(void *))))));
+  __POINTER result__H2H;
+  __UINTEGER_32 a__A5R,new_size__B2H,new_size2__E2H,a__F5R;
+  __UINTEGER_32 new_size__D5R;
+  result__H2H=((__POINTER )(NULL));
+  a__A5R=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+  new_size__B2H=(__UINTEGER_32)((__UINTEGER_32)(sz__51H + a__A5R) & (__UINTEGER_32)(~ a__A5R));
+  new_size2__E2H=(__UINTEGER_32)(new_size__B2H + ((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))));
+  if ((new_size2__E2H <= ((__UINTEGER_32 )(MINIMUM_SIZE)))) {
+    a__F5R=(__UINTEGER_32)(((__UINTEGER_32 )((__INTEGER )(sizeof(void *)))) -  1);
+    new_size__D5R=(__UINTEGER_32)((__UINTEGER_32)(new_size2__E2H + a__F5R) & (__UINTEGER_32)(~ a__F5R));
+    result__H2H=micro_alloc__table__lab__VBC(new_size__D5R,((__POINTER )(&(table_size[((__UINTEGER_32)(new_size__D5R / ((__UINTEGER_32 )((__INTEGER )(sizeof(void *))))))-1]))),new_size__D5R);
+    ((__POINTER *)result__H2H)[ 0]=((__POINTER ) 3);
+    result__H2H=(void *)((unsigned long)result__H2H - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )((__INTEGER )(sizeof(void *))))));
   } else {
-    result__KAI=(void *)((unsigned long)((__POINTER )((__MEMORY *)search__USI(new_size__EAI))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8)));
+    result__H2H=(void *)((unsigned long)((__POINTER )((__MEMORY *)search__VPI(new_size__B2H))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8)));
   };
-  return(result__KAI);
+  return(result__H2H);
 }
 
-static void print_positif__3EL(__INTEGER Self__4EL)
+static void print_positif__VEL(__INTEGER Self__WEL)
 // ({INTEGER}) VoidRecursive, No inlinable.
 {
-  __INTEGER val__HFL;
-  __CHARACTER Result__Z3L;
-  Result__Z3L=((__CHARACTER )(((__INTEGER_8)(((__INTEGER_8 )(__INTEGER)(Self__4EL %  10)) + ((__INTEGER_8 )'0')))));
-  val__HFL=(__INTEGER)(Self__4EL /  10);
-  if ((val__HFL !=  0)) {
-    print_positif__3EL(val__HFL);
+  __INTEGER val__5EL;
+  __CHARACTER Result__R3L;
+  Result__R3L=((__CHARACTER )(((__INTEGER_8)(((__INTEGER_8 )(__INTEGER)(Self__WEL %  10)) + ((__INTEGER_8 )'0')))));
+  val__5EL=(__INTEGER)(Self__WEL /  10);
+  if ((val__5EL !=  0)) {
+    print_positif__VEL(val__5EL);
   };
-  fputc((int)(Result__Z3L),stdout);
+  fputc((int)(Result__R3L),stdout);
 }
 
-static void to_busy__index__Z4J(__MEMORY *Self__04J,__UINTEGER_32 sz__14J,__UINTEGER_32 idx__24J)
+static void copy__to__size__SII(__POINTER src__UII,__POINTER dst__VII,__UINTEGER_32 sz__WII)
+// ({POINTER},{POINTER},{UINTEGER_32}) VoidNo recursive, No inlinable.
+{
+  __INTEGER siz__ZII,Self__OTI;
+  __POINTER *na_src__XII,*na_dst__YII;
+  siz__ZII=((__INTEGER )sz__WII);
+  siz__ZII=(__INTEGER)(siz__ZII / ((__INTEGER )(sizeof(void *))));
+  na_src__XII=((__POINTER *)src__UII);
+  na_dst__YII=((__POINTER *)dst__VII);
+  Self__OTI=(__INTEGER)(siz__ZII -  1);
+  while ((Self__OTI >=  0)) {
+    na_dst__YII[Self__OTI]=na_src__XII[Self__OTI];
+    Self__OTI=(__INTEGER)(Self__OTI -  1);
+  };
+}
+
+static void to_busy__index__N4J(__MEMORY *Self__O4J,__UINTEGER_32 sz__P4J,__UINTEGER_32 idx__Q4J)
 // ({MEMORY},{UINTEGER_32},{UINTEGER_32}) VoidNo recursive, No inlinable.
 {
-  void *new__D5J;
-  __UINTEGER_32 siz__34J,new_size__A5J;
-  __MEMORY *Self__EPR;
-  new__D5J=NULL;
-  delete_link_free__YNK(Self__04J);
-  siz__34J=Self__04J->size_and_id__4W;
-  new_size__A5J=(__UINTEGER_32)(siz__34J - sz__14J);
-  if ((new_size__A5J > (__UINTEGER_32)((__UINTEGER_32)(((__UINTEGER_32 )(MINIMUM_SIZE)) +  2) +  8))) {
-    siz__34J=sz__14J;
-    new__D5J=((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__04J) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )sz__14J))));
-    ((__MEMORY *)new__D5J)->previous_linear__3W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )Self__04J) - (unsigned long)begin_memory__YJC))));
-    ((__MEMORY *)new__D5J)->size_and_id__4W=(__UINTEGER_32)(new_size__A5J -  8);
-    add_link_free__LRJ(new__D5J);
-    if (((__UINTEGER_32)(((__MEMORY *)new__D5J)->size_and_id__4W &  2) !=  0)) {
-      last_block[(idx__24J)] = (new__D5J);
+  __MEMORY *new__X4J,*Self__2OR;
+  __UINTEGER_32 siz__R4J,new_size__U4J;
+  new__X4J=NULL;
+  delete_link_free__QNK(Self__O4J);
+  siz__R4J=Self__O4J->size_and_id__5W;
+  new_size__U4J=(__UINTEGER_32)(siz__R4J - sz__P4J);
+  if ((new_size__U4J > (__UINTEGER_32)((__UINTEGER_32)(((__UINTEGER_32 )(MINIMUM_SIZE)) +  2) +  8))) {
+    siz__R4J=sz__P4J;
+    new__X4J=((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__O4J) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )sz__P4J))));
+    ((__MEMORY *)new__X4J)->previous_linear__4W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )Self__O4J) - (unsigned long)begin_memory__SDC))));
+    ((__MEMORY *)new__X4J)->size_and_id__5W=(__UINTEGER_32)(new_size__U4J -  8);
+    add_link_free__ARJ(new__X4J);
+    if (((__UINTEGER_32)(((__MEMORY *)new__X4J)->size_and_id__5W &  2) !=  0)) {
+      last_block[(idx__Q4J)] = (new__X4J);
     } else {
-      Self__EPR=((__MEMORY *)new__D5J);
-      ((__MEMORY *)((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__EPR) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__EPR->size_and_id__4W &  4294967292LU))))))->previous_linear__3W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )((__MEMORY *)new__D5J)) - (unsigned long)begin_memory__YJC))));
+      Self__2OR=((__MEMORY *)new__X4J);
+      ((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__2OR) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__2OR->size_and_id__5W &  4294967292LU)))))->previous_linear__4W=((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )((__MEMORY *)new__X4J)) - (unsigned long)begin_memory__SDC))));
     };
   };
-  Self__04J->size_and_id__4W=(__UINTEGER_32)(siz__34J |  1);
+  Self__O4J->size_and_id__5W=(__UINTEGER_32)(siz__R4J |  1);
 }
 
-static void* search__USI(__UINTEGER_32 new_size__WSI)
+static __MEMORY* search__VPI(__UINTEGER_32 new_size__XPI)
 // ({UINTEGER_32}) With resultNo recursive, No inlinable.
 {
-  void *result__YSI;
-  result__YSI=first_free__XTI;
-  while ((((void *)result__YSI != (void *)NULL) && ((__UINTEGER_32)(((__MEMORY *)result__YSI)->size_and_id__4W &  4294967292LU) < new_size__WSI))) {
-    result__YSI=((__MEMORY *)result__YSI)->next_free__5W;
+  __MEMORY *result__ZPI;
+  result__ZPI=first_free__YQI;
+  while ((((void *)result__ZPI != (void *)NULL) && ((__UINTEGER_32)(((__MEMORY *)result__ZPI)->size_and_id__5W &  4294967292LU) < new_size__XPI))) {
+    result__ZPI=result__ZPI->next_free__AX;
   };
-  if (((void *)result__YSI == (void *)NULL)) {
-    result__YSI=new_page__PKF();
+  if (((void *)result__ZPI == (void *)NULL)) {
+    result__ZPI=new_page__2FF();
   };
-  to_busy__index__Z4J(result__YSI,new_size__WSI,(__UINTEGER_32)(((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )((__MEMORY *)result__YSI)) - (unsigned long)begin_memory__YJC)))) >>  26));
-  return(result__YSI);
+  to_busy__index__N4J(result__ZPI,new_size__XPI,(__UINTEGER_32)(((__UINTEGER_32 )((unsigned int)((void *)((unsigned long)((__POINTER )((__MEMORY *)result__ZPI)) - (unsigned long)begin_memory__SDC)))) >>  26));
+  return(result__ZPI);
 }
 
-static void add_link_free__LRJ(__MEMORY *Self__MRJ)
+static void add_link_free__ARJ(__MEMORY *Self__BRJ)
 // ({MEMORY}) VoidNo recursive, No inlinable.
 {
-  Self__MRJ->next_free__5W=first_free__XTI;
-  Self__MRJ->previous_free__AX=NULL;
-  if (((void *)first_free__XTI != (void *)NULL)) {
-    ((__MEMORY *)first_free__XTI)->previous_free__AX=Self__MRJ;
+  Self__BRJ->next_free__AX=first_free__YQI;
+  Self__BRJ->previous_free__BX=NULL;
+  if (((void *)first_free__YQI != (void *)NULL)) {
+    ((__MEMORY *)first_free__YQI)->previous_free__BX=Self__BRJ;
   };
-  first_free__XTI=Self__MRJ;
+  first_free__YQI=Self__BRJ;
 }
 
-static void delete_link_free__YNK(__MEMORY *Self__ZNK)
+static void delete_link_free__QNK(__MEMORY *Self__RNK)
 // ({MEMORY}) VoidNo recursive, No inlinable.
 {
-  void *prev__0NK,*next__1NK;
-  prev__0NK=Self__ZNK->previous_free__AX;
-  next__1NK=Self__ZNK->next_free__5W;
-  if (((void *)prev__0NK == (void *)NULL)) {
-    first_free__XTI=next__1NK;
+  __MEMORY *prev__SNK,*next__TNK;
+  prev__SNK=Self__RNK->previous_free__BX;
+  next__TNK=Self__RNK->next_free__AX;
+  if (((void *)prev__SNK == (void *)NULL)) {
+    first_free__YQI=next__TNK;
   } else {
-    ((__MEMORY *)prev__0NK)->next_free__5W=next__1NK;
+    ((__MEMORY *)prev__SNK)->next_free__AX=next__TNK;
   };
-  if (((void *)next__1NK != (void *)NULL)) {
-    ((__MEMORY *)next__1NK)->previous_free__AX=prev__0NK;
+  if (((void *)next__TNK != (void *)NULL)) {
+    ((__MEMORY *)next__TNK)->previous_free__BX=prev__SNK;
   };
 }
 
-static void clear__to__M2J(__CHARACTER *Self__N2J,__INTEGER lower__O2J,__INTEGER upper__P2J)
+static void clear__to__A2J(__CHARACTER *Self__B2J,__INTEGER lower__C2J,__INTEGER upper__D2J)
 // ({NATIVE_ARRAYoExpanded_CHARACTERo},{INTEGER},{INTEGER}) VoidNo recursive, No inlinable.
 {
-  __INTEGER Self__YJK;
-  Self__YJK=lower__O2J;
-  while ((Self__YJK <= upper__P2J)) {
-    Self__N2J[Self__YJK]='\0';
-    Self__YJK=(__INTEGER)(Self__YJK +  1);
+  __INTEGER Self__QJK;
+  Self__QJK=lower__C2J;
+  while ((Self__QJK <= upper__D2J)) {
+    Self__B2J[Self__QJK]='\0';
+    Self__QJK=(__INTEGER)(Self__QJK +  1);
   };
 }
 
-static __POINTER new_lab__NXC(__UINTEGER_32 t__PXC)
+static __POINTER new_lab__RTC(__UINTEGER_32 t__TTC)
 // ({UINTEGER_32}) With resultNo recursive, No inlinable.
 {
-  __UINTEGER_32 idx__RXC,pv__YXC;
-  void *blc__UXC,*prev__VXC;
-  __MEMORY *Self__ETR;
-  __POINTER result__WXC;
-  __BOOLEAN __tmp__YYC;
-  idx__RXC= 0;
-  blc__UXC=NULL;
-  prev__VXC=NULL;
-  pv__YXC= 0;
-  while_do__Q2C:
+  __UINTEGER_32 idx__VTC,pv__2TC;
+  __MEMORY *blc__YTC,*prev__ZTC,*Self__2SR;
+  __POINTER result__0TC;
+  __BOOLEAN __tmp__2UC;
+  idx__VTC= 0;
+  blc__YTC=NULL;
+  prev__ZTC=NULL;
+  pv__2TC= 0;
+  while_do__UYC:
   {
-    if ((idx__RXC < nb_page__5XC)) {
-      blc__UXC=((void *)(last_block[(idx__RXC)]));
-      __tmp__YYC=(((__UINTEGER_32)(((__MEMORY *)blc__UXC)->size_and_id__4W &  4294967292LU) <  4096) || ((__UINTEGER_32)(((__MEMORY *)blc__UXC)->size_and_id__4W &  1) ==  1));
+    if ((idx__VTC < nb_page__DUC)) {
+      blc__YTC=((__MEMORY *)(last_block[(idx__VTC)]));
+      __tmp__2UC=(((__UINTEGER_32)(((__MEMORY *)blc__YTC)->size_and_id__5W &  4294967292LU) <  4096) || ((__UINTEGER_32)(((__MEMORY *)blc__YTC)->size_and_id__5W &  1) ==  1));
     } else {
-      __tmp__YYC=FALSE__;
+      __tmp__2UC=FALSE__;
     };
-    if (__tmp__YYC) {
-      idx__RXC=(__UINTEGER_32)(idx__RXC +  1);
-      goto while_do__Q2C;
-    };
-  };
-  if ((idx__RXC >= nb_page__5XC)) {
-    blc__UXC=new_page__PKF();
-  };
-  ((__MEMORY *)blc__UXC)->size_and_id__4W=(__UINTEGER_32)(((__MEMORY *)blc__UXC)->size_and_id__4W -  4096);
-  Self__ETR=((__MEMORY *)blc__UXC);
-  result__WXC=((__POINTER )((void *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__ETR) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__ETR->size_and_id__4W &  4294967292LU))))));
-  if (((__UINTEGER_32)(((__MEMORY *)blc__UXC)->size_and_id__4W &  4294967292LU) < ((__UINTEGER_32 )(MINIMUM_SIZE)))) {
-    delete_link_free__YNK(blc__UXC);
-    pv__YXC=((__MEMORY *)blc__UXC)->previous_linear__3W;
-    if ((pv__YXC !=  4294967295LU)) {
-      prev__VXC=((void *)(void *)((unsigned long)begin_memory__YJC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )pv__YXC))));
-      ((__MEMORY *)prev__VXC)->size_and_id__4W=(__UINTEGER_32)((__UINTEGER_32)(((__MEMORY *)prev__VXC)->size_and_id__4W + ((__MEMORY *)blc__UXC)->size_and_id__4W) +  8);
-      last_block[(idx__RXC)] = (prev__VXC);
+    if (__tmp__2UC) {
+      idx__VTC=(__UINTEGER_32)(idx__VTC +  1);
+      goto while_do__UYC;
     };
   };
-  ((__POINTER *)result__WXC)[ 0]=((__POINTER )t__PXC);
-  return((void *)((unsigned long)result__WXC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )((__INTEGER )(sizeof(void *)))))));
+  if ((idx__VTC >= nb_page__DUC)) {
+    blc__YTC=new_page__2FF();
+  };
+  ((__MEMORY *)blc__YTC)->size_and_id__5W=(__UINTEGER_32)(blc__YTC->size_and_id__5W -  4096);
+  Self__2SR=((__MEMORY *)blc__YTC);
+  result__0TC=((__POINTER )((__MEMORY *)(void *)((unsigned long)(void *)((unsigned long)((__POINTER )Self__2SR) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER ) 8))) - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )(__UINTEGER_32)(Self__2SR->size_and_id__5W &  4294967292LU))))));
+  if (((__UINTEGER_32)(((__MEMORY *)blc__YTC)->size_and_id__5W &  4294967292LU) < ((__UINTEGER_32 )(MINIMUM_SIZE)))) {
+    delete_link_free__QNK(blc__YTC);
+    pv__2TC=blc__YTC->previous_linear__4W;
+    if ((pv__2TC !=  4294967295LU)) {
+      prev__ZTC=((__MEMORY *)(void *)((unsigned long)begin_memory__SDC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )pv__2TC))));
+      ((__MEMORY *)prev__ZTC)->size_and_id__5W=(__UINTEGER_32)((__UINTEGER_32)(prev__ZTC->size_and_id__5W + blc__YTC->size_and_id__5W) +  8);
+      last_block[(idx__VTC)] = (prev__ZTC);
+    };
+  };
+  ((__POINTER *)result__0TC)[ 0]=((__POINTER )t__TTC);
+  return((void *)((unsigned long)result__0TC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )((__INTEGER )(sizeof(void *)))))));
 }
 
-static void* new_page__PKF()
+static __MEMORY* new_page__2FF()
 // () With resultNo recursive, No inlinable.
 {
-  __POINTER mem__R2G;
-  __UINTEGER_32 cap__O2G,old_size__SKF;
-  void *block__YKF;
-  if ((capacity_max__ZKF ==  0)) {
-    mem__R2G=((__POINTER )(NULL));
-    cap__O2G= 33554432;
+  __POINTER mem__KYG;
+  __UINTEGER_32 cap__HYG,old_size__5FF;
+  __MEMORY *block__FGF;
+  if ((capacity_max__GGF ==  0)) {
+    mem__KYG=((__POINTER )(NULL));
+    cap__HYG= 33554432;
     do {
-      cap__O2G=(__UINTEGER_32)(cap__O2G <<  1);
-      mem__R2G=((__POINTER )(malloc((cap__O2G))));
-      if ((mem__R2G != (void *)NULL)) {
-        free((mem__R2G));
+      cap__HYG=(__UINTEGER_32)(cap__HYG <<  1);
+      mem__KYG=((__POINTER )(malloc((cap__HYG))));
+      if ((mem__KYG != (void *)NULL)) {
+        free((mem__KYG));
       };
-    } while ((! ((mem__R2G == (void *)NULL) || (cap__O2G ==  2147483648LU))));
-    if ((mem__R2G == (void *)NULL)) {
-      cap__O2G=(__UINTEGER_32)(cap__O2G >>  1);
+    } while ((! ((mem__KYG == (void *)NULL) || (cap__HYG ==  2147483648LU))));
+    if ((mem__KYG == (void *)NULL)) {
+      cap__HYG=(__UINTEGER_32)(cap__HYG >>  1);
     };
-    capacity_max__ZKF=cap__O2G;
-    begin_memory__YJC=((__POINTER )(malloc((cap__O2G))));
+    capacity_max__GGF=cap__HYG;
+    begin_memory__SDC=((__POINTER )(malloc((cap__HYG))));
   };
-  old_size__SKF=(__UINTEGER_32)(nb_page__5XC <<  26);
-  nb_page__5XC=(__UINTEGER_32)(nb_page__5XC +  1);
-  if (((__UINTEGER_32)(old_size__SKF +  67108864) > capacity_max__ZKF)) {
-    print__PB((&__string_116));
+  old_size__5FF=(__UINTEGER_32)(nb_page__DUC <<  26);
+  nb_page__DUC=(__UINTEGER_32)(nb_page__DUC +  1);
+  if (((__UINTEGER_32)(old_size__5FF +  67108864) > capacity_max__GGF)) {
+    print__PB((&__string_117));
     exit(( 1));
   };
-  block__YKF=((void *)(void *)((unsigned long)begin_memory__YJC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )old_size__SKF))));
-  ((__MEMORY *)block__YKF)->previous_linear__3W= 4294967295LU;
-  ((__MEMORY *)block__YKF)->size_and_id__4W= 67108858;
-  add_link_free__LRJ(block__YKF);
-  last_block[((__UINTEGER_32)(nb_page__5XC -  1))] = (block__YKF);
-  return(block__YKF);
+  block__FGF=((__MEMORY *)(void *)((unsigned long)begin_memory__SDC - (unsigned long)(void *)((unsigned long)((__POINTER ) 0) - (unsigned long)((__POINTER )old_size__5FF))));
+  block__FGF->previous_linear__4W= 4294967295LU;
+  block__FGF->size_and_id__5W= 67108858;
+  add_link_free__ARJ(block__FGF);
+  last_block[((__UINTEGER_32)(nb_page__DUC -  1))] = (block__FGF);
+  return(block__FGF);
 }
 
 //==========================//
