@@ -208,16 +208,18 @@ Section Public
   - add_subtype t:TYPE <-  
   ( + j:INTEGER;
     
-    subtype_list.fast_add t;
-    j := slot_run.lower;
-    {
-      (j <= slot_run.upper) && 
-      {slot_run.item j.id_section.is_inherit_or_insert}      
-    }.while_do {
-      (slot_run.item j.id_section.is_inherit).if {
-	slot_run.item j.get_type_result.raw.add_subtype t;
+    (! subtype_list.fast_has t).if {    
+      subtype_list.fast_add t;
+      j := slot_run.lower;
+      {
+	(j <= slot_run.upper) && 
+	{slot_run.item j.id_section.is_inherit_or_insert}      
+      }.while_do {
+	(slot_run.item j.id_section.is_inherit).if {
+	  slot_run.item j.get_type_result.raw.add_subtype t;
+	};
+	j := j + 1;
       };
-      j := j + 1;
     };
   );
   

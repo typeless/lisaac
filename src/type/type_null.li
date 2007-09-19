@@ -61,6 +61,8 @@ Section Public
   // Error.
   //
   
+  //- bug:INTEGER;
+  
   - product_error p:POSITION for res:EXPR in lst:LIST with prof:PROFIL <-
   ( + i:INSTR;
     + em:EXPR_MULTIPLE;
@@ -83,6 +85,13 @@ Section Public
       "stack_print(top_context); \
       \print_string(\"Call on NULL\\n\"); \
       \die_with_code(1)";
+      /*
+      string_tmp.copy "stack_print(top_context); print_string(\"Call on NULL:";
+      bug.append_in string_tmp;
+      bug := bug + 1;
+      string_tmp.append "\\n\"); die_with_code(1)";
+      code := STRING_CONSTANT.create_copy string_tmp;
+      */
     } else {
       code := 
       "print_string(\"Call on NULL\\n\

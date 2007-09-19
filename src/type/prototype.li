@@ -83,7 +83,7 @@ Section Public
   
   - init_slot_for typ:TYPE <-
   ( + cur:ITM_SLOT;
-        
+            
     // Parent.
     cur := first_slot;
     {(cur != NULL) && {cur.id_section.is_inherit_or_insert}}.while_do {      

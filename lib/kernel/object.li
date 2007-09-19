@@ -125,15 +125,16 @@ Section Public
 	ptr := MEMORY.alloc_size sz;
       } else {
 	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
-      };                                   
-      result := CONVERT[POINTER,SELF].on ptr;      
-      result.copy_intern Self;      
+      };                                         
+      //MEMORY.copy to_pointer to ptr size sz;
+      result := CONVERT[POINTER,SELF].on ptr;            
+      copy_intern_in result;      
     };
     result
   );
   
   - free_allocation_memory <- 
-  // Manual free, don't use with GC.
+  // Static free, don't use with GC.
   ( + ptr:POINTER;
     + sz:UINTEGER_32;
     + typ_id:INTEGER;
@@ -181,4 +182,4 @@ Section Public
   
   - type_id_intern:INTEGER   <- `1`;
     
-  - copy_intern other:SELF <- `*@Self = *@other`;
+  - copy_intern_in other:SELF <- `*@other = *@Self`;
