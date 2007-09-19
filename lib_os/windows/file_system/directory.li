@@ -22,8 +22,6 @@ Section Header
   
   + name        :=DIRECTORY;
   
-  - category    :=MICRO;
-  
   - bibliography:="http://IsaacOS.com";
   
   - author      :="Benoit Sonntag (bsonntag@loria.fr)";

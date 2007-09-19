@@ -20,7 +20,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  - name        := VIDEO;
+  + name        := VIDEO;
   
   - comment     := "Video Driver for Windows";
 

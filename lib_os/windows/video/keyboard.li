@@ -20,7 +20,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  - name    := KEYBOARD;
+  + name    := KEYBOARD;
   
   - comment     :="Windows (Win32) - RSXNT - Keyboard Driver";
 

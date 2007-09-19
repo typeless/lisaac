@@ -23,9 +23,7 @@ Section Header
   + name        := MOUSE;
   
   - comment     := "X11 - Mouse driver";
-  
-  - category    := MICRO;
-  
+    
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr)";
   

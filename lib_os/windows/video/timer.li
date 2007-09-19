@@ -20,7 +20,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  - name    := TIMER;
+  + name    := TIMER;
 
   - comment :="Windows - Timer management.";
 
