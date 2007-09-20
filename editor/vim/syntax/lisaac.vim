@@ -31,7 +31,7 @@ endif
 "+--------------------+
 syn keyword liFunction            while while_do if else when elseif then self by to do or downto if_true if_false shrink
 syn keyword liKey                 Section Header Insert Inherit Public Private Mapping Interrupt Right Left Self Old Expanded Strict
-syn keyword liTODO                TODO FIXME not_yet_implemented
+syn keyword liTODO                TODO FIXME not_yet_implemented die_with_code
 
 "+-------------------+
 " Support for String
@@ -70,15 +70,17 @@ syn match   liFunction            "\.\w*"
 "+-----------------------------------------------------------------+
 " Support for decimal, real, binary, Hexadecimal and octal numbers
 "+-----------------------------------------------------------------+
-" binary
-syn match   liNumber "-\=\<[01]\(\(_\|[01]*\)[01]\)*[bB]\=\>"
-" decimal, binary, octal
-syn match   liNumber "-\=\<\d\(\(_\|\d*\)\d\)*[dDbBoO]\=\>"
-" real 
-syn match   liNumber "-\=\<\d\(\(_\|\d*\)\d\)*\.\d*\(E-\=\)\=\(\(_\|\d*\)\d\)*[fF]\=\>"
 " hexa
-syn match   liNumber "-\=\<\(\d\|[ABCDEF]\)\(_\|\d\|[ABCDEF]\)*[hH]\=\>"
+syn match   liNumber "\<\(\d\|[ABCDEF]\)\(_\|\d\|[ABCDEF]\)*[hH]\=\>"
 
+" binary
+syn match   liNumber "\<[01]\(\(_\|[01]*\)[01]\)*[bB]\=\>"
+
+" decimal, binary, octal
+syn match   liNumber "\<\d\(\(_\|\d*\)\d\)*[dDbBoO]\=\>"
+
+" real 
+syn match   liNumber "\<\d\(\(_\|\d*\)\d\)*\.\d*\(E-\=\)\=\(\(_\|\d*\)\d\)*[fF]\=\>"
 
 "+---------+
 " Comments 
