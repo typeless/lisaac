@@ -120,9 +120,8 @@ Section UNIX
   
   - unix   + "video/";
   
-  //* "gcc " + input_file + " -O2 -o " + output_file; // + option_gcc + 
-  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -o " + output_file;
-  //" -L" + path_lib_x11 + " -lX11 -lm -lcurl";
+  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -o " + 
+  output_file + " -L" + path_lib_x11 + option_gcc;
       
 Section WINDOWS
   

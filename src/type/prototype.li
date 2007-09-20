@@ -256,17 +256,23 @@ Section Public
     // Detect life code.
     //    
     pass_count := 1;
-    STD_ERROR.put_string "Depending pass: .";   
+    (is_quiet_operation).if_false {
+      STD_ERROR.put_string "Depending pass: .";   
+    };
     {modify_count != 0}.while_do {
       modify_count := 0;
-      STD_ERROR.put_string ".";
+      (is_quiet_operation).if_false {
+	STD_ERROR.put_string ".";
+      };
       pass_count := pass_count + 1;
       NODE.extend_pass;
     };
     
-    STD_ERROR.put_string " (";
-    STD_ERROR.put_integer pass_count;
-    STD_ERROR.put_string ")\n";
+    (is_quiet_operation).if_false {
+      STD_ERROR.put_string " (";
+      STD_ERROR.put_integer pass_count;
+      STD_ERROR.put_string ")\n";
+    };
     
     buf := STRING.create 2000;
             
@@ -277,19 +283,25 @@ Section Public
     //
     // Evaluation.
     //
-    STD_ERROR.put_string "Executing pass: ";
+    (is_quiet_operation).if_false {
+      STD_ERROR.put_string "Executing pass: ";
+    };
     pass_count_depend := pass_count;
     
     // First pass (recursive)    
     is_executing_pass := TRUE;            
-    STD_ERROR.put_string "*";
+    (is_quiet_operation).if_false {
+      STD_ERROR.put_string "*";
+    };
     pass_count := pass_count + 1;
     PROFIL_LIST.execute_pass_recursive;
     // End first pass.    
     {
       modify_count := 0;
       null_counter := 0;
-      STD_ERROR.put_string ".";            
+      (is_quiet_operation).if_false {
+	STD_ERROR.put_string ".";            
+      };
       pass_count := pass_count + 1;            
       
       SWITCH.reset_switch_new_pass;
@@ -304,9 +316,11 @@ Section Public
     //{pass_count < 40};
     {modify_count != 0};
     
-    STD_ERROR.put_string " (";
-    STD_ERROR.put_integer (pass_count - pass_count_depend);
-    STD_ERROR.put_string ")\n";          
+    (is_quiet_operation).if_false {
+      STD_ERROR.put_string " (";
+      STD_ERROR.put_integer (pass_count - pass_count_depend);
+      STD_ERROR.put_string ")\n";          
+    };
     //    
     (is_verbose).if {
       list_main.debug_display;

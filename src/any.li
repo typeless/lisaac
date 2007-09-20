@@ -74,6 +74,8 @@ Section Public
   
   - is_statistic:BOOLEAN;
   
+  - is_quiet_operation:BOOLEAN;
+  
   - debug_level_option:INTEGER;  
   
   - debug_with_code:BOOLEAN;

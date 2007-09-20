@@ -80,8 +80,11 @@ Section Private
   \  -W                  : all warning (deferred detect, ...)      \n\
   \  -O                  : full optimization.                      \n\
   \  -i[1-5000]          : inlining level (default : 2)            \n\ 
+  \  -q                  : quiet operation.                        \n\
   \                                                                \n\
-  \Bug report: sonntag@icps.u-strasbg.fr                           \n";
+  \Bug report:                                                     \n\
+  \            post in : https://gna.org/bugs/?group=isaac         \n\
+  \            mail to : sonntag@icps.u-strasbg.fr                 \n";
 
   - display_usage <-
   (
@@ -121,6 +124,9 @@ Section Private
 	}.elseif {cmd.item 2 = 's'} then {
 	  // Statistic info
 	  is_statistic := TRUE;
+	}.elseif {cmd.item 2 = 'q'} then {
+	  // Quiet operation.
+	  is_quiet_operation := TRUE;
 	}.elseif {cmd.item 2 = 'i'} then {
 	  // Inline level
 	  (cmd.upper = 2).if {
@@ -689,20 +695,22 @@ Section Public
     FS_MIN.close file_output;
     //
     end_time := SYSTEM.get_universal_time;
-    STD_ERROR.put_string " => ";
-    time := (end_time - begin_time).to_integer;
-    (time >= 120).if {
-      STD_ERROR.put_integer (time/60);
-      STD_ERROR.put_string " minutes, ";
-      time := time % 60;
-    };
-    STD_ERROR.put_integer time;
-    STD_ERROR.put_string " second(s).\n";
-    //
-    (POSITION.nb_warning != 0).if {
+    (is_quiet_operation).if_false {
       STD_ERROR.put_string " => ";
-      STD_ERROR.put_integer (POSITION.nb_warning);
-      STD_ERROR.put_string " warning(s).\n";
+      time := (end_time - begin_time).to_integer;
+      (time >= 120).if {
+	STD_ERROR.put_integer (time/60);
+	STD_ERROR.put_string " minutes, ";
+	time := time % 60;
+      };
+      STD_ERROR.put_integer time;
+      STD_ERROR.put_string " second(s).\n";
+      //
+      (POSITION.nb_warning != 0).if {
+	STD_ERROR.put_string " => ";
+	STD_ERROR.put_integer (POSITION.nb_warning);
+	STD_ERROR.put_string " warning(s).\n";
+      };
     };
     
     (is_statistic).if {            
@@ -718,11 +726,15 @@ Section Public
     //
     
     (command_list.lower).to (command_list.upper) do { j:INTEGER;
-      STD_ERROR.put_string "Run `";
-      STD_ERROR.put_string (command_list.item j); 
-      STD_ERROR.put_string "' \t";
+      (is_quiet_operation).if_false {
+	STD_ERROR.put_string "Run `";
+	STD_ERROR.put_string (command_list.item j); 
+	STD_ERROR.put_string "' \t";
+      };
       (ENVIRONMENT.execute_command (command_list.item j) = 0).if {
-	STD_ERROR.put_string "Ok\n";
+	(is_quiet_operation).if_false {
+	  STD_ERROR.put_string "Ok\n";
+	};
       } else {
 	STD_ERROR.put_string "Failure!\n";
       };
