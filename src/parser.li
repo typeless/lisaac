@@ -210,6 +210,7 @@ Section Private
   ( + posold,pos,pos2:INTEGER;    
     + key:STRING_CONSTANT;    
     + short_line:INTEGER;
+    + level_comment:INTEGER;
     
     pos := position;
     posold := -1;    
@@ -223,7 +224,7 @@ Section Private
 	};
 	short_line := 0;
       };
-      // On passe les espaces :            
+      // Skip spaces :            
       {(last_character = 0.to_character) || {last_character > ' '}}.until_do {
 	(is_shorter).if {
 	  (last_character = '\n').if {
@@ -237,7 +238,7 @@ Section Private
       };
       
       (position < source.upper).if {
-	// On passe le commentaire C++ :
+	// Skip C++ comment style :
 	((last_character = '/') & (source.item (position + 1) = '/')).if {	  
 	  position := position + 2;
 	  pos2 := position;
@@ -284,27 +285,31 @@ Section Private
 	};
       };
       (position < source.upper).if {
-	// On passe le commentaire C :
+	// Skip C comment style :
 	pos2 := position;
-	((last_character = '/') & (source.item (position+1) = '*')).if {
-	  position := position + 2; 
+	((last_character = '/') && {source.item (position+1) = '*'}).if {
+	  position := position + 2; 	  
+	  level_comment := 1;
 	  {
-	    (last_character = 0.to_character) ||
-	    {
-	      (last_character = '*') &
-	      (
-		(position < source.upper) && 
-		{source.item (position + 1) = '/'}
-	      )
-	    }
+	    (last_character = 0.to_character) || {level_comment = 0}
 	  }.until_do {
-	    position := position+1;
+	    ((last_character = '/') && {source.item (position+1) = '*'}).if {
+	      level_comment := level_comment + 1;
+	      position := position + 2;
+	    }.elseif {
+	      (last_character = '*') && {source.item (position+1) = '/'}
+	    } then {
+	      level_comment := level_comment - 1;
+	      position := position + 2;
+	    } else {
+	      position := position+1;
+	    };
 	  };
-	  ((last_character = 0.to_character) || {position = source.upper}).if {
+	  (level_comment != 0).if {
 	    position := pos2;
 	    syntax_error (current_position,"End of comment not found !");
 	  };
-	  position := position+2;
+	  //position := position+2;
 	  short (ALIAS_STR.short_comment) token pos2 to position;
 	};
       };
