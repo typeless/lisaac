@@ -135,8 +135,12 @@ Section Private
 	      (lst_typ.lower).to (lst_typ.upper) do { j:INTEGER;	    
 		typ := lst_typ.item j;	    
 		((j > list.upper) || {typ != list.item j.id}).if {
+		  add_stack_type typ;
+		  //
 		  case := CASE.create typ with (data.product typ with expr);		
 		  list.add case to j;
+		  //
+		  stack_type.remove_last;
 		};	    
 	      };	  	  	  
 	    };
@@ -158,14 +162,16 @@ Section Private
     
     (switch = NULL).if {
       (first_code != NULL).if {
-	(is_first).if {
+	(is_first).if {	  
 	  typ := expr.static_type;
 	  (! typ.is_expanded).if {
 	    typ := first_type.default.to_strict;
 	  };
 	  ITM_TYPE_SELF.set_run typ;
 	};
+	add_stack_type first_type;
 	result := data.update_branch first_code;
+	stack_type.remove_last;
       };
     } else {
       list := switch.list;
@@ -173,8 +179,28 @@ Section Private
 	(is_first).if {
 	  ITM_TYPE_SELF.set_run (list.item j.id.default.to_strict);
 	};
+	add_stack_type (list.item j.id);
 	data.update_branch (list.item j.code);
+	stack_type.remove_last;
       };
     };
     result
+  );
+  
+Section Private 
+  
+  - stack_type:FAST_ARRAY[TYPE] := FAST_ARRAY[TYPE].create_with_capacity 16;
+  
+  - add_stack_type t:TYPE <-
+  (
+    stack_type.add_last t;
+    ((stack_type.count > 1) && {stack_type.first = t}).if {      
+      string_tmp.copy "Cyclic inheritance : ";
+      (stack_type.lower).to (stack_type.upper) do { j:INTEGER;
+	stack_type.item j.append_name_in string_tmp;
+	string_tmp.append ", ";
+      };
+      string_tmp.append "...";
+      semantic_error (data.position, string_tmp);
+    };
   );
