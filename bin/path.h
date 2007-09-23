@@ -1,1 +1,1 @@
-#define LISAAC_DIRECTORY "/home/montaigne/lisaac/distrib/lisaac"
+#define LISAAC_DIRECTORY "Lisaac installer message: Please install Lisaac ... "
