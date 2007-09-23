@@ -24,9 +24,6 @@ Section Header
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  - copyright   := "2006-2007 Benoit Sonntag";
-  
-  - copyright := "Benoit Sonntag - 2003-2007";
   
   - author   := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
   - comment  := "The main prototype";

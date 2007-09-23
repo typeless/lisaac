@@ -24,7 +24,6 @@ Section Header
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  - copyright   := "2006-2007 Benoit Sonntag";
   
   - bibliography:= "http://IsaacOS.com";
   - author      := "Matthieu Brehier, Sonntag Benoit (bsonntag@loria.fr)";
