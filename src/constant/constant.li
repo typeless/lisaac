@@ -21,6 +21,8 @@
 Section Header
   
   + name    := CONSTANT;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Parent for all constants";

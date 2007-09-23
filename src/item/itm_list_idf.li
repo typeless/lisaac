@@ -21,6 +21,8 @@
 Section Header
   
   + name        := ITM_LIST_IDF;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "List identifier for assignment.";

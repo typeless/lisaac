@@ -21,6 +21,8 @@
 Section Header
   
   + name        := EXTERNAL_C;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
     
   - author      := "Sonntag Benoit";
   - comment     := "External C instruction.";

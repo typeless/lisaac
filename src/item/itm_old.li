@@ -21,6 +21,8 @@
 Section Header
   
   + name        := ITM_OLD;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Old primitive for contract";

@@ -21,6 +21,8 @@
 Section Header
   
   + name        := PROFIL_LIST;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Profil list manager.";

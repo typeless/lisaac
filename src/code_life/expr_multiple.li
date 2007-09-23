@@ -21,6 +21,8 @@
 Section Header
   
   + name        := EXPR_MULTIPLE;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Multiple expression manager";

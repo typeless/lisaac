@@ -21,6 +21,8 @@
 Section Header
   
   + name        := EXPR_NOT_EQUAL;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Not equal binary comparison expression.";

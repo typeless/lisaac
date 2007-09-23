@@ -21,6 +21,8 @@
 Section Header
   
   + name        := ITEM;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Item for NATIVE_ARRAY[type].";

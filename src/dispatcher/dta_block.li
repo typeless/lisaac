@@ -21,6 +21,8 @@
 Section Header
   
   + name        := DTA_BLOCK;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
     
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Lisaac IS A Advanced Compiler";

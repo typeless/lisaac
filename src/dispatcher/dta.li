@@ -21,6 +21,8 @@
 Section Header
   
   + name        := DTA;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Parent for all late binding";

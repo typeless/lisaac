@@ -21,6 +21,8 @@
 Section Header
   
   + name        := HANOI;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "The classic Tower of Hanoi game.";

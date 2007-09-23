@@ -21,6 +21,8 @@
 Section Header
   
   + name        := CHARACTER_CST;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Character constant";

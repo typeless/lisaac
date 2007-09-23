@@ -21,6 +21,8 @@
 Section Header
   
   + name        := PROTOTYPE_CST;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Prototype constant";

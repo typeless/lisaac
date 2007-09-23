@@ -21,6 +21,8 @@
 Section Header
   
   + name        := GET_TYPE_ID;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
     
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Get intern ID object";

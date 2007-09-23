@@ -21,6 +21,8 @@
 Section Header
   
   + name    := TYPE_FULL;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Type with attribute flags.";

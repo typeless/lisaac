@@ -21,6 +21,8 @@
 Section Header
   
   + name        := TYPE_GENERIC;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Type generic";

@@ -21,6 +21,8 @@
 Section Header
   
   + name        := SWITCH;
+
+  - copyright   := "2006-2007 Benoit Sonntag";
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Switch for late binding resolution";
