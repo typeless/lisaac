@@ -21,6 +21,8 @@
 Section Header
   
   + name        := STD_INPUT;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     :=" To use the standard input file. As for UNIX, the default standard input is the keyboard.";
       

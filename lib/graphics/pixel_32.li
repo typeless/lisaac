@@ -21,6 +21,8 @@
 Section Header
   
   + name    := Expanded PIXEL_32;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment := "Pixel on 32 bits.";
   

@@ -21,6 +21,8 @@
 Section Header
   
   + name    := Expanded CHAR_UNICODE -> UINTEGER_16;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment := "Static Unicode Character library .";
 

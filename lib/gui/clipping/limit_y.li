@@ -21,6 +21,8 @@
 Section Header
   
   + name        := LIMIT_Y;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     := "Sub structure for AREA.";
     

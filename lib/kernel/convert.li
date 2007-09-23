@@ -21,6 +21,8 @@
 Section Header
   
   + name    := CONVERT[SRC, /* to */DST];
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
     
   - comment := "Don't use this prototype !";
 

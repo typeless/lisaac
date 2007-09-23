@@ -21,6 +21,8 @@
 Section Header
   
   + name    := FAST_ARRAY3[E];
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment :="Resizable three dimensional array.\
               \Unlike ARRAY3, the `lower1', `lower2' and `lower3' bounds \

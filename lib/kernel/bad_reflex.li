@@ -22,6 +22,8 @@ Section Header
   
   + name    := BAD_REFLEX;
 
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
   - comment := "Facility, but it's not in prototype spirit.";
 
 Section Public
