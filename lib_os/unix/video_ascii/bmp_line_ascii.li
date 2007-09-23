@@ -21,6 +21,8 @@
 Section Header
   
   + name        := BMP_LINE_ASCII;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     := "Bitmap line for text mode";
   

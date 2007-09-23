@@ -21,6 +21,8 @@
 Section Header
 
   + name    := KEYBOARD;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     :="X11 - Keyboard Driver";
 
