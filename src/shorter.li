@@ -71,7 +71,6 @@ Section Private
   \--                   Lisaac source Shorter                    --\n\
   \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
   \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
-  \--       Matthieu BREHIER - brehier@yahoo.fr                  --\n\
   \--                   http://www.IsaacOS.com                   --\n\
   \----------------------------------------------------------------\n\
   \Usage:                                                      \n\
@@ -93,7 +92,9 @@ Section Private
   \  * Build html documentation:                               \n\
   \    shorter -r -f html ~/lisaac/lib                         \n\
   \                                                            \n\
-  \Bug report: bsonntag@loria.fr                               \n";
+  \Bug report:                                                 \n\
+  \            post in : https://gna.org/bugs/?group=isaac     \n\
+  \            mail to : sonntag@icps.u-strasbg.fr             \n";
 
   - display_usage <-
   (
@@ -106,7 +107,7 @@ Section Private
   //
   
   - read_options <-
-  ( + cmd:STRING_CONSTANT;
+  ( + cmd:STRING;
     + j:INTEGER;
     + var_lisaac:STRING_CONSTANT;
     + path:NATIVE_ARRAY[CHARACTER];
