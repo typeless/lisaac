@@ -23,6 +23,8 @@ Section Header
   + name    := SAFE_EQUAL[E];
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment :="The goal of this class is to share the definition of \
               \feature `safe_equal'. Feature `safe_equal' compares  \

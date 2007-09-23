@@ -24,6 +24,8 @@ Section Header
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
   - comment := "Operation: bezier";
   - version := 1;  
   

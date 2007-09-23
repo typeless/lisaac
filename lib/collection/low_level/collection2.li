@@ -23,6 +23,8 @@ Section Header
   + name        := COLLECTION2[E];
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     := "Abstract definition of a 2 dimensional collection of elements of type E.";
   

@@ -23,6 +23,8 @@ Section Header
   + name    := ARRAYED_COLLECTION[E];
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment := "Common root for ARRAY[E] and FAST_ARRAY[E].";
   

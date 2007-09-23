@@ -23,6 +23,8 @@ Section Header
   + name    := INPUT_STREAM;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment := "This abstract class is the superclass of all classes \
                \representing an input stream of bytes.";
