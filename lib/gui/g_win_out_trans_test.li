@@ -22,7 +22,6 @@ Section Header
 
   + name    := G_WIN_OUT_TRANS_TEST;
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   

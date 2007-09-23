@@ -22,7 +22,6 @@ Section Header
   
   + name    := Expanded CHARACTER -> INTEGER_8, CHAR_UNICODE;
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 

@@ -22,7 +22,6 @@ Section Header
  
   + name        := VIEW_SLOT;
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
     
   - comment     :="Reflexivity view slot.";
   

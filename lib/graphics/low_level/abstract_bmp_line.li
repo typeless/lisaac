@@ -22,7 +22,6 @@ Section Header
   
   + name        := ABSTRACT_BMP_LINE;
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   

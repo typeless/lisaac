@@ -22,7 +22,6 @@ Section Header
   
   + name := AVL_SET_NODE[E];
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
