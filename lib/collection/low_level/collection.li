@@ -634,6 +634,41 @@ Section Public
     };
   );
   
+  - foreach action:BLOCK while test:BLOCK <-
+  // Apply `action' to every item of `Self' while test is true
+  ( + i:INTEGER;
+    + tst:BOOLEAN;
+    
+    i := lower;
+    {(i <= upper) && {test.value (item i)}}.while_do {
+      action.value (item i);
+      i := i+1;
+    };
+  );
+
+  - foreach action:BLOCK until test:BLOCK <-
+  // Apply `action' to every item of `Self' until test is true
+  ( + i:INTEGER;
+    + tst:BOOLEAN;
+    
+    i := lower;
+    {(i <= upper) && {! test.value (item i)}}.while_do {
+      action.value (item i);
+      i := i+1;
+    };
+  );
+
+  - foreach action:BLOCK only_if test:BLOCK <-
+  (
+    lower.to upper do { i:INTEGER;
+      test.value (item i).if {
+	action.value (item i);
+      };
+    };    
+  );
+  
+  - is_all test:BLOCK :BOOLEAN <- for_all test;
+  
   - for_all test:BLOCK :BOOLEAN <-
   // Do all items satisfy `test'?
   //
@@ -661,6 +696,42 @@ Section Public
     {(result) || {i > upper}}.until_do {
       result := test.value (item i);
       i := i + 1;
+    };
+    result
+  );
+  
+  // 
+  // Traditionals features (in functional languages)
+  //
+  
+  - filter test:BLOCK in other:SELF <-
+  // Filter all element which `test' element is true
+  ( + elt:E;
+    
+    lower.to upper do { j:INTEGER;
+      elt := item j;
+      (test.value elt).if {
+	other.add_last elt;
+      };
+    };
+  );
+
+  - fold_left function:BLOCK with element:E :E <-
+  ( + result:E;
+    
+    result := element;
+    lower.to upper do { j:INTEGER;
+      result := function.value (result,item j);
+    };
+    result
+  );
+
+  - fold_right function:BLOCK with element:E :E <-
+  ( + result:E;
+    
+    result := element;
+    upper.downto lower do { j:INTEGER;
+      result := function.value (result,item j);
     };
     result
   );

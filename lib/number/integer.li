@@ -298,6 +298,17 @@ Section Public
   ];
   
   //
+  // Looping.
+  //
+  
+  - times action:BLOCK <-
+  (
+    1.to Self do { i:INTEGER;
+      action.value;
+    };
+  );
+  
+  //
   // Convertion
   //
     
