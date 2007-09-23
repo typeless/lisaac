@@ -70,7 +70,7 @@ Section Public
   
   - is_optimization:BOOLEAN;  
   
-  - inline_level:INTEGER := 4;
+  - inline_level:INTEGER := 17;
   
   - is_statistic:BOOLEAN;
   

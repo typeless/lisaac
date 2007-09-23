@@ -2079,7 +2079,9 @@ Section Private
 	  //
 	  
 	  (style = '-').if {
-	    warning_error (current_position,"`- name' is reserved for Concurrent Object Prototype.\nSorry, COP is not yet implemented.");
+	    warning_error (current_position,
+	    "`- name' is reserved for Concurrent Object Prototype.\n\
+	    \Sorry, COP is not yet implemented.");
 	  };
 	  
 	  // style "name" ':=' [type] cap_identifier 
@@ -2312,24 +2314,24 @@ Section Private
 	{read_word (ALIAS_STR.slot_author)} ||
 	{read_word (ALIAS_STR.slot_bibliography)} ||
 	{read_word (ALIAS_STR.slot_language)} ||
+	{read_word (ALIAS_STR.slot_copyright)} ||
 	{read_word (ALIAS_STR.slot_bug_report)}
       } then {
 	//	  
-	// Read `date', `comment', `author', `bibliography', `language' or `bug_report' slots.
+	// Read `date', `comment', `author', `bibliography', 
+	// `language', `copyright' or `bug_report' slots.
 	//
 	
-	// '-' ("date"|"comment"|"author"|"bibliography"|"language"|"bug_report") ':=' string
+	// '-' ("date"|"comment"|"author"|"bibliography"|"language"|"copyright"|"bug_report") ':=' string
 	short (ALIAS_STR.short_slot) token 
 	(position-last_string.count) to position; 
 	
 	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
 	  warning_error (current_position,"Added ':='.");
-	};
-	`/* BUG 1 */`;
+	};	
 	(read_string).if_false {
 	  syntax_error (current_position,"Incorrect string.");
-	};
-	`/* FIN BUG 1 */`;
+	};	
       } else {
 	warning_error (current_position,"Incorrect slot.");
       };

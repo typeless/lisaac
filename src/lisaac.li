@@ -22,7 +22,9 @@ Section Header
   
   + name     := LISAAC;
   
-  - author   := "Sonntag Benoit (bsonntag@loria.fr)";
+  - copyright := "Benoit Sonntag - 2003-2007";
+  
+  - author   := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
   - comment  := "The main prototype";
   
   - external := `#include "path.h"`;
@@ -79,7 +81,7 @@ Section Private
   \  -w                  : warning error stop compiler.            \n\
   \  -W                  : all warning (deferred detect, ...)      \n\
   \  -O                  : full optimization.                      \n\
-  \  -i[1-5000]          : inlining level (default : 2)            \n\ 
+  \  -i[1-5000]          : inlining level (default : 15)           \n\ 
   \  -q                  : quiet operation.                        \n\
   \                                                                \n\
   \Bug report:                                                     \n\

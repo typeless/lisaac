@@ -120,6 +120,7 @@ Section Public
   - slot_author       :STRING_CONSTANT := "author";
   - slot_bibliography :STRING_CONSTANT := "bibliography";
   - slot_language     :STRING_CONSTANT := "language";
+  - slot_copyright    :STRING_CONSTANT := "copyright";
   - slot_bug_report   :STRING_CONSTANT := "bug_report";
   
   - slot_value        :STRING_CONSTANT := "value";
@@ -345,6 +346,7 @@ Section Public
     list.add slot_author;
     list.add slot_bibliography;
     list.add slot_language;
+    list.add slot_copyright;
     list.add slot_bug_report;
 
     list.add slot_value;    
