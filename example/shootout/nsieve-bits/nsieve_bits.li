@@ -87,21 +87,21 @@ Section Public
       //memset(primes, 0xff,bsize(n));
       size := bsize(n);
       ? {size & 3 = 0};
-      0.to (size / 4) do { j:INTEGER;
-	primes.put (~0) to j;
+      0.to (size / 4) do { j1:INTEGER;
+        primes.put (~0) to j1;
       };
       
       2.to n do { i:UINTEGER_32;
-	(btest(primes,i) != 0).if {
-	  count := count + 1;
-	  j := i + i;
-	  {j <= n}.while_do {
-	    (btest(primes,j) != 0).if {
-	      bflip(primes,j);
-	    };
-	    j := j + i;
-	  };
-	};
+        (btest(primes,i) != 0).if {
+          count := count + 1;
+          j := i + i;
+          {j <= n}.while_do {
+            (btest(primes,j) != 0).if {
+              bflip(primes,j);
+            };
+            j := j + i;
+          };
+        };
       };
       "Primes up to ".print;
       n.print;
