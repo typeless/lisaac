@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name     := LISAAC;
+  + name      := LISAAC;
 
   - copyright := "2003-2007 Benoit Sonntag";
   
