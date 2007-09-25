@@ -113,7 +113,8 @@ Section Public
   - variable_target     :STRING_CONSTANT := "target";
     
   - slot_name         :STRING_CONSTANT := "name";
-  - slot_category     :STRING_CONSTANT := "category";
+  - slot_export       :STRING_CONSTANT := "export";
+  - slot_import       :STRING_CONSTANT := "import";
   - slot_external     :STRING_CONSTANT := "external";
   - slot_default      :STRING_CONSTANT := "default";
   - slot_type         :STRING_CONSTANT := "type";
@@ -339,7 +340,8 @@ Section Public
     
     // Slot particulier :
     list.add slot_name;
-    list.add slot_category;
+    list.add slot_export;
+    list.add slot_import;
     list.add slot_external;
     list.add slot_default;
     list.add slot_type;

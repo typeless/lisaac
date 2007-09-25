@@ -51,11 +51,7 @@ Section Public
   - prototype:PROTOTYPE <- parent_type.prototype;
   
   - is_sub_type other:TYPE_FULL :BOOLEAN <- parent_type.is_sub_type (other.raw);
-  
-  - is_export_to t:TYPE_FULL :BOOLEAN <- parent_type.is_export_to (t.raw);
-    
-  - is_import_to t:TYPE_FULL :BOOLEAN <- parent_type.is_import_to (t.raw);
-    
+      
   - slot_run:FAST_ARRAY[SLOT] <- parent_type.slot_run;
   
   - is_late_binding:BOOLEAN <- parent_type.is_late_binding;
@@ -244,6 +240,20 @@ Section Public
   );
   
   //
+  // Import / Export manager.
+  //
+  
+  - is_export_to t:TYPE_FULL :BOOLEAN <- 
+  (     
+    is_import_export_to t in (prototype.export_list)
+  );
+      
+  - is_import_to t:TYPE_FULL :BOOLEAN <-
+  (     
+    is_import_export_to t in (prototype.import_list)
+  );
+  
+  //
   // Default value.
   //
   
@@ -352,4 +362,23 @@ Section Public
     string_tmp.add_last ']';
     //
     string_tmp.print;
+  );
+  
+Section Private
+  
+  - is_import_export_to t:TYPE_FULL in lst:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
+  ( + j:INTEGER;
+    + result:BOOLEAN;
+    
+    (lst != NULL).if {
+      j := lst.lower;
+      {
+	(j <= lst.upper) && 
+	{lst.item j.to_run != t}
+      }.while_do {
+	j := j + 1;
+      };
+      result := (j <= lst.upper);
+    };
+    result
   );

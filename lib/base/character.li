@@ -147,6 +147,8 @@ Section Public
   - '+' other:CHARACTER :CHARACTER <- (code+other.code).to_character;
   
   - '-' other:CHARACTER :CHARACTER <- (code-other.code).to_character;
+
+  - '-!' other:CHARACTER :INTEGER   <- code - other.code;
   
   - '+#' other:INTEGER :CHARACTER <- (code + other).to_character;
   
