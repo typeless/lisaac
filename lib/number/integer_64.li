@@ -20,7 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := Expanded INTEGER_64 -> INTEGER;
+  + name    := Expanded INTEGER_64;
+
+  - export  := INTEGER;
   
   - comment := "Signed 64 bits integer.";
 

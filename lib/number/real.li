@@ -20,7 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := Expanded REAL -> REAL_32, REAL_64, REAL_80,
+  + name   := Expanded REAL;
+  
+  - export :=
+  REAL_32, REAL_64, REAL_80,
   REAL_16_16,  REAL_24_8,  REAL_26_6,
   UREAL_16_16, UREAL_24_8, UREAL_26_6;
 

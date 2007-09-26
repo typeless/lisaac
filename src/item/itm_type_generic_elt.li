@@ -95,3 +95,12 @@ Section Public
     };
     result
   );
+
+  //
+  // Cast.
+  //
+  
+  - append_cast_name_in buf:STRING <- 
+  (
+    buf.add_last ('a' +# index);
+  );

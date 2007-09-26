@@ -2183,7 +2183,7 @@ Section Private
 	    // Auto-cast system.
 	    //
 	    
-	    //warning_error (current_position,"Obsolete syntax : Use `export' or `import' slot.");
+	    warning_error (current_position,"Obsolete syntax : Use `export' or `import' slot.");
 	    
 	    // ('->' | '<-') TYPE {',' TYPE}
 	    (is_export).if {

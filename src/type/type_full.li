@@ -243,14 +243,16 @@ Section Public
   // Import / Export manager.
   //
   
+  - last_cast_name:STRING := STRING.create 32;
+  
   - is_export_to t:TYPE_FULL :BOOLEAN <- 
-  (     
-    is_import_export_to t in (prototype.export_list)
+  (         
+    is_cast (ALIAS_STR.slot_to) to t in (prototype.export_list)
   );
       
   - is_import_to t:TYPE_FULL :BOOLEAN <-
   (     
-    is_import_export_to t in (prototype.import_list)
+    is_cast (ALIAS_STR.slot_from) to t in (prototype.import_list)
   );
   
   //
@@ -366,11 +368,15 @@ Section Public
   
 Section Private
   
-  - is_import_export_to t:TYPE_FULL in lst:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
+  - is_cast n:STRING_CONSTANT to t:TYPE_FULL in lst:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
   ( + j:INTEGER;
     + result:BOOLEAN;
+    + old_self_up:TYPE;
     
     (lst != NULL).if {
+      old_self_up := ITM_TYPE_SELF.self_up;
+      ITM_TYPE_SELF.set_self_up raw;
+      
       j := lst.lower;
       {
 	(j <= lst.upper) && 
@@ -378,7 +384,14 @@ Section Private
       }.while_do {
 	j := j + 1;
       };
-      result := (j <= lst.upper);
+      
+      ITM_TYPE_SELF.set_self_up old_self_up;
+      
+      (j <= lst.upper).if {
+	result := TRUE;
+	last_cast_name.copy n;
+	lst.item j.append_cast_name_in last_cast_name;	
+      };
     };
     result
   );

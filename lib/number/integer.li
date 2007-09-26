@@ -20,7 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := Expanded INTEGER -> 
+  + name   := Expanded INTEGER;
+  
+  - export := 
   // Integer: 
   UINTEGER_8,  UINTEGER_16, UINTEGER_32, UINTEGER_64,
   INTEGER_8 ,  INTEGER_16 , INTEGER_32 , INTEGER_64 ,
