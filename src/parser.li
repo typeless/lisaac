@@ -96,6 +96,14 @@ Section Public
   - short_local:HASHED_SET[STRING_CONSTANT];
   
 Section Private  
+  
+  // 
+  // Parameter argument.
+  //
+  
+  - is_add_parameter:BOOLEAN;
+  
+  - parameter_list:FAST_ARRAY[CHARACTER] := FAST_ARRAY[CHARACTER].create_with_capacity 4;
     
   //
   // Source information.
@@ -990,6 +998,10 @@ Section Private
       key_comment_default := ALIAS_STR.short_comment_slot_line;
       
       result := TRUE;
+      //
+      parameter_list.clear;
+      is_add_parameter := TRUE;
+      //
       larg := ALIAS_ARRAY[ITM_ARGUMENT].new;
       (read_character '(').if {
 	arg := read_local_arg FALSE with_self TRUE;
@@ -1009,6 +1021,7 @@ Section Private
       (last_slot = NULL).if {
 	syntax_error (current_position,"Incorrect slot declaration.");
       };       
+      is_add_parameter := FALSE;
             
       last_slot.set_style style;
       larg := ALIAS_ARRAY[ITM_ARGUMENT].copy larg;
@@ -1422,6 +1435,7 @@ Section Private
     + continue:BOOLEAN;
     + t,result:ITM_TYPE_MONO;
     + old_pos,old_derive,sav_derive:INTEGER;
+    + parameter:CHARACTER;
     
     read_cap_identifier.if {            
       old_pos    := position;
@@ -1465,6 +1479,7 @@ Section Private
       } else {
 	(name.count = 1).if {
 	  // Parameter type.	  
+	  parameter := name.first;
 	  (is_shorter).if {
 	    short (ALIAS_STR.short_keyprototype) token 
 	    (old_pos - name.count) to old_pos;
@@ -1476,7 +1491,19 @@ Section Private
 	      string_tmp.append "' ignored.";
 	      warning_error (current_position,string_tmp);
 	    };
-	    result := ITM_TYPE_GENERIC_ELT.get (name.first);
+	    (object.idf_generic_list.fast_has parameter).if {
+	      result := ITM_TYPE_GENERIC_ELT.get parameter;
+	    }.elseif {parameter_list.fast_has parameter} then {
+	      result := ITM_TYPE_PARAMETER.get parameter;
+	    }.elseif {is_add_parameter} then {
+	      parameter_list.add_last parameter;
+	      result := ITM_TYPE_PARAMETER.get parameter;
+	    } else {
+	      string_tmp.copy "Parameter type `";
+	      string_tmp.add_last parameter;
+	      string_tmp.append "' is not define.";
+	      semantic_error (current_position,string_tmp);
+	    };
 	  };
 	} else {
 	  // Simple type.	  
@@ -1774,7 +1801,9 @@ Section Private
       
       save_context; // !! SAVE CONTEXT !!
       
+      is_add_parameter := TRUE;
       arg := read_loc_arg TRUE;
+      is_add_parameter := FALSE;
       (arg != NULL).if {	
 	(read_character ';').if_false {  
 	  warning_error (current_position,"Added ';'.");

@@ -366,7 +366,7 @@ Section Public
   // 
   // See also `has', `fast_index_of', `index_of'.
   (
-    valid_index (fast_index_of x)
+    valid_index (fast_first_index_of x)
   );
     
   - first_index_of element:V :INTEGER <-

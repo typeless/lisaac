@@ -20,12 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := ITM_TYPE_GENERIC_ELT;
+  + name      := ITM_TYPE_PARAMETER;
 
   - copyright := "2003-2007 Benoit Sonntag";
   
   - author    := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment   := "Virtual element for generic style type";
+  - comment   := "Parameter type for argument define.";
   
 Section Inherit
   
@@ -33,11 +33,11 @@ Section Inherit
   
 Section Private
   
-  - list:FAST_ARRAY[ITM_TYPE_GENERIC_ELT] := 
+  - list:FAST_ARRAY[ITM_TYPE_PARAMETER] := 
   // 'A' to 'Z'
-  ( + result:FAST_ARRAY[ITM_TYPE_GENERIC_ELT];
+  ( + result:FAST_ARRAY[ITM_TYPE_PARAMETER];
     
-    result := FAST_ARRAY[ITM_TYPE_GENERIC_ELT].create_with_capacity 26; 
+    result := FAST_ARRAY[ITM_TYPE_PARAMETER].create_with_capacity 26; 
     'A'.to 'Z' do { c:CHARACTER;
       result.add_last (create c);
     };
@@ -63,7 +63,7 @@ Section Public
   
   - hash_code:INTEGER <- index;
      
-  - get idf:CHARACTER :ITM_TYPE_GENERIC_ELT <-
+  - get idf:CHARACTER :ITM_TYPE_PARAMETER <-
   (         
     list.item (idf -! 'A')
   );
@@ -78,12 +78,15 @@ Section Public
   - string_tmp:STRING := STRING.create 100;
   
   - to_run:TYPE_FULL <-
-  ( + type_generic:TYPE_GENERIC;    
+  ( + result:TYPE_FULL;
     + t:CHARACTER;
     
-    t := 'A' +# index;
-    type_generic ?= ITM_TYPE_SELF.self_up;            
-    type_generic.generic_to_type t    
+    t := 'A' +# index;    
+    string_tmp.copy "Type parameter `";
+    string_tmp.add_last t;
+    string_tmp.append "' is not define.";
+    semantic_error (ITM_TYPE_SELF.to_run.prototype.position,string_tmp);
+    result
   );
 
   //
@@ -92,5 +95,5 @@ Section Public
   
   - append_cast_name_in buf:STRING <- 
   (
-    buf.add_last ('a' +# index);
+    crash_with_message "ITM_TYPE_PARAMETER.append_cast_name_in";
   );
