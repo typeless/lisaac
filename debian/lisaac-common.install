@@ -1,0 +1,3 @@
+./lib /usr/share/lisaac
+./lib_os/unix /usr/share/lisaac/lib_os
+path.li /usr/share/lisaac

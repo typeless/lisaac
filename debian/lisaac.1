@@ -1,0 +1,65 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH LISAAC 1 "juin  6, 2006"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+lisaac \- The first compiler for Object Prototype Language
+.SH SYNOPSIS
+.B lisaac
+.RI "input_file[.li] [ options ]"
+.SH DESCRIPTION
+This manual page documents briefly the
+.B lisaac
+command.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBlisaac\fP generate an ANSI C code which is compile with gcc-3.4.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-o
+output file (default:`input_file.c').
+.TP
+.B \-t
+target code (see path.li).
+.TP
+.B \-i
+output C for Isaac OS (default:C ANSI).
+.TP
+.B \-v[012]
+0: Pseudo-Code C.                      
+.br
+1: [0] + Require/Ensure.               
+.br
+2: [1] + Context.         
+.TP
+.B \-d
+`is_debug_mode' is True.
+.TP
+.B \-w
+warning error stop compiler.
+.TP
+.B \-O
+Full optimization.
+.SH AUTHOR
+lisaac was written by Benoit SONNTAG <bsonntag@loria.fr>.
+.PP
+This manual page was written by picca frederic <picca@synchrotron-soleil.fr>,
+for the Debian project (but may be used by others).

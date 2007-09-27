@@ -1,0 +1,20 @@
+lisaac (0.84-3) unstable; urgency=low
+
+  * Oops re-add Xavier Oswald as co-maintainer.
+
+ -- picca frederic <picca@synchrotron-soleil.fr>  Wed, 22 Nov 2006 21:14:11 +0100
+
+lisaac (0.84-2) unstable; urgency=low
+
+  * Fix typo error in lisaac recommends (closes: #395404)
+  * Fix the descriptions of packages (closes: #395433)
+  * Add the lisaac-mode package for emacs
+
+ -- picca frederic <picca@synchrotron-soleil.fr>  Fri, 27 Oct 2006 10:08:42 +0200
+
+lisaac (0.84-1) unstable; urgency=low
+
+  * Initial release Closes: #379054
+
+ -- picca frederic <picca@synchrotron-soleil.fr>  Tue,  6 Jun 2006 21:50:23 +0200
+

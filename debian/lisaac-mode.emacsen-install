@@ -1,0 +1,22 @@
+#! /bin/sh -e
+# /usr/lib/emacsen-common/packages/install/lisaac-mode
+# Originates from scripts written by Jim Van Zandt, Santiago Vila,
+# Dirk Eddelbuettel.
+FLAVOR=$1
+PACKAGE=lisaac-mode
+if [ ${FLAVOR} = emacs ]; then exit 0; fi
+echo install/${PACKAGE}: Handling install for emacsen flavor ${FLAVOR}
+FLAGS="${SITEFLAG} -q -batch -l path.el -f batch-byte-compile"
+ELDIR=/usr/share/emacs/site-lisp/${PACKAGE}
+ELCDIR=/usr/share/${FLAVOR}/site-lisp/${PACKAGE}
+install -m 755 -d ${ELCDIR}
+cd ${ELDIR}
+FILES=`echo *.el`
+cp ${FILES} ${ELCDIR}
+cd ${ELCDIR}
+cat << EOF > path.el
+(setq load-path (cons "." load-path) byte-compile-warnings nil)
+EOF
+${FLAVOR} ${FLAGS} ${FILES}
+rm -f *.el path.el
+exit 0
