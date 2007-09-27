@@ -1,3 +1,12 @@
+lisaac (0.12-1) unstable; urgency=low
+
+  * New upstream release
+  * Fix the build-depends on a new gcc version (closes: #440426)
+  * Fix the dependacy on the new emacs version (closes: #434920)
+  * Update the package description
+
+ -- Xavier Oswald <x.oswald@free.fr>  Thu, 27 Sep 2007 16:33:25 +0200
+
 lisaac (0.84-3) unstable; urgency=low
 
   * Oops re-add Xavier Oswald as co-maintainer.

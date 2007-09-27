@@ -3,12 +3,12 @@ Section: devel
 Priority: optional
 Maintainer: picca frederic <picca@synchrotron-soleil.fr>
 Uploaders: Xavier Oswald <x.oswald@free.fr>
-Build-Depends: debhelper (>= 5.0.0), gcc-3.4, dpatch, emacs21 | emacsen
+Build-Depends: debhelper (>= 5.0.0), gcc (>= 4.1), dpatch, emacs22 | emacsen
 Standards-Version: 3.7.2
 
 Package: lisaac
 Architecture: any
-Depends: ${shlibs:Depends}, lisaac-common, gcc-3.4
+Depends: ${shlibs:Depends}, lisaac-common, gcc(>= 4.1)
 Recommends: lisaac-doc, lisaac-mode
 Description: Object-oriented language base on prototype
  Lisaac is a small prototype-based programming language. The ideas in
@@ -27,7 +27,7 @@ Description: Object-oriented language base on prototype
   * interrupt manager
   * include C code facilities
  .
-  Homepage: http://isaacos.loria.fr/
+  Homepage: http://isaacproject.u-strasbg.fr/
 
 Package: lisaac-common
 Architecture: all
@@ -46,7 +46,7 @@ Description: Documentation for lisaac
 
 Package: lisaac-mode
 Architecture: all
-Depends: emacs21 | emacsen
+Depends: emacs22 | emacsen
 Enhances: lisaac
 Description: Emacs mode for editing Lisaac programs
  Lisaac is a small prototype-based programming language.
