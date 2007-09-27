@@ -1,0 +1,72 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Compiler                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := CONTEXT_SLOT;
+
+  - copyright := "2003-2007 Benoit Sonntag";
+  
+  - author    := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment   := "Create a new context for analyser";
+      
+Section Inherit
+  
+  - parent_context:CONTEXT := CONTEXT;
+  
+Section Private
+  
+  - is_actif:BOOLEAN; // Debug...
+  
+Section Public
+  
+  - limit_context:INTEGER <- ( crash; 0);
+  
+  - push pos:POSITION slot prof:PROFIL_SLOT :LOCAL <-
+  ( + res:LOCAL;
+    
+    (is_actif).if {
+      crash_with_message "CONTEXT_EXTERN : Recursif !!";
+    };
+    is_actif := TRUE;
+    
+    list_current  := LIST.create pos;
+    profil_second := profil_first := prof;    
+    //
+    (debug_level_option != 0).if {
+      // Debug mode : Add context local.
+      res := TYPE_CONTEXT.default.new_local pos name (ALIAS_STR.variable_context) style '+';
+      res.set_ensure_count 1;      
+      list_current.add_last (PUSH.create pos context res first TRUE);
+    };
+    //
+    stack.add_last Self;
+    res
+  );
+  
+  - pop <-
+  (
+    stack.remove_last;
+    is_actif := FALSE;
+    //    
+    ITM_OBJECT.pop_stack_until 0;    
+    stack_result.remove_since 0;    
+  );
+  

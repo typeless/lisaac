@@ -69,8 +69,8 @@ Section Public
     } else {
       name := ALIAS_STR.get_intern (s.name);    
     };
-    slot_code   := s;
-    type_self   := ITM_TYPE_SELF.to_run;
+    slot_code := s;
+    type_self := ITM_TYPE_SELF.to_run;
             
     // Arguments.    
     item_lst := s.base_slot.argument_list;    
@@ -111,10 +111,10 @@ Section Public
     //
     result := write_argument call_lst;
     //    
-    context := CONTEXT.push_extern (slot_code.position) profil Self;
+    context := CONTEXT_SLOT.push (slot_code.position) slot Self;
     code := list_current;
     slot_code.create_code is_first;    
-    CONTEXT.pop_extern;    
+    CONTEXT.pop;    
     //
     result
   );

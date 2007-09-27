@@ -33,11 +33,10 @@ Section Inherit
   
 Section Private
   
-  - list:FAST_ARRAY[ITM_TYPE_PARAMETER] := 
-  // 'A' to 'Z'
+  - list_type:FAST_ARRAY[ITM_TYPE_PARAMETER] := 
   ( + result:FAST_ARRAY[ITM_TYPE_PARAMETER];
     
-    result := FAST_ARRAY[ITM_TYPE_PARAMETER].create_with_capacity 26; 
+    result := FAST_ARRAY[ITM_TYPE_PARAMETER].create_with_capacity 26;
     'A'.to 'Z' do { c:CHARACTER;
       result.add_last (create c);
     };
@@ -54,41 +53,33 @@ Section Private
   
   - make idf:CHARACTER <-
   (
-    index := idf -! 'A';    
+    name := idf;  
   );
-
+    
 Section Public
   
-  + index:INTEGER;
-  
-  - hash_code:INTEGER <- index;
-     
+  + name:CHARACTER;
+       
   - get idf:CHARACTER :ITM_TYPE_PARAMETER <-
-  (         
-    list.item (idf -! 'A')
+  ( 
+    list_type.item (idf -! 'A')
   );
   
   - display buffer:STRING <-
   (
     buffer.append "Generic[";
-    buffer.add_last ('A' +# index);    
+    buffer.add_last name;    
     buffer.add_last ']';
   );
   
-  - string_tmp:STRING := STRING.create 100;
-  
-  - to_run:TYPE_FULL <-
-  ( + result:TYPE_FULL;
-    + t:CHARACTER;
+  - string_tmp:STRING := STRING.create 100; // BSBS: Necessaire ?
     
-    t := 'A' +# index;    
-    string_tmp.copy "Type parameter `";
-    string_tmp.add_last t;
-    string_tmp.append "' is not define.";
-    semantic_error (ITM_TYPE_SELF.to_run.prototype.position,string_tmp);
-    result
+  - to_run:TYPE_FULL <-  
+  (
+    not_yet_implemented;
+    NULL
   );
-
+        
   //
   // Cast.
   //
@@ -97,3 +88,4 @@ Section Public
   (
     crash_with_message "ITM_TYPE_PARAMETER.append_cast_name_in";
   );
+  

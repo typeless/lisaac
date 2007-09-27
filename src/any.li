@@ -150,8 +150,8 @@ Section Public
   - stack_local_lower :INTEGER;
   - stack_result_lower:INTEGER;
   
-  - profil_first:PROFIL_SLOT;
-  - profil_second:PROFIL;
+  - profil_first:PROFIL_SLOT; // Principal slot.
+  - profil_second:PROFIL;     // (profil_second = profil_first) or profil_block
       
   - display_stack_local <-
   (

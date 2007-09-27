@@ -1,0 +1,88 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Compiler                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := CONTEXT_LIST;
+
+  - copyright := "2003-2007 Benoit Sonntag";
+  
+  - author    := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment   := "Create a new context for analyser";
+    
+Section Inherit
+  
+  - parent_context:CONTEXT := CONTEXT;
+  
+Section Private
+  
+  - free_list:FAST_ARRAY[CONTEXT_LIST] := FAST_ARRAY[CONTEXT_LIST].create_with_capacity 16;
+    
+  + old_local_upper:INTEGER;  
+  + old_result_lower:INTEGER;  
+  + old_list:LIST;    
+  + old_context_extern:LOCAL;
+  
+Section Public
+  
+  - limit_context:INTEGER <- old_local_upper;    
+  
+  - push p:POSITION <-
+  ( + result:CONTEXT_LIST;
+    
+    (free_list.is_empty).if {
+      result := CONTEXT_LIST.clone;
+    } else {
+      result := free_list.last;
+      free_list.remove_last;
+    };
+    result.make p;
+  );
+  
+  - make p:POSITION <-
+  (    
+    // Save intern context.
+    old_local_upper    := stack_local.upper + 1;
+    old_result_lower   := stack_result_lower;
+    old_list           := list_current;
+    old_context_extern := ITM_OBJECT.context_extern;
+    // Creation.
+    stack_result_lower := stack_result.upper + 1;
+    list_current       := LIST.create p;        
+    ITM_OBJECT.set_context_extern NULL;
+    // Push stack.
+    stack.add_last Self;
+  );
+  
+  - pop <-
+  (    
+    // Restore context.
+    list_current := old_list;
+    ITM_OBJECT.pop_stack_until old_local_upper;
+    stack_result.remove_since stack_result_lower;
+    stack_result_lower := old_result_lower;    
+    (ITM_OBJECT.context_extern = NULL).if {
+      ITM_OBJECT.set_context_extern old_context_extern;
+    };
+    // Pop stack.
+    free_list.add_last Self;
+    stack.remove_last;
+  );
+  

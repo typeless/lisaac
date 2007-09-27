@@ -341,7 +341,7 @@ Section Public
       //
       old_profil_first := profil_first;
       profil_first := NULL;
-      CONTEXT.push_extern position profil NULL;
+      CONTEXT_SLOT.push position slot NULL;
       value := list_current;      
       (Self = slot_id).if {
 	val := PROTOTYPE_CST.create position type type;
@@ -373,7 +373,7 @@ Section Public
       list_current.add_last wrt;    
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS: Alias
       // Context.
-      CONTEXT.pop_extern;
+      CONTEXT.pop;
       profil_first := old_profil_first;
       ITM_TYPE_SELF.set_run type_self self_up type_self_up;    
     };

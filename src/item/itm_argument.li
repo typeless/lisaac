@@ -34,30 +34,35 @@ Section Inherit
   
 Section Public
   
-  - count:INTEGER <- ( deferred; 0);
+  - lower:INTEGER <- 0;
+  
+  - upper:INTEGER <- ( deferred; 0);
+  
+  - count:INTEGER <- upper + 1;
 
   //
   // Running.
   //
   
+  - item idx:INTEGER :ITM_TYPE_MONO <- 
+  (
+    deferred;
+    NULL
+  );
+  
+/*  
   - get_type idx:INTEGER :TYPE_FULL <-
   (
     deferred;
     NULL
   );
+  */  
   
   - to_run arg_lst:FAST_ARRAY[LOCAL] <-
   (
     deferred;
   );
   
-  /*
-  - to_run_type arg_lst:FAST_ARRAY[TYPE_FULL] <-
-  (
-    deferred;
-  );
-  */
-   
   //
   // Display.
   //

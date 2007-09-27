@@ -246,13 +246,21 @@ Section Public
   - last_cast_name:STRING := STRING.create 32;
   
   - is_export_to t:TYPE_FULL :BOOLEAN <- 
-  (         
-    is_cast (ALIAS_STR.slot_to) to t in (prototype.export_list)
+  ( + result:BOOLEAN; 
+    
+    (prototype != NULL).if {      
+      result := is_cast (ALIAS_STR.slot_to) to t in (prototype.export_list);
+    };
+    result      
   );
       
   - is_import_to t:TYPE_FULL :BOOLEAN <-
-  (     
-    is_cast (ALIAS_STR.slot_from) to t in (prototype.import_list)
+  ( + result:BOOLEAN;    
+    
+    (prototype != NULL).if {
+      result := is_cast (ALIAS_STR.slot_from) to t in (prototype.import_list);
+    };
+    result
   );
   
   //

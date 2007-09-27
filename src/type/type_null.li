@@ -54,13 +54,6 @@ Section Public
   - get_path_slot n:STRING_CONSTANT :SLOT <- NULL;
   
   //
-  // Type control.
-  //
-      
-  - is_export_to t:TYPE :BOOLEAN <- FALSE;
-  - is_import_to t:TYPE :BOOLEAN <- FALSE;
-    
-  //
   // Error.
   //
   

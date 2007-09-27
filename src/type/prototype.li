@@ -228,7 +228,7 @@ Section Public
     //
     // Creation list execution.
     //    
-    context_main := CONTEXT.push_extern position profil NULL;
+    context_main := CONTEXT_SLOT.push position slot NULL;
         
     // Command argument.
     (is_ansi).if {      
@@ -256,7 +256,7 @@ Section Public
     // Result.    
     list_current.add_last (INTEGER_CST.create position value 0 type (type_integer.default)); 
     list_main := list_current;
-    CONTEXT.pop_extern;
+    CONTEXT.pop;
             
     //
     // Detect life code.

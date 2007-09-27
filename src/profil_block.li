@@ -110,7 +110,7 @@ Section Public
     name := ALIAS_STR.get_intern (ALIAS_STR.slot_value);    
     
     // Create code.    
-    context := CONTEXT.push_block (list.position) profil Self;        
+    context := CONTEXT_BLOCK.push (list.position) block Self;        
     
     // Append arguments.    
     (base.argument != NULL).if {      
@@ -136,7 +136,7 @@ Section Public
     };
     context_extern := ITM_OBJECT.context_extern;
     //
-    CONTEXT.pop_block;                
+    CONTEXT.pop;
     NODE.set_node_list old_node_list;    
   );
   

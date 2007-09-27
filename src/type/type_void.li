@@ -47,13 +47,6 @@ Section Public
   );
   
   //
-  // Type control.
-  //
-  
-  - is_export_to t:TYPE :BOOLEAN <- FALSE;
-  - is_import_to t:TYPE :BOOLEAN <- FALSE;
-  
-  //
   // Genere.
   //
   

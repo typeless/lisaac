@@ -38,7 +38,7 @@ Section Public
   
   + type:ITM_TYPE_MULTI;
   
-  - count:INTEGER <- name.count;
+  - upper:INTEGER <- name.upper;
   
   //
   // Creation.
@@ -65,11 +65,18 @@ Section Public
   // Running.
   //
 
+  - item idx:INTEGER :ITM_TYPE_MONO <- 
+  ( ? {idx.in_range 0 to upper};
+    type.item idx
+  );
+  
+  /*
   - get_type idx:INTEGER :TYPE_FULL <-
   (
     ? {idx.in_range 0 to (count-1)};
     type.item idx.to_run
   );
+  */
 
   - to_run arg_lst:FAST_ARRAY[LOCAL] <-
   ( + t:TYPE_FULL;

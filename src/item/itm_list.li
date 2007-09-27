@@ -144,12 +144,12 @@ Section Public
   // List intern.
   ( + result:EXPR;
                 
-    CONTEXT.push_intern position;        
+    CONTEXT_LIST.push position;        
     
     to_run_base TRUE;        
     result := create_result_expr;
     
-    CONTEXT.pop_intern;    
+    CONTEXT.pop;
     list_current.add_last last_expr;
     
     result
@@ -160,12 +160,12 @@ Section Public
   ( + lst:LIST;
     ? {! code.is_empty};
     
-    CONTEXT.push_intern position;        
+    CONTEXT_LIST.push position;        
     //    
     to_run_base TRUE;
     lst := list_current;
     //
-    CONTEXT.pop_intern;    
+    CONTEXT.pop;    
     lst
   );
   

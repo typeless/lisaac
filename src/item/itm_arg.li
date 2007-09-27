@@ -38,7 +38,7 @@ Section Public
   
   + type:ITM_TYPE_MONO;
   
-  - count:INTEGER := 1;
+  - upper:INTEGER := 0;
   
   //
   // Creation.
@@ -62,12 +62,19 @@ Section Public
   //
   // Running.
   //
-
+  
+  - item idx:INTEGER :ITM_TYPE_MONO <- 
+  ( ? {idx = 0};
+    type
+  );
+  
+  /*
   - get_type idx:INTEGER :TYPE_FULL <-
   (
     ? {idx = 0};
     type.to_run
   );
+  */
 
   - to_run arg_lst:FAST_ARRAY[LOCAL] <-
   ( + loc:LOCAL;

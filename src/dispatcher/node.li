@@ -92,26 +92,20 @@ Section Public
   );
 
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
-  ( + dta:DTA_RD_ARGS;
-    + new_expr:EXPR;
-    + old_self,typ,typ_self:TYPE_FULL;
+  ( + dta:DTA_RD_ARGS;    
+    + old_self,typ_self:TYPE_FULL;
     + result:NODE_TYPE;
 
     old_self := ITM_TYPE_SELF.run_value;
     typ_self := larg.first.static_type;
     ITM_TYPE_SELF.set_run typ_self;
-    // Control argument type.    
-    typ_self := typ_self.to_strict;
-    (larg.lower + 1).to (larg.upper) do { j:INTEGER;            
-      typ := s.get_type_argument j;      
-      new_expr := larg.item j.check_type typ with (s.position);
-      larg.put new_expr to j;
-    };
+    // Control argument type.            
+    s.check_argument_type_for larg;    
     //
     dta := DTA_RD_ARGS.create p call s with larg;
     result := NODE_TYPE.create rec with dta;
     //
-    ITM_TYPE_SELF.set_run old_self;
+    ITM_TYPE_SELF.set_run old_self;    
     node_list.add_last result;
     result
   );

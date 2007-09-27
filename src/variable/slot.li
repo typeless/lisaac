@@ -92,26 +92,39 @@ Section Public
     result
   );
   
-  - get_type_argument idx:INTEGER :TYPE_FULL <-  
+  - check_argument_type_for larg:FAST_ARRAY[EXPR] <-  
   ( + lst:FAST_ARRAY[ITM_ARGUMENT];
-    + i,n,cnt:INTEGER;    
-    + result:TYPE_FULL;
-    ? {idx.in_range 0 to (base_slot.argument_count)};
-    
+    + itm_arg:ITM_ARGUMENT;
+    + i_itm,i2_itm:INTEGER;    
+    + t:ITM_TYPE_MONO;
+   // + tp:ITM_TYPE_PARAMETER;    
+    + new_expr:EXPR;
+      
     ITM_TYPE_SELF.set_self_up receiver_type;
-    lst := base_slot.argument_list;
-    i := lst.lower;    
-    {
-      cnt := lst.item i.count;
-      (n + cnt > idx).if { 
-	result := lst.item i.get_type (idx - n);
+    lst := base_slot.argument_list;    
+    (lst.first.count = 1).if {
+      i_itm := 1;
+    } else {  
+      i2_itm := 1;
+    };      
+    (larg.lower + 1).to (larg.upper) do { i_arg:INTEGER;
+      itm_arg := lst.item i_itm;
+      t := itm_arg.item i2_itm;
+      //tp ?= t;
+      //((tp != NULL) && {! tp.is_update}).if {
+//	tp.define_type (larg.item i_arg.static_type);
+   //   } else {
+	new_expr := larg.item i_arg.check_type (t.to_run) with position;
+	larg.put new_expr to i_arg;
+     // };
+      (i2_itm = itm_arg.upper).if {
+	i2_itm := 0;
+	i_itm  := i_itm + 1;
       } else {
-	n := n + cnt;
+	i2_itm := i2_itm + 1;
       };
-      i := i + 1;
-    }.do_while {result = NULL};
+    };        
     ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
-    result
   );
   
   - name:STRING_CONSTANT          <- base_slot.name;  
