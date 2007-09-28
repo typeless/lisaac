@@ -20,13 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := NODE;
+  + name      := NODE;
 
-  - copyright   := "2003-2007 Benoit Sonntag";
-
+  - copyright := "2003-2007 Benoit Sonntag";
   
-  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment     := "Parent for all switch node";
+  - author    := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment   := "Parent for all switch node";
     
 Section Inherit
   

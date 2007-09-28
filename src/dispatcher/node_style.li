@@ -74,7 +74,7 @@ Section NODE, DTA
   // Update.
   //
   
-  - update_link:BOOLEAN <-
+  - update_link self_type:TYPE_FULL :BOOLEAN <-
   ( + typ:TYPE;
     + list:FAST_ARRAY[CASE];
     + case:CASE;
@@ -116,7 +116,7 @@ Section NODE, DTA
   
 Section Private  
   
-  - call_for t:TYPE :LIST <-
+  - call_for t:TYPE self type_self:TYPE_FULL :LIST <-
   ( + result:LIST;
     + typ:TYPE_ID;
     + call:CALL_SLOT;
@@ -132,6 +132,7 @@ Section Private
     + my_profil:PROFIL;
     + wrt_lst:FAST_ARRAY[WRITE];
     + ctext:LOCAL;
+    + new_type_self:TYPE_SELF;
     
     result := LIST.create position;
     
@@ -178,11 +179,7 @@ Section Private
       } else {
 	new_larg := data.get_argument;
       };
-      type := new_larg.first.static_type;      
-      (type.is_strict).if {
-	// Fix Self type for resend call (else it's fixed by NODE_TYPE)
-	ITM_TYPE_SELF.set_run type;      
-      };
+      type := new_larg.first.static_type;            
       //      
       (debug_level_option != 0).if {	
 	(data.context = NULL).if {
@@ -195,7 +192,14 @@ Section Private
 	);
       };
       //
-      (my_profil, wrt_lst) := slot_cod.get_profil new_larg;
+      (type.is_strict).if {
+	// Fix Self type for resend call (else it's fixed by NODE_TYPE)
+	new_type_self := type;
+      } else {
+	new_type_self := type_self;
+      };
+      (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
+      //
       call := CALL_SLOT.create position profil my_profil with wrt_lst;      
       (result_expr.static_type.raw != TYPE_VOID).if {	
 	em ?= result_expr;

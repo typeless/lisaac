@@ -329,19 +329,13 @@ Section Public
   ( + self_var:LOCAL;
     + val,rec:EXPR;
     + wrt:WRITE;
-    + type_self:TYPE_FULL;
-    + type_self_up:TYPE;
-    + old_profil_slot:PROFIL_SLOT;
-        
+            
     ((value = NULL) && {(base_slot.affect != '<') || {Self = slot_id}}).if {                  
       // Context.      
-      type_self    := ITM_TYPE_SELF.run_value;
-      type_self_up := ITM_TYPE_SELF.self_up;	
-      ITM_TYPE_SELF.set_run (receiver_type.default.to_strict) self_up receiver_type;
+      CONTEXT_SLOT.push position slot NULL 
+      self (receiver_type.default.to_strict) 
+      generic receiver_type;
       //
-      old_profil_slot := profil_slot;
-      profil_slot := NULL;
-      CONTEXT_SLOT.push position slot NULL;
       value := list_current;      
       (Self = slot_id).if {
 	val := PROTOTYPE_CST.create position type type;
@@ -373,9 +367,7 @@ Section Public
       list_current.add_last wrt;    
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS: Alias
       // Context.
-      CONTEXT.pop;
-      profil_slot := old_profil_slot;
-      ITM_TYPE_SELF.set_run type_self self_up type_self_up;    
+      CONTEXT.pop;      
     };
   );
   

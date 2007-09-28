@@ -47,6 +47,14 @@ Section Public
   );
   
   //
+  // Import / Export
+  //
+    
+  - is_export_to t:TYPE_FULL :BOOLEAN <- FALSE;
+
+  - is_import_to t:TYPE_FULL :BOOLEAN <- FALSE;
+  
+  //
   // Genere.
   //
   

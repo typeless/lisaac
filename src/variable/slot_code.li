@@ -52,7 +52,7 @@ Section Public
 
   + profil:FAST_ARRAY[PROFIL_SLOT];
     
-  - get_profil args:FAST_ARRAY[EXPR] :(PROFIL, FAST_ARRAY[WRITE]) <-
+  - get_profil args:FAST_ARRAY[EXPR] self type_self:TYPE_FULL :(PROFIL, FAST_ARRAY[WRITE]) <-
   ( + result:PROFIL_SLOT;    
     + res_lst:FAST_ARRAY[WRITE];
     + pro:PROFIL_SLOT;
@@ -92,7 +92,7 @@ Section Public
 	pro := pro_list.item i;
 	(
 	  (pro.slot = Self) && {
-	    (pro.type_self = NULL) || {pro.type_self == ITM_TYPE_SELF.to_run}
+	    (pro.type_self = NULL) || {pro.type_self == type_self}
 	  } // BSBS: il fo aussi tester les args comme plus bas...
 	).if {
 	  result := pro; // Rmq. : It's limit for dispatching (See...)
@@ -111,7 +111,7 @@ Section Public
       j := profil.lower;      
       {(j <= profil.upper) && {result = NULL}}.while_do {
 	pro := profil.item j;					
-	((pro.type_self = NULL) || {pro.type_self == ITM_TYPE_SELF.to_run}).if {
+	((pro.type_self = NULL) || {pro.type_self == type_self}).if {
 	  result := pro;
 	  i := args.lower + 1;
 	  {(i <= args.upper) && {result != NULL}}.while_do {

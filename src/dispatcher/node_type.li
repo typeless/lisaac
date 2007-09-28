@@ -74,27 +74,16 @@ Section Public
   
   - update:BOOLEAN <-
   (
-    update_case & update_depth TRUE    
+    update_case & update_depth NULL
   );
   
 Section NODE, DTA
   
-  - update_link:BOOLEAN <-
+  - update_link self_type:TYPE_FULL :BOOLEAN <-
   (     
-    update_case & update_depth FALSE    
+    update_case & update_depth self_type    
   );
   
-Section Public
-/*  
-  - count_flat:INTEGER;
-  - count_not_flat:INTEGER;
-  
-  - reset_count_flat <-
-  (
-    count_not_flat := 0;
-    count_flat := 0;
-  );
-*/
 Section Private  
     
   - update_case:BOOLEAN <-
@@ -158,19 +147,20 @@ Section Private
     result
   );
   
-  - update_depth is_first:BOOLEAN :BOOLEAN <-
+  - update_depth self_type:TYPE_FULL :BOOLEAN <-
   ( + result:BOOLEAN;
     + list:FAST_ARRAY[CASE];
-    + typ:TYPE_FULL;
+    + new_type_self:TYPE_FULL;
     
     (switch = NULL).if {
       (first_code != NULL).if {
-	(is_first).if {	  
-	  typ := expr.static_type;
-	  (! typ.is_expanded).if {
-	    typ := first_type.default.to_strict;
-	  };
-	  ITM_TYPE_SELF.set_run typ;
+	(self_type = NULL).if {	  
+	  new_type_self := expr.static_type;
+	  (! new_type_self.is_expanded).if {
+	    new_type_self := first_type.default.to_strict;
+	  };	  
+	} else {
+	  new_type_self := self_type;
 	};
 	add_stack_type first_type;
 	result := data.update_branch first_code;
@@ -179,8 +169,10 @@ Section Private
     } else {
       list := switch.list;
       (list.lower).to (list.upper) do { j:INTEGER;
-	(is_first).if {
-	  ITM_TYPE_SELF.set_run (list.item j.id.default.to_strict);
+	(self_type = NULL).if {
+	  new_type_self := list.item j.id.default.to_strict;
+	} else {
+	  new_type_self := self_type;
 	};
 	add_stack_type (list.item j.id);
 	data.update_branch (list.item j.code);

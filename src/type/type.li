@@ -242,7 +242,46 @@ Section Public
     ? {result != NULL};
     slot_run.item (j-1)
   );
-              
+  
+  //
+  // Import / Export
+  //
+  
+  - last_cast_name:STRING := STRING.create 32;
+  
+  - is_export_to t:TYPE_FULL :BOOLEAN <-
+  (         
+    is_cast t with (ALIAS_STR.slot_to) on (prototype.export_list)
+  );
+
+  - is_import_to t:TYPE_FULL :BOOLEAN <-
+  (         
+    is_cast t with (ALIAS_STR.slot_from) on (prototype.import_list)
+  );
+  
+Section Private
+  
+  - is_cast t:TYPE_FULL with msg:STRING_CONSTANT on lst:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
+  ( + result:BOOLEAN; 
+    + typ:TYPE_FULL;
+    + j:INTEGER;
+            
+    (lst != NULL).if {
+      j := lst.lower;
+      {(j <= lst.upper) && {typ := lst.item j.to_run != t}}.while_do {
+	j := j + 1;
+      };	
+      (j <= lst.upper).if {
+	result := TRUE;
+	last_cast_name.copy msg;
+	lst.item j.append_cast_name_in last_cast_name;	
+      };      
+    };
+    result      
+  );
+    
+Section Public
+    
   //
   // Genere.
   //
@@ -719,7 +758,7 @@ Section TYPE
     }
     .when (ALIAS_STR.prototype_integer_64) or (ALIAS_STR.prototype_uinteger_64) then {
       size := 3; // 64 bits
-    };    
+    };        
   );
   
 Section TYPE, TYPE_FULL

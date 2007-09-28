@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := CONTEXT;
+  + name        := CONTEXT_TMP;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 

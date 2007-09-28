@@ -57,6 +57,40 @@ Section Public
     ? {idx <= tab.upper};
     generic_list.item idx
   );
+      
+  //
+  // Import / Export
+  //
+    
+  - is_export_to t:TYPE_FULL :BOOLEAN <-
+  (         
+    is_cast t with (ALIAS_STR.slot_to) on export_list and (prototype.import_list)
+  );
+
+  - is_import_to t:TYPE_FULL :BOOLEAN <-
+  (         
+    is_cast t with (ALIAS_STR.slot_from) on import_list and (prototype.import_list)
+  );
+  
+Section Private
+  
+  - is_cast t:TYPE_FULL with msg:STRING_CONSTANT 
+  on  lst:FAST_ARRAY[TYPE_FULL] 
+  and lstp:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
+  ( + result:BOOLEAN; 
+    + typ:TYPE_FULL;
+    + j:INTEGER;
+            
+    (lst != NULL).if {
+      j := lst.fast_first_index_of t;      
+      (j <= lst.upper).if {
+	result := TRUE;
+	last_cast_name.copy msg;
+	lstp.item j.append_cast_name_in last_cast_name;	
+      };      
+    };
+    result      
+  );
   
   //
   // Get
@@ -222,6 +256,19 @@ Section Public
     subtype_list := HASHED_SET[TYPE].create;
     subtype_list.fast_add TYPE_NULL;
     add_subtype Self;
+    // BSBS: Size ???
+    
+    // Import / Export.
+    CONTEXT_TMP.push_generic Self;
+    export_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.export_list.count);
+    (prototype.export_list.lower).to (prototype.export_list.upper) do { j:INTEGER;
+      export_list.add_last (prototype.export_list.item j.to_run);
+    };
+    import_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.import_list.count);
+    (prototype.import_list.lower).to (prototype.import_list.upper) do { j:INTEGER;
+      import_list.add_last (prototype.import_list.item j.to_run);
+    };
+    CONTEXT.pop;
   );
 
  
