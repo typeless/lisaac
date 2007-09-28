@@ -120,7 +120,7 @@ Section Public
     position := p;    
     
     // Choice profil.
-    profil := prof;
+    profil := prof;    
     argument_list := l_arg;
     profil.link;            
     (profil.result_list != NULL).if {

@@ -58,7 +58,7 @@ Section Public
   
   - create needed_capacity:INTEGER :SELF <-
   ( + result:SELF;
-    result := STRING.clone;   
+    result := SELF.clone;   
     result.make needed_capacity;
     result
   );

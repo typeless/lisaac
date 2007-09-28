@@ -39,7 +39,7 @@ Section Private
   + old_result_lower:INTEGER;  
   + old_list:LIST;      
   + old_context_extern:LOCAL;
-  + old_profil_second:PROFIL;
+  + old_profil:PROFIL;
   
 Section Public
   
@@ -65,9 +65,9 @@ Section Public
     old_result_lower   := stack_result_lower;
     old_list           := list_current;
     old_context_extern := ITM_OBJECT.context_extern;
-    old_profil_second  := profil_second;
+    old_profil         := profil;
     // Creation.
-    profil_second      := prof;
+    profil             := prof;
     stack_result_lower := stack_result.upper + 1;
     list_current       := LIST.create p;    
     ITM_OBJECT.set_context_extern NULL;
@@ -92,7 +92,7 @@ Section Public
     (ITM_OBJECT.context_extern = NULL).if {
       ITM_OBJECT.set_context_extern old_context_extern;
     };
-    profil_second := old_profil_second;
+    profil := old_profil;
     // Pop stack.
     free_list.add_last Self;
     stack.remove_last;

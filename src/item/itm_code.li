@@ -50,7 +50,7 @@ Section Public
   - to_run_extern <-
   ( + i:INSTR;
     
-    (profil_first.result_last != NULL).if {
+    (profil_slot.result_last != NULL).if {
       i := to_run_expr.put_result FALSE;
     } else {
       i := to_run;

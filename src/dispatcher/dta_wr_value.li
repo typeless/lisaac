@@ -54,8 +54,8 @@ Section Public
   
   - make p:POSITION slot sl:SLOT self arg:EXPR value v:EXPR <-
   (
-    position := p;    
-    context  := profil_second;
+    position    := p;    
+    context     := profil;
     slot        := sl;
     self_arg    := arg;
     result_expr := v.my_copy; //slot.get_expr_result;

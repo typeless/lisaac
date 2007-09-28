@@ -241,8 +241,8 @@ Section Public
       list_current.add_last (contract.to_run_contract);
     };
     // Result.
-    (profil_first.result_last != NULL).if {
-      instr := profil_first.result_last.read position;    
+    (profil_slot.result_last != NULL).if {
+      instr := profil_slot.result_last.read position;    
     } else {
       (id_section.is_interrupt).if {
 	list_current.add_first (
@@ -255,8 +255,8 @@ Section Public
 	);
       };
       instr := PROTOTYPE_CST.create position type (TYPE_VOID.default);
-    };
-    list_current.add_last instr;
+    };    
+    list_current.add_last instr;    
   );
   
   - remove_profil prof:PROFIL_SLOT <-

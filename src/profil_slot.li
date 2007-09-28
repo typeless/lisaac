@@ -113,7 +113,7 @@ Section Public
     //    
     context := CONTEXT_SLOT.push (slot_code.position) slot Self;
     code := list_current;
-    slot_code.create_code is_first;    
+    slot_code.create_code is_first;               
     CONTEXT.pop;    
     //
     result

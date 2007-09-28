@@ -126,18 +126,18 @@ Section Public
     (verify).if {      
       // Verify Result cardinality.
       nb_result_list := stack_result.upper - stack_result_lower + 1;
-      (profil_first.result_last != NULL).if {		
-	(profil_first.result_list != NULL).if {
-	  nb_result_slot := profil_first.result_list.count + 1;
+      (profil_slot.result_last != NULL).if {		
+	(profil_slot.result_list != NULL).if {
+	  nb_result_slot := profil_slot.result_list.count + 1;
 	} else {
 	  nb_result_slot := 1;
 	};
       };
 	
       (nb_result_list != nb_result_slot).if {	
-	semantic_error ((profil_first.slot.position),"Value result missing");
+	semantic_error ((profil_slot.slot.position),"Value result missing");
       };      
-    };
+    };        
   );
 
   - to_run_expr:EXPR <- 

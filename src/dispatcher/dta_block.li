@@ -52,7 +52,7 @@ Section Public
   
   - create mod:PROFIL_BLOCK with larg:FAST_ARRAY[EXPR] :SELF <-
   ( + result:SELF;
-    context := profil_second;    
+    context := profil;    
     result := clone;    
     result.make mod with larg;
     result    

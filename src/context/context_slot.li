@@ -33,22 +33,44 @@ Section Inherit
   
 Section Private
   
-  - is_actif:BOOLEAN; // Debug...
+  - free_list:FAST_ARRAY[CONTEXT_SLOT] := FAST_ARRAY[CONTEXT_SLOT].create_with_capacity 16;
+  
+  + old_local_lower:INTEGER;
+  + old_result_lower:INTEGER;
+  + old_list:LIST;
+  + old_profil_slot:PROFIL_SLOT;
+  + old_profil:PROFIL;
   
 Section Public
   
-  - limit_context:INTEGER <- ( crash; 0);
+  - limit_context:INTEGER <- 0;
   
-  - push pos:POSITION slot prof:PROFIL_SLOT :LOCAL <-
+  - push p:POSITION slot prof:PROFIL_SLOT :LOCAL <-
+  ( + result:CONTEXT_SLOT;
+    
+    (free_list.is_empty).if {
+      result := CONTEXT_SLOT.clone;
+    } else {
+      result := free_list.last;
+      free_list.remove_last;
+    };
+    result.make p slot prof
+  );
+  
+  - make pos:POSITION slot prof:PROFIL_SLOT :LOCAL <-
   ( + res:LOCAL;
     
-    (is_actif).if {
-      crash_with_message "CONTEXT_EXTERN : Recursif !!";
-    };
-    is_actif := TRUE;
-    
-    list_current  := LIST.create pos;
-    profil_second := profil_first := prof;    
+    // Save context.
+    old_local_lower  := stack_local_lower;
+    old_result_lower := stack_result_lower;
+    old_list         := list_current;
+    old_profil_slot  := profil_slot;
+    old_profil       := profil;
+    // Creation.
+    stack_local_lower  := stack_local.upper + 1;
+    stack_result_lower := stack_result.upper + 1; 
+    list_current       := LIST.create pos;
+    profil := profil_slot := prof;    
     //
     (debug_level_option != 0).if {
       // Debug mode : Add context local.
@@ -56,17 +78,22 @@ Section Public
       res.set_ensure_count 1;      
       list_current.add_last (PUSH.create pos context res first TRUE);
     };
-    //
+    // Push context.
     stack.add_last Self;
     res
   );
   
   - pop <-
-  (
+  (    
+    // Restore Context.
+    ITM_OBJECT.pop_stack_until stack_local_lower;
+    stack_local_lower := old_local_lower;
+    stack_result.remove_since stack_result_lower;
+    stack_result_lower:= old_result_lower;    
+    list_current      := old_list;
+    profil_slot       := old_profil_slot;
+    profil            := old_profil;    
+    // Pop context.
     stack.remove_last;
-    is_actif := FALSE;
-    //    
-    ITM_OBJECT.pop_stack_until 0;    
-    stack_result.remove_since 0;    
   );
   

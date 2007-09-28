@@ -65,7 +65,7 @@ Section Public
     + rd:READ;    
     + code:STRING_CONSTANT;
     + old_list_current:LIST;
-    + old_profil_second:PROFIL;
+    + old_profil:PROFIL;
     + ctext:LOCAL;
     
     (debug_level_option != 0).if {
@@ -101,9 +101,9 @@ Section Public
     ((res != NULL) && {res.static_type.raw != TYPE_VOID}).if {
       // BSBS: A revoir pour plus simple ....
       old_list_current  := list_current;
-      old_profil_second := profil_second;
+      old_profil := profil;
       list_current  := lst;
-      profil_second := prof;
+      profil := prof;
             
       em ?= res;
       (em != NULL).if {
@@ -119,7 +119,7 @@ Section Public
       };
       
       list_current  := old_list_current;
-      profil_second := old_profil_second;
+      profil := old_profil;
     };
     lst.add_last (PROTOTYPE_CST.create p type (TYPE_VOID.default)); // BSBS: Alias.
   );

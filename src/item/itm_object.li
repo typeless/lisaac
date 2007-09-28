@@ -57,8 +57,8 @@ Section Public
       ((j < CONTEXT.limit_context) && {result.style != '-'}).if {
 	context_extern := result;
       };
-    }.elseif {profil_first != NULL} then {
-      result := profil_first.lookup n;            
+    }.elseif {profil_slot != NULL} then {
+      result := profil_slot.lookup n;            
       ((result != NULL) && {result.name != ALIAS_STR.variable_self}).if {
 	context_extern := result;
       };

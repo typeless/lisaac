@@ -221,7 +221,7 @@ Section ITM_READ
       
       ((verify) && {is_all_warning} && {name == "deferred"}).if {
 	string_tmp.copy "Deferred in `";
-	string_tmp.append (profil_first.slot.name);
+	string_tmp.append (profil_slot.slot.name);
 	string_tmp.append "' for ";
 	receiver.static_type.append_name_in string_tmp;	
 	warning_error (position,string_tmp);
@@ -246,7 +246,7 @@ Section ITM_READ
       ALIAS_ARRAY[ITM_CODE].free larg;
     };
     
-    ? {base.result_expr != NULL};
+    ? {base.result_expr != NULL};    
     base.result_expr    
   );
   
