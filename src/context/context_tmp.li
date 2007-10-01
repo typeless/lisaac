@@ -20,20 +20,25 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := CONTEXT_TMP;
+  + name      := CONTEXT_TMP;
 
-  - copyright   := "2003-2007 Benoit Sonntag";
-
+  - copyright := "2003-2007 Benoit Sonntag";
   
-  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment     := "Create a new context for analyser";
-  
-  // BSBS: A revoir, car globalement, maintenant on compile
-  // que un slot à la fois, donc, tu n'as plus besoin de ca...
-  
+  - author    := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment   := "Create a new context for analyser";
+    
 Section Inherit
   
-  - parent_any:ANY := ANY;
+  - parent_context:CONTEXT := CONTEXT;
+  
+Section Public
+  
+  - push_generic t:TYPE_GENERIC <-
+  (
+    not_yet_implemented;
+  );
+  
+/*  
   
 Section Private
   
@@ -226,3 +231,4 @@ Section Private
     };
   );
   
+*/

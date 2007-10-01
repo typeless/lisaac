@@ -145,7 +145,7 @@ Section Public
 	instr := local.write position value Self;		
 	list_current.add_last instr;
 	//
-	slot_name := ALIAS_STR.get (TYPE_FULL.last_cast_name);	
+	slot_name := ALIAS_STR.get (TYPE.last_cast_name);	
 	slot_msg  := static_type.get_slot slot_name; 
 	(slot_msg = NULL).if {	  
 	  string_tmp.clear;
@@ -193,7 +193,7 @@ Section Public
 	instr := local.write position value Self;		
 	list_current.add_last instr;
 	//	
-	slot_name := ALIAS_STR.get (TYPE_FULL.last_cast_name);
+	slot_name := ALIAS_STR.get (TYPE.last_cast_name);
 	slot_msg  := t.get_slot slot_name; 
 	(slot_msg = NULL).if {	  
 	  string_tmp.clear;

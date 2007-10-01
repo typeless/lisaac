@@ -138,10 +138,8 @@ Section Public
 	is_new := TRUE;
       };
     };
-    (is_new).if {      
-      ITM_TYPE_SELF.set_self_up receiver_type;
-      res_lst := result.make Self with args verify (profil.count = 1);      
-      ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
+    (is_new).if {            
+      res_lst := result.make Self with (type_self, args) verify (profil.count = 1);      
     } else {
       res_lst := result.write_argument args;
     };
@@ -197,9 +195,7 @@ Section Public
   ( + contract:ITM_LIST;
     + slot:ITM_SLOT;
     + instr:INSTR;
-        
-    //ITM_TYPE_SELF.set_self_up receiver_type;
-    
+                
     verify := is_first;
     
     // Require

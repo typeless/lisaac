@@ -263,12 +263,11 @@ Section Private
   
   - is_cast t:TYPE_FULL with msg:STRING_CONSTANT on lst:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
   ( + result:BOOLEAN; 
-    + typ:TYPE_FULL;
     + j:INTEGER;
             
     (lst != NULL).if {
       j := lst.lower;
-      {(j <= lst.upper) && {typ := lst.item j.to_run != t}}.while_do {
+      {(j <= lst.upper) && {lst.item j.to_run != t}}.while_do {
 	j := j + 1;
       };	
       (j <= lst.upper).if {

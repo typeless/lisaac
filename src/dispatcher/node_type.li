@@ -74,19 +74,19 @@ Section Public
   
   - update:BOOLEAN <-
   (
-    update_case & update_depth NULL
+    update_case NULL & update_depth NULL
   );
   
 Section NODE, DTA
   
   - update_link self_type:TYPE_FULL :BOOLEAN <-
   (     
-    update_case & update_depth self_type    
+    update_case self_type & update_depth self_type    
   );
   
 Section Private  
     
-  - update_case:BOOLEAN <-
+  - update_case type_self:TYPE_FULL :BOOLEAN <-
   ( + typ_f:TYPE_FULL;
     + typ:TYPE;
     + lst_typ:TYPES_TMP;
@@ -103,7 +103,7 @@ Section Private
     ).if {
       (first_code = NULL).if {
 	first_type := typ_f.raw;
-	first_code := data.product first_type with expr;
+	first_code := data.product first_type with expr self type_self;
       };
       result := TRUE;
     }.elseif {(typ_f.raw = type_boolean) && {count = 2}} then {
@@ -116,7 +116,7 @@ Section Private
 	  (lst_typ.count = 1).if {
 	    (first_code = NULL).if {
 	      first_type := lst_typ.first;
-	      first_code := data.product first_type with expr;
+	      first_code := data.product first_type with expr self type_self;
 	    };
 	  } else {
 	    (switch = NULL).if {
@@ -129,7 +129,7 @@ Section Private
 		((j > list.upper) || {typ != list.item j.id}).if {
 		  add_stack_type typ;
 		  //
-		  case := CASE.create typ with (data.product typ with expr);		
+		  case := CASE.create typ with (data.product typ with expr self type_self);		
 		  list.add case to j;
 		  //
 		  stack_type.remove_last;
@@ -163,7 +163,7 @@ Section Private
 	  new_type_self := self_type;
 	};
 	add_stack_type first_type;
-	result := data.update_branch first_code;
+	result := data.update_branch first_code self self_type;
 	stack_type.remove_last;
       };
     } else {
@@ -175,7 +175,7 @@ Section Private
 	  new_type_self := self_type;
 	};
 	add_stack_type (list.item j.id);
-	data.update_branch (list.item j.code);
+	data.update_branch (list.item j.code) self self_type;
 	stack_type.remove_last;
       };
     };

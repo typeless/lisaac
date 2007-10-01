@@ -74,11 +74,13 @@ Section Public
   
 Section Private
   
+  + export_list:FAST_ARRAY[TYPE_FULL];
+  + import_list:FAST_ARRAY[TYPE_FULL];
+  
   - is_cast t:TYPE_FULL with msg:STRING_CONSTANT 
   on  lst:FAST_ARRAY[TYPE_FULL] 
   and lstp:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
   ( + result:BOOLEAN; 
-    + typ:TYPE_FULL;
     + j:INTEGER;
             
     (lst != NULL).if {
@@ -91,6 +93,8 @@ Section Private
     };
     result      
   );
+  
+Section Public
   
   //
   // Get

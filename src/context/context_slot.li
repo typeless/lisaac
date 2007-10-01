@@ -45,6 +45,12 @@ Section Public
   
   - limit_context:INTEGER <- 0;
   
+  - push p:POSITION slot prof:PROFIL_SLOT self type_self:TYPE_FULL generic rec:TYPE :LOCAL <-
+  (
+    deferred;
+    NULL
+  );
+  
   - push p:POSITION slot prof:PROFIL_SLOT :LOCAL <-
   ( + result:CONTEXT_SLOT;
     

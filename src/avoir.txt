@@ -1,11 +1,5 @@
 item/itm_type_generic_elt.li:    type_generic ?= ITM_TYPE_SELF.self_up;            
 
-variable/slot_code.li:	    (pro.type_self = NULL) || {pro.type_self == ITM_TYPE_SELF.to_run}
-variable/slot_code.li:	((pro.type_self = NULL) || {pro.type_self == ITM_TYPE_SELF.to_run}).if {
-variable/slot_code.li:      ITM_TYPE_SELF.set_self_up receiver_type;
-variable/slot_code.li:      ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
-variable/slot_code.li:    //ITM_TYPE_SELF.set_self_up receiver_type;
-
 variable/slot.li:      ITM_TYPE_SELF.set_self_up receiver_type;
 variable/slot.li:      ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
 variable/slot.li:	ITM_TYPE_SELF.set_self_up receiver_type;
@@ -18,12 +12,5 @@ variable/slot.li:    ITM_TYPE_SELF.set_run NULL;
 variable/slot.li:    ITM_TYPE_SELF.set_run type_self;
 variable/slot.li:    ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
 
-dispatcher/node.li:    old_self := ITM_TYPE_SELF.run_value;
-dispatcher/node.li:    ITM_TYPE_SELF.set_run (my_self.static_type);
-dispatcher/node.li:    ITM_TYPE_SELF.set_run old_self;
-dispatcher/node.li:    old_self := ITM_TYPE_SELF.run_value;
-dispatcher/node.li:    ITM_TYPE_SELF.set_run typ_self;
-dispatcher/node.li:    ITM_TYPE_SELF.set_run old_self;    
-dispatcher/node_style.li:	ITM_TYPE_SELF.set_run type;      
-dispatcher/node_type.li:	  ITM_TYPE_SELF.set_run typ;
-dispatcher/node_type.li:	  ITM_TYPE_SELF.set_run (list.item j.id.default.to_strict);
+
+

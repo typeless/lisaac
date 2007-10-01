@@ -53,7 +53,9 @@ Section Public
   // Creation.
   //
   
-  - make s:SLOT_CODE with call_lst:FAST_ARRAY[EXPR] verify is_first:BOOLEAN :FAST_ARRAY[WRITE] <-
+  - make s:SLOT_CODE 
+  with (typ_self:TYPE_FULL,call_lst:FAST_ARRAY[EXPR]) 
+  verify is_first:BOOLEAN :FAST_ARRAY[WRITE] <-
   ( + loc:LOCAL;
     + typ:TYPE_FULL;    
     + item_lst:FAST_ARRAY[ITM_ARGUMENT];       
@@ -70,8 +72,13 @@ Section Public
       name := ALIAS_STR.get_intern (s.name);    
     };
     slot_code := s;
-    type_self := ITM_TYPE_SELF.to_run;
-            
+    type_self := typ_self;
+    //
+    context := CONTEXT_SLOT.push (slot_code.position) 
+    slot Self self typ_self generic (slot_code.receiver_type);
+    //
+    code := list_current;
+    //
     // Arguments.    
     item_lst := s.base_slot.argument_list;    
     argument_list := FAST_ARRAY[LOCAL].create_with_capacity (s.base_slot.argument_count); 
@@ -110,9 +117,7 @@ Section Public
     };
     //
     result := write_argument call_lst;
-    //    
-    context := CONTEXT_SLOT.push (slot_code.position) slot Self;
-    code := list_current;
+    //        
     slot_code.create_code is_first;               
     CONTEXT.pop;    
     //

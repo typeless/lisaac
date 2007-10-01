@@ -84,7 +84,7 @@ Section NODE, DTA
     (slot.slot_id = NULL).if {
       (first_code = NULL).if {
 	first_type := TYPE_ID.get_index (slot.lower_style);
-	first_code := call_for first_type;      
+	first_code := call_for first_type self self_type;      
       };
     } else {            
       low := slot.lower_style;
@@ -105,7 +105,7 @@ Section NODE, DTA
 	  typ := TYPE_ID.get_index (j+low);
 	  
 	  ((j > list.upper) || {typ != list.item j.id}).if {
-	    case := CASE.create typ with (call_for typ);
+	    case := CASE.create typ with (call_for typ self self_type);
 	    list.add case to j;
 	  };	    
 	};	  
@@ -132,7 +132,7 @@ Section Private
     + my_profil:PROFIL;
     + wrt_lst:FAST_ARRAY[WRITE];
     + ctext:LOCAL;
-    + new_type_self:TYPE_SELF;
+    + new_type_self:TYPE_FULL;
     
     result := LIST.create position;
     

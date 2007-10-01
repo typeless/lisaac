@@ -75,36 +75,31 @@ Section Public
   //
   
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR self my_self:EXPR :NODE <-
-  ( + dta:DTA_RD;
-    + old_self:TYPE_FULL;
+  ( + dta:DTA_RD;    
     + result:NODE_TYPE;
-            
-    old_self := ITM_TYPE_SELF.run_value;
-    ITM_TYPE_SELF.set_run (my_self.static_type);
+    
+    CONTEXT_TMP.push (my_self.static_type);
     //    
     dta := DTA_RD.create p call s self my_self;
     result := NODE_TYPE.create rec with dta;
     //    
-    ITM_TYPE_SELF.set_run old_self;
+    CONTEXT.pop;    
     node_list.add_last result;
     result
   );
 
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
   ( + dta:DTA_RD_ARGS;    
-    + old_self,typ_self:TYPE_FULL;
     + result:NODE_TYPE;
-
-    old_self := ITM_TYPE_SELF.run_value;
-    typ_self := larg.first.static_type;
-    ITM_TYPE_SELF.set_run typ_self;
+    
+    CONTEXT_TMP.push (larg.first.static_type);
     // Control argument type.            
     s.check_argument_type_for larg;    
     //
     dta := DTA_RD_ARGS.create p call s with larg;
     result := NODE_TYPE.create rec with dta;
     //
-    ITM_TYPE_SELF.set_run old_self;    
+    CONTEXT.pop;
     node_list.add_last result;
     result
   );
@@ -115,8 +110,7 @@ Section Public
         
     dta := DTA_WR_VALUE.create p slot s self rec value val;
     result := NODE_TYPE.create rec with dta;
-    //
-    //put_push_debug p;
+    //    
     node_list.add_last result;
     result
   );
@@ -262,7 +256,7 @@ Section NODE, DTA
   // Update.
   //
   
-  - update_link:BOOLEAN <-
+  - update_link self_type:TYPE_FULL :BOOLEAN <-
   (
     deferred;
   );
