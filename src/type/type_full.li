@@ -56,7 +56,7 @@ Section Public
   - is_late_binding:BOOLEAN <- parent_type.is_late_binding;
 
 Section TYPE
-    
+      
   + flag:UINTEGER_8;
   // 7 6 5 4 3 2 1 0
   //     | | | | | +- 0:Reference / 1:Expanded
@@ -86,7 +86,9 @@ Section TYPE
   );
   
 Section Public
-
+  
+  - is_parameter_type:BOOLEAN <- FALSE;
+  
   - raw:TYPE <- parent_type;
   
   //

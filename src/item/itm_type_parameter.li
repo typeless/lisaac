@@ -53,13 +53,13 @@ Section Private
   
   - make idf:CHARACTER <-
   (
-    name := idf;  
+    string_tmp.clear;
+    string_tmp.add_last idf;
+    to_run := TYPE_PARAMETER.create (ALIAS_STR.get string_tmp);
   );
     
 Section Public
-  
-  + name:CHARACTER;
-       
+         
   - get idf:CHARACTER :ITM_TYPE_PARAMETER <-
   ( 
     list_type.item (idf -! 'A')
@@ -68,17 +68,11 @@ Section Public
   - display buffer:STRING <-
   (
     buffer.append "Generic[";
-    buffer.add_last name;    
+    buffer.add_last (to_run.parameter_name);    
     buffer.add_last ']';
   );
-  
-  - string_tmp:STRING := STRING.create 100; // BSBS: Necessaire ?
-    
-  - to_run:TYPE_FULL <-  
-  (
-    not_yet_implemented;
-    NULL
-  );
+      
+  + to_run:TYPE_FULL;
         
   //
   // Cast.
