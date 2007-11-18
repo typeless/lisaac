@@ -95,19 +95,7 @@ Section Public
        vv :=  vv + v.item i * v.item i;
     };
      
-    ((vbv/vv).sqrt).print;
+    ((vbv/vv).sqrt).print_format_c "%.9f";
     '\n'.print;
-
-    /*
-    ( + t:REAL_64;
-      t := (vbv/vv).sqrt;
-     `printf("%f\n",@t)`;
-     '\n'.print;
-     vbv.print;
-     '\n'.print;
-     vv.print;
-     '\n'.print;
-    );
-    */
 
   );
