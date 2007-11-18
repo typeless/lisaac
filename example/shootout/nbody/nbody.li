@@ -24,7 +24,7 @@ Section Header
 
 	- comment := "Main prototype for the N-Body shootout benchmark. Based on the C version.";
 
-	- author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>";
+	- author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>, Xavier Oswald <x.oswald@free.fr>";
 	
 Section Inherit
 
@@ -137,16 +137,14 @@ Section Public
 		
 		offset_momentum;
 		
-		//*** how to print with 10 decimals ? 
-		energy.print;
+		energy.print_format_c "%.9f";
 		"\n".print;
-		
+	
 		1.to n do { i : INTEGER;
 			advance 0.01;
 		};
 		
-		//*** how to print with 10 decimals ? 
-		energy.print;
+		energy.print_format_c "%.9f";
 		"\n".print;	
 	);
 	
