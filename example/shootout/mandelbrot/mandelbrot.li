@@ -24,7 +24,7 @@ Section Header
 
 	- comment := "Mandelbrot set generation shootout benchmarck, based on the C version";
 
-	- author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>";
+	- author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>, Xavier Oswald <x.oswald@free.fr>";
 	
 Section Inherit
 
@@ -33,17 +33,15 @@ Section Inherit
 Section Public
 
 	- main <-
-	( 	+ w, h, bit_num : INTEGER;
+	( + w, h, bit_num : INTEGER;
 		+ iter : INTEGER;
 		+ byte_acc : INTEGER_8;
-		+ limit : REAL_64;
+		+ limit_sqr : REAL_64;
 		
-		iter := 50;
-		limit := 2.0;
-		
-		bit_num := 0;
-		
-		byte_acc := 0;
+		iter      := 50;
+    limit_sqr := 4.0;
+		bit_num   := 0;
+		byte_acc  := 0;
 	
 		w := COMMAND_LINE.item 1.to_integer;
 		h := w;
@@ -52,52 +50,47 @@ Section Public
 		"P4\n".print;
 		w.print;
 		" ".print;
-		h.print; //should be the same as w,
-		//but in the C version it's also printed.
+		h.print;
 		"\n".print;
 		
 		0.to (h - 1) do {y : INTEGER;
 			0.to (w - 1) do {x : INTEGER;
 				+ zr, zi, tr, ti, cr, ci : REAL_64;
 				+ i : INTEGER;
-				
+			  
 				zr := 0.0;
 				zi := 0.0;
 				tr := 0.0;
 				ti := 0.0;
 				
-				cr := (2.0 * x / w - 1.5);
-				ci := (2.0 * y / h - 1.0);
+				cr := (2.0 * x / w.to_real_64 - 1.5);
+				ci := (2.0 * y / h.to_real_64 - 1.0);
 				
 				i := 0;
-				
-				{(i < iter) && {tr + ti <= limit * limit}}.while_do {
+				{(i < iter) && {tr + ti <= limit_sqr}}.while_do {
 					zi := 2.0 * zr * zi + ci;
 					zr := tr - ti + cr;
 					tr := zr * zr;
 					ti := zi * zi;
-					i := i + 1;				
+					i  := i + 1;				
 				};
 				
-				byte_acc := byte_acc << 1;
-				
-				(tr + ti <= limit * limit).if {
-					byte_acc := byte_acc | 01h;
-				};
-				
-				bit_num := bit_num + 1;
-				
-				(bit_num = 8).if {
-					byte_acc.to_character.print;
-					byte_acc := 0;
-					bit_num := 0;
-				}.elseif {x = w - 1} then {
-					byte_acc := byte_acc << (8 - w % 8);
-					byte_acc.to_character.print;
-					byte_acc := 0;
-					bit_num := 0;
-				};
-			};
-		};		
-	
-	);
+        byte_acc := byte_acc << 1;
+        (tr + ti <= limit_sqr).if {
+          byte_acc := byte_acc | 01h;
+        };
+
+        bit_num := bit_num + 1;
+        (bit_num = 8).if {
+          byte_acc.to_character.print;
+          byte_acc := 0;
+          bit_num  := 0;
+        }.elseif {x = w - 1} then {
+          byte_acc := byte_acc << (8 - w % 8);
+          byte_acc.to_character.print;
+          byte_acc := 0;
+          bit_num  := 0;
+        };
+      };
+    };		
+  );
