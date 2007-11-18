@@ -43,22 +43,14 @@ Section Public
   //
   // Running.
   //
-  
+/*  
   - item idx:INTEGER :ITM_TYPE_MONO <- 
   (
     deferred;
     NULL
   );
-  
-/*  
-  - get_type idx:INTEGER :TYPE_FULL <-
-  (
-    deferred;
-    NULL
-  );
-  */  
-  
-  - to_run arg_lst:FAST_ARRAY[LOCAL] <-
+*/  
+  - to_run arg_lst:FAST_ARRAY[ARGUMENT] <-
   (
     deferred;
   );

@@ -180,7 +180,7 @@ Section Public
 	{slot_run.item j.id_section.is_inherit_or_insert}      
       }.while_do {
 	(slot_run.item j.id_section.is_inherit).if {
-	  slot_run.item j.get_type_result.raw.add_subtype t;
+	  slot_run.item j.result_type.raw.add_subtype t;
 	};
 	j := j + 1;
       };
@@ -200,7 +200,7 @@ Section Public
 	{slot_run.item j.id_section.is_inherit_or_insert} &&
 	{result = NULL}	
       }.while_do {
-	result := slot_run.item j.get_type_result.get_slot n;
+	result := slot_run.item j.result_type.get_slot n;
 	j := j + 1;
       };
     };
@@ -236,7 +236,7 @@ Section Public
     {result = NULL}.while_do {
       ? {j <= slot_run.upper}; 
       ? {slot_run.item j.id_section.is_inherit_or_insert};
-      result := slot_run.item j.get_type_result.get_slot n;
+      result := slot_run.item j.result_type.get_slot n;
       j := j + 1;
     };
     ? {result != NULL};

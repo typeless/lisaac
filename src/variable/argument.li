@@ -20,31 +20,63 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := ITM_TYPE_SELF;
+  + name      := ARGUMENT;
 
   - copyright := "2003-2007 Benoit Sonntag";
+
   
   - author    := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment   := "Type Self";
+  - comment   := "Argument runnable";
   
 Section Inherit
   
-  + parent_itm_type_simple:Expanded ITM_TYPE_SIMPLE;
-  
-Section ITM_TYPE_SIMPLE
-  
-  - make <-
-  (
-    to_run_intern := TYPE_PARAMETER.create (ALIAS_STR.prototype_self);
-  );
-  
-  - to_run_intern:TYPE_PARAMETER;
+  + parent_itm_object:Expanded ITM_OBJECT;
   
 Section Public
   
-  - name:STRING_CONSTANT <- to_run_intern.parameter_name;
+  + name:STRING_CONSTANT;
   
-  - to_run:TYPE_FULL <- to_run_intern;        
-
+  + type:TYPE_FULL;
   
+  //
+  // Creation.
+  //
+  
+  - create p:POSITION name n:STRING_CONSTANT type t:TYPE_FULL :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make p name n type t;
+    result
+  );
+  
+  - make p:POSITION name n:STRING_CONSTANT type t:TYPE_FULL <-
+  (
+    position := p;
+    name := n;
+    type := t;
+  );
+  
+  //
+  // To profil
+  //
+  
+  - to_local:LOCAL <-
+  (
+    LOCAL.create position name name style ' ' type (type.fix)
+  );
+  
+  //
+  // Display.
+  //
+  
+  - print <-
+  (    
+    string_tmp.clear;
+    string_tmp.append name;
+    string_tmp.add_last ':';
+    type.append_name_in string_tmp;
+    string_tmp.print;
+  );
+    
   

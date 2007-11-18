@@ -64,39 +64,23 @@ Section Public
   //
   // Running.
   //
-
+/*
   - item idx:INTEGER :ITM_TYPE_MONO <- 
   ( ? {idx.in_range 0 to upper};
     type.item idx
   );
-  
-  /*
-  - get_type idx:INTEGER :TYPE_FULL <-
-  (
-    ? {idx.in_range 0 to (count-1)};
-    type.item idx.to_run
-  );
   */
-
-  - to_run arg_lst:FAST_ARRAY[LOCAL] <-
+  
+  - to_run arg_lst:FAST_ARRAY[ARGUMENT] <-
   ( + t:TYPE_FULL;
-    + loc:LOCAL;
     
     (name.lower).to (name.upper) do { j:INTEGER;
       t := type.item j.to_run;      
-      loc := LOCAL.create position name (name.item j) style ' ' type t;
-      arg_lst.add_last loc;
+      arg_lst.add_last (
+	ARGUMENT.create position name (name.item j) type t
+      );
     };
   );
-  
-  /*
-  - to_run_type arg_lst:FAST_ARRAY[TYPE_FULL] <-
-  (    
-    (name.lower).to (name.upper) do { j:INTEGER;
-      arg_lst.add_last (type.item j.to_run);
-    };
-  );
-  */
   
   //
   // Display.

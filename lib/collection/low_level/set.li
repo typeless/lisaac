@@ -267,6 +267,27 @@ Section Public
   [ ...
     +? {count <= Old count + other.count}; 
   ];
+  
+  - fast_union other:SELF <-
+  // Make the union of the `Current' set with `other'.
+  [ ...
+    -? {other != NULL}; 
+  ]
+  ( + i:INTEGER;
+    + e:V;
+		
+    i := 1;
+    {i > other.count}.until_do {
+      e := other.item i;
+      (! fast_has e).if {
+	fast_add e;
+      };
+      i := i + 1;
+    };
+  )
+  [ ...
+    +? {count <= Old count + other.count}; 
+  ];
 	
   - '+' other:SELF :SELF <-
   // Return the union of the `Current' set with `other'.

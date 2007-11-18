@@ -33,10 +33,17 @@ Section Inherit
   
 Section Public
   
-  - push_generic t:TYPE_GENERIC <-
+  - push_generic type:TYPE <-
   (
     not_yet_implemented;
   );
+
+  - push type_self:TYPE_FULL <-
+  (
+    not_yet_implemented;
+  );
+  
+  
   
 /*  
   

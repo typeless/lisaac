@@ -66,7 +66,7 @@ Section Public
 	string_tmp.add_last '.';
 	semantic_error (position,string_tmp);
       };
-      typ_cast := slot.get_type_result;
+      typ_cast := slot.result_type; 
     };
     (verify).if {
       (typ_cast.affect_with (val.static_type)).if {

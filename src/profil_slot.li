@@ -57,11 +57,9 @@ Section Public
   with (typ_self:TYPE_FULL,call_lst:FAST_ARRAY[EXPR]) 
   verify is_first:BOOLEAN :FAST_ARRAY[WRITE] <-
   ( + loc:LOCAL;
-    + typ:TYPE_FULL;    
-    + item_lst:FAST_ARRAY[ITM_ARGUMENT];       
+    + item_lst:FAST_ARRAY[ARGUMENT];       
     + idx_result:INTEGER;
-    + type_multiple:ITM_TYPE_MULTI;
-    + type_mono:ITM_TYPE_MONO;
+    + types:FAST_ARRAY[TYPE_FULL];    
     + result:FAST_ARRAY[WRITE];
     
     PROFIL_LIST.add Self;
@@ -75,15 +73,17 @@ Section Public
     type_self := typ_self;
     //
     context := CONTEXT_SLOT.push (slot_code.position) 
-    slot Self self typ_self generic (slot_code.receiver_type);
+    slot Self self typ_self;
     //
     code := list_current;
     //
     // Arguments.    
-    item_lst := s.base_slot.argument_list;    
-    argument_list := FAST_ARRAY[LOCAL].create_with_capacity (s.base_slot.argument_count); 
+    item_lst := s.arguments;    
+    argument_list := FAST_ARRAY[LOCAL].create_with_capacity (item_lst.count); 
     (item_lst.lower).to (item_lst.upper) do { j:INTEGER;
-      item_lst.item j.to_run argument_list;
+      argument_list.add_last (
+	item_lst.item j.to_local
+      );
     };
     ((s.id_section.is_external) && {argument_list.count > 1}).if {
       (argument_list.lower+1).to (argument_list.upper) do { j:INTEGER;      
@@ -97,23 +97,19 @@ Section Public
     };    
     
     // Results
-    (s.base_slot.type != ITM_TYPE_MONO.type_void).if {
-      type_multiple ?= s.base_slot.type;
-      (type_multiple != NULL).if {  
-	result_list := FAST_ARRAY[LOCAL].create_with_capacity (type_multiple.count - 1);	
+    (s.result_type.raw != TYPE_VOID).if {
+      types := s.results_type;      
+      (types != NULL).if {  
+	result_list := FAST_ARRAY[LOCAL].create_with_capacity (types.count);		
 	idx_result := 1;
-	0.to (type_multiple.upper - 1) do { k:INTEGER;	  
-	  typ := type_multiple.item k.to_run;	
+	(types.lower).to (types.upper) do { k:INTEGER;	  
+	  typ := types.item k.fix;	
 	  loc := typ.get (s.position) result idx_result;
 	  result_list.add_last loc;
 	  idx_result := idx_result + 1;
 	};
-	typ := type_multiple.last.to_run;	
-      } else {
-	type_mono ?= s.base_slot.type;
-	typ := type_mono.to_run;
       };
-      result_last := typ.get (s.position) result idx_result;
+      result_last := result_type.fix.get (s.position) result idx_result;
     };
     //
     result := write_argument call_lst;

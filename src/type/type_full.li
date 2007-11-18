@@ -91,6 +91,8 @@ Section Public
   
   - raw:TYPE <- parent_type;
   
+  - fix:TYPE_FULL <- Self;
+  
   //
   // Set.
   //

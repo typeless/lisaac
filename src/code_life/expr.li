@@ -166,8 +166,8 @@ Section Public
 	(slot_msg.base_slot.argument_count != 1).if {	  
 	  semantic_error ((slot_msg.position),"No argument for this slot.");
 	};
-	typ := slot_msg.get_type_result;
-	((typ = NULL) || {typ.raw != t.raw}).if {	  	  
+	typ := slot_msg.result_type;
+	((typ = NULL) || {typ.raw != t.raw} || {slot_msg.results_type != NULL}).if {	  	  
 	  string_tmp.copy "Type result ";
 	  (typ != NULL).if {
 	    string_tmp.add_last '`';
@@ -214,8 +214,8 @@ Section Public
 	(slot_msg.base_slot.argument_count != 2).if {
 	  semantic_error ((slot_msg.position),"Incorrect argument for this slot.");
 	};
-	typ := slot_msg.get_type_result;
-	((typ = NULL) || {typ.raw != t.raw}).if {	  	  
+	typ := slot_msg.result_type;
+	((typ = NULL) || {typ.raw != t.raw} || {slot_msg.results_type != NULL}).if {	  	  
 	  string_tmp.copy "Type result ";
 	  (typ != NULL).if {
 	    string_tmp.add_last '`';

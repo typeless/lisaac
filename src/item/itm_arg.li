@@ -62,27 +62,18 @@ Section Public
   //
   // Running.
   //
-  
+/*  
   - item idx:INTEGER :ITM_TYPE_MONO <- 
   ( ? {idx = 0};
     type
   );
-  
-  /*
-  - get_type idx:INTEGER :TYPE_FULL <-
-  (
-    ? {idx = 0};
-    type.to_run
-  );
   */
 
-  - to_run arg_lst:FAST_ARRAY[LOCAL] <-
-  ( + loc:LOCAL;
-    + t:TYPE_FULL;
-    
-    t := type.to_run;    
-    loc := LOCAL.create position name name style ' ' type t;
-    arg_lst.add_last loc;
+  - to_run arg_lst:FAST_ARRAY[ARGUMENT] <-
+  ( 
+    arg_lst.add_last (
+      ARGUMENT.create position name name type (type.to_run)
+    );
   );
   
   //

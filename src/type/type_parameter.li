@@ -32,6 +32,8 @@ Section Inherit
   + parent_type_full:TYPE_FULL := TYPE_FULL;
   
 Section Public
+
+  - fix:TYPE_FULL <- parent_type_full;
   
   - is_parameter_type:BOOLEAN <- TRUE;
   
@@ -49,7 +51,7 @@ Section Public
     result
   );
   
-  - name n:STRING_CONSTANT <-
+  - make n:STRING_CONSTANT <-
   (
     parameter_name := n;
   );
@@ -71,7 +73,7 @@ Section Public
   (
     buffer.append parameter_name;
     buffer.add_last ':';
-    parameter_name.append_name_in buffer;
+    parent_type_full.append_name_in buffer;
   );
   
 

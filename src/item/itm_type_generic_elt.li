@@ -78,12 +78,17 @@ Section Public
   - string_tmp:STRING := STRING.create 100;
   
   - to_run:TYPE_FULL <-
-  ( + type_generic:TYPE_GENERIC;    
+  ( 
+    not_yet_implemented;
+    /*
+    + type_generic:TYPE_GENERIC;    
     + t:CHARACTER;
     
     t := 'A' +# index;
     type_generic ?= ITM_TYPE_SELF.self_up;            
     type_generic.generic_to_type t    
+    */
+    NULL
   );
 
   //
