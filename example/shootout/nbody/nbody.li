@@ -87,7 +87,7 @@ Section Private
     
     0.to (nbodies - 1) do { i : INTEGER;      
       b := bodies.item i;
-      e := e + 0.5 * b.mass * (b.vx * b.vx + b.vy * b.vy + b.vz * b.vz);
+      e := e + b.mass * 0.5 * (b.vx * b.vx + b.vy * b.vy + b.vz * b.vz);
       
       (i + 1).to (nbodies - 1) do { j : INTEGER;		
 	b2 := bodies.item j;
