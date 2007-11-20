@@ -32,8 +32,6 @@ Section Inherit
   
 Section Public
   
-  - is_less_equal (x,y:REAL_64) :BOOLEAN <- x <= y; // `islessequal(@x,@y)`:BOOLEAN(TRUE,FALSE);
-  
   - main <-
   ( + w, h, bit_num:INTEGER;
     + iter:INTEGER;
