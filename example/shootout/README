@@ -36,24 +36,24 @@ Status:
 | Benchmark          |  Code   | Results |      Speed       |       Comments             |
 +========================================================================================+
 | binary_trees       | OK      | OK      | Faster than C :) |                            |
-| chameneos          | TODO    | TODO    | TODO             | TODO                       |
+|Tchameneos          | TODO    | TODO    | TODO             | TODO                       |
 | fannkuch           | OK      | OK      | Faster than C :) |                            |
-| fasta              | Ok      | Ok      | Slower than C :( | Need to optimize !!        | -> quite good !
-| k-nucleotide       | Non ok  | Non ok  | TODO             | TODO                       |
-| mandelbrot         | Non ok  | Non ok  | Slower than C :( | Small mistake but where ?? | -> quite good !
-| meteor-contest     | TODO    | TODO    | TODO             | TODO                       |
-| n-body             | Non ok  | Non ok  | Slower than C :( | Small mistake but where ?? | -> quite good !
-| nsieve             | OK      | OK      | Slower than C :( |                            |
+|Xfasta              | Ok      | Ok      | Slower than C :( | Need to optimize !!        | -> quite good !
+|Bk-nucleotide       | Non ok  | Non ok  | TODO             | TODO                       |
+| mandelbrot         | ok      | ok      | Faster than C :) |                            | 
+|Bmeteor-contest     | TODO    | TODO    | TODO             | TODO                       |
+|Bn-body             | Non ok  | Non ok  | Slower than C :( | Small mistake but where ?? | -> quite good !
+|Bnsieve             | OK      | OK      | Slower than C :( |                            |
 | nsieve-bits        | OK      | OK      | same as C        |                            |
 | partial-sums       | OK      | OK      | bit slower than C|                            |
-| pidigits           | TODO    | TODO    | TODO             | TODO                       |
+|Lpidigits           | TODO    | TODO    | TODO             | TODO                       |
 | recursive          | OK      | OK      | same as C        |                            |
-| regex-dna          | TODO    | TODO    | TODO             | TODO                       |
-| reverse-complement | TODO    | TODO    | TODO             | TODO                       |
+|Lregex-dna          | TODO    | TODO    | TODO             | TODO                       |
+|Xreverse-complement | TODO    | TODO    | TODO             | TODO                       |
 | spectral-norm      | OK      | OK      | Faster than C :) |                            |
 | startup            | OK      | OK      | same as C        |                            |
 | sum-file           | OK      | OK      | Faster than C :) |                            |
-| thread-ring (new)  | TODO    | TODO    | TODO             | TODO                       |
+|Tthread-ring (new)  | TODO    | TODO    | TODO             | TODO                       |
 +========================================================================================+
 
 Best regards,
