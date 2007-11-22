@@ -36,13 +36,13 @@ Status:
 | Benchmark          |  Code   | Results |      Speed       |       Comments             |
 +========================================================================================+
 | binary_trees       | OK      | OK      | Faster than C :) |                            |
-|Tchameneos          | TODO    | TODO    | TODO             | TODO                       |
+| chameneos          |         |         |                  | Thread used                |
 | fannkuch           | OK      | OK      | Faster than C :) |                            |
 |Xfasta              | Ok      | Ok      | Slower than C :( | Need to optimize !!        | -> quite good !
 |Bk-nucleotide       | Non ok  | Non ok  | TODO             | TODO                       |
-| mandelbrot         | ok      | ok      | Faster than C :) |                            | 
+| mandelbrot         | OK      | OK      | Faster than C :) |                            | 
 |Bmeteor-contest     | TODO    | TODO    | TODO             | TODO                       |
-|Bn-body             | Non ok  | Non ok  | Slower than C :( | Small mistake but where ?? | -> quite good !
+| n-body             | OK      | OK      | bit slower than C|                            | 
 |Bnsieve             | OK      | OK      | Slower than C :( |                            |
 | nsieve-bits        | OK      | OK      | same as C        |                            |
 | partial-sums       | OK      | OK      | bit slower than C|                            |
@@ -53,7 +53,7 @@ Status:
 | spectral-norm      | OK      | OK      | Faster than C :) |                            |
 | startup            | OK      | OK      | same as C        |                            |
 | sum-file           | OK      | OK      | Faster than C :) |                            |
-|Tthread-ring (new)  | TODO    | TODO    | TODO             | TODO                       |
+| thread-ring (new)  |         |         |                  | Thread used                |
 +========================================================================================+
 
 Best regards,
