@@ -55,6 +55,11 @@ Status:
 | sum-file           | OK      | OK      | Faster than C :) |                            |
 | thread-ring (new)  |         |         |                  | Thread used                |
 +========================================================================================+
+Scores : 
+* Lisaac     : 5 
+* C          : 4
+* Lisaac = C : 3
+* TODO       : 5 
 
 Best regards,
     Xavier Oswald <x.oswald@free.fr>
