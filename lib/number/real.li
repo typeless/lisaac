@@ -39,11 +39,13 @@ Section Insert
   
 Section Public
   
+  - '+'  Left 80  other:SELF :SELF <- `@Self + @other`:SELF;
+
   - bound_test low:INTEGER_64 to up:UINTEGER_64 :BOOLEAN <-  
   (
     TRUE
   );
-
+  
   - pi   :SELF <- 3.14159265358979323846;
 
   - atan :SELF <- `atan(@Self)`:SELF;

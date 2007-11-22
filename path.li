@@ -121,8 +121,14 @@ Section UNIX
   - unix   + "video/";
   
   * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -o " + 
-  output_file + " -L" + path_lib_x11 + option_gcc;
-      
+    output_file + " -L" + path_lib_x11 + option_gcc;
+
+  //* "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
+  //output_file + " " + input_file + " -lm";
+  
+  //* "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
+  //"mandelbrot_c mandelbrot_c.c -lm";
+  
 Section WINDOWS
   
   - unix   + "system/";
