@@ -113,23 +113,23 @@ Section Private
   - select_random (a:FAST_ARRAY[FREQUENCY]) :CHARACTER <-
   ( + return_char :CHARACTER;
     + random :REAL_64;
-    + exit :BOOLEAN;
+    + up :INTEGER;
 
-    //TODO : improve this loop
+    up := a.upper;
     random := rand(1.0);
-    0.to (a.upper) do { i:INTEGER;
-      (!exit).if {
+
+    0.to (up) do { i:INTEGER;
+    //TODO Benoit, super lent !!!!!!!!!!!!!
         (random < (a.item i).p).if {
-          exit := TRUE;
           return_char := (a.item i).c;
         };
-      };
     };
     
-    (!exit).if {
-      return_char := (a.item(a.upper)).c;
+    //TODO Benoit, un peu lent ...
+    (return_char = '\0').if {
+      return_char := (a.item(up)).c;
     };
-
+    
     return_char
   );
 
@@ -141,6 +141,7 @@ Section Private
     index  := 0;
     n_temp := n;
 
+    //TODO:don't use a temp string
     desc_str := STRING.create 5;
     desc_str.append ">";
     desc_str.append id;
@@ -191,7 +192,8 @@ Section Private
     index    := 0;
     n_temp   := n;
     kn       := alub.count;
-    
+
+    //TODO: don't use a temp string !
     desc_str := STRING.create 5;
     desc_str.append ">";
     desc_str.append id;
@@ -251,9 +253,14 @@ Section Public
     create_homo_sapiens;
     make_cumulative iub;
     make_cumulative(homo_sapiens);
+ 
     make_repeat_fasta("ONE", "Homo sapiens alu", alu, n * 2);
-    make_random_fasta("TWO", "IUB ambiguity codes", iub, n * 3);
-    make_random_fasta("THREE", "Homo sapiens frequency", homo_sapiens, n * 5);
-
     out.print;
+    out.make_empty;
+    make_random_fasta("TWO", "IUB ambiguity codes", iub, n * 3);
+    out.print;
+    out.make_empty;
+    make_random_fasta("THREE", "Homo sapiens frequency", homo_sapiens, n * 5);
+    out.print;
+
   );
