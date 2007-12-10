@@ -1,0 +1,130 @@
+///////////////////////////////////////////////////////////////////////////////
+//                              Lisaac Example                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name         := REVERSE_COMPLEMENT;
+  
+  - bibliography := "http://IsaacOS.com";
+  - author       := "Xavier Oswald (x.oswald@free.fr)";
+  - comment      := "Language shootout - REVERSE-COMPLEMENT";
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Public
+
+  - iub_pairs :FAST_ARRAY2[CHARACTER] := FAST_ARRAY2[CHARACTER].create(7,2);
+  
+  - iub_complement :FAST_ARRAY[CHARACTER] := FAST_ARRAY[CHARACTER].create 256; // 1+UCHAR_MAX -> 255+1
+
+  - init_iub_pairs <-
+  (
+    iub_pairs.put 'A'  to (0,0); iub_pairs.put 'T'  to (0,1);
+    iub_pairs.put 'C'  to (1,0); iub_pairs.put 'G'  to (1,1);
+    iub_pairs.put 'B'  to (2,0); iub_pairs.put 'V'  to (2,1);
+    iub_pairs.put 'D'  to (3,0); iub_pairs.put 'H'  to (3,1);
+    iub_pairs.put 'K'  to (4,0); iub_pairs.put 'M'  to (4,1);
+    iub_pairs.put 'R'  to (5,0); iub_pairs.put 'Y'  to (5,1);
+    iub_pairs.put '\0' to (6,0); iub_pairs.put '\0' to (6,1);
+  );
+
+  - build_iub_complement <-
+  ( + j:INTEGER;
+
+    0.to 256 do { i:INTEGER;
+      iub_complement.put (i.to_character) to i;   
+    };
+
+    j := 0;
+    {iub_pairs.item(j,0) != '\0'}.while_do {
+      iub_complement.put(iub_pairs.item(j,1)) to ((iub_pairs.item(j,0)).to_integer); 
+      iub_complement.put(iub_pairs.item(j,0)) to ((iub_pairs.item(j,1)).to_integer);
+      // suite a voir...
+      j := j+1; 
+    };
+  );
+
+  - in_place_reverse( strand_tmp:FAST_ARRAY[CHARACTER], len_tmp:INTEGER) <-
+    ( + i:INTEGER;
+      + len :INTEGER;
+      + c:CHARACTER;
+      + strand:FAST_ARRAY[CHARACTER];
+
+      strand := strand_tmp;
+      i := 0;
+      len := len_tmp - 1;
+
+      {i < len}.while_do {
+        c := strand.item i;
+        strand.put(iub_complement.item((strand.item len).to_integer)) to i;
+        strand.put(iub_complement.item(c.to_integer)) to i;
+        i := i + 1;
+        len := len - 1;
+      };
+
+      (i = len).if {
+        strand.put(iub_complement.item((strand.item i).to_integer)) to i;
+      };
+    );
+
+  - process(strand_tmp:FAST_ARRAY[CHARACTER], len_tmp:INTEGER) <-
+    ( + s:FAST_ARRAY[CHARACTER];
+      + c:FAST_ARRAY[CHARACTER];
+      + len:INTEGER;
+
+      in_place_reverse(strand_tmp,len_tmp);
+      s := strand_tmp;
+      len := len_tmp;
+
+      {len > 60}.while_do{
+        c := s.item 60;
+        s.put '\0' to 60;
+        // puts(s)
+        s.put c to 60;
+        s := s + 60;
+        len := len - 60;
+      };
+
+      s.put '\0' to len;
+      //puts(s)
+    );
+
+  - main <-
+  ( + buffer :FAST_ARRAY[CHARACTER];
+    + inp    :FAST_ARRAY[CHARACTER];
+    + mlen   :INTEGER;
+    + slen   :INTEGER;
+    + l      :INTEGER;
+   
+    buffer := FAST_ARRAY[CHARACTER].create 1024;
+    inp    := FAST_ARRAY[CHARACTER].create 129;
+
+    mlen := 128;
+    slen := 0;
+
+    init_iub_pairs;
+    build_iub_complement;
+
+    (slen > 0).if{
+      process(inp,slen);
+    };
+  );
