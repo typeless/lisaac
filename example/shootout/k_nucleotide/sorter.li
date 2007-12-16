@@ -20,29 +20,52 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name := SSORTER;
+  + name := SORTER;
   
 Section Inherit
   
-  - parent_object:OBJECT := OBJECT;
+  + parent_string:Expanded STRING;
   
 Section Public
   
-  + string:STRING;
+  + hash_code:INTEGER;
   
-  + num:INTEGER;
+  + freq:INTEGER := 1;
   
-  - create (str:STRING,n:INTEGER) :SELF <-
-  ( + result:SELF;
+  - init_with buf:NATIVE_ARRAY[CHARACTER] <-
+  (
+    storage   := buf;
+    hash_code := count := 0;    
+  );
+  
+  - set_count new_count:INTEGER <-
+  ( + result,low:INTEGER;
     
-    result := clone;
-    result.make (str,n);
+    result := hash_code;
+    low    := count + 1;
+    count  := new_count;
+    (low).to (new_count) do { i:INTEGER;
+      result := (result * 5) + item i.code;
+    };
+    (result < 0).if {
+      result := ~ result;
+    };
+    hash_code := result;
+    capacity := count;
+  );
+  
+  - '==' Left 40 other:SELF :BOOLEAN <-
+  ( + result:BOOLEAN;
+   
+    ((count = other.count) && {hash_code = other.hash_code}).if {
+      ? {count != 0};
+      result:=storage.fast_memcmp (other.storage) until count;
+    };
     result
   );
   
-  - make (str:STRING;n:INTEGER) <-
-  (
-    string := str;
-    num := n;
+  - inc_freq <-
+  ( 
+    freq := freq + 1;
   );
-  
+    
