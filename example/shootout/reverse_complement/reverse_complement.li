@@ -36,6 +36,10 @@ Section Public
   
   - iub_complement :FAST_ARRAY[CHARACTER] := FAST_ARRAY[CHARACTER].create 256; // 1+UCHAR_MAX -> 255+1
 
+  - strand :STRING;
+
+  - slen :INTEGER;
+
   - init_iub_pairs <-
   (
     iub_pairs.put 'A'  to (0,0); iub_pairs.put 'T'  to (0,1);
@@ -63,68 +67,83 @@ Section Public
     };
   );
 
-  - in_place_reverse( strand_tmp:FAST_ARRAY[CHARACTER], len_tmp:INTEGER) <-
+  - in_place_reverse <-
     ( + i:INTEGER;
-      + len :INTEGER;
       + c:CHARACTER;
-      + strand:FAST_ARRAY[CHARACTER];
 
-      strand := strand_tmp;
       i := 0;
-      len := len_tmp - 1;
+      slen := slen - 1;
 
-      {i < len}.while_do {
+      {i < slen}.while_do {
         c := strand.item i;
-        strand.put(iub_complement.item((strand.item len).to_integer)) to i;
+        strand.put(iub_complement.item((strand.item slen).to_integer)) to i;
         strand.put(iub_complement.item(c.to_integer)) to i;
         i := i + 1;
-        len := len - 1;
+        slen := slen - 1;
       };
 
-      (i = len).if {
+      (i = slen).if {
         strand.put(iub_complement.item((strand.item i).to_integer)) to i;
       };
     );
 
-  - process(strand_tmp:FAST_ARRAY[CHARACTER], len_tmp:INTEGER) <-
-    ( + s:FAST_ARRAY[CHARACTER];
-      + c:FAST_ARRAY[CHARACTER];
-      + len:INTEGER;
+  - process <-
+    ( + c :CHARACTER;
+      + s :STRING;
+      
+      in_place_reverse;
+      s := strand;
 
-      in_place_reverse(strand_tmp,len_tmp);
-      s := strand_tmp;
-      len := len_tmp;
-
-      {len > 60}.while_do{
+      {slen > 60}.while_do{
         c := s.item 60;
         s.put '\0' to 60;
-        // puts(s)
+        s.print;
+        //'\n'.print;
         s.put c to 60;
-        s := s + 60;
-        len := len - 60;
+        // s := s + 60; // augmente capacité
+        slen := slen - 60;
       };
 
-      s.put '\0' to len;
+      s.put '\0' to slen;
       //puts(s)
     );
 
   - main <-
-  ( + buffer :FAST_ARRAY[CHARACTER];
-    + inp    :FAST_ARRAY[CHARACTER];
+  ( + buffer :STRING;
     + mlen   :INTEGER;
-    + slen   :INTEGER;
     + l      :INTEGER;
    
-    buffer := FAST_ARRAY[CHARACTER].create 1024;
-    inp    := FAST_ARRAY[CHARACTER].create 129;
+    buffer := STRING.create 1024;
+    strand := STRING.create 129;
 
     mlen := 128;
-    slen := 0;
+    slen  := 0;
 
     init_iub_pairs;
     build_iub_complement;
 
-    (slen > 0).if{
-      process(inp,slen);
+    IO.read_line;
+    {IO.end_of_input}.until_do{
+      (buffer.item 0 = '>').if{
+        (slen > 0).if{
+          process;
+          slen := 0;
+        };
+        buffer.print;
+      } else {
+        l := buffer.count; // size of string (strlen)
+        { (l > 0) /* && {!isalpha buffer.item(l-1)}*/}.while_do{
+          mlen := mlen + mlen;
+          //inp = (char *) realloc (inp, mlen + 1);
+        };
+        //memcpy (inp + slen, buffer, l);
+        slen = l + slen;
+        IO.read_line;
+      };
     };
+
+    (slen > 0).if{
+      process;
+    };
+
   );
