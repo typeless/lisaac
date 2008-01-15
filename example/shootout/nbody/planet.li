@@ -45,23 +45,31 @@ Section Public
   + y : REAL_64;
   + z : REAL_64;
   
+  + px : REAL_64; //it's in double in the C code.
+  + py : REAL_64;
+  + pz : REAL_64;
+  
   + vx : REAL_64;
   + vy : REAL_64;
   + vz : REAL_64;
+
+  + pvx : REAL_64;
+  + pvy : REAL_64;
+  + pvz : REAL_64;
   
   + mass : REAL_64;
   
   - set_x v:REAL_64 <-
   (
-    x := v;
+    px := v;
   );
   - set_y v:REAL_64 <-
   (
-    y := v;
+    py := v;
   );
   - set_z v:REAL_64 <-
   (
-    z := v;
+    pz := v;
   );
   
   - set_vx v:REAL_64 <-

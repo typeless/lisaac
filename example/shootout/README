@@ -39,7 +39,7 @@ Status:
 | chameneos          |         |         |                  | Thread used                |
 | fannkuch           | OK      | OK      | Faster than C :) |                            |
 |Xfasta              | Ok      | Ok      | Slower than C :( | Need to optimize !!        | -> quite good !
-|Bk-nucleotide       | Non ok  | Non ok  | TODO             | TODO                       |
+| k-nucleotide       | OK      | OK      | Faster than C :) |                            |
 | mandelbrot         | OK      | OK      | Faster than C :) |                            | 
 |Bmeteor-contest     | TODO    | TODO    | TODO             | TODO                       |
 | n-body             | OK      | OK      | bit slower than C|                            | 
@@ -56,10 +56,10 @@ Status:
 | thread-ring (new)  |         |         |                  | Thread used                |
 +========================================================================================+
 Scores : 
-* Lisaac     : 5 
+* Lisaac     : 6
 * C          : 4
 * Lisaac = C : 3
-* TODO       : 5 
+* TODO       : 2 
 
 Best regards,
     Xavier Oswald <x.oswald@free.fr>

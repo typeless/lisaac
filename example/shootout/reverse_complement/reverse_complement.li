@@ -64,16 +64,12 @@ Section Public
     len := buffer.count - 1;
     s := buffer.storage;
     
-    {i < len}.while_do {
+    {i <= len}.while_do {
       c := s.item i;
       s.put (iub_complement.item((s.item len).to_integer)) to i;
       s.put (iub_complement.item(c.to_integer)) to len;
       i := i + 1;
       len := len - 1;
-    };
-    
-    (i = len).if {
-      s.put(iub_complement.item((s.item i).to_integer)) to i;
     };
   );
   
@@ -87,7 +83,7 @@ Section Public
     s := buffer.storage;
     len := buffer.count;
         
-    {len > 60}.while_do{
+    {len > 60}.while_do {
       c := s.item 60;
       s.put '\0' to 60;
       puts s;
@@ -101,30 +97,25 @@ Section Public
   );
 
   - main <-
-  ( + mlen   :INTEGER;
-    + line:STRING;
+  ( + line:STRING;
    
     buffer := STRING.create 16777216;
-
-    mlen := 128;
-        
+            
     build_iub_complement;
               
     IO.read_line;
     line := IO.last_string;        
-    {IO.end_of_input}.until_do {
-      (! line.is_empty).if {
-	(line.first = '>').if {
-	  (buffer.is_empty).if_false {
-	    process;
-	  };
-	  IO.put_string line;
-	  IO.put_new_line;
-	  buffer.clear;
-	} else {
-	  // while (l > 0 && !isalpha (buffer[l-1])) l--;
-	  buffer.append line;
+    {IO.end_of_input}.until_do {      
+      (line.first = '>').if {
+	(buffer.is_empty).if_false {
+	  process;
 	};
+	line.add_last '\0';
+	puts (line.storage);	  
+	buffer.clear;
+      } else {
+	// while (l > 0 && !isalpha (buffer[l-1])) l--;
+	buffer.append line;	
       };
       IO.read_line;
     };
