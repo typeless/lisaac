@@ -70,7 +70,7 @@ Section Public
       s.put (iub_complement.item(c.to_integer)) to len;
       i := i + 1;
       len := len - 1;
-    };
+    };    
   );
   
   - process <-
