@@ -26,24 +26,26 @@ Section Header
   - author       := "Pierre-Alexandre Voye (ontologiae@gmail.com), Xavier Oswald <x.oswald@free.fr>";
   - comment      := "Language shootout - Recursive"; 
   
+  - external := `#include <string.h>`;
+  
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;
 
 Section Private  
   
-  - string_tmp:STRING := STRING.create 24;
+  - string_tmp:STRING := STRING.create 64;
   
   - flags:FAST_ARRAY[BOOLEAN];
   
-  - primes m:INTEGER_64 <-
-  ( + result,j,i,tmp: INTEGER_64;
+  - primes m:INTEGER <-
+  ( + result,j,i,tmp: INTEGER;    
     
-    flags.fast_resize m;
-    flags.set_all_with TRUE;
+    flags.fast_resize m;      
+    flags.set_all_with TRUE;    
     
     tmp := m - 1;
-    i   := 2;
+    i   := 2;    
     {i <= tmp}.while_do {      
       (flags.item i).if {
 	j := i << 1;
