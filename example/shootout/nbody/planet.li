@@ -61,15 +61,15 @@ Section Public
   
   - set_x v:REAL_64 <-
   (
-    px := v;
+    x := v;
   );
   - set_y v:REAL_64 <-
   (
-    py := v;
+    y := v;
   );
   - set_z v:REAL_64 <-
   (
-    pz := v;
+    z := v;
   );
   
   - set_vx v:REAL_64 <-
