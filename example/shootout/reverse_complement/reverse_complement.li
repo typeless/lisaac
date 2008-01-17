@@ -34,7 +34,8 @@ Section Public
   
   - puts tab:NATIVE_ARRAY[CHARACTER] <- `puts(@tab)`;
   
-  - buffer :STRING;
+  - buffer :NATIVE_ARRAY[CHARACTER];
+  - buffer_count:INTEGER;
     
   - iub_pairs:STRING_CONSTANT := "ATCGBVDHKMRY";
   
@@ -58,30 +59,28 @@ Section Public
   - in_place_reverse <-
   ( + i,len:INTEGER;
     + c:CHARACTER;    
-    + s:NATIVE_ARRAY[CHARACTER];
     
     i := 0;
-    len := buffer.count - 1;
-    s := buffer.storage;
+    len := buffer_count - 1;    
     
     {i <= len}.while_do {
-      c := s.item i;
-      s.put (iub_complement.item((s.item len).to_integer)) to i;
-      s.put (iub_complement.item(c.to_integer)) to len;
+      c := buffer.item i;
+      buffer.put (iub_complement.item((buffer.item len).to_integer)) to i;
+      buffer.put (iub_complement.item(c.to_integer)) to len;
       i := i + 1;
       len := len - 1;
     };    
   );
   
   - process <-
-  ( + c :CHARACTER;
-    + s :NATIVE_ARRAY[CHARACTER];
+  ( + c :CHARACTER;    
     + len:INTEGER;
+    + s:NATIVE_ARRAY[CHARACTER];
     
     in_place_reverse;
     
-    s := buffer.storage;
-    len := buffer.count;
+    s := buffer;
+    len := buffer_count;
         
     {len > 60}.while_do {
       c := s.item 60;
@@ -98,28 +97,31 @@ Section Public
 
   - main <-
   ( + line:STRING;
+    + buf:NATIVE_ARRAY[CHARACTER];
+    + l:INTEGER;
    
-    buffer := STRING.create 16777216;
+    buf := buffer := NATIVE_ARRAY[CHARACTER].create 16777216;
             
     build_iub_complement;
               
     IO.read_line;
     line := IO.last_string;        
-    {IO.end_of_input}.until_do {      
-      (line.first = '>').if {
-	(buffer.is_empty).if_false {
-	  process;
-	};
-	line.add_last '\0';
-	puts (line.storage);	  
-	buffer.clear;
-      } else {
-	// while (l > 0 && !isalpha (buffer[l-1])) l--;
-	buffer.append line;	
-      };
-      IO.read_line;
+    {`NULL != fgets(@buf,1023,stdin)`:BOOLEAN(TRUE,FALSE)}.while_do {      
+      (buf.item 0 = '>').if {		
+	(buffer_count > 0).if {
+	  process;	  
+	  buffer_count := 0;	  
+	};	
+	buf.put '>' to 0;
+	puts buf;		
+	buf := buffer;
+      } else {	
+	l := `strlen(@buf)`:INTEGER;
+	buffer_count := buffer_count + l;
+	buf := buf + l;
+      };      
     };
-    (! buffer.is_empty).if {
+    (buffer_count > 0).if {
       process;
     };        
   );
