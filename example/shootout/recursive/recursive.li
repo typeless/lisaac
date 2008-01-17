@@ -107,13 +107,13 @@ Section Public
     };
     "Ack(3,".print;
     (n + 1).print;
-    " ): ".print;
+    "): ".print;
     ack 3 and (n+1).print;
     "\n".print;
 
     "Fib(".print; 
     (28.0 + n.to_real_64).to_integer.print;
-    "): ".print;
+    ".0): ".print;
     fibfp (28.0 + n.to_real_64).print_format_c "%.1f";
     "\n".print;
 
