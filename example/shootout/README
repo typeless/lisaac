@@ -51,7 +51,7 @@ Status:
 | regex-dna          | NC      | NC      |         | Library used               |
 | reverse-complement |         |         | ?       |                            |
 | spectral-norm      | 21.225s | 21.117s | Lisaac  |                            |
-| startup            |         |         |         | BUG COMPILO !!!            |
+| startup            | 0.100s  | 0.064s  | Lisaac  |                            |
 | sum-file           |         |         | ?       |                            |
 | thread-ring (new)  | NC      | NC      |         | Thread used                |
 +===============================================================================+
