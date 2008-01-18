@@ -25,14 +25,16 @@ Section Header
   - bibliography := "http://IsaacOS.com";
   - author       := "Xavier Oswald (x.oswald@free.fr)";
   - comment      := "Language shootout - startup"; 
-  
+    
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;
 
 Section Public
-
+  
+  - puts tab:NATIVE_ARRAY[CHARACTER] <- `puts(@tab)`;
+  
   - main <-
   (
-    "hello world\n".print;
+    puts ("hello world\n".storage);
   );

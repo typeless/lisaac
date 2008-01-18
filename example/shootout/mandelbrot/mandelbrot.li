@@ -68,11 +68,15 @@ Section Public
 	x2  := x + x;
 	cr  :=     x2.to_real_64 / w - 1.5;
 	cr2 := (x2+2).to_real_64 / w - 1.5;
-		
+	
+	"cr=".print; cr.print_format_c "%f"; ' '.print;
+	cr2.print_format_c "%f"; '\n'.print;
+	"ci=".print; ci.print_format_c "%f"; '\n'.print;
+	
 	i := 0;
 	{
-	  zi := zr  * zi  * 2.0 + ci;
-	  zi2:= zr2 * zi2 * 2.0 + ci;
+	  zi := `2.0`:REAL_64 * zr  * zi  + ci;
+	  zi2:= `2.0`:REAL_64 * zr2 * zi2 + ci;
 	  
 	  zr := tr  - ti  + cr;
 	  zr2:= tr2 - ti2 + cr2;
@@ -83,12 +87,18 @@ Section Public
 	  ti := zi  * zi;
 	  ti2:= zi2 * zi2;
 	  
+	  "tr=".print; tr.print_format_c "%f"; '\n'.print;
+	  //"tr2=".print; tr2.print_format_c "%f"; ' '.print;
+	  //"ti=".print; ti.print_format_c "%f"; ' '.print;
+	  //"ti2=".print; ti2.print_format_c "%f"; '\n'.print;	  
+	  
 	  i  := i + 1;	  
 	}.do_while {
 	  (i < iter) && {
 	    (tr + ti <= limit_sqr) || {tr2 + ti2 <= limit_sqr}
 	  }
 	};
+	i.print; '\n'.print;
 		
 	byte_acc := byte_acc << 2;
 	(tr + ti <= limit_sqr).if {
@@ -100,15 +110,16 @@ Section Public
 	
 	bit_num := bit_num + 2;
 	(bit_num = 8).if {
-	  byte_acc.to_character.print;
+	  //byte_acc/*.to_character*/.print; ' '.print;
 	  byte_acc := bit_num := 0;
 	} else { 
 	  (x = wm1).if {
 	    byte_acc := byte_acc << mod_w; 
-	    byte_acc.to_character.print;
+	    //byte_acc/*.to_character*/.print; ' '.print;
 	    byte_acc := bit_num := 0;
 	  };	
 	};
       };
+      '\n'.print;
     };		    
   );

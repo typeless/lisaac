@@ -32,29 +32,29 @@ How to get started?
 Status:
 =======
 
-+========================================================================================+
-| Benchmark          | C       | Lisaac  | Winner           |       Comments             |
-+========================================================================================+
-| binary_trees       | 1.940s  | 0.536s  | Lisaac !!!       |                            |
-| chameneos          | NC      | NC      |                  | Thread used                |
-| fannkuch           | 4.948s  | 4.008s  | Lisaac !!!       |                            |
-| fasta              | 9.641s  | 9.177s  | Lisaac !!!       |                            | 
-| k-nucleotide       | 0.048s  | 0.032s  | Lisaac !!!       |                            |
-| mandelbrot         | OK      | OK      | Faster than C :) |                            | 
-| meteor-contest     | TODO    | TODO    | TODO             | TODO                       |
-| n-body             | OK      | OK      | bit slower than C|                            | 
-| nsieve             | OK      | OK      | bit slower than C|                            |
-| nsieve-bits        | OK      | OK      | same as C        |                            |
-| partial-sums       | OK      | OK      | bit slower than C|                            |
-| pidigits           | NC      | NC      | NC               | Library used               |
-| recursive          | OK      | OK      | same as C        |                            |
-| regex-dna          | NC      | NC      |                  | Library used               |
-| reverse-complement | TODO    | TODO    | TODO             | TODO                       |
-| spectral-norm      | OK      | OK      | Faster than C :) |                            |
-| startup            | OK      | OK      | same as C        |                            |
-| sum-file           | OK      | OK      | Faster than C :) |                            |
-| thread-ring (new)  | NC      | NC      |                  | Thread used                |
-+========================================================================================+
++===============================================================================+
+| Benchmark          | C       | Lisaac  | Winner  |       Comments             |
++===============================================================================+
+| binary_trees       | 1.940s  | 0.536s  | Lisaac  |                            |
+| chameneos          | NC      | NC      |         | Thread used                |
+| fannkuch           | 4.948s  | 4.008s  | Lisaac  |                            |
+| fasta              | 9.641s  | 9.177s  | Lisaac  |                            | 
+| k-nucleotide       | 0.048s  | 0.032s  | Lisaac  |                            |
+| mandelbrot         |         |         | ?       | BUG !!!                    | 
+| meteor-contest     | TODO    | TODO    | ?       | TODO                       |
+| n-body             | 10.933s | 11.637s | C       |                            | 
+| nsieve             | 3.264s  | 3.308s  | C       |                            |
+| nsieve-bits        | 0.792s  | 0.624s  | Lisaac  |                            |
+| partial-sums       | 1.444s  | 1.580s  | C       |                            |
+| pidigits           | NC      | NC      |         | Library used               |
+| recursive          | 1.592s  | 1.508s  | Lisaac  |                            |
+| regex-dna          | NC      | NC      |         | Library used               |
+| reverse-complement |         |         | ?       |                            |
+| spectral-norm      | 21.225s | 21.117s | Lisaac  |                            |
+| startup            |         |         |         | BUG COMPILO !!!            |
+| sum-file           |         |         | ?       |                            |
+| thread-ring (new)  | NC      | NC      |         | Thread used                |
++===============================================================================+
 Scores : 
 * Lisaac     : 6
 * C          : 4
