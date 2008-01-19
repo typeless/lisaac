@@ -38,83 +38,94 @@ Section Private
    0x0c7, 0x8423, 0x0a7, 0x187, 0x08f
  };
  
-void Piece::setCoordList(BitVec vec, TPts & pts) {
-   int iPt = 0;
-   BitVec mask = 1;
-   for (int y = 0; y < N_ROW; y++) {
-      for (int x = 0; x < N_COL; x++) {
-         if (mask & vec) {
-            pts[iPt][X] = x;
-            pts[iPt][Y] = y;
+  - set_coord_list (vec:BIT_VEC , TPts & pts) <-
+  ( + ipt:INTEGER;
+    + mask:BIT_VEC;
+    
+    mask := 1;
+    0.to (n_row-1) do { y:INTEGER;
+      0.to (n_col-1) do { x:INTEGER;
+	((mask & vec) != 0).if {
+	  pts.put x to (ipt,x);
+	  pts.put y to (ipt,y);
+	  
+	  ipt := ipt + 1;
+	};
+	mask := mask << 1;
+      };
+    };
+  );
 
-            iPt++;
-         }
-         mask <<= 1;
-      }
-   }
-}
+  - to_bit_vector (const TPts & pts) :BIT_VEC <-
+  ( + y, x:INTEGER;
+    + result:BIT_VEC;
+    
+    0.to (n_elem-1) do { ipt:INTEGER;
+      x := pts.item (ipt,x);
+      y := pts.item (ipt,y);
+      result := result | (1 << BOARD.get_index (x,y));
+    };
+    result
+  );
 
-BitVec Piece::toBitVector(const TPts & pts) {
-   int y, x;
-   BitVec result = 0;
-   for (int iPt = 0; iPt < N_ELEM; iPt++) {
-      x = pts[iPt][X];
-      y = pts[iPt][Y];
-
-      int pos = Board::getIndex(x, y);
-      result |= (1 << pos);
-   }
-
-   return result;
-}
-
-void Piece::shiftUpLines(TPts & pts, int shift) {
-   // vertical shifts have a twist
-   for (int iPt = 0; iPt < N_ELEM; iPt++) {
+  - shift_up_lines (TPts & pts, shift:INTEGER) <-
+  (
+    // vertical shifts have a twist
+    0.to (n_elem-1) do { ipt:INTEGER;
       int & rx = pts[iPt][X];
       int & ry = pts[iPt][Y];
 
-      if (ry & shift & 0x1)
-         rx++;
-      ry -= shift;
-   }
-}
+      (ry & shift & 0x1).if {
+	rx := rx + 1;
+      };
+      ry := ry - shift;
+    };
+  );    
 
-int Piece::shiftToX0(TPts & pts, Instance & instance, int offsetRow)
-{
-   // .. determine shift
-   int x, y, iPt;
-   int xMin = pts[0][X];
-   int xMax = xMin;
-   for (iPt = 1; iPt < N_ELEM; iPt++) {
-      x = pts[iPt][X];
-      y = pts[iPt][Y];
-
-      if (x < xMin)
-         xMin = x;
-      else if (x > xMax)
-         xMax = x;
-   }
-
-   // I'm dying for a 'foreach' here
-   int offset = N_ELEM;
-   for (iPt = 0; iPt < N_ELEM; iPt++) {
+  - shift_to_x0(TPts & pts, Instance & instance, offset_row:INTEGER) :INTEGER <-
+  (
+    // .. determine shift
+    + x, y, ipt,offset:INTEGER;
+    + x_min:INTEGER; 
+    + x_max:INTEGER; 
+    
+    x_min := pts.item (0,x);
+    x_max := x_min;
+    
+    1.to (n_elem-1) do { ipt:INTEGER;     
+      x := pts.item (ipt,x);
+      y := pts.item (ipt,y);
+      
+      (x < x_min).if {
+	x_min := x;
+      } else {
+	(x > x_max).if {
+	  x_max := x;
+	};
+      };
+    };
+    
+    // I'm dying for a 'foreach' here
+    offset := n_elem;
+    1.to (n_elem-1) do { ipt:INTEGER;     
       int & rx = pts[iPt][X];
       int & ry = pts[iPt][Y];
-
-      rx -= xMin;
-
+      
+      rx := rx - x_min;
+      
       // check offset -- leftmost cell on top line
-      if ((ry == offsetRow) && (rx < offset))
-         offset = rx;
-   }
+      ((ry = offset_row) && {rx < offset}).if {
+	offset := rx;
+      };
+    };
+    
+    instance.m_offset := offset;
+    instance.m_vec := to_bit_vector pts;
+    x_max - x_min;
+  );
 
-   instance.m_offset = offset;
-   instance.m_vec = toBitVector(pts);
-   return xMax - xMin;
-}
-
-void Piece::setOkPos(TUInt32 isOdd, int w, int h) {
+  - set_ok_pos (is_odd:UINTEGER_32, w,h:INTEGER) <-
+  (
    Instance & p = m_instance[isOdd];
    TUInt64 & allowed = p.m_allowed = 0;
    TUInt64 posMask = 1LL << (isOdd * N_COL);

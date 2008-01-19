@@ -264,43 +264,54 @@ Board::Board() :
     (count_ones to_fill % PIECE.n_elem) != 0
   );
 
-int Board::hasBadIslands(BitVec boardVec, int row)
-{
-   // skip over any filled rows
-   while ((boardVec & TOP_ROW) == TOP_ROW) {
-      boardVec >>= N_COL;
-      row++;
-   }
+  - has_bad_islands (board_vec:BIT_VEC, row:INTEGER) :INTEGER <-
+  ( + i_info,last_row,mask,is_odd:UINTEGER_32;    
+    + result,is_closed,has_bad:INTEGER;
+    
+    // skip over any filled rows
+    {(board_vec & top_row) = top_row}.while_do {
+      board_vec := board_vec >> n_col;
+      row := row + 1;
+    };
 
-   TUInt32 iInfo = boardVec & ((1 << 2 * N_COL) - 1);
-   IslandInfo & info = g_islandInfo[iInfo];
+    i_info := board_vec & ((1 << 2 * n_col) - 1);
+    ISLAND_INFO &info := g_island_info.item i_info;
 
-   TUInt32 lastRow = (boardVec >> (2 * N_COL)) & TOP_ROW;
-   TUInt32 mask = getMask(lastRow);
-   TUInt32 isOdd = row & 1;
-   TUInt32 & alwaysBad = info.alwaysBad[isOdd];
+    last_row := (board_vec >> (2 * n_col)) & top_row;
+    mask := get_mask last_row;
+    is_odd := row & 1;
+    TUInt32 &always_bad := info.always_bad.item is_odd;
 
-   if (alwaysBad & mask)
-      return BAD;
+    ((always_bad & mask) != 0).if {
+      result := bad;
+    } else {
 
-   if (boardVec & (TOP_ROW << N_COL * 3))
-      return calcBadIslands(boardVec, row);
+      (board_vec & (top_row << n_col * 3)).if {
+	result := calc_bad_islands (board_vec, row);
+      } else {
 
-   int isClosed = (row > 6); // because we track 3 rows
-   TUInt32 & isKnownVector = info.isKnown[isOdd][isClosed];
-   TUInt32 & badIsleVector = info.hasBad[isOdd][isClosed];
+	is_closed := (row > 6); // because we track 3 rows
+	TUInt32 &is_known_vector := info.is_known.item (is_odd,is_closed);
+	TUInt32 &bad_isle_vector := info.has_bad.item (is_odd,is_closed);
 
-   if (isKnownVector & mask)
-      return ((badIsleVector & mask) != 0);
+	((is_known_vector & mask) != 0).if {
+	  result := ((bad_isle_vector & mask) != 0);
+	} else {
 
-   if (boardVec == 0)
-      return GOOD;
+	  (board_vec = 0).if {
+	    result := good;
+	  } else {
+	    has_bad := calc_bad_islands (board_vec, row);
 
-   int hasBad = calcBadIslands(boardVec, row);
+	    is_known_vector := is_known_vector | mask;
+	    (has_bad).if {
+	      bad_isle_vector := bad_isle_vector | mask;
+	    };
+	    result := has_bad;
+	  };
+	};
+      };
+    };
+    result
+  );
 
-   isKnownVector |= mask;
-   if (hasBad)
-      badIsleVector |= mask;
-
-   return hasBad;
-}

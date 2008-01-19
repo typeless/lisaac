@@ -59,65 +59,81 @@ string Soln::toString(void) const {
    return result;
 }
 
-void Soln::setCells(void) {
-   if (m_synched)
-      return;
+  - set_cells <-
+  ( + vec:BIT_VEC;
+    + pid:INTEGER_8;
+    + row_offset,n_new_cells:INTEGER;
+    
+    (m_synched).if_false {
+      0.to (m_n_piece-1) do { i_piece:UINTEGER_32;	
+	const SPiece & p = m_pieces[iPiece];
+	vec := p.vec;
+	pid := p.i_piece.to_integer8;
+	row_offset := p.row;
 
-   for (TUInt32 iPiece = 0; iPiece < m_nPiece; iPiece++) {
-      const SPiece & p = m_pieces[iPiece];
-      BitVec vec = p.vec;
-      TInt8 pID = (TInt8)p.iPiece;
-      int rowOffset = p.row;
+	n_new_cells := 0;
+	row_offset.to (n_row - 1) do { y:INTEGER;
+	  0.to (n_col-1) do { x:INTEGER;
+	    ((vec & 1) != 0).if {
+	      m_cells.put pid to (y,x);
+	      n_new_cells := n_new_cells + 1;
+	    };
+	    vec := vec >> 1;
+	  };
+	  (n_new_cells = PIECE.n_elem).if {
+	    break;
+	  };
+	};
+      };
+      m_synched := TRUE;
+    };
+  );
+  
 
-      int nNewCells = 0;
-      for (int y = rowOffset; y < N_ROW; y++) {
-         for (int x = 0; x < N_COL; x++) {
-            if (vec & 1) {
-               m_cells[y][x] = pID;
-               nNewCells++;
-            }
-            vec >>= 1;
-         }
-         if (nNewCells == Piece::N_ELEM)
-            break;
-      }
-   }
-   m_synched = true;
-}
+  - less_than (Soln & r) :BOOLEAN <-
+  ( + result,stop:BOOLEAN;
+    + lval,rval,x,y:INTEGER;
+    
+    (m_pieces.item 0.i_piece != r.m_pieces.item 0.i_piece).if {
+      result := m_pieces.item 0.i_piece < r.m_pieces.item 0.i_piece;
+    } else {
 
-bool Soln::lessThan(Soln & r) {
-   if (m_pieces[0].iPiece != r.m_pieces[0].iPiece) {
-      return m_pieces[0].iPiece < r.m_pieces[0].iPiece;
-   }
+      set_cells;
+      r.set_cells;
+      
+      y := 0;
+      {(y < n_raw) && {! stop}}.while_do { 
+	x := 0;
+	{(x < n_col) && {! stop}}.while_do { 
+	  lval := m_cells.item (y,x);
+	  rval := r.m_cells.item (y,x);
+	  
+	  (lval != rval).if {
+	    stop := TRUE;
+	    result := (lval < rval);
+	  };
+	  x := x + 1;
+	};
+	y := y + 1;
+      };
+    };
+    result
+  );
 
-   setCells();
-   r.setCells();
+  - spin (Soln & spun) <-
+  ( + flipped:INTEGER_8;
+    
+    set_cells;
 
-   for (int y = 0; y < N_ROW; y++) {
-      for (int x = 0; x < N_COL; x++) {
-         int lval = m_cells[y][x];
-         int rval = r.m_cells[y][x];
-
-         if (lval != rval)
-            return (lval < rval);
-      }
-   }
-
-   return false; // solutions are equal
-}
-
-void Soln::spin(Soln & spun) {
-   setCells();
-
-   // swap cells
-   for (int y = 0; y < N_ROW; y++) {
-      for (int x = 0; x < N_COL; x++) {
-         TInt8 flipped = m_cells[N_ROW - y - 1][N_COL - x - 1];
-         spun.m_cells[y][x] = flipped;
-      }
-   }
-
-   // swap first and last pieces (the rest aren't used)
-   spun.m_pieces[0].iPiece = m_pieces[N_PIECE_TYPE - 1].iPiece;
-   spun.m_synched = true;
-}
+    // swap cells
+    0.to (n_row - 1) do { y:INTEGER;   
+      0.to (n_col - 1) do { x:INTEGER;
+	flipped := m_cells.item (n_row - y - 1,n_col - x - 1);
+	spun.m_cells.put flipped to (y,x);
+      };
+    };
+    
+    // swap first and last pieces (the rest aren t used)
+    spun.m_pieces.item 0.i_piece := m_pieces.item (n_piece_type - 1).i_piece;
+    spun.m_synched := TRUE;
+  );
