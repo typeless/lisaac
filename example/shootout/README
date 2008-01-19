@@ -55,11 +55,6 @@ Status:
 | sum-file           |         |         | ?       |                            |
 | thread-ring (new)  | NC      | NC      |         | Thread used                |
 +===============================================================================+
-Scores : 
-* Lisaac     : 6
-* C          : 4
-* Lisaac = C : 3
-* TODO       : 2 
 
 Best regards,
     Xavier Oswald <x.oswald@free.fr>

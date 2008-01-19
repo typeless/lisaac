@@ -30,6 +30,44 @@ Section Inherit
   - parent_any:OBJECT := OBJECT;
 
 Section Private
+  
+  struct Soln {
+   static const int NO_PIECE = -1;
+
+   void setCells(void);
+   bool lessThan(Soln & r);
+   string toString(void) const;
+   void fill(int val);
+   void spin(Soln & spun);
+
+   bool isEmpty(void) {return (m_nPiece == 0);}
+   void popPiece(void) {m_nPiece--; m_synched = false;}
+   void pushPiece(BitVec vec, int iPiece, int row) {
+      SPiece & p = m_pieces[m_nPiece++];
+      p.vec = vec;
+      p.iPiece = (short)iPiece;
+      p.row = (short)row;
+   }
+
+   Soln(int fillVal);
+   Soln() : m_synched(false), m_nPiece(0) {}
+
+   struct SPiece {
+      BitVec vec;
+      short iPiece;
+      short row;
+      SPiece() {}
+      SPiece(BitVec avec, TUInt32 apiece, TUInt32 arow) :
+         vec(avec), iPiece(short(apiece)), row(short(arow))
+         {}
+   };
+   SPiece m_pieces[N_PIECE_TYPE];
+   TUInt32 m_nPiece;
+   TInt8 m_cells[N_ROW][N_COL];
+   bool m_synched;
+};
+
+  
 Soln::Soln(int fillVal) :
    m_nPiece(0) {
    fill(fillVal);

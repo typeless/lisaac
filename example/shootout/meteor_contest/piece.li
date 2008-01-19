@@ -31,6 +31,36 @@ Section Inherit
 
 Section Private
   
+  struct Piece {
+   struct Instance {
+      TUInt64 m_allowed;
+      BitVec m_vec;
+      int m_offset;
+   };
+
+   static const int N_ELEM = 5;
+   static const int N_ORIENT = 12;
+   static const int ALL_PIECE_MASK = (1 << N_PIECE_TYPE) - 1;
+   static const TUInt32 SKIP_PIECE = 5; // it's magic!
+
+   typedef int TPts[N_ELEM][N_DIM];
+
+   static const BitVec BaseVecs[N_PIECE_TYPE];
+   static Piece s_basePiece[N_PIECE_TYPE][N_ORIENT];
+
+   static const Instance & getPiece(TUInt32 iPiece, TUInt32 iOrient, TUInt32 iParity);
+   static BitVec toBitVector(const TPts & pts);
+   static void genOrientation(BitVec vec, TUInt32 iOrient, Piece & target);
+   static void setCoordList(BitVec vec, TPts & pts);
+   static void shiftUpLines(TPts & pts, int shift);
+   static int shiftToX0(TPts & pts, Instance & instance, int offsetRow);
+   void setOkPos(TUInt32 isOdd, int w, int h);
+   static void genAllOrientations(void);
+
+   Instance m_instance[N_PARITY];
+};
+
+  
   Piece Piece::s_basePiece[N_PIECE_TYPE][N_ORIENT];
   
   const BitVec Piece::BaseVecs[] = {

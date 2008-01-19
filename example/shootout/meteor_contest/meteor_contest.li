@@ -30,11 +30,6 @@ Section Inherit
   - parent_any:OBJECT := OBJECT;
 
 Section Private
- 
-#include <iostream>
-#include <string>
-
-using namespace std;
 
   - get_mask i_pos:UINTEGER_32 :UINTEGER_32 <- 1 << i_pos;
 
@@ -42,7 +37,6 @@ enum {X, Y, N_DIM};
 enum {EVEN, ODD, N_PARITY};
 enum {GOOD, BAD, ALWAYS_BAD};
 
-typedef unsigned int TUInt32;
 typedef unsigned long long TUInt64;
 typedef signed char TInt8;
 typedef TUInt32 BitVec;
@@ -52,102 +46,6 @@ typedef TUInt32 BitVec;
   - n_cell:INTEGER := n_col * n_row;
   - n_piece_type:INTEGER := 10;
 
-struct Soln {
-   static const int NO_PIECE = -1;
-
-   void setCells(void);
-   bool lessThan(Soln & r);
-   string toString(void) const;
-   void fill(int val);
-   void spin(Soln & spun);
-
-   bool isEmpty(void) {return (m_nPiece == 0);}
-   void popPiece(void) {m_nPiece--; m_synched = false;}
-   void pushPiece(BitVec vec, int iPiece, int row) {
-      SPiece & p = m_pieces[m_nPiece++];
-      p.vec = vec;
-      p.iPiece = (short)iPiece;
-      p.row = (short)row;
-   }
-
-   Soln(int fillVal);
-   Soln() : m_synched(false), m_nPiece(0) {}
-
-   struct SPiece {
-      BitVec vec;
-      short iPiece;
-      short row;
-      SPiece() {}
-      SPiece(BitVec avec, TUInt32 apiece, TUInt32 arow) :
-         vec(avec), iPiece(short(apiece)), row(short(arow))
-         {}
-   };
-   SPiece m_pieces[N_PIECE_TYPE];
-   TUInt32 m_nPiece;
-   TInt8 m_cells[N_ROW][N_COL];
-   bool m_synched;
-};
-
-//------------------------------------
-struct Board {
-   static const BitVec L_EDGE_MASK =
-      (1LL <<  0) | (1LL <<  5) | (1LL << 10) | (1LL << 15) |
-      (1LL << 20) | (1LL << 25) | (1LL << 30);
-   static const BitVec R_EDGE_MASK = L_EDGE_MASK << 4;
-   static const BitVec TOP_ROW = (1 << N_COL) - 1;
-   static const BitVec ROW_0_MASK =
-      TOP_ROW | (TOP_ROW << 10) | (TOP_ROW << 20) | (TOP_ROW << 30);
-   static const BitVec ROW_1_MASK = ROW_0_MASK << 5;
-   static const BitVec BOARD_MASK = (1 << 30) - 1;
-
-   Board();
-
-   static TUInt32 getIndex(TUInt32 x, TUInt32 y) { return y * N_COL + x; }
-   static bool badRegion(BitVec & toFill, BitVec rNew);
-   static int hasBadIslands(BitVec boardVec, int row);
-   static int calcBadIslands(BitVec boardVec, int row);
-   static bool hasBadIslandsSingle(BitVec boardVec, int row);
-   static void calcAlwaysBad(void);
-
-   void genAllSolutions(BitVec boardVec, TUInt32 placedPieces, TUInt32 iNextFill);
-   void recordSolution(Soln & s);
-
-   Soln m_curSoln;
-   Soln m_minSoln;
-   Soln m_maxSoln;
-   TUInt32 m_nSoln;
-};
-
-//------------------------------------
-
-struct Piece {
-   struct Instance {
-      TUInt64 m_allowed;
-      BitVec m_vec;
-      int m_offset;
-   };
-
-   static const int N_ELEM = 5;
-   static const int N_ORIENT = 12;
-   static const int ALL_PIECE_MASK = (1 << N_PIECE_TYPE) - 1;
-   static const TUInt32 SKIP_PIECE = 5; // it's magic!
-
-   typedef int TPts[N_ELEM][N_DIM];
-
-   static const BitVec BaseVecs[N_PIECE_TYPE];
-   static Piece s_basePiece[N_PIECE_TYPE][N_ORIENT];
-
-   static const Instance & getPiece(TUInt32 iPiece, TUInt32 iOrient, TUInt32 iParity);
-   static BitVec toBitVector(const TPts & pts);
-   static void genOrientation(BitVec vec, TUInt32 iOrient, Piece & target);
-   static void setCoordList(BitVec vec, TPts & pts);
-   static void shiftUpLines(TPts & pts, int shift);
-   static int shiftToX0(TPts & pts, Instance & instance, int offsetRow);
-   void setOkPos(TUInt32 isOdd, int w, int h);
-   static void genAllOrientations(void);
-
-   Instance m_instance[N_PARITY];
-};
 
 struct OkPieces {
    TInt8 nPieces[N_PIECE_TYPE];
@@ -167,10 +65,6 @@ struct IslandInfo {
 IslandInfo g_islandInfo[MAX_ISLAND_OFFSET] = {0};
 int g_nIslandInfo = 0;
 
-//------------------------------------
-
-//------------------------------------
-
 int floor(int top, int bot) {
    int toZero = top / bot;
    // negative numbers should be rounded down, not towards zero
@@ -186,6 +80,23 @@ const TUInt32 s_firstOne[32] = {
 
    4, 0, 1, 0,   2, 0, 1, 0,
    3, 0, 1, 0,   2, 0, 1, 0,
+};
+
+TUInt32 g_firstRegion[] = {
+   0x00, 0x01, 0x02, 0x03,   0x04, 0x01, 0x06, 0x07,
+   0x08, 0x01, 0x02, 0x03,   0x0c, 0x01, 0x0e, 0x0f,
+
+   0x10, 0x01, 0x02, 0x03,   0x04, 0x01, 0x06, 0x07,
+   0x18, 0x01, 0x02, 0x03,   0x1c, 0x01, 0x1e, 0x1f
+};
+
+
+TUInt32 g_flip[] = {
+   0x00, 0x10, 0x08, 0x18, 0x04, 0x14, 0x0c, 0x1c,
+   0x02, 0x12, 0x0a, 0x1a, 0x06, 0x16, 0x0e, 0x1e,
+
+   0x01, 0x11, 0x09, 0x19, 0x05, 0x15, 0x0d, 0x1d,
+   0x03, 0x13, 0x0b, 0x1b, 0x07, 0x17, 0x0f, 0x1f,
 };
 
 TUInt32 getFirstOne(BitVec v, TUInt32 startPos = 0) {
@@ -208,55 +119,42 @@ TUInt32 getFirstOne(BitVec v, TUInt32 startPos = 0) {
    return iPos;
 }
 
-TUInt32 countOnes(BitVec v) {
-   TUInt32 n = 0;
-   while (v) {
-      n++;
-      v = v & (v - 1);
-   }
+  - count_ones v:BIT_VEC :UINTEGER_32 <-
+  ( + n:UINTEGER_32;
+    
+    {v != 0}.while_do {
+      n := n + 1;
+      v := v & (v - 1);
+    };    
+    n
+  );
 
-   return n;
-}
+  - flip_two_rows bits:UINTEGER_32 :UINTEGER_32 <-
+  ( + flipped:UINTEGER_32;
+    flipped := g_flip.item (bits >> n_col) << n_col;
+    flipped | g_flip.item (bits & BOARD.top_row)
+  );
 
+  - mark_bad (IslandInfo & info, mask:UINTEGER_32, eo:INTEGER, always:BOOLEAN) <-
+  ( + elt:UINTEGER_32;
+    
+    elt := info.has_bad.item (eo,open) | mask;
+    info.has_bad.put elt to (eo,open);
+    
+    elt := info.has_bad.item (eo,closed) | mask;
+    info.has_bad.put elt to (eo,closed);
 
-// ------------------------------------
-
-
-TUInt32 g_firstRegion[] = {
-   0x00, 0x01, 0x02, 0x03,   0x04, 0x01, 0x06, 0x07,
-   0x08, 0x01, 0x02, 0x03,   0x0c, 0x01, 0x0e, 0x0f,
-
-   0x10, 0x01, 0x02, 0x03,   0x04, 0x01, 0x06, 0x07,
-   0x18, 0x01, 0x02, 0x03,   0x1c, 0x01, 0x1e, 0x1f
-};
-
-
-TUInt32 g_flip[] = {
-   0x00, 0x10, 0x08, 0x18, 0x04, 0x14, 0x0c, 0x1c,
-   0x02, 0x12, 0x0a, 0x1a, 0x06, 0x16, 0x0e, 0x1e,
-
-   0x01, 0x11, 0x09, 0x19, 0x05, 0x15, 0x0d, 0x1d,
-   0x03, 0x13, 0x0b, 0x1b, 0x07, 0x17, 0x0f, 0x1f,
-};
-
-inline TUInt32 flipTwoRows(TUInt32 bits) {
-   TUInt32 flipped = g_flip[bits >> N_COL] << N_COL;
-   return (flipped | g_flip[bits & Board::TOP_ROW]);
-}
-
-inline void markBad(IslandInfo & info, TUInt32 mask, int eo, bool always) {
-   info.hasBad[eo][OPEN] |= mask;
-   info.hasBad[eo][CLOSED] |= mask;
-
-   if (always)
-      info.alwaysBad[eo] |= mask;
-}
+    (always).if {
+      elt := info.always_bad.item eo | mask;
+      info.always_bad.put elt to eo; 
+    };
+  );
 
 
 Section Public 
 
   - main <-
-  ( + BOARD b;
+  ( + b:BOARD;
     (COMMAND_LINE.count > 2).if {
       die_with_code 1; // spec says this is an error
     };

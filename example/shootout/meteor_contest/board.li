@@ -31,6 +31,36 @@ Section Inherit
 
 Section Private
   
+  struct Board {
+   static const BitVec L_EDGE_MASK =
+      (1LL <<  0) | (1LL <<  5) | (1LL << 10) | (1LL << 15) |
+      (1LL << 20) | (1LL << 25) | (1LL << 30);
+   static const BitVec R_EDGE_MASK = L_EDGE_MASK << 4;
+   static const BitVec TOP_ROW = (1 << N_COL) - 1;
+   static const BitVec ROW_0_MASK =
+      TOP_ROW | (TOP_ROW << 10) | (TOP_ROW << 20) | (TOP_ROW << 30);
+   static const BitVec ROW_1_MASK = ROW_0_MASK << 5;
+   static const BitVec BOARD_MASK = (1 << 30) - 1;
+
+   Board();
+
+   static TUInt32 getIndex(TUInt32 x, TUInt32 y) { return y * N_COL + x; }
+   static bool badRegion(BitVec & toFill, BitVec rNew);
+   static int hasBadIslands(BitVec boardVec, int row);
+   static int calcBadIslands(BitVec boardVec, int row);
+   static bool hasBadIslandsSingle(BitVec boardVec, int row);
+   static void calcAlwaysBad(void);
+
+   void genAllSolutions(BitVec boardVec, TUInt32 placedPieces, TUInt32 iNextFill);
+   void recordSolution(Soln & s);
+
+   Soln m_curSoln;
+   Soln m_minSoln;
+   Soln m_maxSoln;
+   TUInt32 m_nSoln;
+};
+
+  
   - calc_always_bad <-
   ( + mask,board_vec,flip_mask:UINTEGER_32;
     + has_bad:INTEGER;
