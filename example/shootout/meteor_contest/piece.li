@@ -1,0 +1,234 @@
+///////////////////////////////////////////////////////////////////////////////
+//                              Lisaac Example                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name         := PIECE;
+  
+  - author       := "Benoit Sonntag";
+  - comment      := "Language shootout - Meteor contest (based on the C++ version)"; 
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Private
+  
+  Piece Piece::s_basePiece[N_PIECE_TYPE][N_ORIENT];
+  
+  const BitVec Piece::BaseVecs[] = {
+   0x10f, 0x0cb, 0x1087, 0x427, 0x465,
+   0x0c7, 0x8423, 0x0a7, 0x187, 0x08f
+ };
+ 
+void Piece::setCoordList(BitVec vec, TPts & pts) {
+   int iPt = 0;
+   BitVec mask = 1;
+   for (int y = 0; y < N_ROW; y++) {
+      for (int x = 0; x < N_COL; x++) {
+         if (mask & vec) {
+            pts[iPt][X] = x;
+            pts[iPt][Y] = y;
+
+            iPt++;
+         }
+         mask <<= 1;
+      }
+   }
+}
+
+BitVec Piece::toBitVector(const TPts & pts) {
+   int y, x;
+   BitVec result = 0;
+   for (int iPt = 0; iPt < N_ELEM; iPt++) {
+      x = pts[iPt][X];
+      y = pts[iPt][Y];
+
+      int pos = Board::getIndex(x, y);
+      result |= (1 << pos);
+   }
+
+   return result;
+}
+
+void Piece::shiftUpLines(TPts & pts, int shift) {
+   // vertical shifts have a twist
+   for (int iPt = 0; iPt < N_ELEM; iPt++) {
+      int & rx = pts[iPt][X];
+      int & ry = pts[iPt][Y];
+
+      if (ry & shift & 0x1)
+         rx++;
+      ry -= shift;
+   }
+}
+
+int Piece::shiftToX0(TPts & pts, Instance & instance, int offsetRow)
+{
+   // .. determine shift
+   int x, y, iPt;
+   int xMin = pts[0][X];
+   int xMax = xMin;
+   for (iPt = 1; iPt < N_ELEM; iPt++) {
+      x = pts[iPt][X];
+      y = pts[iPt][Y];
+
+      if (x < xMin)
+         xMin = x;
+      else if (x > xMax)
+         xMax = x;
+   }
+
+   // I'm dying for a 'foreach' here
+   int offset = N_ELEM;
+   for (iPt = 0; iPt < N_ELEM; iPt++) {
+      int & rx = pts[iPt][X];
+      int & ry = pts[iPt][Y];
+
+      rx -= xMin;
+
+      // check offset -- leftmost cell on top line
+      if ((ry == offsetRow) && (rx < offset))
+         offset = rx;
+   }
+
+   instance.m_offset = offset;
+   instance.m_vec = toBitVector(pts);
+   return xMax - xMin;
+}
+
+void Piece::setOkPos(TUInt32 isOdd, int w, int h) {
+   Instance & p = m_instance[isOdd];
+   TUInt64 & allowed = p.m_allowed = 0;
+   TUInt64 posMask = 1LL << (isOdd * N_COL);
+
+   for (int y = isOdd; y < N_ROW - h; y+=2, posMask <<= N_COL) {
+      if (p.m_offset)
+         posMask <<= p.m_offset;
+
+      for (int xPos = 0; xPos < N_COL - p.m_offset; xPos++, posMask <<= 1) {
+         // check if the new position is on the board
+         if (xPos >= N_COL - w)
+            continue;
+
+         // move it to the desired location
+         BitVec pieceVec = p.m_vec << xPos;
+
+         if (Board::hasBadIslandsSingle(pieceVec, y))
+            continue;
+
+         // position is allowed
+         allowed |= posMask;
+      }
+   }
+}
+
+void Piece::genOrientation(BitVec vec, TUInt32 iOrient, Piece & target)
+{
+   // get (x,y) coordinates
+   TPts pts;
+   setCoordList(vec, pts);
+
+   int y, x, iPt;
+   int rot = iOrient % 6;
+   int flip = iOrient >= 6;
+   if (flip) {
+      for (iPt = 0; iPt < N_ELEM; iPt++)
+         pts[iPt][Y] = -pts[iPt][Y];
+   }
+
+   // rotate as necessary
+   while (rot--) {
+      for (iPt = 0; iPt < N_ELEM; iPt++) {
+         x = pts[iPt][X];
+         y = pts[iPt][Y];
+
+         // I just worked this out by hand. Took a while.
+         int xNew = floor((2 * x - 3 * y + 1), 4);
+         int yNew = floor((2 * x + y + 1), 2);
+         pts[iPt][X] = xNew;
+         pts[iPt][Y] = yNew;
+      }
+   }
+
+   // determine vertical shift
+   int yMin = pts[0][Y];
+   int yMax = yMin;
+   for (iPt = 1; iPt < N_ELEM; iPt++) {
+      y = pts[iPt][Y];
+
+      if (y < yMin)
+         yMin = y;
+      else if (y > yMax)
+         yMax = y;
+   }
+   int h = yMax - yMin;
+   Instance & even = target.m_instance[EVEN];
+   Instance & odd = target.m_instance[ODD];
+
+   shiftUpLines(pts, yMin);
+   int w = shiftToX0(pts, even, 0);
+   target.setOkPos(EVEN, w, h);
+   even.m_vec >>= even.m_offset;
+
+   // shift down one line
+   shiftUpLines(pts, -1);
+   w = shiftToX0(pts, odd, 1);
+   // shift the bitmask back one line
+   odd.m_vec >>= N_COL;
+   target.setOkPos(ODD, w, h);
+   odd.m_vec >>= odd.m_offset;
+}
+
+void Piece::genAllOrientations(void) {
+   for (int iPiece = 0; iPiece < N_PIECE_TYPE; iPiece++) {
+      BitVec refPiece = BaseVecs[iPiece];
+      for (int iOrient = 0; iOrient < N_ORIENT; iOrient++) {
+         Piece & p = s_basePiece[iPiece][iOrient];
+         genOrientation(refPiece, iOrient, p);
+         if ((iPiece == SKIP_PIECE) && ((iOrient / 3) & 1))
+            p.m_instance[0].m_allowed = p.m_instance[1].m_allowed = 0;
+      }
+   }
+
+   for (int iPiece = 0; iPiece < N_PIECE_TYPE; iPiece++) {
+      for (int iOrient = 0; iOrient < N_ORIENT; iOrient++) {
+         TUInt64 mask = 1;
+         for (int iRow = 0; iRow < N_ROW; iRow++) {
+            const Instance & p = getPiece(iPiece, iOrient, (iRow & 1));
+            for (int iCol = 0; iCol < N_COL; iCol++) {
+               OkPieces & allowed = g_okPieces[iRow][iCol];
+               if (p.m_allowed & mask) {
+                  TInt8 & nPiece = allowed.nPieces[iPiece];
+                  allowed.pieceVec[iPiece][nPiece] = p.m_vec << iCol;
+                  nPiece++;
+               }
+
+               mask <<= 1;
+            }
+         }
+      }
+   }
+}
+
+
+inline const Piece::Instance & Piece::getPiece(TUInt32 iPiece, TUInt32 iOrient, TUInt32 iParity) {
+   return s_basePiece[iPiece][iOrient].m_instance[iParity];
+}

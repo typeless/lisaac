@@ -1,0 +1,306 @@
+///////////////////////////////////////////////////////////////////////////////
+//                              Lisaac Example                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name         := METEOR_CONTEST;
+  
+  - author       := "Benoit Sonntag";
+  - comment      := "Language shootout - Meteor contest (based on the C++ version)"; 
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Private
+  
+  - calc_always_bad <-
+  ( + mask,board_vec,flip_mask:UINTEGER_32;
+    + has_bad:INTEGER;
+    + always:BOOLEAN;
+    
+    1.to (max_island_offset-1) do { i_word:UINTEGER_32;   
+      IslandInfo & isleInfo = g_islandInfo[iWord];
+      IslandInfo & flipped = g_islandInfo[flipTwoRows(iWord)];
+      
+      mask := 1;
+      0.to 31 do { i:UINTEGER_32;	
+	board_vec := (i << (2 * n_col)) | i_word;
+	((isle_info.is_known.item (0,open) & mask) = 0).if {
+	  has_bad := calc_bad_islands (board_vec, 0);
+	  (has_bad != good).if {
+	    always := (has_bad = always_bad);
+            mark_bad (isle_info, mask, even, always);
+
+            flip_mask := get_mask (g_flip.item i);
+            mark_bad (flipped, flip_mask, odd, always);
+	  };
+	};
+	mask := mask << 1;
+      };      
+      flipped  .is_known.put 0FFFF_FFFFh to (1,open);
+      isle_info.is_known.put 0FFFF_FFFFh to (0,open);
+    };
+  );
+
+  - has_bad_islands_single (board_vec:BIT_VEC ,row:INTEGER) :BOOLEAN <-
+  ( + to_fill,start_region,last_row,board_msk:BIT_VEC; 
+    + is_odd,result:BOOLEAN;    
+    
+    to_fill := ~ board_vec;
+    is_odd  := raw.is_odd;
+    (is_odd).if {
+      row := row - 1;
+      to_fill := to_fill << n_col; // shift to even aligned
+      to_fill := to_fill | top_row;
+    };
+
+    start_region := top_row;
+    last_row     := top_row << (5 * n_col);
+    board_msk    := board_mask; // all but the first two bits
+    (row >= 4).if {
+      board_msk := board_msk >> ((row - 4) * n_col);
+    } else {
+      (is_odd || (row = 0)).if {
+	start_region := last_row;
+      };
+    };
+
+    to_fill := to_fill & board_msk;
+    start_region := start_region & to_fill;
+    
+    {to_fill && {! result}}.while_do {
+      (bad_region (to_fill, start_region)).if {
+	result := TRUE;
+      };
+      start_region := get_mask (get_first_one to_fill);
+    };
+    result
+  );
+
+  - gen_all_solutions (board_vec:BIT_VEC, placed_pieces:UINTEGER_32, row:UINTEGER_32) <-
+  (
+    {(board_vec & top_row) = top_row}.while_do {
+      board_vec := board_vec >> n_col;
+      row := row + 1;
+    };
+   TUInt32 iNextFill = s_firstOne[~boardVec & TOP_ROW];
+   const OkPieces & allowed = g_okPieces[row][iNextFill];
+
+   int iPiece = getFirstOne(~placedPieces);
+   int pieceMask = getMask(iPiece);
+   for (; iPiece < N_PIECE_TYPE; iPiece++, pieceMask <<= 1)
+   {
+      // skip if we've already used this piece
+      if (pieceMask & placedPieces)
+         continue;
+
+      placedPieces |= pieceMask;
+      for (int iOrient = 0; iOrient < allowed.nPieces[iPiece]; iOrient++) {
+         BitVec pieceVec = allowed.pieceVec[iPiece][iOrient];
+
+         // check if piece conflicts with other pieces
+         if (pieceVec & boardVec)
+            continue;
+
+         // add the piece to the board
+         boardVec |= pieceVec;
+
+         if (hasBadIslands(boardVec, row)) {
+            boardVec ^= pieceVec;
+            continue;
+         }
+
+         m_curSoln.pushPiece(pieceVec, iPiece, row);
+
+         // recur or record solution
+         if (placedPieces != Piece::ALL_PIECE_MASK)
+            genAllSolutions(boardVec, placedPieces, row);
+         else
+            recordSolution(m_curSoln);
+
+         // remove the piece before continuing with a new piece
+         boardVec ^= pieceVec;
+         m_curSoln.popPiece();
+      }
+
+      placedPieces ^= pieceMask;
+   }
+}
+
+  - record_solution (Soln & s) <-
+  ( + spun:SOLN;
+    
+    m_n_soln := m_n_soln + 2; // add solution and its rotation
+
+    (m_min_soln.is_empty).if {
+      m_min_soln := m_max_soln := s;     
+    } else {
+      (s.less_than m_min_soln).if {
+	m_min_soln := s;
+      } else {
+	(m_max_soln.less_than s).if {
+	  m_max_soln := s;
+	};
+      };
+
+      s.spin spun;
+      (spun.less_than m_min_soln).if {
+	m_min_soln := spun;
+      } else { 
+	(m_max_soln.less_than spun).if {
+	  m_max_soln := spun;
+	};
+      };
+    };
+  );
+  
+  - calc_bad_islands (board_vec:BIT_VEC , row:INTEGER) :INTEGER <-
+  ( + to_fill,bottom:BIT_VEC;
+    + board_msk,start_region:BIT_VEC;
+    + board_mask_shift:INTEGER;
+    + filled:BOOLEAN;
+    
+    to_fill := ~board_vec;
+    ((row & 1) != 0).if {
+      row := row - 1;
+      to_fill := to_fill << n_col;
+    };
+
+    board_msk := board_mask; // all but the first two bits
+    (row > 4).if {
+      board_mask_shift := (row - 4) * n_col;
+      board_msk := board_msk >> board_mask_shift;
+    };
+    to_fill := to_fill & board_msk;
+
+    // a little pre-work to speed things up
+    bottom := (top_row << (5 * n_col));
+    filled := ((bottom & to_fill) = bottom);
+    {(bottom & to_fill) = bottom}.while_do {
+      to_fill := to_fill ^ bottom;
+      bottom := bottom >> n_col;
+    };
+
+    (filled || {row < 4}).if {
+      start_region := bottom & to_fill;
+    } else {
+      start_region := g_first_region.item (to_fill & top_row);
+      (start_region = 0).if {
+	start_region := (to_fill >> n_col) & top_row;
+	start_region := g_first_region.item start_region;
+	start_region := start_region << n_col;
+      };
+      start_region := start_region | ((start_region << n_col) & to_fill);
+    };
+    
+    result := good;
+    {to_fill && {result = good}}.while_do {
+      (bad_region (to_fill, start_region)).if {
+	(to_fill).if {
+	  result := always_bad;
+	} else { 
+	  result := bad;
+	};
+      };      
+      start_region := get_mask (get_first_one to_fill);
+    };
+    result    
+  );
+
+Board::Board() :
+   m_curSoln(Soln::NO_PIECE), m_minSoln(N_PIECE_TYPE),
+   m_maxSoln(Soln::NO_PIECE), m_nSoln(0)
+{}
+
+  - bad_region (BitVec & toFill, r_new:BIT_VEC) :BOOLEAN <-
+  (
+    // grow empty region, until it doesn't change any more
+    + region,even_region,odd_region:BIT_VEC;
+    
+    {
+      region := r_new;
+
+      // simple grow up/down
+      r_new := r_new | (region >> n_col);
+      r_new := r_new | (region << n_col);
+
+      // grow right/left
+      r_new := r_new | ((region & ~l_edge_mask) >> 1);
+      r_new := r_new | ((region & ~r_edge_mask) << 1);
+
+      // tricky growth
+      even_region := region & (row_0_mask & ~l_edge_mask);
+      r_new := r_new | (even_region >> (n_col + 1));
+      r_new := r_new | (even_region << (n_col - 1));
+      odd_region := region & (row_1_mask & ~r_edge_mask);
+      r_new := r_new | (odd_region >> (n_col - 1));
+      r_new := r_new | (odd_region << (n_col + 1));
+
+      // clamp against existing pieces
+      r_new := r_new & to_fill;
+    }.do_while {(r_new != to_fill) && {r_new != region}};
+
+    // subtract empty region from board
+    to_fill := to_fill ^ r_new;
+    
+    (count_ones to_fill % PIECE.n_elem) != 0
+  );
+
+int Board::hasBadIslands(BitVec boardVec, int row)
+{
+   // skip over any filled rows
+   while ((boardVec & TOP_ROW) == TOP_ROW) {
+      boardVec >>= N_COL;
+      row++;
+   }
+
+   TUInt32 iInfo = boardVec & ((1 << 2 * N_COL) - 1);
+   IslandInfo & info = g_islandInfo[iInfo];
+
+   TUInt32 lastRow = (boardVec >> (2 * N_COL)) & TOP_ROW;
+   TUInt32 mask = getMask(lastRow);
+   TUInt32 isOdd = row & 1;
+   TUInt32 & alwaysBad = info.alwaysBad[isOdd];
+
+   if (alwaysBad & mask)
+      return BAD;
+
+   if (boardVec & (TOP_ROW << N_COL * 3))
+      return calcBadIslands(boardVec, row);
+
+   int isClosed = (row > 6); // because we track 3 rows
+   TUInt32 & isKnownVector = info.isKnown[isOdd][isClosed];
+   TUInt32 & badIsleVector = info.hasBad[isOdd][isClosed];
+
+   if (isKnownVector & mask)
+      return ((badIsleVector & mask) != 0);
+
+   if (boardVec == 0)
+      return GOOD;
+
+   int hasBad = calcBadIslands(boardVec, row);
+
+   isKnownVector |= mask;
+   if (hasBad)
+      badIsleVector |= mask;
+
+   return hasBad;
+}

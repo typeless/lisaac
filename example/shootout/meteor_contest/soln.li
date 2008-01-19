@@ -1,0 +1,123 @@
+///////////////////////////////////////////////////////////////////////////////
+//                              Lisaac Example                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name         := SOLN;
+  
+  - author       := "Benoit Sonntag";
+  - comment      := "Language shootout - Meteor contest (based on the C++ version)"; 
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Private
+Soln::Soln(int fillVal) :
+   m_nPiece(0) {
+   fill(fillVal);
+}
+
+void Soln::fill(int val) {
+   m_synched = false;
+   memset(m_cells, val, N_CELL);
+}
+
+string Soln::toString(void) const {
+   string result;
+   result.reserve(N_CELL * 2);
+
+   for (int y = 0; y < N_ROW; y++) {
+      for (int x = 0; x < N_COL; x++) {
+         int val = m_cells[y][x];
+         result += ((val == NO_PIECE) ? '.' : char('0' + val));
+         result += ' ';
+      }
+      result += '\n';
+
+      // indent every second line
+      if (y % 2 == 0)
+         result += " ";
+   }
+   return result;
+}
+
+void Soln::setCells(void) {
+   if (m_synched)
+      return;
+
+   for (TUInt32 iPiece = 0; iPiece < m_nPiece; iPiece++) {
+      const SPiece & p = m_pieces[iPiece];
+      BitVec vec = p.vec;
+      TInt8 pID = (TInt8)p.iPiece;
+      int rowOffset = p.row;
+
+      int nNewCells = 0;
+      for (int y = rowOffset; y < N_ROW; y++) {
+         for (int x = 0; x < N_COL; x++) {
+            if (vec & 1) {
+               m_cells[y][x] = pID;
+               nNewCells++;
+            }
+            vec >>= 1;
+         }
+         if (nNewCells == Piece::N_ELEM)
+            break;
+      }
+   }
+   m_synched = true;
+}
+
+bool Soln::lessThan(Soln & r) {
+   if (m_pieces[0].iPiece != r.m_pieces[0].iPiece) {
+      return m_pieces[0].iPiece < r.m_pieces[0].iPiece;
+   }
+
+   setCells();
+   r.setCells();
+
+   for (int y = 0; y < N_ROW; y++) {
+      for (int x = 0; x < N_COL; x++) {
+         int lval = m_cells[y][x];
+         int rval = r.m_cells[y][x];
+
+         if (lval != rval)
+            return (lval < rval);
+      }
+   }
+
+   return false; // solutions are equal
+}
+
+void Soln::spin(Soln & spun) {
+   setCells();
+
+   // swap cells
+   for (int y = 0; y < N_ROW; y++) {
+      for (int x = 0; x < N_COL; x++) {
+         TInt8 flipped = m_cells[N_ROW - y - 1][N_COL - x - 1];
+         spun.m_cells[y][x] = flipped;
+      }
+   }
+
+   // swap first and last pieces (the rest aren't used)
+   spun.m_pieces[0].iPiece = m_pieces[N_PIECE_TYPE - 1].iPiece;
+   spun.m_synched = true;
+}
