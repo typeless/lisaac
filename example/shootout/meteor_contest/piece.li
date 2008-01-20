@@ -155,120 +155,133 @@ Section Private
   );
 
   - set_ok_pos (is_odd:UINTEGER_32, w,h:INTEGER) <-
-  (
-   Instance & p = m_instance[isOdd];
-   TUInt64 & allowed = p.m_allowed = 0;
-   TUInt64 posMask = 1LL << (isOdd * N_COL);
+  ( + y,x_pos:INTEGER;
+    + piece_vec:BIT_VEC;
+    Instance & p = m_instance[isOdd];
+    TUInt64 & allowed = p.m_allowed = 0;
+    TUInt64 posMask = 1LL << (isOdd * N_COL);
+   
+    y := is_odd;
+    {y < n_row - h}.while_do {      
+      (p.m_offset).if {
+	pos_mask := pos_mask << p.m_offset;
+      };      
+      x_pos := 0;
+      {x_pos < n_col - p.m_offset}.while_do {
+	// check if the new position is on the board
+	(x_pos < n_col - w).if {
+	  // move it to the desired location
+	  piece_vec := p.m_vec << x_pos;
 
-   for (int y = isOdd; y < N_ROW - h; y+=2, posMask <<= N_COL) {
-      if (p.m_offset)
-         posMask <<= p.m_offset;
-
-      for (int xPos = 0; xPos < N_COL - p.m_offset; xPos++, posMask <<= 1) {
-         // check if the new position is on the board
-         if (xPos >= N_COL - w)
-            continue;
-
-         // move it to the desired location
-         BitVec pieceVec = p.m_vec << xPos;
-
-         if (Board::hasBadIslandsSingle(pieceVec, y))
-            continue;
-
-         // position is allowed
-         allowed |= posMask;
+	  (! BOARD.has_bad_islands_single (piece_vec, y)).if {            
+	    // position is allowed	    
+	    allowed := allowed | pos_mask;
+	  };
+	};
+	x_pos := x_pos + 1;
+	pos_mask := pos_mask << 1;	
       }
-   }
-}
+      y := y + 2;
+      pos_mask := pos_mask << n_col;
+    };
+  );
 
-void Piece::genOrientation(BitVec vec, TUInt32 iOrient, Piece & target)
-{
-   // get (x,y) coordinates
-   TPts pts;
-   setCoordList(vec, pts);
+  - gen_orientation (vec:BIT_VEC , i_orient:UINTEGER_32, Piece & target) <-
+  ( + y,x,ipt,rot,flip,x_new,y_new,y_min,y_max,h,w:INTEGER;
+    
+    // get (x,y) coordinates
+    TPts pts;
+    set_coord_list (vec, pts);
+    
+    rot := i_orient % 6;
+    flip := i_orient >= 6;
+    (flip).if {
+      0.to (n_elem-1) do { ipt:INTEGER;
+	pts.put (-pts.item (ipt,y)) to (ipt,y);	
+      };
+    };
 
-   int y, x, iPt;
-   int rot = iOrient % 6;
-   int flip = iOrient >= 6;
-   if (flip) {
-      for (iPt = 0; iPt < N_ELEM; iPt++)
-         pts[iPt][Y] = -pts[iPt][Y];
-   }
+    // rotate as necessary
+    while (rot--) {
+      0.to (n_elem - 1) do { ipt:INTEGER;      
+	x := pts.item (ipt,x);
+	y := pts.item (ipt,y);
 
-   // rotate as necessary
-   while (rot--) {
-      for (iPt = 0; iPt < N_ELEM; iPt++) {
-         x = pts[iPt][X];
-         y = pts[iPt][Y];
+	// I just worked this out by hand. Took a while.
+	x_new := floor(2 * x - 3 * y + 1, 4);
+        y_new := floor(2 * x + y + 1, 2);
+	pts.put x_new to (ipt,x);
+	pts.put y_new to (ipt,y);
+      };
+    };
 
-         // I just worked this out by hand. Took a while.
-         int xNew = floor((2 * x - 3 * y + 1), 4);
-         int yNew = floor((2 * x + y + 1), 2);
-         pts[iPt][X] = xNew;
-         pts[iPt][Y] = yNew;
-      }
-   }
+    // determine vertical shift
+    y_min := pts.item (0,y);
+    y_max := y_min;
+    1.to (n_elem - 1) do { ipt:INTEGER;      
+      y := pts.item (ipt,y);
+      
+      (y < y_min).if {
+	y_min := y;
+      } else { 
+	(y > y_max).if {
+	  y_max := y;
+	};
+      };
+    };
+    h := y_max - y_min;
+    Instance & v_even := target.m_instance.item even;
+    Instance & v_odd := target.m_instance.item odd;
 
-   // determine vertical shift
-   int yMin = pts[0][Y];
-   int yMax = yMin;
-   for (iPt = 1; iPt < N_ELEM; iPt++) {
-      y = pts[iPt][Y];
+    shift_up_lines (pts, y_min);
+    w := shift_to_x0 (pts, v_even, 0);
+    target.set_ok_pos (even, w, h);
+    even.m_vec := even.m_vec >> even.m_offset;
 
-      if (y < yMin)
-         yMin = y;
-      else if (y > yMax)
-         yMax = y;
-   }
-   int h = yMax - yMin;
-   Instance & even = target.m_instance[EVEN];
-   Instance & odd = target.m_instance[ODD];
+    // shift down one line
+    shift_up_lines(pts, -1);
+    w := shift_to_x0(pts, v_odd, 1);
+    // shift the bitmask back one line
+    v_odd.m_vec := v_odd.m_vec >> n_col;
+    target.set_ok_pos (odd, w, h);
+    v_odd.m_vec := v_odd.m_vec >> v_odd.m_offset;
+  );
 
-   shiftUpLines(pts, yMin);
-   int w = shiftToX0(pts, even, 0);
-   target.setOkPos(EVEN, w, h);
-   even.m_vec >>= even.m_offset;
-
-   // shift down one line
-   shiftUpLines(pts, -1);
-   w = shiftToX0(pts, odd, 1);
-   // shift the bitmask back one line
-   odd.m_vec >>= N_COL;
-   target.setOkPos(ODD, w, h);
-   odd.m_vec >>= odd.m_offset;
-}
-
-void Piece::genAllOrientations(void) {
-   for (int iPiece = 0; iPiece < N_PIECE_TYPE; iPiece++) {
-      BitVec refPiece = BaseVecs[iPiece];
-      for (int iOrient = 0; iOrient < N_ORIENT; iOrient++) {
-         Piece & p = s_basePiece[iPiece][iOrient];
-         genOrientation(refPiece, iOrient, p);
-         if ((iPiece == SKIP_PIECE) && ((iOrient / 3) & 1))
-            p.m_instance[0].m_allowed = p.m_instance[1].m_allowed = 0;
-      }
-   }
-
-   for (int iPiece = 0; iPiece < N_PIECE_TYPE; iPiece++) {
-      for (int iOrient = 0; iOrient < N_ORIENT; iOrient++) {
-         TUInt64 mask = 1;
-         for (int iRow = 0; iRow < N_ROW; iRow++) {
-            const Instance & p = getPiece(iPiece, iOrient, (iRow & 1));
-            for (int iCol = 0; iCol < N_COL; iCol++) {
-               OkPieces & allowed = g_okPieces[iRow][iCol];
-               if (p.m_allowed & mask) {
-                  TInt8 & nPiece = allowed.nPieces[iPiece];
-                  allowed.pieceVec[iPiece][nPiece] = p.m_vec << iCol;
-                  nPiece++;
-               }
-
-               mask <<= 1;
-            }
-         }
-      }
-   }
-}
-
+  - gen_all_orientations <-
+  ( + ref_piece:BIT_VEC;
+    
+    0.to (n_piece_type - 1) do { i_piece:INTEGER;
+      ref_piece := base_vecs.item i_piece;
+      0.to (n_orient - 1) do { i_orient:INTEGER;
+	Piece & p := s_base_piece.item (i_piece,i_orient);
+	gen_orientation (ref_piece, i_orient, p);
+	((i_piece = skip_piece) && {(i_orient / 3) & 1}).if {
+	  p.m_instance.item 0.m_allowed := p.m_instance.item 1.m_allowed := 0;
+	};
+      };
+    };
+    
+    0.to (n_piece_type - 1) do { i_piece:INTEGER;
+      0.to (n_orient - 1) do { i_orient:INTEGER;      
+	+ mask:UINTEGER_64;
+	mask := 1;
+	0.to (n_row - 1) do { i_row:INTEGER;
+	  const Instance & p = getPiece(iPiece, iOrient, (iRow & 1));
+	  0.to (n_col-1) do { i_col:INTEGER;
+	    OK_PIECES & allowed := g_ok_pieces.item (i_row,i_col);
+	    (p.m_allowed & mask).if {
+	      TInt8 & n_piece := allowed.n_pieces.item i_piece;
+	      allowed.piece_vec.item (i_piece,n_piece) := p.m_vec << i_col;
+	      n_piece := n_piece + 1;
+	    };
+	    
+	    mask := mask << 1;
+	  };
+	};
+      };
+    };
+  );
+  
 
 inline const Piece::Instance & Piece::getPiece(TUInt32 iPiece, TUInt32 iOrient, TUInt32 iParity) {
    return s_basePiece[iPiece][iOrient].m_instance[iParity];

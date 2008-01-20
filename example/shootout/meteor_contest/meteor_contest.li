@@ -99,25 +99,28 @@ TUInt32 g_flip[] = {
    0x03, 0x13, 0x0b, 0x1b, 0x07, 0x17, 0x0f, 0x1f,
 };
 
-TUInt32 getFirstOne(BitVec v, TUInt32 startPos = 0) {
-   if (v == (BitVec)0)
-      return 0;
-
-   TUInt32 iPos = startPos;
-   BitVec mask = 0xff << startPos;
-   while ((mask & v) == 0) {
-      mask <<= 8;
-      iPos += 8;
-   }
-   TUInt32 result = TUInt32((mask & v) >> iPos);
-   TUInt32 resultLow = result & 0x0f;
-   if (resultLow != 0)
-      iPos += s_firstOne[resultLow];
-   else
-      iPos += 4 + s_firstOne[result >> 4];
-
-   return iPos;
-}
+  - get_first_one (v:BIT_VEC , TUInt32 startPos = 0) :UINTEGER_32 <-
+  ( + res,result_low,result,i_pos:UINTEGER_32;
+    + mask:BIT_VEC;
+    
+    (v != 0).if {      
+      i_pos := start_pos;
+      mask := 0FFh << start_pos;
+      {(mask & v) = 0}.while_do {
+	mask := mask << 8;
+	i_pos := i_pos + 8;
+      };
+      result := ((mask & v) >> i_pos).to_uinteger_32;
+      result_low := result & 0Fh;
+      (result_low != 0).if {
+	i_pos := i_pos + s_first_one.item result_low;
+      } else {
+	i_pos := i_pos + 4 + s_first_one.item (result >> 4);
+      };
+      res := i_pos;
+    };
+    res
+  );
 
   - count_ones v:BIT_VEC :UINTEGER_32 <-
   ( + n:UINTEGER_32;
@@ -131,6 +134,7 @@ TUInt32 getFirstOne(BitVec v, TUInt32 startPos = 0) {
 
   - flip_two_rows bits:UINTEGER_32 :UINTEGER_32 <-
   ( + flipped:UINTEGER_32;
+    
     flipped := g_flip.item (bits >> n_col) << n_col;
     flipped | g_flip.item (bits & BOARD.top_row)
   );
@@ -150,11 +154,11 @@ TUInt32 getFirstOne(BitVec v, TUInt32 startPos = 0) {
     };
   );
 
-
 Section Public 
 
   - main <-
   ( + b:BOARD;
+    
     (COMMAND_LINE.count > 2).if {
       die_with_code 1; // spec says this is an error
     };
