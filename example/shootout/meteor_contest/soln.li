@@ -31,40 +31,20 @@ Section Inherit
 
 Section Private
   
-  struct Soln {
-   static const int NO_PIECE = -1;
-
-   void setCells(void);
-   bool lessThan(Soln & r);
-   string toString(void) const;
-   void fill(int val);
-   void spin(Soln & spun);
-
-   bool isEmpty(void) {return (m_nPiece == 0);}
-   void popPiece(void) {m_nPiece--; m_synched = false;}
-   void pushPiece(BitVec vec, int iPiece, int row) {
-      SPiece & p = m_pieces[m_nPiece++];
-      p.vec = vec;
-      p.iPiece = (short)iPiece;
-      p.row = (short)row;
-   }
-
+  - no_piece:INTEGER := -1;
+  
+Section Public
+  
+  + m_pieces[N_PIECE_TYPE]:S_PIECE;
+  + m_n_piece:UINTEGER_32;
+  + m_cells[N_ROW][N_COL]:INTEGER_8;
+  + m_synched:BOOLEAN;
+  
+  struct Soln {     
+    
    Soln(int fillVal);
    Soln() : m_synched(false), m_nPiece(0) {}
-
-   struct SPiece {
-      BitVec vec;
-      short iPiece;
-      short row;
-      SPiece() {}
-      SPiece(BitVec avec, TUInt32 apiece, TUInt32 arow) :
-         vec(avec), iPiece(short(apiece)), row(short(arow))
-         {}
-   };
-   SPiece m_pieces[N_PIECE_TYPE];
-   TUInt32 m_nPiece;
-   TInt8 m_cells[N_ROW][N_COL];
-   bool m_synched;
+      
 };
 
   
@@ -73,32 +53,57 @@ Soln::Soln(int fillVal) :
    fill(fillVal);
 }
 
-void Soln::fill(int val) {
-   m_synched = false;
-   memset(m_cells, val, N_CELL);
-}
-
-string Soln::toString(void) const {
-   string result;
-   result.reserve(N_CELL * 2);
-
-   for (int y = 0; y < N_ROW; y++) {
-      for (int x = 0; x < N_COL; x++) {
-         int val = m_cells[y][x];
-         result += ((val == NO_PIECE) ? '.' : char('0' + val));
-         result += ' ';
+  - to_string:STRING <-
+  ( + result:STRING;
+    + val:INTEGER;
+    
+    result.reserve (n_cell * 2);
+    
+    0.to (n_row - 1) do { y:INTEGER;
+      0.to (n_col - 1) do { x:INTEGER;
+	val := m_cells.item (y,x);
+	(val = no_piece).if {
+	  result.add_last '.';
+	} else {
+	  result.add_last ('0' + val);
+	};        
+	result.add_last ' ';
       }
-      result += '\n';
+      result.add_last '\n';
 
       // indent every second line
-      if (y % 2 == 0)
-         result += " ";
-   }
-   return result;
-}
+      (y % 2 = 0).if {
+	result.add_last ' ';
+      };
+    };
+    result
+  );
+ 
+  - fill val:INTEGER <-
+  (
+    m_synched := false;
+    memset(m_cells, val, N_CELL);
+  );
+
+  - is_empty:BOOLEAN <- (m_n_piece = 0);
+
+  - pop_piece <- 
+  (
+    m_n_piece := m_n_piece - 1; 
+    m_synched := FALSE;
+  );
+   
+  - push_piece (vec:UINTEGER_32, i_piece,row:INTEGER) <-
+  (
+    S_PIECE & p := m_pieces.item m_n_piece;
+    m_n_piece := m_n_piece + 1;
+    p.vec := vec;
+    p.i_piece := (short)i_piece;
+    p.row := (short)row;
+  );
 
   - set_cells <-
-  ( + vec:BIT_VEC;
+  ( + vec:UINTEGER_32;
     + pid:INTEGER_8;
     + row_offset,n_new_cells:INTEGER;
     
@@ -127,7 +132,6 @@ string Soln::toString(void) const {
     };
   );
   
-
   - less_than (Soln & r) :BOOLEAN <-
   ( + result,stop:BOOLEAN;
     + lval,rval,x,y:INTEGER;

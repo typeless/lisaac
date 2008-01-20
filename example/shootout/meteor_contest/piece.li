@@ -32,31 +32,17 @@ Section Inherit
 Section Private
   
   struct Piece {
-   struct Instance {
-      TUInt64 m_allowed;
-      BitVec m_vec;
-      int m_offset;
-   };
-
-   static const int N_ELEM = 5;
-   static const int N_ORIENT = 12;
-   static const int ALL_PIECE_MASK = (1 << N_PIECE_TYPE) - 1;
-   static const TUInt32 SKIP_PIECE = 5; // it's magic!
+   
+  - n_elem:INTEGER := 5;
+  - n_orient:INTEGER := 12;
+  - all_piece_mask:INTEGER := (1 << n_piece_type) - 1;
+  - skip_piece:UINTEGER_32 := 5; // it's magic!
 
    typedef int TPts[N_ELEM][N_DIM];
 
    static const BitVec BaseVecs[N_PIECE_TYPE];
    static Piece s_basePiece[N_PIECE_TYPE][N_ORIENT];
-
-   static const Instance & getPiece(TUInt32 iPiece, TUInt32 iOrient, TUInt32 iParity);
-   static BitVec toBitVector(const TPts & pts);
-   static void genOrientation(BitVec vec, TUInt32 iOrient, Piece & target);
-   static void setCoordList(BitVec vec, TPts & pts);
-   static void shiftUpLines(TPts & pts, int shift);
-   static int shiftToX0(TPts & pts, Instance & instance, int offsetRow);
-   void setOkPos(TUInt32 isOdd, int w, int h);
-   static void genAllOrientations(void);
-
+         
    Instance m_instance[N_PARITY];
 };
 
@@ -68,9 +54,9 @@ Section Private
    0x0c7, 0x8423, 0x0a7, 0x187, 0x08f
  };
  
-  - set_coord_list (vec:BIT_VEC , TPts & pts) <-
+  - set_coord_list (vec:UINTEGER_32 , TPts & pts) <- // Static ?
   ( + ipt:INTEGER;
-    + mask:BIT_VEC;
+    + mask:UINTEGER_32;
     
     mask := 1;
     0.to (n_row-1) do { y:INTEGER;
@@ -86,9 +72,9 @@ Section Private
     };
   );
 
-  - to_bit_vector (const TPts & pts) :BIT_VEC <-
+  - to_bit_vector (const TPts & pts) :UINTEGER_32 <- // Static
   ( + y, x:INTEGER;
-    + result:BIT_VEC;
+    + result:UINTEGER_32;
     
     0.to (n_elem-1) do { ipt:INTEGER;
       x := pts.item (ipt,x);
@@ -98,21 +84,21 @@ Section Private
     result
   );
 
-  - shift_up_lines (TPts & pts, shift:INTEGER) <-
+  - shift_up_lines (TPts & pts, shift:INTEGER) <- // static
   (
     // vertical shifts have a twist
     0.to (n_elem-1) do { ipt:INTEGER;
-      int & rx = pts[iPt][X];
-      int & ry = pts[iPt][Y];
+      int & rx := pts.item (ipt,x);
+      int & ry := pts.item (ipt,y);
 
-      (ry & shift & 0x1).if {
+      (ry & shift & 01h).if {
 	rx := rx + 1;
       };
       ry := ry - shift;
     };
   );    
 
-  - shift_to_x0(TPts & pts, Instance & instance, offset_row:INTEGER) :INTEGER <-
+  - shift_to_x0(TPts & pts, Instance & instance, offset_row:INTEGER) :INTEGER <- // static
   (
     // .. determine shift
     + x, y, ipt,offset:INTEGER;
@@ -138,8 +124,8 @@ Section Private
     // I'm dying for a 'foreach' here
     offset := n_elem;
     1.to (n_elem-1) do { ipt:INTEGER;     
-      int & rx = pts[iPt][X];
-      int & ry = pts[iPt][Y];
+      int & rx := pts.item (ipt,x);
+      int & ry := pts.item (ipt,y);
       
       rx := rx - x_min;
       
@@ -151,15 +137,16 @@ Section Private
     
     instance.m_offset := offset;
     instance.m_vec := to_bit_vector pts;
-    x_max - x_min;
+    x_max - x_min
   );
 
   - set_ok_pos (is_odd:UINTEGER_32, w,h:INTEGER) <-
   ( + y,x_pos:INTEGER;
-    + piece_vec:BIT_VEC;
-    Instance & p = m_instance[isOdd];
-    TUInt64 & allowed = p.m_allowed = 0;
-    TUInt64 posMask = 1LL << (isOdd * N_COL);
+    + piece_vec:UINTEGER_32;
+    + pos_mask:UINTEGER_64;
+    Instance & p := m_instance.item is_odd;
+    TUInt64 & allowed := p.m_allowed := 0;
+    pos_mask := 1 << (is_odd * n_col);
    
     y := is_odd;
     {y < n_row - h}.while_do {      
@@ -186,11 +173,11 @@ Section Private
     };
   );
 
-  - gen_orientation (vec:BIT_VEC , i_orient:UINTEGER_32, Piece & target) <-
+  - gen_orientation (vec:UINTEGER_32 , i_orient:UINTEGER_32, PIECE & target) <- // static
   ( + y,x,ipt,rot,flip,x_new,y_new,y_min,y_max,h,w:INTEGER;
-    
+    + pts:TPTS;
     // get (x,y) coordinates
-    TPts pts;
+    
     set_coord_list (vec, pts);
     
     rot := i_orient % 6;
@@ -247,8 +234,8 @@ Section Private
     v_odd.m_vec := v_odd.m_vec >> v_odd.m_offset;
   );
 
-  - gen_all_orientations <-
-  ( + ref_piece:BIT_VEC;
+  - gen_all_orientations <- // static
+  ( + ref_piece:UINTEGER_32;
     
     0.to (n_piece_type - 1) do { i_piece:INTEGER;
       ref_piece := base_vecs.item i_piece;
@@ -266,7 +253,7 @@ Section Private
 	+ mask:UINTEGER_64;
 	mask := 1;
 	0.to (n_row - 1) do { i_row:INTEGER;
-	  const Instance & p = getPiece(iPiece, iOrient, (iRow & 1));
+	  const Instance & p := get_piece (i_piece, i_orient, i_row & 1);
 	  0.to (n_col-1) do { i_col:INTEGER;
 	    OK_PIECES & allowed := g_ok_pieces.item (i_row,i_col);
 	    (p.m_allowed & mask).if {
@@ -282,7 +269,8 @@ Section Private
     };
   );
   
+  - get_piece (i_piece,i_orient,i_parity:UINTEGER_32) :INSTANCE <- // static
+  (
+    s_base_piece.item (i_piece,i_orient).m_instance.item i_parity
+  );
 
-inline const Piece::Instance & Piece::getPiece(TUInt32 iPiece, TUInt32 iOrient, TUInt32 iParity) {
-   return s_basePiece[iPiece][iOrient].m_instance[iParity];
-}

@@ -28,47 +28,50 @@ Section Header
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;
-
+  
+Section Public
+  
+  + m_cur_soln:SOLN;
+  + m_min_soln:SOLN;
+  + m_max_soln:SOLN;
+  + m_n_soln:UINTEGER_32;
+  
+  Board::Board() :
+   m_curSoln(Soln::NO_PIECE), m_minSoln(N_PIECE_TYPE),
+   m_maxSoln(Soln::NO_PIECE), m_nSoln(0)
+{}
+  
 Section Private
   
-  struct Board {
-   static const BitVec L_EDGE_MASK =
-      (1LL <<  0) | (1LL <<  5) | (1LL << 10) | (1LL << 15) |
-      (1LL << 20) | (1LL << 25) | (1LL << 30);
-   static const BitVec R_EDGE_MASK = L_EDGE_MASK << 4;
-   static const BitVec TOP_ROW = (1 << N_COL) - 1;
-   static const BitVec ROW_0_MASK =
-      TOP_ROW | (TOP_ROW << 10) | (TOP_ROW << 20) | (TOP_ROW << 30);
-   static const BitVec ROW_1_MASK = ROW_0_MASK << 5;
-   static const BitVec BOARD_MASK = (1 << 30) - 1;
+  - l_edge_mask:UINTEGER_32 :=
+  (
+    (1 <<  0) | (1 <<  5) | (1 << 10) | (1 << 15) |
+    (1 << 20) | (1 << 25) | (1 << 30)
+  );  
+  - r_edge_mask:UINTEGER_32 := l_edge_mask << 4;
+  - top_row:UINTEGER_32 := (1 << n_col) - 1;
+  - row_0_mask:UINTEGER_32 :=
+  (
+    top_row | (top_row << 10) | (top_row << 20) | (top_row << 30)
+  );
+  - row_1_mask:UINTEGER_32 := row_0_mask << 5;
+  - board_mask:UINTEGER_32 := (1 << 30) - 1;
+   
+Section Public
 
-   Board();
-
-   static TUInt32 getIndex(TUInt32 x, TUInt32 y) { return y * N_COL + x; }
-   static bool badRegion(BitVec & toFill, BitVec rNew);
-   static int hasBadIslands(BitVec boardVec, int row);
-   static int calcBadIslands(BitVec boardVec, int row);
-   static bool hasBadIslandsSingle(BitVec boardVec, int row);
-   static void calcAlwaysBad(void);
-
-   void genAllSolutions(BitVec boardVec, TUInt32 placedPieces, TUInt32 iNextFill);
-   void recordSolution(Soln & s);
-
-   Soln m_curSoln;
-   Soln m_minSoln;
-   Soln m_maxSoln;
-   TUInt32 m_nSoln;
-};
-
+  - get_index (x,y:UINTEGER_32) :UINTEGER_32 <- // static
+  ( 
+    y * n_col + x
+  );
   
-  - calc_always_bad <-
+  - calc_always_bad <- // static
   ( + mask,board_vec,flip_mask:UINTEGER_32;
     + has_bad:INTEGER;
     + always:BOOLEAN;
     
     1.to (max_island_offset-1) do { i_word:UINTEGER_32;   
-      IslandInfo & isleInfo = g_islandInfo[iWord];
-      IslandInfo & flipped = g_islandInfo[flipTwoRows(iWord)];
+      IslandInfo & isle_info := g_island_info.item i_word;
+      IslandInfo & flipped := g_island_info.item (flip_two_rows i_word);
       
       mask := 1;
       0.to 31 do { i:UINTEGER_32;	
@@ -90,8 +93,8 @@ Section Private
     };
   );
 
-  - has_bad_islands_single (board_vec:BIT_VEC ,row:INTEGER) :BOOLEAN <-
-  ( + to_fill,start_region,last_row,board_msk:BIT_VEC; 
+  - has_bad_islands_single (board_vec:UINTEGER_32 ,row:INTEGER) :BOOLEAN <- // static
+  ( + to_fill,start_region,last_row,board_msk:UINTEGER_32; 
     + is_odd,result:BOOLEAN;    
     
     to_fill := ~ board_vec;
@@ -125,57 +128,59 @@ Section Private
     result
   );
 
-  - gen_all_solutions (board_vec:BIT_VEC, placed_pieces:UINTEGER_32, row:UINTEGER_32) <-
-  (
+  - gen_all_solutions (board_vec:UINTEGER_32, placed_pieces:UINTEGER_32, row:UINTEGER_32) <-
+  ( + i_next_fill,piece_vec:UINTEGER_32;
+    + i_piece,piece_mask:INTEGER;
+    
     {(board_vec & top_row) = top_row}.while_do {
       board_vec := board_vec >> n_col;
       row := row + 1;
     };
-   TUInt32 iNextFill = s_firstOne[~boardVec & TOP_ROW];
-   const OkPieces & allowed = g_okPieces[row][iNextFill];
+    i_next_fill := s_first_one.item (~board_vec & top_row);
+    const OkPieces & allowed := g_ok_pieces.item (row,i_next_fill);
 
-   int iPiece = getFirstOne(~placedPieces);
-   int pieceMask = getMask(iPiece);
-   for (; iPiece < N_PIECE_TYPE; iPiece++, pieceMask <<= 1)
-   {
+    i_piece := get_first_one (~placed_pieces);
+    piece_mask := get_mask i_piece;
+    {i_piece < n_piece_type}.while_do { 
       // skip if we've already used this piece
-      if (pieceMask & placedPieces)
-         continue;
+      ((piece_mask & placed_pieces) = 0).if {
+	placed_pieces := placed_pieces | piece_mask;
+	0.to (allowed.n_pieces.item i_piece - 1) do { i_orient:INTEGER;
+	  piece_vec := allowed.piece_vec.item (i_piece,i_orient);
+	  
+	  // check if piece conflicts with other pieces
+	  ((piece_vec & board_vec) = 0).if {
 
-      placedPieces |= pieceMask;
-      for (int iOrient = 0; iOrient < allowed.nPieces[iPiece]; iOrient++) {
-         BitVec pieceVec = allowed.pieceVec[iPiece][iOrient];
+	    // add the piece to the board
+	    board_vec := board_vec | piece_vec;
 
-         // check if piece conflicts with other pieces
-         if (pieceVec & boardVec)
-            continue;
+	    (has_bad_islands (board_vec, row)).if {
+	      board_vec := board_vec ^ piece_vec;	     
+	    } else {
+	      m_cur_soln.push_piece (piece_vec, i_piece, row);
 
-         // add the piece to the board
-         boardVec |= pieceVec;
+	      // recur or record solution
+	      (placed_pieces != PIECE.all_piece_mask).if {
+		gen_all_solutions (board_vec, placed_pieces, row);
+	      } else {
+		record_solution m_cur_soln;
+	      };
 
-         if (hasBadIslands(boardVec, row)) {
-            boardVec ^= pieceVec;
-            continue;
-         }
+	      // remove the piece before continuing with a new piece
+	      board_vec := board_vec ^ piece_vec;
+	      m_cur_soln.pop_piece;
+	    };
+	  };
+	};
+	
+	placed_pieces := placed_pieces ^ piece_mask;
+      };
+      i_piece := i_piece + 1;
+      piece_mask := piece_mask << 1;
+    };
+  );
 
-         m_curSoln.pushPiece(pieceVec, iPiece, row);
-
-         // recur or record solution
-         if (placedPieces != Piece::ALL_PIECE_MASK)
-            genAllSolutions(boardVec, placedPieces, row);
-         else
-            recordSolution(m_curSoln);
-
-         // remove the piece before continuing with a new piece
-         boardVec ^= pieceVec;
-         m_curSoln.popPiece();
-      }
-
-      placedPieces ^= pieceMask;
-   }
-}
-
-  - record_solution (Soln & s) <-
+  - record_solution (SOLN & s) <-
   ( + spun:SOLN;
     
     m_n_soln := m_n_soln + 2; // add solution and its rotation
@@ -202,9 +207,9 @@ Section Private
     };
   );
   
-  - calc_bad_islands (board_vec:BIT_VEC , row:INTEGER) :INTEGER <-
-  ( + to_fill,bottom:BIT_VEC;
-    + board_msk,start_region:BIT_VEC;
+  - calc_bad_islands (board_vec:UINTEGER_32 , row:INTEGER) :INTEGER <- // static
+  ( + to_fill,bottom:UINTEGER_32;
+    + board_msk,start_region:UINTEGER_32;
     + board_mask_shift:INTEGER;
     + filled:BOOLEAN;
     
@@ -255,15 +260,10 @@ Section Private
     result    
   );
 
-Board::Board() :
-   m_curSoln(Soln::NO_PIECE), m_minSoln(N_PIECE_TYPE),
-   m_maxSoln(Soln::NO_PIECE), m_nSoln(0)
-{}
-
-  - bad_region (BitVec & toFill, r_new:BIT_VEC) :BOOLEAN <-
+  - bad_region (BitVec & toFill, r_new:UINTEGER_32) :BOOLEAN <-
   (
     // grow empty region, until it doesn't change any more
-    + region,even_region,odd_region:BIT_VEC;
+    + region,even_region,odd_region:UINTEGER_32;
     
     {
       region := r_new;
@@ -294,7 +294,7 @@ Board::Board() :
     (count_ones to_fill % PIECE.n_elem) != 0
   );
 
-  - has_bad_islands (board_vec:BIT_VEC, row:INTEGER) :INTEGER <-
+  - has_bad_islands (board_vec:UINTEGER_32, row:INTEGER) :INTEGER <- // static
   ( + i_info,last_row,mask,is_odd:UINTEGER_32;    
     + result,is_closed,has_bad:INTEGER;
     
