@@ -29,7 +29,7 @@ Section Inherit
   
   - parent_any:OBJECT := OBJECT;
 
-Section Private
+Section Public
   
   + vec:UINTEGER_32;
   + i_piece:INTEGER_16;
@@ -49,3 +49,17 @@ Section Private
     row := arow.to_integer_16;
   );
   
+  - set_vec v:UINTEGER_32 <-
+  (
+    vec := v;
+  );
+  
+  - set_i_piece v:UINTEGER_32 <-
+  (
+    i_piece := v.to_integer_16;
+  );
+  
+  - set_row v:UINTEGER_32 <-
+  (
+    row := v.to_integer_16;
+  );

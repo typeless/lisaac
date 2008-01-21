@@ -35,29 +35,32 @@ Section Private
   
 Section Public
   
-  + m_pieces[N_PIECE_TYPE]:S_PIECE;
+  + m_pieces:FAST_ARRAY[S_PIECE];
   + m_n_piece:UINTEGER_32;
-  + m_cells[N_ROW][N_COL]:INTEGER_8;
+  
+  + m_cells:FAST_ARRAY2[INTEGER_8];
   + m_synched:BOOLEAN;
   
-  struct Soln {     
+  - create fill_val:INTEGER :SELF <-
+  ( + result:SELF;
     
-   Soln(int fillVal);
-   Soln() : m_synched(false), m_nPiece(0) {}
-      
-};
-
+    result := clone;
+    result.make fill_val;
+    result
+  );
   
-Soln::Soln(int fillVal) :
-   m_nPiece(0) {
-   fill(fillVal);
-}
+  - make fill_val:INTEGER <-
+  (
+    m_pieces := FAST_ARRAY[S_PIECE].create n_piece_type;
+    m_cells  := FAST_ARRAY2[INTEGER_8].create (n_row,n_col);
+    fill fill_val;
+  );
 
   - to_string:STRING <-
   ( + result:STRING;
     + val:INTEGER;
     
-    result.reserve (n_cell * 2);
+    result := STRING.create (n_cell * 2);
     
     0.to (n_row - 1) do { y:INTEGER;
       0.to (n_col - 1) do { x:INTEGER;
@@ -82,7 +85,7 @@ Soln::Soln(int fillVal) :
   - fill val:INTEGER <-
   (
     m_synched := false;
-    memset(m_cells, val, N_CELL);
+    m_cells.set_all_with val;    
   );
 
   - is_empty:BOOLEAN <- (m_n_piece = 0);
@@ -94,12 +97,13 @@ Soln::Soln(int fillVal) :
   );
    
   - push_piece (vec:UINTEGER_32, i_piece,row:INTEGER) <-
-  (
-    S_PIECE & p := m_pieces.item m_n_piece;
+  ( + p:S_PIECE;
+    
+    p := m_pieces.item m_n_piece;
     m_n_piece := m_n_piece + 1;
-    p.vec := vec;
-    p.i_piece := (short)i_piece;
-    p.row := (short)row;
+    p.set_vec vec;
+    p.set_i_piece i_piece;
+    p.set_row row;
   );
 
   - set_cells <-
@@ -109,7 +113,7 @@ Soln::Soln(int fillVal) :
     
     (m_synched).if_false {
       0.to (m_n_piece-1) do { i_piece:UINTEGER_32;	
-	const SPiece & p = m_pieces[iPiece];
+	const SPiece & p := m_pieces.item i_piece;
 	vec := p.vec;
 	pid := p.i_piece.to_integer8;
 	row_offset := p.row;
