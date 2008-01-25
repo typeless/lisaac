@@ -26,60 +26,23 @@ Section Header
   
   - author    := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment   := "Parameter type for argument define.";
-  
+ 
 Section Inherit
   
-  + parent_itm_type:Expanded ITM_TYPE_MONO;
+  + parent_itm_type:Expanded ITM_TYPE_SIMPLE;
   
-Section Private
+Section ITM_TYPE_SIMPLE, ITM_TYPE_SELF
   
-  - list_type:FAST_ARRAY[ITM_TYPE_PARAMETER] := 
-  ( + result:FAST_ARRAY[ITM_TYPE_PARAMETER];
-    
-    result := FAST_ARRAY[ITM_TYPE_PARAMETER].create_with_capacity 26;
-    'A'.to 'Z' do { c:CHARACTER;
-      result.add_last (create c);
-    };
-    result
-  );
+  - dico:HASHED_DICTIONARY[ITM_TYPE_PARAMETER,STRING_CONSTANT] := 
+  HASHED_DICTIONARY[ITM_TYPE_PARAMETER,STRING_CONSTANT].create;
   
-  - create idf:CHARACTER :SELF <-
-  ( + result:SELF;
-    
-    result := clone;
-    result.make idf;
-    result
-  );
-  
-  - make idf:CHARACTER <-
-  (
-    string_tmp.clear;
-    string_tmp.add_last idf;
-    to_run := TYPE_PARAMETER.create (ALIAS_STR.get string_tmp);
-  );
-    
 Section Public
-         
-  - get idf:CHARACTER :ITM_TYPE_PARAMETER <-
-  ( 
-    list_type.item (idf -! 'A')
-  );
-  
-  - display buffer:STRING <-
-  (
-    buffer.append "Generic[";
-    buffer.add_last (to_run.parameter_name);    
-    buffer.add_last ']';
-  );
-      
-  + to_run:TYPE_FULL;
         
-  //
-  // Cast.
-  //
-  
-  - append_cast_name_in buf:STRING <- 
+  - to_run:TYPE_FULL <- 
   (
-    crash_with_message "ITM_TYPE_PARAMETER.append_cast_name_in";
+    not_yet_implemented;
+    NULL
   );
+        
+
   

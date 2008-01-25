@@ -150,7 +150,7 @@ Section Public
   
   + generic_count:INTEGER;
   
-  + idf_generic_list:FAST_ARRAY[STRING_CONSTANT];
+  + idf_generic_list:FAST_ARRAY[ITM_TYPE_PARAMETER];
   
   //
   // Default value.
@@ -185,7 +185,7 @@ Section Public
     filename := f;
     name     := n;    
     generic_count := c;
-    idf_generic_list := FAST_ARRAY[STRING_CONSTANT].create_with_capacity c;
+    idf_generic_list := FAST_ARRAY[ITM_TYPE_PARAMETER].create_with_capacity c;
         
     // Collection.    
     index := prototype_list.count;

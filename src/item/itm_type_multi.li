@@ -72,8 +72,8 @@ Section Public
     list_type.first
   );
   
-  - get lt:FAST_ARRAY[ITM_TYPE_MONO] :ITM_TYPE_MULTI <-
-  ( + result:ITM_TYPE_MULTI;
+  - get lt:FAST_ARRAY[ITM_TYPE_MONO] :SELF <-
+  ( + result:SELF;
     + idx:INTEGER;
     
     idx := dico.lower;
@@ -81,7 +81,7 @@ Section Public
       idx := idx + 1;
     };    
     (idx <= dico.upper).if {
-      result := dico.item idx;
+      result ?= dico.item idx;
     } else {
       result := create lt;
       dico.add_last result;

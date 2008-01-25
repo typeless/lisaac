@@ -1390,12 +1390,8 @@ Section Private
     (read_character ']').if {
       (! read_cap_identifier).if {
 	syntax_error (current_position,"Incorrect parameter type.");
-      };
-      (object.idf_generic_list.fast_has last_string).if {
-	result := ITM_TYPE_GENERIC_ELT.get last_string;
-      } else {
-	result := ITM_TYPE_PARAMETER.get last_string;	 
       };      
+      result := ITM_TYPE_PARAMETER.get last_string;	 
       (! read_character ']').if {
 	warning_error (current_position,"Added ']'.");
       }; // if      	
@@ -2060,7 +2056,7 @@ Section Private
     + cast:FAST_ARRAY[ITM_TYPE_MONO];
     + style:CHARACTER;
     + is_export:BOOLEAN;
-    + parameter_type:STRING_CONSTANT;
+    + parameter_type:ITM_TYPE_PARAMETER;
     
     style := read_style;
     (style != ' ').if {
@@ -2124,10 +2120,10 @@ Section Private
 	    (! read_cap_identifier).if {
 	      syntax_error (current_position,"Identifier parameter type is needed.");
 	    };
-	    parameter_type := last_string;
+	    parameter_type := ITM_TYPE_PARAMETER.get last_string;
 	    
 	    short (ALIAS_STR.short_keyprototype) token
-	    (position - parameter_type.count) to position;
+	    (position - last_string.count) to position;
 	    
 	    object.idf_generic_list.add_last parameter_type;
 	    last_string := NULL;
@@ -2141,10 +2137,10 @@ Section Private
 	      (! read_cap_identifier).if {
 		syntax_error (current_position,"Identifier parameter type is needed.");
 	      };	      
-	      parameter_type := last_string;
+	      parameter_type := ITM_TYPE_PARAMETER.get last_string;
 	      
 	      short (ALIAS_STR.short_keyprototype) token
-	      (position - parameter_type.count) to position;
+	      (position - last_string.count) to position;
 	      
 	      object.idf_generic_list.add_last parameter_type;
 	    }; // loop
