@@ -173,9 +173,10 @@ Section Private
     };
   );
 
-  - gen_orientation (vec:UINTEGER_32 , i_orient:UINTEGER_32, PIECE & target) <- // static
+  - gen_orientation (vec:UINTEGER_32 , i_orient:UINTEGER_32, target:PIECE) <- // static
   ( + y,x,ipt,rot,flip,x_new,y_new,y_min,y_max,h,w:INTEGER;
     + pts:TPTS;
+    + v_even,v_odd:INSTANCE; 
     // get (x,y) coordinates
     
     set_coord_list (vec, pts);
@@ -189,7 +190,8 @@ Section Private
     };
 
     // rotate as necessary
-    while (rot--) {
+    {rot != 0}.while_do {
+      rot := rot - 1;
       0.to (n_elem - 1) do { ipt:INTEGER;      
 	x := pts.item (ipt,x);
 	y := pts.item (ipt,y);
@@ -217,8 +219,8 @@ Section Private
       };
     };
     h := y_max - y_min;
-    Instance & v_even := target.m_instance.item even;
-    Instance & v_odd := target.m_instance.item odd;
+    v_even := target.m_instance.item even;
+    v_odd  := target.m_instance.item odd;
 
     shift_up_lines (pts, y_min);
     w := shift_to_x0 (pts, v_even, 0);
@@ -236,11 +238,15 @@ Section Private
 
   - gen_all_orientations <- // static
   ( + ref_piece:UINTEGER_32;
+    + p:PIECE;
+    + p_i:INSTANCE;
+    + allowed:OK_PIECES;
+    + n_piece:INTEGER_8;
     
     0.to (n_piece_type - 1) do { i_piece:INTEGER;
       ref_piece := base_vecs.item i_piece;
       0.to (n_orient - 1) do { i_orient:INTEGER;
-	Piece & p := s_base_piece.item (i_piece,i_orient);
+	p := s_base_piece.item (i_piece,i_orient);
 	gen_orientation (ref_piece, i_orient, p);
 	((i_piece = skip_piece) && {(i_orient / 3) & 1}).if {
 	  p.m_instance.item 0.m_allowed := p.m_instance.item 1.m_allowed := 0;
@@ -253,13 +259,14 @@ Section Private
 	+ mask:UINTEGER_64;
 	mask := 1;
 	0.to (n_row - 1) do { i_row:INTEGER;
-	  const Instance & p := get_piece (i_piece, i_orient, i_row & 1);
+	  p_i := get_piece (i_piece, i_orient, i_row & 1);
 	  0.to (n_col-1) do { i_col:INTEGER;
-	    OK_PIECES & allowed := g_ok_pieces.item (i_row,i_col);
-	    (p.m_allowed & mask).if {
-	      TInt8 & n_piece := allowed.n_pieces.item i_piece;
-	      allowed.piece_vec.item (i_piece,n_piece) := p.m_vec << i_col;
+	    allowed := g_ok_pieces.item (i_row,i_col);
+	    ((p.m_allowed & mask) != 0).if {
+	      n_piece := allowed.n_pieces.item i_piece;
+	      allowed.piece_vec.item (i_piece,n_piece) := p_i.m_vec << i_col;
 	      n_piece := n_piece + 1;
+	      // allowed.n_pieces.put n_piece to i_piece;
 	    };
 	    
 	    mask := mask << 1;

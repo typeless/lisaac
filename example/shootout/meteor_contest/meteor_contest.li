@@ -82,20 +82,9 @@ Section Private
   - n_cell:INTEGER := n_col * n_row;
   - n_piece_type:INTEGER := 10;
 
-struct OkPieces {
-   TInt8 nPieces[N_PIECE_TYPE];
-   TUInt32 pieceVec[N_PIECE_TYPE][Piece::N_ORIENT];
-};
+  - g_ok_pieces:FAST_ARRAY2[OK_PIECES] := FAST_ARRAY2[OK_PIECES].create (n_row,n_col); 
 
-OkPieces g_okPieces[N_ROW][N_COL] = {{0}};
-
-struct IslandInfo {
-   TUInt32 hasBad[N_FIXED][N_PARITY];
-   TUInt32 isKnown[N_FIXED][N_PARITY];
-   TUInt32 alwaysBad[N_PARITY];
-};
-
-IslandInfo g_islandInfo[MAX_ISLAND_OFFSET] = {0};
+  - g_island_info:FAST_ARRAY[ISLAND_INFO] := FAST_ARRAY[ISLAND_INFO].create (max_island_offset);
 
   - g_n_island_info:INTEGER;
 
@@ -110,13 +99,13 @@ IslandInfo g_islandInfo[MAX_ISLAND_OFFSET] = {0};
     to_zero
   );
 
-  - get_first_one (v:UINTEGER_32 , TUInt32 startPos = 0) :UINTEGER_32 <-
+  - get_first_one v:UINTEGER_32 :UINTEGER_32 <-
   ( + res,result_low,result,i_pos:UINTEGER_32;
     + mask:UINTEGER_32;
     
     (v != 0).if {      
-      i_pos := start_pos;
-      mask := 0FFh << start_pos;
+      i_pos := 0; //start_pos; = 0
+      mask := 0FFh << 0; //start_pos;
       {(mask & v) = 0}.while_do {
 	mask := mask << 8;
 	i_pos := i_pos + 8;
@@ -150,7 +139,7 @@ IslandInfo g_islandInfo[MAX_ISLAND_OFFSET] = {0};
     flipped | g_flip.item (bits & BOARD.top_row)
   );
 
-  - mark_bad (IslandInfo & info, mask:UINTEGER_32, eo:INTEGER, always:BOOLEAN) <-
+  - mark_bad (info:ISLAND_INFO, mask:UINTEGER_32, eo:INTEGER, always:BOOLEAN) <-
   ( + elt:UINTEGER_32;
     
     elt := info.has_bad.item (eo,open) | mask;
@@ -168,13 +157,14 @@ IslandInfo g_islandInfo[MAX_ISLAND_OFFSET] = {0};
 Section Public 
 
   - main <-
-  ( + b:BOARD;
+  ( //+ b:BOARD;
     
     (COMMAND_LINE.count > 2).if {
       die_with_code 1; // spec says this is an error
     };
     
     PIECE.gen_all_orientations;
+    /*
     BOARD.calc_always_bad;
     b.gen_all_solutions (0, 0, 0);
 
@@ -184,4 +174,5 @@ Section Public
     '\n'.print;
     b.m_max_soln.print;
     '\n'.print;
+    */
   );
