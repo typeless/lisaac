@@ -197,6 +197,14 @@ Section Public
     +? { capacity >= Old capacity };    
   ];
   
+  - fast_resize new_count:INTEGER <-
+  [
+    ? {new_count <= capacity}; 
+  ]
+  (
+    upper := new_count - 1;
+  );
+  
   - resize new_count:INTEGER <-
   // Resize the array. When `new_count' is greater than
   // `count', new positions are initialized with appropriate

@@ -521,23 +521,6 @@ Section Private
     result
   );
   
-  //-- cap_character -> 'A'-'Z'
-  - read_cap_character:CHARACTER <-
-  ( + result,char:CHARACTER;
-    
-    // Skip spaces
-    ((read_space) && {last_character.is_upper}).if {
-      char := last_character;
-      position := position + 1;
-      ((last_character.is_upper) || {last_character.is_digit} || {last_character = '_'}).if {
-	position := position - 1;
-      } else {
-	result := char;
-      };
-    };
-    result
-  );
-
   //-- integer -> number 
   //-- number  -> {'0'-'9'} ['d'] 
   //--          | '0'-'9' {'0'-'9' | 'A'-'F' | 'a'-'f'} 'h'
@@ -1398,22 +1381,39 @@ Section Private
     lst
   );
     
-  //++ TYPE         -> [type] PROTOTYPE
+  //++ TYPE         -> '[' cap_identifier ']'
+  //++               | [type] PROTOTYPE
   - read_type is_local:BOOLEAN :ITM_TYPE_MONO <-
   ( + style:STRING_CONSTANT;
+    + result:ITM_TYPE_MONO;
     
-    // Expanded | Strict 
-    (
-      (read_this_keyword (ALIAS_STR.keyword_expanded)) || 
-      {read_this_keyword (ALIAS_STR.keyword_strict)} 
-    ).if {      
-      style := last_string;
-      ((is_local) && {last_string = ALIAS_STR.keyword_expanded}).if {
-	syntax_error (current_position,"`Expanded' is not possible.");
+    (read_character ']').if {
+      (! read_cap_identifier).if {
+	syntax_error (current_position,"Incorrect parameter type.");
       };
-    };    
-    // PROTOTYPE
-    read_prototype style    
+      (object.idf_generic_list.fast_has last_string).if {
+	result := ITM_TYPE_GENERIC_ELT.get last_string;
+      } else {
+	result := ITM_TYPE_PARAMETER.get last_string;	 
+      };      
+      (! read_character ']').if {
+	warning_error (current_position,"Added ']'.");
+      }; // if      	
+    } else {    
+      // Expanded | Strict 
+      (
+	(read_this_keyword (ALIAS_STR.keyword_expanded)) || 
+	{read_this_keyword (ALIAS_STR.keyword_strict)} 
+      ).if {      
+	style := last_string;
+	((is_local) && {last_string = ALIAS_STR.keyword_expanded}).if {
+	  syntax_error (current_position,"`Expanded' is not possible.");
+	};
+      };    
+      // PROTOTYPE
+      result := read_prototype style;
+    };
+    result
   );  // read_type
     
   //++ PROTOTYPE    -> cap_identifier ['['TYPE_LIST {identifier TYPE_LIST} ']']
@@ -1423,8 +1423,7 @@ Section Private
     + continue:BOOLEAN;
     + t,result:ITM_TYPE_MONO;    
     + old_pos,old_derive,sav_derive:INTEGER;
-    + parameter:CHARACTER;
-    
+       
     read_cap_identifier.if {            
       old_pos    := position;
       old_derive := short_derive;
@@ -1434,11 +1433,7 @@ Section Private
       (read_character '[').if {	
 	//
 	// Genericity.
-	//
-	(name.count = 1).if {
-	  syntax_error (current_position,"Incorrect parameter type.");
-	};
-	
+	//		
 	short (ALIAS_STR.short_prototype) token 
 	(old_pos-name.count) to old_pos;
 	
@@ -1464,54 +1459,32 @@ Section Private
 	(! read_character ']').if {
 	  warning_error (current_position,"Added ']'.");
 	}; // if
-      } else {
-	(name.count = 1).if {
-	  // Parameter type.	  
-	  parameter := name.first;
-	  (is_shorter).if {
+      } else {	
+	// Simple type.	  
+	(style = NULL).if {
+	  result := ITM_TYPE_SIMPLE.get name;
+	} else {
+	  (name = ALIAS_STR.prototype_self).if {
+	    string_tmp.copy "Style `";
+	    string_tmp.append style;
+	    string_tmp.append "' ignored.";
+	    warning_error (current_position,string_tmp);
+	    result := ITM_TYPE_SELF;
+	  } else {
+	    result := ITM_TYPE_STYLE.get name style style;
+	  };
+	};
+	(is_shorter).if {
+	  sav_derive := short_derive;
+	  short_derive := old_derive;
+	  ((result = ITM_TYPE_SELF) || {result = ITM_TYPE_MONO.type_null}).if {
 	    short (ALIAS_STR.short_keyprototype) token 
 	    (old_pos - name.count) to old_pos;
-	    result := ITM_TYPE_MONO.type_null;
 	  } else {
-	    (style != NULL).if {
-	      string_tmp.copy "Style `";
-	      string_tmp.append style;
-	      string_tmp.append "' ignored.";
-	      warning_error (current_position,string_tmp);
-	    };
-	    (object.idf_generic_list.fast_has parameter).if {
-	      result := ITM_TYPE_GENERIC_ELT.get parameter;
-	    } else {
-	      result := ITM_TYPE_PARAMETER.get parameter;	 
-	    };	    
+	    short (ALIAS_STR.short_prototype) token 
+	    (old_pos - name.count) to old_pos;
 	  };
-	} else {
-	  // Simple type.	  
-	  (style = NULL).if {
-	    result := ITM_TYPE_SIMPLE.get name;
-	  } else {
-	    (name = ALIAS_STR.prototype_self).if {
-	      string_tmp.copy "Style `";
-	      string_tmp.append style;
-	      string_tmp.append "' ignored.";
-	      warning_error (current_position,string_tmp);
-	      result := ITM_TYPE_SELF;
-	    } else {
-	      result := ITM_TYPE_STYLE.get name style style;
-	    };
-	  };
-	  (is_shorter).if {
-	    sav_derive := short_derive;
-	    short_derive := old_derive;
-	    ((result = ITM_TYPE_SELF) || {result = ITM_TYPE_MONO.type_null}).if {
-	      short (ALIAS_STR.short_keyprototype) token 
-	      (old_pos - name.count) to old_pos;
-	    } else {
-	      short (ALIAS_STR.short_prototype) token 
-	      (old_pos - name.count) to old_pos;
-	    };
-	    short_derive := sav_derive + (short_derive - old_derive);
-	  };
+	  short_derive := sav_derive + (short_derive - old_derive);
 	};
       }; // if
     }; // if
@@ -2085,8 +2058,9 @@ Section Private
     + t:ITM_TYPE_MONO;    
     + v:ITM_CODE;
     + cast:FAST_ARRAY[ITM_TYPE_MONO];
-    + style, parameter_type:CHARACTER;
+    + style:CHARACTER;
     + is_export:BOOLEAN;
+    + parameter_type:STRING_CONSTANT;
     
     style := read_style;
     (style != ' ').if {
@@ -2146,14 +2120,14 @@ Section Private
 		syntax_error (current_position,"Object can't be generic.");
 	      };
 	    };
-	    
-	    parameter_type := read_cap_character;
-	    (parameter_type = '\0').if {
+	    	    
+	    (! read_cap_identifier).if {
 	      syntax_error (current_position,"Identifier parameter type is needed.");
 	    };
+	    parameter_type := last_string;
 	    
 	    short (ALIAS_STR.short_keyprototype) token
-	    (position - 1) to position;
+	    (position - parameter_type.count) to position;
 	    
 	    object.idf_generic_list.add_last parameter_type;
 	    last_string := NULL;
@@ -2164,13 +2138,13 @@ Section Private
 		warning_error (current_position,"Sorry, not yet implemented (ignored).");
 	      };
 	      
-	      parameter_type := read_cap_character;
-	      (parameter_type = '\0').if {
+	      (! read_cap_identifier).if {
 		syntax_error (current_position,"Identifier parameter type is needed.");
 	      };	      
+	      parameter_type := last_string;
 	      
 	      short (ALIAS_STR.short_keyprototype) token
-	      (position - 1) to position;
+	      (position - parameter_type.count) to position;
 	      
 	      object.idf_generic_list.add_last parameter_type;
 	    }; // loop

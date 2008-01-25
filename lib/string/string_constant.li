@@ -31,7 +31,7 @@ Section Inherit
   
   - parent_abstract_string:ABSTRACT_STRING := ABSTRACT_STRING;
         
-Section ABSTRACT_STRING, ABSTRACT_ENTRY
+Section Public //ABSTRACT_STRING, ABSTRACT_ENTRY
   
   // BSBS: A revoir avec les Section External.
   

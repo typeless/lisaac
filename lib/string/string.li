@@ -33,7 +33,7 @@ Section Inherit
   
   - parent_arrayed:ARRAYED := ARRAYED;
   
-Section ABSTRACT_STRING, ABSTRACT_ENTRY
+Section Public //ABSTRACT_STRING, ABSTRACT_ENTRY
   
   + storage:NATIVE_ARRAY[CHARACTER];
   
@@ -51,7 +51,7 @@ Section Public
   ( ? {tab != NULL};
     storage := tab;
   );
-  
+    
   //
   // Creation / Modification :
   //

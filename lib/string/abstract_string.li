@@ -34,7 +34,7 @@ Section Inherit
   
   - parent_comparable:COMPARABLE := COMPARABLE;
   
-Section ABSTRACT_STRING, ABSTRACT_ENTRY
+Section Public  //ABSTRACT_STRING, ABSTRACT_ENTRY
   
   + storage:NATIVE_ARRAY[CHARACTER];
   
