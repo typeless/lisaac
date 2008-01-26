@@ -92,10 +92,15 @@ Section Public
   - display buffer:STRING <-
   (    
     buffer.add_last '(';
+    display_row buffer;
+    buffer.add_last ')';
+  );
+  
+  - display_row buffer:STRING <-
+  (    
     (list_type.lower).to (list_type.upper - 1) do { j:INTEGER;
       list_type.item j.display buffer;
       buffer.add_last ',';
     };
     list_type.last.display buffer;
-    buffer.add_last ')';
   );

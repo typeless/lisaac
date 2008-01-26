@@ -1382,12 +1382,17 @@ Section Private
   );
     
   //++ TYPE         -> '[' cap_identifier ']'
+  //++               | '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'
   //++               | [type] PROTOTYPE
   - read_type is_local:BOOLEAN :ITM_TYPE_MONO <-
   ( + style:STRING_CONSTANT;
     + result:ITM_TYPE_MONO;
+    + type:ITM_TYPE_MONO;
+    + lst:FAST_ARRAY[ITM_TYPE_MONO];
+    + typ_arg,typ_res:ITM_TYPE;
     
     (read_character ']').if {
+      // '[' cap_identifier ']'
       (! read_cap_identifier).if {
 	syntax_error (current_position,"Incorrect parameter type.");
       };      
@@ -1395,6 +1400,51 @@ Section Private
       (! read_character ']').if {
 	warning_error (current_position,"Added ']'.");
       }; // if      	
+    }.elseif {read_character '{'} then {
+      // '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'      
+      (read_character '(').if {
+	// Read vector argument.
+	lst := read_type_list;
+	(lst = NULL).if {
+	  syntax_error (current_position,"Incorrect type list.");
+	};
+	(lst.count = 1).if {
+	  typ_arg := lst.first;	  
+	} else {
+	  typ_arg := ITM_TYPE_MULTI.get lst;
+	};
+	(! read_character ')').if {
+	  warning_error (current_position,"Added ')'.");
+	}; // if      	
+	(! read_character ';').if {
+	  warning_error (current_position,"Added ';'.");
+	}; // if
+      } else {
+	lst := read_type_list;
+	(lst != NULL).if {
+	  (read_character ';').if {	    
+	    (lst.count = 1).if {
+	      typ_arg := lst.first;
+	    } else {
+	      typ_arg := ITM_TYPE_MULTI.get lst;
+	      string_tmp.copy "Added '";
+	      typ_arg.display string_tmp;
+	      string_tmp.append "'.";
+	      warning_error (current_position,string_tmp);
+	    };
+	  } else {
+	    (lst.count = 1).if {
+	      typ_res := lst.first;
+	    } else {
+	      typ_res := ITM_TYPE_MULTI.get lst;
+	    };
+	  };
+	};      
+      };
+      (! read_character '}').if {
+	warning_error (current_position,"Added '}'.");
+      }; // if      	
+      result := ITM_TYPE_BLOCK.get typ_arg and typ_res;
     } else {    
       // Expanded | Strict 
       (
