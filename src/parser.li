@@ -1224,14 +1224,28 @@ Section Private
     + t:ITM_TYPE_MONO;
     + pos:POSITION;
     + n:STRING_CONSTANT;
+    + tb:ITM_TYPE_BLOCK;
     
     (read_identifier).if {      
+      ((self_first) && {last_string != ALIAS_STR.variable_self}).if {
+	syntax_error (current_position,"`self' is needed.");
+      };
       pos := current_position;
       n   := last_string;
       ((read_character ':') && {last_character != '='}).if {
 	t := read_type TRUE;
 	(t = NULL).if {
 	  syntax_error (current_position,"Incorrect type.");
+	};
+	(
+	  (self_first) && {
+	    (t != ITM_TYPE_SELF) || {
+	      (object.name = ALIAS_STR.prototype_block) && 
+	      {tb ?= t; tb = NULL}
+	    }
+	  }
+	).if {
+	  syntax_error (current_position,"Type `SELF' is needed.");
 	};
 	result := ITM_ARG.create pos name n type t;
 		
@@ -1244,7 +1258,7 @@ Section Private
 	};
       };      
     }.elseif {read_character '('} then {      
-      result := read_local_arg mute with_self FALSE;
+      result := read_local_arg mute with_self self_first;
       (result = NULL).if {
 	mute.if_false {
 	  syntax_error (current_position,"Incorrect argument definition.");
@@ -1317,9 +1331,13 @@ Section Private
     + beg:INTEGER;
     + mute:BOOLEAN;
     + result:ITM_ARGUMENT;
+    + tb:ITM_TYPE_BLOCK;
     
     mute := m;
     (read_identifier).if {
+      ((s) && {last_string != ALIAS_STR.variable_self}).if {
+	syntax_error (current_position,"`self' is needed.");
+      };
       name := ALIAS_ARRAY[STRING_CONSTANT].new;
       type := ALIAS_ARRAY[ITM_TYPE_MONO].new;      
       beg  := name.lower;
@@ -1347,9 +1365,15 @@ Section Private
 	ALIAS_ARRAY[STRING_CONSTANT].free name;
 	ALIAS_ARRAY[ITM_TYPE_MONO].free type;
       } else {
-	(s).if {
-	  name.add_first (ALIAS_STR.variable_self);
-	  type.add_first ITM_TYPE_SELF;
+	(
+	  (self_first) && {
+	    (type.first != ITM_TYPE_SELF) || {
+	      (object.name = ALIAS_STR.prototype_block) && 
+	      {tb ?= type.first; tb = NULL}
+	    }
+	  }
+	).if {
+	  syntax_error (current_position,"Type `SELF' is needed.");
 	};
 	(name.count = 1).if {
 	  // Single Argument.
@@ -1568,12 +1592,10 @@ Section Private
     result
   );  // read_prototype
   
-  //++ EXPR         -> EXPR_PREFIX ( [ affect EXPR ] | { operator EXPR_PREFIX } )
-  // EXPR         -> ASSIGNMENT !!AMBIGU!! affect EXPR
-  //               | EXPR_PREFIX { operator EXPR }
-  // ASSIGNMENT   -> '(' IDF_ASSIGN { ',' IDF_ASSIGN } ')'
-  //               | IDF_ASSIGN
-  // IDF_ASSIGN   -> identifier { identifier }
+  //++ EXPR         -> { ASSIGN !!AMBIGU!! affect } EXPR_OPERATOR
+  //++ ASSIGN       -> '(' IDF_ASSIGN { ',' IDF_ASSIGN } ')'
+  //                 | IDF_ASSIGN
+  //++ IDF_ASSIGN   -> identifier { identifier }
   - read_expr:ITM_CODE <-
   ( + result,value:ITM_CODE;
     + l_expr:FAST_ARRAY[ITM_CODE];
@@ -1671,7 +1693,8 @@ Section Private
     };
     (result = NULL).if {
       restore_context;
-      result := read_expr_prefix;
+      result := read_expr_operator;
+/*      
       ((result != NULL) && {read_operator}).if {
 	// Binary expression.
 	l_expr := ALIAS_ARRAY[ITM_CODE].new;
@@ -1703,11 +1726,14 @@ Section Private
 	  result := ITM_BINARY.create l_posi values l_expr operators l_oper;
 	};
       };
+      */
     };
     result
   );  
   
   //++ EXPR_PREFIX  -> { operator } EXPR_MESSAGE
+  ///////////// ICI !!!
+  //++ EXPR_OPERATOR-> { operator } EXPR_MESSAGE { operator [ EXPR_MESSAGE ] }
   - read_expr_prefix:ITM_CODE <-
   ( + result:ITM_CODE;
     + expr :ITM_CODE;
@@ -1724,7 +1750,7 @@ Section Private
       result := read_expr_message;
     };
     result
-  );  // read_expr_prefix
+  );  // read_expr_operator
 
   //++ EXPR_MESSAGE -> EXPR_BASE { '.' SEND_MSG }
   - read_expr_message:ITM_CODE <-
