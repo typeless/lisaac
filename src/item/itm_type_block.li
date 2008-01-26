@@ -82,6 +82,7 @@ Section Public
   (     
     not_yet_implemented;
     //to_run := TYPE.get Self
+    NULL
   );
   
   - display buffer:STRING <-

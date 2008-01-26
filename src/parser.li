@@ -953,7 +953,7 @@ Section Private
     result
   );  // read_program
 
-  //++ SLOT         -> style['('LOCAL')']TYPE_SLOT[':'(TYPE|'('TYPE_LIST')')][affect DEF_SLOT]';'
+  //++ SLOT         -> style TYPE_SLOT [':' (TYPE|'('TYPE_LIST')') ][ affect DEF_SLOT ]';'
   - read_slot:BOOLEAN <-
   ( + result:BOOLEAN;
     + t:ITM_TYPE;
@@ -975,20 +975,7 @@ Section Private
       result := TRUE;
       //
       larg := ALIAS_ARRAY[ITM_ARGUMENT].new;
-      (read_character '(').if {
-	arg := read_local_arg FALSE with_self TRUE;
-	(arg = NULL).if {
-	  syntax_error (current_position,"Incorrect argument definition.");
-	};
-	(read_character ')').if_false {
-	  warning_error (current_position,"Added ')' is needed.");
-	};
-      } else {
-	arg := ITM_ARG.create current_position name (ALIAS_STR.variable_self)
-	type ITM_TYPE_SELF;
-      };
-      larg.add_last arg;
-      
+            
       last_slot := read_type_slot larg;
       (last_slot = NULL).if {
 	syntax_error (current_position,"Incorrect slot declaration.");
@@ -1083,26 +1070,54 @@ Section Private
     result
   );  // read_slot
   
-  //++ TYPE_SLOT    -> identifier [ LOC_ARG { identifier LOC_ARG } ]
-  //++               | '\'' operator '\'' [ [ ("Left"|"Right") integer ] LOC_ARG ]
-  - read_type_slot list_arg:FAST_ARRAY[ITM_ARGUMENT] :ITM_SLOT <-
+  //++ TYPE_SLOT    -> [ LOC_ARG '.' ] identifier [ LOC_ARG { identifier LOC_ARG } ]
+  //++               | [ LOC_ARG ] '\'' operator '\'' [("Left"|"Right")] [integer] [LOC_ARG]
+  - read_type_slot:ITM_SLOT <-
   ( + name:STRING_CONSTANT;
     + n:STRING;
     + priority:STRING_CONSTANT;
     + level:INTEGER;
     + arg:ITM_ARGUMENT;
     + result:ITM_SLOT;
+    + list_arg:FAST_ARRAY[ITM_ARGUMENT];
+    + is_prefix:BOOLEAN;
+    
+    list_arg := ALIAS_ARRAY[ITM_ARGUMENT].new;
+    arg := read_loc_arg FALSE with_self TRUE;
+    (arg = NULL).if {
+      (read_character '\'').if {
+	result := read_slot_operator list_arg;
+      } else {
+	arg := ITM_ARG.create current_position name (ALIAS_STR.variable_self) type ITM_TYPE_SELF;
+	list_arg.add_last arg;      
+	result := read_slot_keyword list_arg;
+      };
+    } else {
+      (read_character '.').if {
+	result := read_slot_keyword list_arg;
+      }.elseif {read_character '\''} then { 
+	result := read_slot_operator list_arg;
+      };
+    };
+    (result != NULL).if {
+      list_arg := ALIAS_ARRAY[ITM_ARGUMENT].copy list_arg;
+      result.set_argument_list list_arg; 
+    };
+    result
+  );
+  
+  - read_slot_keyword list_arg:FAST_ARRAY[ITM_ARGUMENT] :ITM_SLOT <-
+  ( + n:STRING;
+    + arg:ITM_ARGUMENT;
+    + result:ITM_SLOT;
     
     read_identifier.if {
-      //
-      // Identifier keyword message.
-      //
       short (ALIAS_STR.short_slot) token 
       (position-last_string.count) to position;
       
       n := ALIAS_STR.new;
       n.copy last_string;
-      arg := read_loc_arg FALSE;
+      arg := read_loc_arg FALSE with_self FALSE;
       (arg != NULL).if {
 	list_arg.add_last arg;	
 	(read_identifier).if {
@@ -1115,7 +1130,7 @@ Section Private
 	    
 	    n.append (ALIAS_STR.separate);
 	    n.append last_string;
-	    arg := read_loc_arg FALSE;
+	    arg := read_loc_arg FALSE with_self FALSE;
 	    (arg = NULL).if {
 	      syntax_error (current_position,"Incorrect symbol.");
 	    }; // if
@@ -1124,52 +1139,70 @@ Section Private
 	};
       }; // if
       result := ITM_SLOT.create current_position name (ALIAS_STR.alias n) feature last_section;
-    }.elseif {read_character '\''} then {
-      //
-      // Unary / Binary message.
-      //      
-      (! read_operator).if {
-	syntax_error (current_position,"Operator is needed.");
-      };
-      (
-	(last_string=ALIAS_STR.symbol_equal) ||
-	{last_string=ALIAS_STR.symbol_not_equal}
-      ).if {
-	syntax_error (current_position,"Incorrect operator.");
-      };
-      name := last_string;
-      (! read_character '\'').if {
-	warning_error (current_position,"Added `''.");
-      };
-      (
-	(read_this_keyword (ALIAS_STR.keyword_left)) ||
-	{read_this_keyword (ALIAS_STR.keyword_right)}
-      ).if {
-	priority := last_string;
-	(! read_integer).if {
-	  syntax_error (current_position,"Level priority level is needed.");
-	};
-	level := last_integer.to_integer;
-      };
-      
-      arg := read_loc_arg FALSE;
-      (arg != NULL).if {
-	list_arg.add_last arg;
-	name := operator_to_name ((ALIAS_STR.slot_infix),name);	
-	(priority=NULL).if {
-	  priority := ALIAS_STR.keyword_left;
-	};
-      } else {
-	name := operator_to_name ((ALIAS_STR.slot_prefix),name);
-	(priority != NULL).if {
-	  syntax_error (current_position,"Not priority for prefix operator.");
-	};
-      }; // if
-      result := ITM_SLOT.create current_position name name feature last_section;
-      result.set_associativity priority priority level;
     };
     result
-  );  // read_type_slot
+  );
+  
+  - read_slot_operator list_arg:FAST_ARRAY[ITM_ARGUMENT] :ITM_SLOT <-
+  ( + name:STRING_CONSTANT;    
+    + associativity:STRING_CONSTANT;
+    + priority:INTEGER;
+    + arg:ITM_ARGUMENT;
+    + result:ITM_SLOT;
+    
+    (! read_operator).if {
+      syntax_error (current_position,"Operator is needed.");
+    };
+    (
+      (last_string = ALIAS_STR.symbol_equal) ||
+      {last_string = ALIAS_STR.symbol_not_equal}
+    ).if {
+      syntax_error (current_position,"Incorrect operator.");
+    };
+    name := last_string;
+    (! read_character '\'').if {
+      warning_error (current_position,"Added `''.");
+    };
+    (
+      (read_this_keyword (ALIAS_STR.keyword_left)) ||
+      {read_this_keyword (ALIAS_STR.keyword_right)}
+    ).if {
+      associativity := last_string;
+    };
+    (read_integer).if {
+      priority := last_integer.to_integer;
+    };      
+    (list_arg.is_empty).if {
+      // Postfix operator.
+      arg := read_loc_arg FALSE with_self TRUE;
+      (arg = NULL).if {
+	syntax_error (current_position,"Operator declaration invalid.");
+      };
+      name := operator (ALIAS_STR.slot_postfix) with name;
+      (associativity != NULL).if {
+	syntax_error (current_position,"Not associativity for postfix operator.");
+      };
+    } else {
+      arg := read_loc_arg FALSE with_self FALSE;
+      (arg != NULL).if {
+	// Infix operator.
+	list_arg.add_last arg;
+	name := operator (ALIAS_STR.slot_infix) with name;	
+	(associativity = NULL).if {
+	  associativity := ALIAS_STR.keyword_left;
+	};      
+      } else {
+	// Prefix operator.
+	name := operator_to_name ((ALIAS_STR.slot_prefix),name);
+	(associativity != NULL).if {
+	  syntax_error (current_position,"Not associativity for prefix operator.");
+	};
+      };
+    };    
+    result := ITM_SLOT.create current_position name name feature last_section;
+    result.set_associativity associativity priority priority;
+    result
+  );  // read_slot_operator
   
   //++ DEF_SLOT     -> [CONTRACT] EXPR [CONTRACT]
   - read_def_slot <-
@@ -1186,7 +1219,7 @@ Section Private
   
   //++ LOC_ARG      -> identifier ':' TYPE
   //++               | '(' LOCAL ')'
-  - read_loc_arg mute:BOOLEAN :ITM_ARGUMENT <-
+  - read_loc_arg mute:BOOLEAN with_self self_first:BOOLEAN :ITM_ARGUMENT <-
   ( + result:ITM_ARGUMENT;
     + t:ITM_TYPE_MONO;
     + pos:POSITION;
@@ -1275,7 +1308,6 @@ Section Private
     
     result
   );  // read_local
-
   
   - read_local_arg m:BOOLEAN with_self s:BOOLEAN :ITM_ARGUMENT <-
   ( + t:ITM_TYPE_MONO;
@@ -1387,7 +1419,6 @@ Section Private
   - read_type is_local:BOOLEAN :ITM_TYPE_MONO <-
   ( + style:STRING_CONSTANT;
     + result:ITM_TYPE_MONO;
-    + type:ITM_TYPE_MONO;
     + lst:FAST_ARRAY[ITM_TYPE_MONO];
     + typ_arg,typ_res:ITM_TYPE;
     
@@ -1404,7 +1435,7 @@ Section Private
       // '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'      
       (read_character '(').if {
 	// Read vector argument.
-	lst := read_type_list;
+	lst := read_type_list FALSE;
 	(lst = NULL).if {
 	  syntax_error (current_position,"Incorrect type list.");
 	};
@@ -1420,7 +1451,7 @@ Section Private
 	  warning_error (current_position,"Added ';'.");
 	}; // if
       } else {
-	lst := read_type_list;
+	lst := read_type_list FALSE;
 	(lst != NULL).if {
 	  (read_character ';').if {	    
 	    (lst.count = 1).if {
