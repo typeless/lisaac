@@ -20,13 +20,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := ITM_BINARY;
+  + name        := ITM_OPERATOR;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment     := "Binary operator message";
+  - comment     := "operator list message";
   
 Section Inherit
   
@@ -38,32 +38,22 @@ Section Public
   // Data
   //
 
-  + position_list:FAST_ARRAY[POSITION];
-
   + value_list   :FAST_ARRAY[ITM_CODE];
-
-  + operator_list:FAST_ARRAY[STRING_CONSTANT];
 
   //
   // Constructor
   //  
 
-  - create p:FAST_ARRAY[POSITION] values v:FAST_ARRAY[ITM_CODE] 
-  operators o:FAST_ARRAY[STRING_CONSTANT] :SELF <-
+  - create v:FAST_ARRAY[ITM_CODE] :SELF <-
   ( + result:SELF;
     result := clone;
-    result.make p values v operators o;
+    result.make v;
     result
   );
   
-  - make p:FAST_ARRAY[POSITION] values v:FAST_ARRAY[ITM_CODE] 
-  operators o:FAST_ARRAY[STRING_CONSTANT] <-
-  (
-    ? { p.count=o.count };
-    ? { p.count=(v.count-1) };
-    position_list := p;
+  - make v:FAST_ARRAY[ITM_CODE] <-
+  (   
     value_list    := v;
-    operator_list := o;
   );
 
   //
