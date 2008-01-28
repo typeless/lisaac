@@ -1744,22 +1744,24 @@ Section Private
 	arg (l_expr.item last_msg);
 	l_expr.put expr to last_msg;
 	l_expr.remove (last_msg + 1);
+      };      
+      ((last_msg - first_msg) < 3).if {
+	// First Pre-fix operator.
+	{first_msg != 0}.while_do {
+	  itm_op ?= l_expr.item (first_msg - 1);
+	  expr := ITM_READ_ARG1.create (itm_op.position)
+	  name (operator (ALIAS_STR.slot_prefix) name (itm_op.name))
+	  arg (l_expr.item first_msg);
+	  l_expr.put expr to first_msg;
+	  first_msg := first_msg - 1;
+	  l_expr.remove first_msg;
+	};	      
       };
-      // First Pre-fix operator.
-      {first_msg != 0}.while_do {
-	itm_op ?= l_expr.item (first_msg - 1);
-	expr := ITM_READ_ARG1.create (itm_op.position)
-	name (operator (ALIAS_STR.slot_prefix) name (itm_op.name))
-	arg (l_expr.item first_msg);
-	l_expr.put expr to first_msg;
-	first_msg := first_msg - 1;
-	l_expr.remove first_msg;
-      };	      
       (l_expr.count = 1).if {
 	result := l_expr.first;	
 	ALIAS_ARRAY[ITM_CODE].free l_expr;
       }.elseif {l_expr.count = 3} then {
-	// Simple binary message.
+	// Simple binary message.	
 	itm_op ?= l_expr.second;
 	result := ITM_READ_ARG2.create (itm_op.position) 
 	name (operator (ALIAS_STR.slot_infix) name (itm_op.name)) 
@@ -1769,7 +1771,7 @@ Section Private
       } else {
 	// Complex expression.
 	l_expr := ALIAS_ARRAY[ITM_CODE].copy l_expr;
-	result := ITM_OPERATOR.create l_expr;
+	result := ITM_EXPRESSION.create l_expr;
       };
     };
     result
