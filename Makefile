@@ -65,13 +65,9 @@ CC=gcc
 CFLAGS=-O2
 
 all: bin/lisaac.c bin/shorter.c
-	mv bin/path.h bin/path.h.old
-	@echo "#define LISAAC_DIRECTORY \"$(DESTDIR)$(LIB)\"" > path.h
-	cp path.h bin/
+	@echo "#define LISAAC_DIRECTORY \"$(DESTDIR)$(LIB)\"" > bin/path.h
 	$(CC) $(CFLAGS) bin/lisaac.c -o bin/lisaac 
 	$(CC) $(CFLAGS) bin/shorter.c -o bin/shorter
-	mv bin/path.h.old bin/path.h
-	rm path.h
 
 interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
