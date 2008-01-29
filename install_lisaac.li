@@ -314,7 +314,7 @@ Section Private
         update "path.li" idf "  + target" with "  + target := UNIX;\n" confirmation FALSE;
         //
         "\n  Search path for `libX11.a' : (please wait...)\n".print;
-        ENVIRONMENT.execute_command "find /usr -name \"libX11.a\" 2> /dev/null > xlib_path.txt";
+        ENVIRONMENT.execute_command "find /usr/lib/ -name \"libX11.a\" 2> /dev/null > xlib_path.txt";
         std_file := open_read "xlib_path.txt";	
         len := file_size std_file;
         (len = 0).if {
