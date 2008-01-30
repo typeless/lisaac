@@ -61,23 +61,22 @@ Section Public
   //
 
   - to_run_expr:EXPR <-
-  ( + max_pos,max_lev:INTEGER;
+  ( + max_pos,max_lev,idx,idx_post:INTEGER;
+    + continue:BOOLEAN;
     + max_pri  :STRING_CONSTANT;
-    + expr     :INSTR;
-    + val_list:FAST_ARRAY[EXPR];
+    + left,right:EXPR;
+    + instr:INSTR;
+    + val_list:FAST_ARRAY[INSTR];
     + val:EXPR;    
-    + typ_list:TYPES_TMP;
     + typ:TYPE;
-    + slo_list:FAST_ARRAY[SLOT];
-    + slo,slo_ref:SLOT;
-    + ope_list:FAST_ARRAY[STRING_CONSTANT];
-    + pos_list:FAST_ARRAY[POSITION];
+    + slo:SLOT;
     + nam,op_name:STRING_CONSTANT;
     + site:NODE;
-    + extern:EXPR;
+    + extern:EXPR_BINARY_CMP;
     + loc:VARIABLE;
     + l_arg:FAST_ARRAY[EXPR];
     + result:EXPR;
+    + itm_op:ITM_OPERATOR;
         
     val_list := ALIAS_ARRAY[INSTR].new;
     // Search unary message.
@@ -97,7 +96,7 @@ Section Public
 	  continue := FALSE;
 	  itm_op ?= value_list.item (idx_post + 1);
 	  (itm_op != NULL).if {
-	    itm_op := value_list.item idx_post;
+	    itm_op ?= value_list.item idx_post;
 	    slo := typ.get_slot (operator (ALIAS_STR.slot_postfix) name (itm_op.name));
 	    (slo != NULL).if {	  
 	      site := NODE.new_read (itm_op.position) slot slo receiver val self val;		
@@ -118,7 +117,7 @@ Section Public
 	    itm_op ?= value_list.item (idx - 1);
 	  };
 	  ((idx = 0) || {itm_op != NULL}).if {
-	    itm_op := value_list_tmp.item idx;
+	    itm_op ?= value_list.item idx;
 	    slo := typ.get_slot (operator (ALIAS_STR.slot_prefix) name (itm_op.name));
 	    (slo = NULL).if {	  
 	      error_slot (itm_op.position) name "prefix" operator (itm_op.name) in typ;
@@ -137,16 +136,16 @@ Section Public
       itm_op ?= value_list.item idx;
       op_name := itm_op.name;      
       (op_name = ALIAS_STR.symbol_equal).if {
-	instr := EXPR_EQUAL.create (itm_op.position);
+	instr := EXPR_EQUAL.create (itm_op.position) with NULL and NULL;
       }.elseif {op_name = ALIAS_STR.symbol_not_equal} then {
-	instr := EXPR_NOT_EQUAL.create (itm_op.position);
+	instr := EXPR_NOT_EQUAL.create (itm_op.position) with NULL and NULL;
       } else {
 	nam := operator (ALIAS_STR.slot_infix) name op_name;
-	slo_ref := typ.get_slot nam;
-	(slo_ref = NULL).if {
-	  error_slot (position_list.item j) name "infix" operator op_name in typ;
+	slo := typ.get_slot nam;
+	(slo = NULL).if {
+	  error_slot (itm_op.position) name "infix" operator op_name in typ;
 	};
-	instr := NODE.new_read (itm_op.position) slot slo_ref;
+	instr := NODE.new_read_partial (itm_op.position) slot slo;
       };
       val_list.add_last instr;      
     }.do_while {idx < value_list.upper};
@@ -155,7 +154,7 @@ Section Public
       // Search max level.
       max_lev := -1;
       (val_list.lower+1).to (val_list.upper) by 2 do { j:INTEGER;
-	site := val_list.item j;
+	site ?= val_list.item j;
 	(site = NULL).if {
 	  // '=' or '!='.
 	  (
@@ -168,17 +167,17 @@ Section Public
 	  };
 	} else {	  
 	  // Other:
-	  slo_ref := site.data.slot;
+	  slo := site.data.slot;
 	  ( 
-	    (slo_ref.priority > max_lev) ||
+	    (slo.priority > max_lev) ||
 	    {
-	      (slo_ref.priority = max_lev) && 
-	      {slo_ref.associativity = max_pri} && 
+	      (slo.priority = max_lev) && 
+	      {slo.associativity = max_pri} && 
 	      {max_pri = ALIAS_STR.keyword_right}
 	    }
 	  ).if {
-	    max_lev := slo_ref.priority;
-	    max_pri := slo_ref.associativity;
+	    max_lev := slo.priority;
+	    max_pri := slo.associativity;
 	    max_pos := j;
 	  };
 	};
@@ -192,15 +191,15 @@ Section Public
 	extern ?= val_list.item max_pos;	
 	extern.set_left left and_right right;	
 	loc  := type_boolean.default.get_temporary (extern.position);
-	expr := loc.write (extern.position) value extern; 
-	list_current.add_last expr;
-	val := loc.read (expr.position);
+	instr:= loc.write (extern.position) value extern; 
+	list_current.add_last instr;
+	val := loc.read (instr.position);
       } else {
 	// SW_READ.
 	l_arg := FAST_ARRAY[EXPR].create_with_capacity 2;
 	l_arg.add_last left;
 	l_arg.add_last right;
-	site.set_receiver (left.my_copy) with l_arg;
+	site.new_read_finalize (left.my_copy) with l_arg;
 	list_current.add_last site;
 	val := site.result_expr;
       };
@@ -212,10 +211,10 @@ Section Public
       val_list.put val to max_pos;      
     };
 
-    result := val_list.first;
+    result ?= val_list.first;
     
     // Free Array Temporary.    
-    ALIAS_ARRAY[EXPR].free val_list;
+    ALIAS_ARRAY[INSTR].free val_list;
     
     result
   );

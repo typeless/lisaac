@@ -232,7 +232,7 @@ Section Public
   
   - indent:STRING := STRING.create 128;
 
-  - operator_to_name (typ,op:ABSTRACT_STRING) :STRING_CONSTANT <-
+  - operator typ:ABSTRACT_STRING name op:ABSTRACT_STRING :STRING_CONSTANT <-
   ( + c:CHARACTER;
     string_tmp.copy typ;
     (op.lower).to (op.upper) do { j:INTEGER;

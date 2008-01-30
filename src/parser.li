@@ -959,8 +959,6 @@ Section Private
     + t:ITM_TYPE;
     + lt:FAST_ARRAY[ITM_TYPE_MONO];
     + style:CHARACTER;
-    + arg:ITM_ARGUMENT;
-    + larg:FAST_ARRAY[ITM_ARGUMENT];
     + affect:CHARACTER;
     + old_pos,old_derive:INTEGER;
     + s:ITM_SLOT;
@@ -974,17 +972,13 @@ Section Private
       
       result := TRUE;
       //
-      larg := ALIAS_ARRAY[ITM_ARGUMENT].new;
-            
-      last_slot := read_type_slot larg;
+      last_slot := read_type_slot;
       (last_slot = NULL).if {
 	syntax_error (current_position,"Incorrect slot declaration.");
       };       
             
       last_slot.set_style style;
-      larg := ALIAS_ARRAY[ITM_ARGUMENT].copy larg;
-      last_slot.set_argument_list larg; 
-      
+            
       (read_affect).if {
 	affect := last_string.first;
       } else {
@@ -1073,14 +1067,9 @@ Section Private
   //++ TYPE_SLOT    -> [ LOC_ARG '.' ] identifier [ LOC_ARG { identifier LOC_ARG } ]
   //++               | [ LOC_ARG ] '\'' operator '\'' [("Left"|"Right") [integer]] [LOC_ARG]
   - read_type_slot:ITM_SLOT <-
-  ( + name:STRING_CONSTANT;
-    + n:STRING;
-    + priority:STRING_CONSTANT;
-    + level:INTEGER;
-    + arg:ITM_ARGUMENT;
+  ( + arg:ITM_ARGUMENT;
     + result:ITM_SLOT;
     + list_arg:FAST_ARRAY[ITM_ARGUMENT];
-    + is_prefix:BOOLEAN;
     
     list_arg := ALIAS_ARRAY[ITM_ARGUMENT].new;
     arg := read_loc_arg FALSE with_self TRUE;
@@ -1179,7 +1168,7 @@ Section Private
       (arg = NULL).if {
 	syntax_error (current_position,"Operator declaration invalid.");
       };
-      name := operator (ALIAS_STR.slot_postfix) with name;
+      name := operator (ALIAS_STR.slot_postfix) name name;
       (associativity != NULL).if {
 	syntax_error (current_position,"Not associativity for postfix operator.");
       };
@@ -1188,13 +1177,13 @@ Section Private
       (arg != NULL).if {
 	// Infix operator.
 	list_arg.add_last arg;
-	name := operator (ALIAS_STR.slot_infix) with name;	
+	name := operator (ALIAS_STR.slot_infix) name name;	
 	(associativity = NULL).if {
 	  associativity := ALIAS_STR.keyword_left;
 	};      
       } else {
 	// Prefix operator.
-	name := operator_to_name ((ALIAS_STR.slot_prefix),name);
+	name := operator (ALIAS_STR.slot_prefix) name name;
 	(associativity != NULL).if {
 	  syntax_error (current_position,"Not associativity for prefix operator.");
 	};
@@ -1367,7 +1356,7 @@ Section Private
 	ALIAS_ARRAY[ITM_TYPE_MONO].free type;
       } else {
 	(
-	  (self_first) && {
+	  (s) && {
 	    (type.first != ITM_TYPE_SELF) || {
 	      (object.name = ALIAS_STR.prototype_block) && 
 	      {tb ?= type.first; tb = NULL}
@@ -1598,11 +1587,7 @@ Section Private
   //++               | IDF_ASSIGN
   //++ IDF_ASSIGN   -> identifier { identifier }
   - read_expr:ITM_CODE <-
-  ( + result,value:ITM_CODE;
-    + l_expr:FAST_ARRAY[ITM_CODE];
-    + l_oper:FAST_ARRAY[STRING_CONSTANT];
-    + l_posi:FAST_ARRAY[POSITION];
-    + is_not_op:BOOLEAN;
+  ( + result,value:ITM_CODE;    
     + affect:CHARACTER;   
     + again:BOOLEAN;
     + l_assignment:FAST_ARRAY[STRING_CONSTANT];
@@ -1883,7 +1868,7 @@ Section Private
       save_context; // !! SAVE CONTEXT !!
             
       //
-      arg := read_loc_arg TRUE;
+      arg := read_loc_arg TRUE with_self FALSE;
       //      
       (arg != NULL).if {	
 	(read_character ';').if_false {  
@@ -2752,7 +2737,7 @@ Section Public
     
     // Source information.
     string_tmp.copy pl;    
-    string_tmp.append "path.li";
+    string_tmp.append "path_new.li";
     entry := FS_MIN.open_read string_tmp;
     ((entry = NULL) /*|| {! entry.is_file}*/).if {
       "File `".print;
@@ -2762,7 +2747,9 @@ Section Public
     } else {
       FS_MIN.close entry;
     };
-    object := PROTOTYPE.create (ALIAS_STR.get string_tmp) name (ALIAS_STR.path_lisaac) generic_count 0;
+    object := PROTOTYPE.create (ALIAS_STR.get string_tmp) 
+    name (ALIAS_STR.path_lisaac) generic_count 0;
+    
     source  := object.source;
     position := source.lower;
     pos_cur := source.lower;

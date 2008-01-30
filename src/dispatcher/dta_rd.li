@@ -33,7 +33,7 @@ Section Inherit
   + parent_dta:Expanded DTA;
   
 Section Public
-      
+    
   //
   // Creation.
   //

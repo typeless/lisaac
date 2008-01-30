@@ -64,6 +64,24 @@ Section Public
   );
   
   //
+  // Just for ITM_EXPRESSION
+  //
+  
+  - create_partial p:POSITION call sl:SLOT :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make_partial p call sl;
+    result
+  );
+  
+  - make_partial p:POSITION call sl:SLOT <-
+  (
+    position := p;
+    slot := sl;
+  );
+
+  //
   // Display.
   //
   

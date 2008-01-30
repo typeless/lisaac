@@ -71,7 +71,7 @@ Section PROTOTYPE
 Section Public
   
   //
-  // Extern Creation.
+  // Extern Creation read.
   //
   
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR self my_self:EXPR :NODE <-
@@ -103,7 +103,36 @@ Section Public
     node_list.add_last result;
     result
   );
-
+  
+  //
+  // Just for ITM_EXPRESSION.
+  //
+  
+  - new_read_partial p:POSITION slot s:SLOT :NODE <-
+  ( + dta:DTA_RD_ARGS;    
+        
+    dta := DTA_RD_ARGS.create_partial p call s;
+    NODE_TYPE.create_partial dta
+  );
+  
+  - new_read_finalize rec:EXPR with larg:FAST_ARRAY[EXPR] <-
+  ( + dta:DTA_RD_ARGS;    
+    
+    CONTEXT_TMP.push (larg.first.static_type);
+    // Control argument type.            
+    data.slot.check_argument_type_for larg;    
+    //
+    data.make (data.position) call (data.slot) with larg;
+    make rec with data;
+    //
+    CONTEXT.pop;
+    node_list.add_last Self;
+  );
+  
+  //
+  // Extern creation writes.
+  //
+  
   - new_write p:POSITION slot s:SLOT receiver rec:EXPR value val:EXPR :NODE <-
   ( + dta:DTA_WR_VALUE;    
     + result:NODE_TYPE;
@@ -125,7 +154,11 @@ Section Public
     node_list.add_last result;
     result
   );
-
+  
+  //
+  // Extern creation cast.
+  //
+  
   - new_cast p:POSITION type typ:TYPE_FULL with val:EXPR :NODE <-
   ( + dta:DTA_CAST;
     + result:NODE_TYPE;
@@ -136,6 +169,10 @@ Section Public
     node_list.add_last result;
     result
   );
+  
+  //
+  // Extern creation value block.
+  //
   
   - new_block p:POSITION receiver e:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
   ( + dta:DTA_BLOCK;

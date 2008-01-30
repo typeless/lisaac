@@ -40,6 +40,12 @@ Section Public
   
   + right:EXPR;
   
+  - set_left l:EXPR and_right r:EXPR <-
+  (
+    left  := l;
+    right := r;
+  );
+  
   - symbol:STRING_CONSTANT <- 
   (
     deferred;

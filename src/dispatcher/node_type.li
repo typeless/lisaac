@@ -41,7 +41,7 @@ Section Public
   //
   // Creation.
   //
-  
+    
   - create e:EXPR with d:DTA :SELF <-
   // Create with back-link.
   ( + result:SELF;
@@ -56,6 +56,23 @@ Section Public
     expr     := e;
     data     := d;
     late_binding_counter := late_binding_counter + 1;
+  );
+  
+  //
+  // Just for ITM_EXPRESSION
+  //
+  
+  - create_partial d:DTA :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make_partial d;    
+    result
+  );
+  
+  - make_partial d:DTA <-
+  (
+    data := d;
   );
     
 Section Public
