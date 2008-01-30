@@ -1,0 +1,13 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 03_path.h.dpatch by  <picca@synchrotron-soleil.fr>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Create the correct path.h for lisaac to be FHS complient.
+
+@DPATCH@
+diff -urNad lisaac~/bin/path.h lisaac/bin/path.h
+--- lisaac~/bin/path.h	2007-09-24 00:20:01.000000000 +0200
++++ lisaac/bin/path.h	2007-10-28 11:42:40.000000000 +0100
+@@ -1 +1 @@
+-#define LISAAC_DIRECTORY "Lisaac installer message: Please install Lisaac ... "
++#define LISAAC_DIRECTORY "/usr/share/lisaac"

@@ -1,11 +1,21 @@
-lisaac (0.12-1) unstable; urgency=low
+lisaac (1:0.13-1) unstable; urgency=low
 
+  [ Xavier Oswald ]
+  * Update copyright
+  * add manpage for shorter
+  * update lisaac manpage
+  * add Vcs-Svn field in the control file
+  * add Vcs-Browser field in the control file
+
+  [Frederic Picca]
   * New upstream release
-  * Fix the build-depends on a new gcc version (closes: #440426)
+  * add an epoch due to a error in my previous version numbering
+  * Fix the build-depends on a new gcc version (closes: #440426, #463065)
   * Fix the dependacy on the new emacs version (closes: #434920)
   * Update the package description
+  * Standards-Version: 3.7.3 - no changes required.
 
- -- Xavier Oswald <x.oswald@free.fr>  Thu, 27 Sep 2007 16:33:25 +0200
+ -- Xavier Oswald <x.oswald@free.fr>  Wed, 30 Jan 2008 15:21:47 +0100
 
 lisaac (0.84-3) unstable; urgency=low
 

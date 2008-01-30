@@ -1,5 +1,0 @@
-#!/bin/sh
-#
-# Wrapper script to ease use of the Callgrind skin/tool.
-#
-LISAAC=/usr/share/lisaac /usr/lib/lisaac/lisaac.bin $*

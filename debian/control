@@ -4,7 +4,10 @@ Priority: optional
 Maintainer: picca frederic <picca@synchrotron-soleil.fr>
 Uploaders: Xavier Oswald <x.oswald@free.fr>
 Build-Depends: debhelper (>= 5.0.0), gcc (>= 4.1), dpatch, emacs22 | emacsen
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
+Homepage: http://isaacproject.u-strasbg.fr/
+Vcs-Svn: svn://svn.gna.org/svn/isaac/trunk/lisaac
+Vcs-Browser: http://svn.gna.org/viewcvs/isaac/trunk/lisaac/
 
 Package: lisaac
 Architecture: any
@@ -26,8 +29,6 @@ Description: Object-oriented language base on prototype
   * programming by contract
   * interrupt manager
   * include C code facilities
- .
-  Homepage: http://isaacproject.u-strasbg.fr/
 
 Package: lisaac-common
 Architecture: all
@@ -42,7 +43,7 @@ Architecture: all
 Description: Documentation for lisaac
  Lisaac is a small prototype-based programming language.
  .
- This package contains the documentation in pdf format.
+ This package contains the documentation in html format.
 
 Package: lisaac-mode
 Architecture: all

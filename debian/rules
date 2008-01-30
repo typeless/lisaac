@@ -20,11 +20,15 @@ build: patch build-arch build-indep
 
 build-arch: build-arch-stamp
 build-arch-stamp: configure-stamp 
-	gcc-3.4 $(CFLAGS) bin/lisaac.c -o bin/lisaac.bin
+	gcc $(CFLAGS) bin/lisaac.c -o bin/lisaac
+	gcc $(CFLAGS) bin/shorter.c -o bin/shorter
+	gcc $(CFLAGS) bin/shorter_local.c -o bin/shorter_local
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp
 build-indep-stamp: configure-stamp 
+	mkdir lib_html
+	bin/shorter_local -r -f html lib -o lib_html
 	touch build-indep-stamp
 
 clean: clean-patched unpatch
@@ -33,7 +37,8 @@ clean-patched:
 	dh_testroot
 	rm -f configure-stamp
 	rm -f build-arch-stamp build-indep-stamp
-	rm -f bin/lisaac.bin
+	rm -f bin/lisaac bin/shorter bin/shorter_local
+	rm -rf lib_html
 	dh_clean 
 
 patch: patch-stamp
@@ -51,9 +56,6 @@ install-indep:
 	dh_testroot
 	dh_clean -k -i 
 	dh_installdirs -i
-	install -m 644 debian/lisaac-common.lintian-overrides $(CURDIR)/debian/lisaac-common/usr/share/lintian/overrides/lisaac-common
-	install -m 644 debian/lisaac-doc.lintian-overrides $(CURDIR)/debian/lisaac-doc/usr/share/lintian/overrides/lisaac-doc
-	install -m 644 debian/lisaac-mode.lintian-overrides $(CURDIR)/debian/lisaac-mode/usr/share/lintian/overrides/lisaac-mode
 	dh_install -i
 
 install-arch:
@@ -61,9 +63,9 @@ install-arch:
 	dh_testroot
 	dh_clean -k -s 
 	dh_installdirs -s
-	dh_installman debian/lisaac.1
-	install -m 755 debian/bin/lisaac $(CURDIR)/debian/lisaac/usr/bin
-	install -m 644 debian/lisaac.lintian-overrides $(CURDIR)/debian/lisaac/usr/share/lintian/overrides/lisaac
+	dh_installman debian/lisaac.1 debian/shorter.1
+	install -m 755 $(CURDIR)/bin/lisaac $(CURDIR)/debian/lisaac/usr/bin/lisaac
+	install -m 755 $(CURDIR)/bin/shorter $(CURDIR)/debian/lisaac/usr/bin/shorter
 	dh_install -s
 
 binary-common:
