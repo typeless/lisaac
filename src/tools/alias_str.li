@@ -57,7 +57,7 @@ Section Public
   - symbol_equal           :STRING_CONSTANT := "=";
   - symbol_not_equal       :STRING_CONSTANT := "!=";
   
-  - operator_equal     :STRING_CONSTANT;
+  - operator_equal     :STRING_CONSTANT; // BSBS: A virer (plus utiliser normalement)
   - operator_not_equal :STRING_CONSTANT;
   
   - section_header     :STRING_CONSTANT := "Header";
