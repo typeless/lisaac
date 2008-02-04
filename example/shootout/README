@@ -49,7 +49,7 @@ Status:
 | pidigits           | NC      | NC      |         | Library used               |
 | recursive          | 1.592s  | 1.508s  | Lisaac  |                            |
 | regex-dna          | NC      | NC      |         | Library used               |
-| reverse-complement |         |         | ?       |                            |
+| reverse-complement |         |         | ?       | BUG !!!                    |
 | spectral-norm      | 21.225s | 21.117s | Lisaac  |                            |
 | startup            | 0.100s  | 0.064s  | Lisaac  |                            |
 | sum-file           |         |         | ?       |                            |

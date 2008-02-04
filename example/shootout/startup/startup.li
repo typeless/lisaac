@@ -25,22 +25,18 @@ Section Header
   - bibliography := "http://IsaacOS.com";
   - author       := "Xavier Oswald (x.oswald@free.fr)";
   - comment      := "Language shootout - startup"; 
-  
-  - external := `void print_char(char c) { }`; // BUG COMPILO 0.12
-  
+    
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;
 
 Section Public
-  
-  - puts tab:NATIVE_ARRAY[CHARACTER] <- `puts(@tab)`;
-  
+    
   - main <-
   ( + tmp:INTEGER;
     + st:STRING_CONSTANT;
     st := "hello world\n";
     tmp := st.count;
     `/* @tmp */`;  // BUG COMPILO 0.12
-    puts (st.storage);
+    st.println;
   );

@@ -32,8 +32,6 @@ Section Inherit
 
 Section Public
   
-  - puts tab:NATIVE_ARRAY[CHARACTER] <- `puts(@tab)`;
-  
   - buffer :NATIVE_ARRAY[CHARACTER];
   - buffer_count:INTEGER;
     
@@ -85,14 +83,14 @@ Section Public
     {len > 60}.while_do {
       c := s.item 60;
       s.put '\0' to 60;
-      puts s;
+      s.println;
       s.put c to 60;
       s := s + 60; 
       len := len - 60;
     };
     
     s.put '\0' to len;
-    puts s;    
+    s.println;    
   );
 
   - main <-
@@ -113,7 +111,7 @@ Section Public
 	  buffer_count := 0;	  
 	};	
 	buf.put '>' to 0;
-	puts buf;		
+	buf.println;		
 	buf := buffer;
       } else {	
 	l := `strlen(@buf)`:INTEGER;

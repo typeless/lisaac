@@ -146,12 +146,12 @@ Section Private
 		((j > list.upper) || {typ != list.item j.id}).if {
 		  add_stack_type typ;
 		  //
-		  case := CASE.create typ with (data.product typ with expr self type_self);		
+		  case := CASE.create typ with (data.product typ with expr self type_self);
 		  list.add case to j;
 		  //
 		  stack_type.remove_last;
 		};	    
-	      };	  	  	  
+	      };
 	    };
 	  };
 	};

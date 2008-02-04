@@ -108,7 +108,7 @@ Section NODE, DTA
 	    case := CASE.create typ with (call_for typ self self_type);
 	    list.add case to j;
 	  };	    
-	};	  
+	};  
       };
     };
     FALSE

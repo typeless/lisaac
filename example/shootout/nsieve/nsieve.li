@@ -25,9 +25,7 @@ Section Header
   - bibliography := "http://IsaacOS.com";
   - author       := "Pierre-Alexandre Voye (ontologiae@gmail.com), Xavier Oswald <x.oswald@free.fr>";
   - comment      := "Language shootout - Recursive"; 
-  
-  - external := `#include <string.h>`;
-  
+    
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;

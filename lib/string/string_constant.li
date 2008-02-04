@@ -120,5 +120,14 @@ Section Public
   
   - '+?' test:BLOCK <- test +? Self;
   
+  //
+  // Guru section
+  //
+  
+  - println <-
+  [ -? {storage.item count = '\0'}; ]
+  ( 
+    storage.println;
+  );
   
 

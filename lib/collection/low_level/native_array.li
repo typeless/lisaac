@@ -798,6 +798,8 @@ Section Public
   // Guru Section
   //
   
+  - println <- `puts(@Self)`;
+  
   - force_put element:V to index:INTEGER <-
   // Used in Memory count: not to use directly without caution !
   [ ...
