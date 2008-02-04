@@ -62,14 +62,6 @@ Section Public
     `fputc((int)@byte,stderr)`;
   ); 
   
-  - print_string_ln str:ABSTRACT_STRING <-
-  // Low level buffered output.
-  [ -? {str.storage.item (str.count) = '\0'}; ]
-  ( + buf:NATIVE_ARRAY[CHARACTER];
-    buf := str.storage;
-    `puts(@buf)`;
-  );
-  
   - get_char :CHARACTER <- `fgetc(stdin)`:(CHARACTER);
   
   - eof:CHARACTER <- `EOF`:CHARACTER;
