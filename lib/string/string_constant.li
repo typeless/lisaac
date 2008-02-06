@@ -88,7 +88,7 @@ Section Public
   // of the internal `storage'. This extra null character is not
   // part of the Lisaac STRING.
   (
-    to_string.to_external
+    storage
   );
 
   - create_copy other:ABSTRACT_STRING :SELF <-
@@ -104,8 +104,9 @@ Section Public
     
     c := other.count;
     (c != 0).if {
-      storage := NATIVE_ARRAY[CHARACTER].create c;
+      storage := NATIVE_ARRAY[CHARACTER].create (c+1);
       storage.copy_from (other.storage) until (c-1);
+      storage.put '\0' to c;
       count := c;
     };
   );
@@ -119,15 +120,5 @@ Section Public
   - '-?' test:BLOCK <- test -? Self;
   
   - '+?' test:BLOCK <- test +? Self;
-  
-  //
-  // Guru section
-  //
-  
-  - println <-
-  [ -? {storage.item count = '\0'}; ]
-  ( 
-    storage.println;
-  );
-  
+    
 

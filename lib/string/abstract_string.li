@@ -924,6 +924,12 @@ Section Public
     IO.put_string Self;  
   );
   
+  - println <-
+  [ -? {storage.item count = '\0'}; ]
+  ( 
+    to_external.println;
+  );
+  
   //
   // The guru section
   //
