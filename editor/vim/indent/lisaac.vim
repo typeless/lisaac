@@ -6,6 +6,9 @@
 " $Revision: 1.0 
 " URL: http://isaacproject.u-strasbg.fr/
 
+" TODO:
+"  * test if there is '[' or '{' in comments
+
 " Only load this indent file when no other was loaded.
 if exists("b:did_indent")
 	finish
