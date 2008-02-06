@@ -73,7 +73,7 @@ interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
 	@echo Please wait...
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
-	./install_lisaac
+	@echo - please run ./install_lisaac to finish the installation
 
 install:
 	mkdir -p $(DESTDIR)$(LIB) 
