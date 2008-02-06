@@ -1,6 +1,7 @@
 " Vim indent file
 " Language: Lisaac
 " Maintainer: Xavier Oswald <x.oswald@free.fr>
+" Contributors: Matthieu Herrmann <matthieu.herrmann@laposte.net>
 " $Date: 2007/08/21 21:33:52 
 " $Revision: 1.0 
 " URL: http://isaacproject.u-strasbg.fr/
@@ -57,14 +58,14 @@ function GetLisaacIndent()
 		return ind
 	endif
 
-	" Add a 'shiftwidth' after a "{" 
-	if line =~ '^.*{' 
+	" Add a 'shiftwidth' after a "{" and no "}"
+	if line =~ '^.*{' && line !~ '^.*{.*}.*'  
 		let ind = ind + &sw
 		return ind
 	endif
 	
-	" Add a 'shiftwidth' after a "[" 
-	if line =~ '^.*[' 
+	" Add a 'shiftwidth' after a "[" and no "]"
+	if line =~ '^.*[' && line !~ '^.*[ .* ].*'  
 		let ind = ind + &sw
 		return ind
 	endif
@@ -73,20 +74,26 @@ function GetLisaacIndent()
 	" UNINDENT PART "
 	"""""""""""""""""
 
-	" Unindent for )
-	if linec =~ '^\s*)'
+	" Unindent Sections :
+	if linec =~ '^\s*Section'
+		let ind = ind - &sw
+		return 0
+	endif
+
+	" Unindent for ")"
+	if linec =~ '^.*)' && linec !~ '^.*(.*).*'  
 		let ind = ind - &sw	
 		return ind
 	endif
 
-	" Unindent for }
-	if linec =~ '^\s*}'
+	" Unindent for "}"
+	if linec =~ '^.*}' && linec !~ '^.*{.*}.*'  
 		let ind = ind - &sw
 		return ind
 	endif
 
-	" Unindent for ]
-	if linec =~ '^\s*]'
+	" Unindent for "]"
+	if linec =~ '^.*]' && linec !~ '^.*[ .* ] .*'  
 		let ind = ind - &sw
 		return ind
 	endif
