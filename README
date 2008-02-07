@@ -44,7 +44,7 @@ set path=d:/mingw\bin;%path%
 
 6- In lisaac directory, run 'make interactive_userland'
 
-7- Run 'install_lisaac' to finisgh the installation
+7- Run 'install_lisaac' to finish the installation
 
 7- Reboot or reloaded AUTOEXEC.BAT
 

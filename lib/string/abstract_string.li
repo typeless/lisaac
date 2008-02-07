@@ -923,6 +923,13 @@ Section Public
   (
     IO.put_string Self;  
   );
+
+  -  printline <-
+  (
+    IO.put_string Self;
+    IO.put_string "\n";
+  );
+
   
   - println <-
   [ -? {storage.item count = '\0'}; ]
