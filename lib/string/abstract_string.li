@@ -933,10 +933,11 @@ Section Public
   
   - println <-
   [ -? {storage.item count = '\0'}; ]
-  ( 
+  (
     to_external.println;
   );
-  
+                                   
+
   //
   // The guru section
   //
@@ -950,4 +951,6 @@ Section Public
     deferred;
     NULL
   );
-  
+
+
+
