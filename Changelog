@@ -9,3 +9,6 @@ Version 0.13 :
  * Change syntax for import/export
  * Export/Import with parameter type
  * Export/import with genericity type
+ * Update library
+ * Update Makefile
+ * Add Lisaac & shorter manpages
