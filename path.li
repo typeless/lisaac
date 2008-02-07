@@ -210,6 +210,11 @@ Section X86
 //  * "cp -f startup.o ../loader/";
     * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
     * isaac+"tool/elf2eof/elf2eof -v -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
+    * "rm startup.sys";
+    * "mv startup.eof startup.sys";
+    * "./dosemu c startup.sys .";
+    * "./dosemu e";
+
   
 //  * "mount /floppy";
 //  * "cp -f startup.eof /mnt/floppy/startup.sys";
