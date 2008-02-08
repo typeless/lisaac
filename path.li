@@ -204,21 +204,10 @@ Section X86
   
   - machine + "file_system/physical";
   - machine + "file_system/partition";
-  
-  
-//  * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -c -fPIC";
-//  * "cp -f startup.o ../loader/";
-    * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
-    * isaac+"tool/elf2eof/elf2eof -v -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
-    * "rm startup.sys";
-    * "mv startup.eof startup.sys";
-    * "./dosemu c startup.sys .";
-    * "./dosemu e";
-
-  
-//  * "mount /floppy";
-//  * "cp -f startup.eof /mnt/floppy/startup.sys";
-//  * "umount /floppy";
+    
+  * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
+  * isaac+"tool/elf2eof/elf2eof -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
+  * "rm startup.sys;mv startup.eof startup.sys;./dosemu c startup.sys .;./dosemu e";
   
 Section IPAQ  
   

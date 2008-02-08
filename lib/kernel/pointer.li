@@ -57,7 +57,7 @@ Section Public
   - to_uinteger_32:UINTEGER_32 <- `(unsigned int)@Self`:UINTEGER_32;
   // convert `pointer' into uinteger type (adress of the pointer)
   
-  - from_uinteger p:UINTEGER_32 :POINTER <- POINTER.force_conversion p;
+  - from_uinteger p:UINTEGER_32 :POINTER <- CONVERT[UINTEGER_32,POINTER].on p;
   // create POINTER from an adress
   
   - to_integer:INTEGER <- to_raw_integer;
