@@ -774,3 +774,8 @@ Section Private
     '\n'.print;
     "------------------------------------\n".print;
   );
+
+- print_capacity <-
+(
+  print_memory;
+);
