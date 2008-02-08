@@ -1,0 +1,92 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name    := INODE;
+
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
+  - comment := "Interface Node for GUII.";
+  
+Section Inherit
+  
+  + parent_guii:INTERNAL_INODE := INTERNAL_INODE;
+  
+Section Public
+  
+  //
+  // Data.
+  //
+    
+  + name:STRING_CONSTANT;
+  
+  + operator:CHARACTER;
+  
+  + priority:INTEGER_8;
+  
+  + list:LINKED_LIST[INODE];
+  
+  //
+  // Creation.
+  
+  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
+  (
+    internal_create n priority p operator '^'
+  );
+  
+  - create_or n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
+  (
+    internal_create n priority p operator '|'
+  );
+  
+  - create_and n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
+  (
+    internal_create n priority p operator '&'
+  );  
+  
+  //
+  // Flags.
+  //
+  
+  - is_xor:BOOLEAN <- operator = '^';
+  - is_and:BOOLEAN <- operator = '&';
+  - is_or:BOOLEAN  <- operator = '|';
+  
+Section Private
+  
+  - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make n priority p operator op;
+    result
+  );
+  
+  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER <-
+  (
+    operator := op;
+    name := n;
+    priority := p;
+    list := LINKED_LIST[INODE].create;    
+  );
+  
+  
