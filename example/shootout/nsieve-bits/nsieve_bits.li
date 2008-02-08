@@ -1,30 +1,14 @@
-///////////////////////////////////////////////////////////////////////////////
-//                              Lisaac Example                               //
-//                                                                           //
-//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
-//                                                                           //
-//   This program is free software: you can redistribute it and/or modify    //
-//   it under the terms of the GNU General Public License as published by    //
-//   the Free Software Foundation, either version 3 of the License, or       //
-//   (at your option) any later version.                                     //
-//                                                                           //
-//   This program is distributed in the hope that it will be useful,         //
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
-//   GNU General Public License for more details.                            //
-//                                                                           //
-//   You should have received a copy of the GNU General Public License       //
-//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
-//                                                                           //
-//                     http://isaacproject.u-strasbg.fr/                     //
-///////////////////////////////////////////////////////////////////////////////
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 nsieve_bits.li
+*/
+
 Section Header
   
-  + name         := NSIEVE_BITS;
-  
-  - bibliography := "http://IsaacOS.com";
-  - author       := "Xavier Oswald (x.oswald@free.fr)";
-  - comment      := "Language shootout - nsieve-bits (based on the C version)"; 
+  + name := NSIEVE_BITS;
   
 Section Inherit
   
@@ -34,14 +18,14 @@ Section Private
 
   - primes      :FAST_ARRAY[UINTEGER_32];
 
-  - sizeof_bits :UINTEGER_32 := 4;  // sizeof(unsigned int)
+  - sizeof_bits :UINTEGER_32 := 4;  
 
-  - bbits       :UINTEGER_32 := 32; // sizeof(unsigned int) * 8
+  - bbits       :UINTEGER_32 := 32; 
   
   - bsize x:UINTEGER_32 :UINTEGER_32 <-
   (
     (x / 8) + sizeof_bits
-  ); // OK !
+  ); 
 
   - bmask x:UINTEGER_32 :UINTEGER_32 <-
   (
@@ -83,10 +67,9 @@ Section Public
       count := 0;
       n := sz >> m;
       
-      // rempli les bsize(n) premier carateres de primes par 0xff
-      //memset(primes, 0xff,bsize(n));
       size := bsize(n);
       ? {size & 3 = 0};
+
       0.to (size / 4) do { j1:INTEGER;
         primes.put (~0) to j1;
       };
