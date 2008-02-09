@@ -68,7 +68,7 @@ function GetLisaacIndent()
 	endif
 	
 	" Add a 'shiftwidth' after a "[" and no "]"
-	if line =~ '^.*[' && line !~ '^.*[ .* ].*'  
+	if line =~ '^.*\[' && line !~ '^.*\[ .* \].*'  
 		let ind = ind + &sw
 		return ind
 	endif
@@ -96,7 +96,7 @@ function GetLisaacIndent()
 	endif
 
 	" Unindent for "]"
-	if linec =~ '^.*]' && linec !~ '^.*[ .* ] .*'  
+	if linec =~ '^.*\]' && linec !~ '^.*\[ .* \] .*'  
 		let ind = ind - &sw
 		return ind
 	endif
