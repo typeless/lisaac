@@ -153,7 +153,7 @@ Section X86, IPAQ, ST2XX, LINUX
   // Standard.
   //
   
-  + isaac := "/home/sonntag/svn/isaac/trunk/isaacos/";  
+  + isaac := "/home/sonntag/svn/isaacos/trunk/isaacos/";  
   + isaac_stdlib   := isaac + "stdlib/";
   + isaac_software := isaac + "software/";
   
