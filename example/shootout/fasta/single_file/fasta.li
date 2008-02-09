@@ -6,6 +6,7 @@
      - lisaac -O -i20 fasta.li
 */
 
+// SPLITFILE=fasta.li
 Section Header
   
   + name := FASTA;
@@ -185,3 +186,39 @@ Section Public
     make_random_fasta("TWO", "IUB ambiguity codes", iub, n * 3);
     make_random_fasta("THREE", "Homo sapiens frequency", homo_sapiens, n * 5);
   );
+// class FASTA
+
+// SPLITFILE=frequency.li
+Section Header
+  
+  + name := FREQUENCY;
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Public
+ 
+  + c :CHARACTER;
+
+  + p :REAL_64;
+
+  - create (p_c:CHARACTER, p_p:REAL_64) :SELF <-
+  ( + result :SELF;
+
+    result := clone;
+    result.make(p_c,p_p);
+    result
+  );
+
+  - make (p_c:CHARACTER, p_p:REAL_64) <-
+  (
+    c := p_c;
+    p := p_p;
+  );
+
+  - put_p r:REAL_64  <-
+  (
+    p := r;
+  );
+// class FREQUENCY
