@@ -1,31 +1,15 @@
-///////////////////////////////////////////////////////////////////////////////
-//                              Lisaac Example                               //
-//                                                                           //
-//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
-//                                                                           //
-//   This program is free software: you can redistribute it and/or modify    //
-//   it under the terms of the GNU General Public License as published by    //
-//   the Free Software Foundation, either version 3 of the License, or       //
-//   (at your option) any later version.                                     //
-//                                                                           //
-//   This program is distributed in the hope that it will be useful,         //
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
-//   GNU General Public License for more details.                            //
-//                                                                           //
-//   You should have received a copy of the GNU General Public License       //
-//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
-//                                                                           //
-//                     http://isaacproject.u-strasbg.fr/                     //
-///////////////////////////////////////////////////////////////////////////////
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 fannkuch.li
+*/
+
 Section Header
   
-  + name         := FANNKUCH;
-  
-  - bibliography := "http://IsaacOS.com";
-  - author       := "Xavier Oswald (x.oswald@free.fr)";
-  - comment      := "Language shootout - fannkuch"; 
-  
+  + name := FANNKUCH;
+
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;
@@ -62,11 +46,7 @@ Section Private
     };
 
     {exit = FALSE}.while_do {
-      // write-out the first 30 permutations
       (check < 30).if {
-      //  0.to m do { i:INTEGER;
-      //    ((perm1.item i) + 1).print;
-      //  };
         perm1.foreach { elt : INTEGER;
           (elt+1).print;
         };
@@ -83,7 +63,6 @@ Section Private
         0.to m do { i:INTEGER;
           perm.put (perm1.item i) to i;
         };
-       // perm.copy perm1;
 
         flips_count := 0;
         k := 0;
