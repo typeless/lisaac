@@ -16,7 +16,7 @@ KEYWORDS="~x86 ~amd64 ~ppc ~sparc ~mips ~arm"
 IUSE=""
 
 DEPEND=">=sys-devel/gcc-4.0"
-RDEPEND=""
+RDEPEND="${DEPEND}"
 
 S=${WORKDIR}/${PN}
 
