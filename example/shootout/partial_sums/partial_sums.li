@@ -1,30 +1,14 @@
-///////////////////////////////////////////////////////////////////////////////
-//                              Lisaac Example                               //
-//                                                                           //
-//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
-//                                                                           //
-//   This program is free software: you can redistribute it and/or modify    //
-//   it under the terms of the GNU General Public License as published by    //
-//   the Free Software Foundation, either version 3 of the License, or       //
-//   (at your option) any later version.                                     //
-//                                                                           //
-//   This program is distributed in the hope that it will be useful,         //
-//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
-//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
-//   GNU General Public License for more details.                            //
-//                                                                           //
-//   You should have received a copy of the GNU General Public License       //
-//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
-//                                                                           //
-//                     http://isaacproject.u-strasbg.fr/                     //
-///////////////////////////////////////////////////////////////////////////////
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 partial_sums.li
+*/
+
 Section Header
   
-  + name         := PARTIAL_SUMS;
-  
-  - bibliography := "http://IsaacOS.com";
-  - author       := "Xavier Oswald (x.oswald@free.fr)";
-  - comment      := "Language shootout - partial-sums";
+  + name := PARTIAL_SUMS;
   
 Section Inherit
   
@@ -38,10 +22,7 @@ Section Public
   ( + n :INTEGER;
     + a1, a2, a3, a4, a5   :REAL_64;
     + a6, a7, a8, a9, alt  :REAL_64;
-    //+ sk, ck       :REAL_64;
     + nr :REAL_64;
-    //+ k2:INTEGER_64; 
-    //+ k3,kr64:REAL_64;
     
     alt := 1.0;
 
