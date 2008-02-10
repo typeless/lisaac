@@ -20,103 +20,17 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := INODE;
+  + name      := MENU_H;
 
   - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
 
-  - comment   := "Interface Node for GUII.";
+  - comment   := "Horizontal menu for GUII.";
   
 Section Inherit
   
-  + parent_guii:INTERNAL_INODE := INTERNAL_INODE;
+  - parent_internal_inode:INTERNAL_INODE := INTERNAL_INODE;
   
 Section Public
   
-  - set_representation obj:INTERNAL_INODE <-
-  (
-    parent_guii := obj;
-  );
-  
-  //
-  // Data.
-  //
-  
-  + name:STRING_CONSTANT;
-  
-  + operator:CHARACTER;
-  
-  + priority:INTEGER_8;
-  
-  + list:LINKED_LIST[INODE];
-  
-  + action:BLOCK := { root:INODE; };
-  
-  //
-  // Creation.
-  
-  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
-  (
-    internal_create n priority p operator '^'
-  );
-  
-  - create_or n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
-  (
-    internal_create n priority p operator '|'
-  );
-  
-  - create_and n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
-  (
-    internal_create n priority p operator '&'
-  );  
-  
-  - create_xor n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '^'
-  );
-  
-  - create_or n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '|'
-  );
-  
-  - create_and n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '&'
-  );  
-    
-  //
-  // Added.
-  //
-  
-  - '+' other:INODE :INODE <-
-  (
-    (list = NULL).if {
-      list := LINKED_LIST[INODE].create;
-    };
-    list.add_last other;
-    Self
-  );
-  
-Section Private
-  
-  - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER :SELF <-
-  [
-    -? {p.in_range 0 to 100}; 
-    -? {n != NULL};
-    -? {(op = '|') || {op = '&'} || {op = '^'}};
-  ]
-  ( + result:SELF;
-    
-    result := clone;
-    result.make n priority p operator op;
-    result
-  );
-  
-  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER <-
-  (
-    operator := op;
-    name := n;
-    priority := p;
-  );
-  
+  - representation:STRING_CONSTANT := "MENU_H";
   

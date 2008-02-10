@@ -1,0 +1,149 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := ESSAI;
+
+  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
+
+  - comment   := "Interface Node for GUII.";
+  
+Section Inherit
+  
+  - parent_object:OBJECT := OBJECT; 
+  
+Section Public
+  
+  - main <-
+  ( + base, menu,tools:INODE;
+    
+    base := 
+    INODE.create_or "Paint" + (
+      menu := INODE.create_xor "Menu" + (
+	INODE.create_xor "File" + (
+	  INODE.create_xor "Clear file" + 
+	  INODE.create_xor "New"
+	) + (
+	  INODE.create_xor "Intern file" + 
+	  INODE.create_xor "Open" +
+	  INODE.create_xor "Save" +
+	  INODE.create_xor "Save as"
+	) + (
+	  INODE.create_xor "Extern file" +
+	  INODE.create_xor "Import" +
+	  INODE.create_xor "Export"
+	) + (
+	  INODE.create_xor "Output file" +
+	  INODE.create_xor "Print" 
+	) + (
+	  INODE.create_xor "Exit manager" +
+	  INODE.create_xor "EXit" 
+	)
+      ) + (
+	INODE.create_xor "Edit" + (
+	  INODE.create_xor "History" +
+	  INODE.create_xor "Undo" +
+	  INODE.create_xor "Redo"
+	) + (
+	  INODE.create_xor "Edit object" +
+	  INODE.create_xor "Delete" +
+	  INODE.create_xor "Duplicate" +
+	  INODE.create_xor "Select all"
+	)
+      ) + (
+	INODE.create_xor "Presentation" + (
+	  INODE.create_xor "Representation" + 
+	  INODE.create_xor "Magnetic locate" +
+	  INODE.create_xor "Contour"
+	)
+      ) + (
+	INODE.create_xor "Disposition" + (
+	  INODE.create_xor "Modify" + 
+	  INODE.create_xor "Text editor" + 
+	  INODE.create_xor "Alignment" + 
+	  INODE.create_xor "To curve"
+	) + (
+	  INODE.create_xor "Order" + 
+	  INODE.create_xor "First plan" + 
+	  INODE.create_xor "Last plan"
+	) + (
+	  INODE.create_xor "Link" + 
+	  INODE.create_xor "Group" + 
+	  INODE.create_xor "Degroup" + 
+	  INODE.create_xor "Combine" + 
+	  INODE.create_xor "Decombine" + 
+	  INODE.create_xor "Auto-combine"  
+	)
+      ) + (
+	INODE.create_xor "Window" + (
+	  INODE.create_xor "Display" + (
+	    INODE.create_xor "Refresh draw"
+	  )
+	)
+      ) + (
+	INODE.create_xor "Help" + (
+	  INODE.create_xor "Information" + 
+	  INODE.create_xor "About" +
+	  INODE.create_xor "Bugs report" +
+	  INODE.create_xor "News"
+	)
+      )
+    ) + (
+      tools := INODE.create_xor "Tools" + (
+	INODE.create_xor "Tools group" +
+	INODE.create_xor "Select" +
+	INODE.create_xor "Zoom" + (
+	  INODE.create_xor "Zoom tools" +
+	  INODE.create_xor "Zoom in" +
+	  INODE.create_xor "Zoom out" +
+	  INODE.create_xor "Zoom select" +
+	  INODE.create_xor "Zoom page" +
+	  INODE.create_xor "Zoom 1:1"
+	) + 
+	INODE.create_xor "line" +
+	INODE.create_xor "Rectangle" +
+	INODE.create_xor "Circle" +
+	INODE.create_xor "Text" +
+	INODE.create_xor "Color"
+      )
+    ) + (    
+      INODE.create_xor "Page"
+    );
+    
+    //
+    // Evaluation.
+    //
+    
+    //base.evaluation; A FAIRE !!!!
+    
+    // Just for test :
+    menu.set_representation MENU_H;
+    tools.set_representation MENU_V;
+    // Etc ...
+    
+    //
+    // Display result.
+    //
+    
+    base.display;
+  );
+  
+  

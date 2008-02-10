@@ -20,103 +20,98 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := INODE;
+  + name      := INTERNAL_INODE;
 
   - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
 
   - comment   := "Interface Node for GUII.";
   
+  // Warning: This Prototype is shared. All the data must to be deferred !
+  
 Section Inherit
   
-  + parent_guii:INTERNAL_INODE := INTERNAL_INODE;
+  - parent_object:OBJECT := OBJECT;
   
-Section Public
+Section Private  
   
-  - set_representation obj:INTERNAL_INODE <-
-  (
-    parent_guii := obj;
-  );
+  //
+  // Append for the problem with Dynamic inheritance !
+  //
+  
+  
+Section Public  
   
   //
   // Data.
   //
   
-  + name:STRING_CONSTANT;
+  - name:STRING_CONSTANT <- deferred;
   
-  + operator:CHARACTER;
+  - representation:STRING_CONSTANT := "None";
   
-  + priority:INTEGER_8;
+  - operator:CHARACTER <- deferred;
   
-  + list:LINKED_LIST[INODE];
+  - priority:INTEGER_8 <- deferred;
   
-  + action:BLOCK := { root:INODE; };
+  - list:LINKED_LIST[INODE] <- deferred;
+  
+  - action:BLOCK <- { root:INODE; };
   
   //
-  // Creation.
+  // Flags.
+  //
   
-  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
-  (
-    internal_create n priority p operator '^'
-  );
+  - is_xor:BOOLEAN <- operator = '^';
+  - is_and:BOOLEAN <- operator = '&';
+  - is_or:BOOLEAN  <- operator = '|';
   
-  - create_or n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
-  (
-    internal_create n priority p operator '|'
-  );
-  
-  - create_and n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
-  (
-    internal_create n priority p operator '&'
-  );  
-  
-  - create_xor n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '^'
-  );
-  
-  - create_or n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '|'
-  );
-  
-  - create_and n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '&'
-  );  
-    
   //
   // Added.
   //
   
-  - '+' other:INODE :INODE <-
-  (
-    (list = NULL).if {
-      list := LINKED_LIST[INODE].create;
-    };
-    list.add_last other;
-    Self
-  );
+  - '+' other:INODE :INODE <- deferred;
   
+  //
+  // Method.
+  //
+  
+  - open <- deferred;
+  
+  - close <- deferred;
+  
+  //
+  // Debug routine
+  //
+  
+  - display <-
+  (
+    name.print;
+    " (".print;
+    representation.print;
+    ")\n".print;
+    (list != NULL).if {
+      base.print;
+      (operator)
+      .when '|' then { "(OR )\n".print; }
+      .when '&' then { "(AND)\n".print; }
+      .when '^' then { "(XOR)\n".print; };      
+      base.print;
+      " | \n".print;
+      (list.lower).to (list.upper) do { j:INTEGER;
+	base.print;    
+	" +- ".print;
+	(j != list.upper).if {
+	  base.append " |  ";
+	} else {
+	  base.append "    ";
+	};
+	list.item j.display;
+	base.remove_last 4;	
+      };
+    };
+  );
+    
 Section Private
   
-  - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER :SELF <-
-  [
-    -? {p.in_range 0 to 100}; 
-    -? {n != NULL};
-    -? {(op = '|') || {op = '&'} || {op = '^'}};
-  ]
-  ( + result:SELF;
-    
-    result := clone;
-    result.make n priority p operator op;
-    result
-  );
-  
-  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER <-
-  (
-    operator := op;
-    name := n;
-    priority := p;
-  );
-  
+  - base:STRING := STRING.create 250;
   
