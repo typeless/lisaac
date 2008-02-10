@@ -94,9 +94,8 @@ Section Public
 	)
       ) + (
 	INODE.create_xor "Window" + (
-	  INODE.create_xor "Display" + (
-	    INODE.create_xor "Refresh draw"
-	  )
+	  INODE.create_xor "Display" + 
+	  INODE.create_xor "Refresh draw"
 	)
       ) + (
 	INODE.create_xor "Help" + (
