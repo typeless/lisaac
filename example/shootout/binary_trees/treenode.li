@@ -16,6 +16,9 @@ Section Inherit
 
 Section Private
 
+  - tab:FAST_ARRAY[TREENODE] := FAST_ARRAY[TREENODE].create_with_capacity 262_144;
+  - top:INTEGER;
+
   + left  :TREENODE;
 
   + right :TREENODE;
@@ -23,6 +26,14 @@ Section Private
   + item  :INTEGER;
 
 Section Public
+  
+  - reset <- top := 0;
+  
+  - clear <-
+  (
+    tab.clear;
+    top := 0;
+  );
   
   - item_check:INTEGER <-
   ( + item_tmp:INTEGER;
@@ -35,11 +46,18 @@ Section Public
     item_tmp
   );
 
-  - bottom_up_tree (item, depth:INTEGER) :SELF <-
-  ( + result :SELF;
-
-    result := clone;
+  - bottom_up_tree (item, depth:INTEGER) :TREENODE <-
+  ( + result :TREENODE;
     
+    (top = tab.count).if {      
+      result := clone;
+      tab.add_last result;
+      top := top + 1;
+    } else {
+      result := tab.item top;
+      top := top + 1;
+    };
+        
     (depth > 0).if {
       result.make (
         bottom_up_tree(2*item-1, depth-1),
@@ -62,4 +80,5 @@ Section Public
   - make_item_only i:INTEGER <-
   (
     item := i;
+    left := right := NULL;
   );
