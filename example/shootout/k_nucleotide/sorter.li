@@ -18,7 +18,7 @@ Section Public
   
   + hash_code:INTEGER;
   
-  + freq:INTEGER := 1;
+  + freq:UINTEGER_32 := 1;
   
   - init_with buf:NATIVE_ARRAY[CHARACTER] <-
   (
