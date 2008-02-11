@@ -1,0 +1,89 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 pidigits.li
+*/
+
+Section Header
+  
+  + name := TRANSFORMATION;
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Private
+
+  + q :UINTEGER_BIG;
+
+  + r :UINTEGER_BIG;
+
+  + s :UINTEGER_BIG;
+
+  + t :UINTEGER_BIG;
+
+  + k :INTEGER;
+
+Section Public
+
+  - make_integer (_q, _r, _s, _t:INTEGER) <-
+  (
+    q := _q.to_uinteger_big;
+    r := _r.to_uinteger_big;
+    s := _s.to_uinteger_big;
+    t := _t.to_uinteger_big;
+    // k := 0;
+  );
+
+  - make_big_integer (_q, _r, _s, _t:UINTEGER_BIG) <-
+  (
+    q := _q;
+    r := _r;
+    s := _s;
+    t := _t;
+    // k := 0;
+  );
+
+  - next :TRANSFORMATION <-
+  (
+    k := k + 1;
+    q := k;
+    r := 4 * k + 2;
+    s := 0;
+    t := 2 * k + 1;
+    // return this;
+  );
+
+  - extract j:INTEGER :INTEGER <-
+  ( + bigj        :UINTEGER_BIG;
+    + numerator   :UINTEGER_BIG;
+    + denominator :UINTEGER_BIG;
+
+    bigj := j.to_uinteger_big;
+    numerator := q * bigj + r;
+    denominator := s * bigj + t;
+    (numerator/denominator).to_integer
+  );
+
+  - qrst (_q, _r, _s, _t:INTEGER) :TRANSFORMTATION <-
+  (
+    q := _q.to_uinteger_big;
+    r := _r.to_uinteger_big;
+    s := _s.to_uinteger_big;
+    t := _t.to_uinteger_big;
+    k := 0;
+    //return this
+  );
+
+  - compose (a :TRANSFORMATION) :TRANSFORMATION <-
+  (
+    /*   return new Transformation(
+         q.multiply(a.q)
+         ,(q.multiply(a.r)).add( (r.multiply(a.t)) )
+         ,(s.multiply(a.q)).add( (t.multiply(a.s)) )
+         ,(s.multiply(a.r)).add( (t.multiply(a.t)) )
+         );
+    */
+  );

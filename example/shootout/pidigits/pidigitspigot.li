@@ -1,0 +1,73 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 pidigits.li
+*/
+
+Section Header
+  
+  + name := PIDIGITSPIGOT;
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Private
+
+  - z       :TRANSFORMATION;
+
+  - x       :TRANSFORMATION;
+
+  - inverse :TRANSFORMATION;
+
+Section Public
+
+  - make <-
+  (
+    z := TRANSFORMATION.make(1,0,0,1);
+    x := TRANSFORMATION.make(0,0,0,0);
+    inverse := TRANSFORMATION.make(0,0,0,0);
+  );
+    
+  - next :INTEGER <-
+  ( + y      :INTEGER;
+    + result :INTEGER;
+
+    y := digit;
+
+    (is_safe y).if {
+      z      := produce y;
+      result := y
+    }else{
+      z      := consume x.next;
+      result := next;
+    };
+
+    result
+  );
+
+  - digit :INTEGER <-
+  (
+    z.extract 3
+  );
+
+  - is_safe digit:INTEGER :BOOLEAN <- 
+  ( + test:BOOLEAN;
+
+    ( digit = z.extract 4).if {
+      test := TRUE;
+    };
+    test
+  );
+
+  - produce i:INTEGER :TRANSFORMATION <- 
+  (
+    inverse.qrst(10, -10 * i ,0 , 1).compose z
+  );
+
+  - consume a:TRANSFORMATION :TRANSFORMATION <- 
+  (
+    z.compose a
+  );
