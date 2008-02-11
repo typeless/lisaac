@@ -35,24 +35,24 @@ Status:
 +===============================================================================+
 | Benchmark          |    C    | Lisaac  | Winner  |   Comments   | Uploaded(1) |
 +===============================================================================+
-| binary_trees       | 1.940s  | 0.536s  | Lisaac  |              |    YES (2)  |
-| chameneos          | NC      | NC      | NC      | Thread used  |             |
+| binary_trees       | 1.940s  | 0.536s  | Lisaac  |              |    YES      |
 | fannkuch           | 4.948s  | 4.008s  | Lisaac  |              |    YES      |
 | fasta              | 9.641s  | 9.177s  | Lisaac  |              |    YES      | 
-| k-nucleotide       | 0.048s  | 0.032s  | Lisaac  |              |    YES (3)  |
-| mandelbrot         | NC      | NC      | NC      | BUG !!!      |             | 
-| meteor-contest     | NC      | NC      | NC      | TODO         |             |
-| n-body             | 10.933s | 11.637s | C       |              |    YES      | 
-| nsieve             | 3.264s  | 3.308s  | C       |              |    YES      |
+| k-nucleotide       | 0.048s  | 0.032s  | Lisaac  |              |    YES      |
 | nsieve-bits        | 0.792s  | 0.624s  | Lisaac  |              |    YES      |
-| partial-sums       | 1.444s  | 1.580s  | C       |              |    YES      |
-| pidigits           | NC      | NC      | NC      | Library used |             |
-| recursive          | 1.592s  | 1.508s  | Lisaac  |              |    YES      |
-| regex-dna          | NC      | NC      | NC      | Library used |             |
-| reverse-complement | NC      | NC      | NC      | BUG !!!      |             |
 | spectral-norm      | 21.225s | 21.117s | Lisaac  |              |    YES      |
 | startup            | 0.100s  | 0.064s  | Lisaac  |              |    YES      |
+| recursive          | 1.592s  | 1.508s  | Lisaac  |              |    YES      |
+| n-body             | 10.933s | 11.637s | C       |              |    YES      | 
+| nsieve             | 3.264s  | 3.308s  | C       |              |    YES      |
+| partial-sums       | 1.444s  | 1.580s  | C       |              |    YES      |
 | sum-file           | 0.304   | 0.464s  | C       |              |    YES      |
+| reverse-complement | NC      | NC      | NC      | BUG !!!      |             |
+| mandelbrot         | NC      | NC      | NC      | BUG !!!      |             | 
+| meteor-contest     | NC      | NC      | NC      | TODO         |             |
+| chameneos-redux    | NC      | NC      | NC      | TODO         |             | 
+| regex-dna          | NC      | NC      | NC      | Library used |             |
+| pidigits           | NC      | NC      | NC      | Library used |             |
 | thread-ring (new)  | NC      | NC      | NC      | Thread used  |             |
 +===============================================================================+
 (1) if the program have been uploaded to the shootout benchmark tracker.
