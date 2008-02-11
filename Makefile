@@ -39,6 +39,7 @@
 #  - maybe use /etc/ instead of /usr/lib/lisaac four the compilation options
 #  - do a /usr/share/menu/lisaac ?
 #  - do a /usr/share/doc-base/lisaac ?
+#  - copy examples
 #
 # Comments:
 # =========
@@ -55,19 +56,22 @@
 #  bug tracker system: https://gna.org/bugs/?func=additem&group=isaac
 #  mail to: Xavier Oswald <x.oswald@free.fr>
 
+LIB=/usr/lib/lisaac
+EXAMPLE=/examples
+HTML=/html
+BIN=/usr/bin
 MAN=/usr/share/man/man1
 DOC=/usr/share/doc/lisaac
-LIB=/usr/lib/lisaac
-BIN=/usr/bin
-HTML=/html
 DESTDIR=
 CC=gcc
 CFLAGS=-O2
 
 all: bin/lisaac.c bin/shorter.c
+	mv bin/path.h bin/path.h.old
 	@echo "#define LISAAC_DIRECTORY \"$(DESTDIR)$(LIB)\"" > bin/path.h
 	$(CC) $(CFLAGS) bin/lisaac.c -o bin/lisaac 
 	$(CC) $(CFLAGS) bin/shorter.c -o bin/shorter
+	mv bin/path.h.old bin/path.h
 
 interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
@@ -80,16 +84,20 @@ install:
 	mkdir -p $(DESTDIR)$(BIN)
 	mkdir -p $(DESTDIR)$(MAN)
 	mkdir -p $(DESTDIR)$(DOC)$(HTML)
+	mkdir -p $(DESTDIR)$(DOC)$(EXAMPLE)
 	cp bin/lisaac  $(DESTDIR)$(BIN) 
 	cp bin/shorter  $(DESTDIR)$(BIN)
 	cp path.li  $(DESTDIR)$(LIB)
 	cp -rf lib/  $(DESTDIR)$(LIB)
 	cp -rf lib_os/  $(DESTDIR)$(LIB)
+	cp -rf example/* $(DESTDIR)$(DOC)$(EXAMPLE)
 	cp -rf shorter/  $(DESTDIR)$(LIB)
 	cp -rf manpage/*.gz  $(DESTDIR)$(MAN)
-	$(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
+	#$(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
 
 clean:
+	rm -rf bin/lisaac
+	rm -rf bin/shorter
 	rm -rf $(DESTDIR)$(BIN)/lisaac
 	rm -rf $(DESTDIR)$(BIN)/shorter
 	rm -rf $(DESTDIR)$(LIB)
