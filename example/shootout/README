@@ -47,12 +47,12 @@ Status:
 | nsieve             | 3.264s  | 3.308s  | C       |              |    YES      |
 | partial-sums       | 1.444s  | 1.580s  | C       |              |    YES      |
 | sum-file           | 0.304   | 0.464s  | C       |              |    YES      |
+| pidigits           | NC      | NC      | NC      | In progress  |             |
+| meteor-contest     | NC      | NC      | NC      | In progress  |             |
 | reverse-complement | NC      | NC      | NC      | BUG !!!      |             |
 | mandelbrot         | NC      | NC      | NC      | BUG !!!      |             | 
-| meteor-contest     | NC      | NC      | NC      | TODO         |             |
-| chameneos-redux    | NC      | NC      | NC      | TODO         |             | 
 | regex-dna          | NC      | NC      | NC      | Library used |             |
-| pidigits           | NC      | NC      | NC      | Library used |             |
+| chameneos-redux    | NC      | NC      | NC      | Thread used  |             | 
 | thread-ring (new)  | NC      | NC      | NC      | Thread used  |             |
 +===============================================================================+
 (1) if the program have been uploaded to the shootout benchmark tracker.
