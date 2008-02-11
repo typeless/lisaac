@@ -97,11 +97,9 @@ Section Public
   );
   
   - array:NATIVE_ARRAY[SORTER] := NATIVE_ARRAY[SORTER].create 16;
-  - string_tmp:STRING := STRING.create 5;
-  
+    
   - sort n:INTEGER <-
   ( + cnt,low,up,i,freq:INTEGER;
-    + r:INTEGER;
     + swap:BOOLEAN;
     + s:SORTER;
     + tmp:SORTER;
@@ -135,24 +133,15 @@ Section Public
       };
       low := low + 1;
       up  := up  - 1;
-      }.do_while {swap};    
-      0.to (dico.count-1) do { j:INTEGER;
-        s := array.item j;
-        s.print;
-        ' '.print;      
-        freq := s.freq;
-        //
-        r := (freq * 100_000) / cnt;
-        (r / 1000).print;
-        '.'.print;
-        string_tmp.clear;
-        (r % 1000).append_in string_tmp format 3 with '0';      
-        string_tmp.print;
-        //
-        '\n'.print;
-      };
-      '\n'.print;
-    );
+    }.do_while {swap};    
+    0.to (dico.count-1) do { j:INTEGER;
+      s := array.item j;
+      s.print;      
+      freq := s.freq;
+      ((100.0*freq.to_real_64)/cnt).print_format_c " %.3f\n";      
+    };
+    '\n'.print;
+  );
 // class KNUCLEOTIDE
 
 // SPLITFILE=sorter.li
@@ -168,7 +157,7 @@ Section Public
   
   + hash_code:INTEGER;
   
-  + freq:INTEGER := 1;
+  + freq:UINTEGER_32 := 1;
   
   - init_with buf:NATIVE_ARRAY[CHARACTER] <-
   (
