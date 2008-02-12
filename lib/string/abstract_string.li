@@ -232,7 +232,7 @@ Section Public
   // Gives the index of the first occurrence `ch' or
   // 0 if none.
   (+ result:INTEGER;
-    result := 1 + storage.fast_index_of ch until (count - 1);    
+    result := 1 + storage.fast_index_of (ch,1) until (count - 1);    
     ?	{(result != count + 1) ->> {item result = ch}};    
     result
   );
