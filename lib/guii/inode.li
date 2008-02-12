@@ -20,11 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := INODE;
+  + name    := INODE;
 
-  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
 
-  - comment   := "Interface Node for GUII.";
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+
+  - comment := "Interface Node for GUII.";
   
 Section Inherit
   
@@ -32,15 +33,10 @@ Section Inherit
   
 Section Public
   
-  - set_representation obj:INTERNAL_INODE <-
-  (
-    parent_guii := obj;
-  );
-  
   //
   // Data.
   //
-  
+    
   + name:STRING_CONSTANT;
   
   + operator:CHARACTER;
@@ -48,8 +44,6 @@ Section Public
   + priority:INTEGER_8;
   
   + list:LINKED_LIST[INODE];
-  
-  + action:BLOCK := { root:INODE; };
   
   //
   // Creation.
@@ -69,42 +63,28 @@ Section Public
     internal_create n priority p operator '&'
   );  
   
-  - create_xor n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '^'
-  );
-  
-  - create_or n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '|'
-  );
-  
-  - create_and n:STRING_CONSTANT :SELF <-
-  (
-    internal_create n priority 50 operator '&'
-  );  
-    
   //
-  // Added.
+  // Flags.
   //
   
+  - is_xor:BOOLEAN <- operator = '^';
+  - is_and:BOOLEAN <- operator = '&';
+  - is_or:BOOLEAN  <- operator = '|';
+
   - '+' other:INODE :INODE <-
   (
-    (list = NULL).if {
-      list := LINKED_LIST[INODE].create;
-    };
     list.add_last other;
     Self
+  );
+
+  - set_representation new_parent:INTERNAL_INODE <-
+  (
+    parent_guii:=new_parent;
   );
   
 Section Private
   
   - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER :SELF <-
-  [
-    -? {p.in_range 0 to 100}; 
-    -? {n != NULL};
-    -? {(op = '|') || {op = '&'} || {op = '^'}};
-  ]
   ( + result:SELF;
     
     result := clone;
@@ -117,6 +97,7 @@ Section Private
     operator := op;
     name := n;
     priority := p;
+    list := LINKED_LIST[INODE].create;    
   );
   
   
