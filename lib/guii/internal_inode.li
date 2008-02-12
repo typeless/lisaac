@@ -37,7 +37,7 @@ Section Private
   //
   // Append for the problem with Dynamic inheritance !
   //
-  
+
   
 Section Public  
   
@@ -94,11 +94,15 @@ Section Public
       (operator)
       .when '|' then { "(OR )\n".print; }
       .when '&' then { "(AND)\n".print; }
-      .when '^' then { "(XOR)\n".print; };      
+      .when '^' then { "(XOR)\n".print; };
       base.print;
-      " | \n".print;
+      (list.is_empty).if {
+        "\n".print;
+      } else {
+	" | \n".print;
+      };
       (list.lower).to (list.upper) do { j:INTEGER;
-	base.print;    
+	base.print; 
 	" +- ".print;
 	(j != list.upper).if {
 	  base.append " |  ";
