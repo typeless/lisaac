@@ -36,95 +36,95 @@ Section Public
   ( + base, menu,tools:INODE;
     
     base := 
-    INODE.create_or "Paint" + (
-      menu := INODE.create_xor "Menu" + (
-	INODE.create_xor "File" + (
-	  INODE.create_xor "Clear file" + 
-	  INODE.create_xor "New"
+    INODE.create_or "Paint" priority 100 + (
+      menu := INODE.create_xor "Menu" priority 100 + (
+	INODE.create_xor "File" priority 100 + (
+	  INODE.create_xor "Clear file" priority 100 + 
+	  INODE.create_xor "New" priority 100
 	) + (
-	  INODE.create_xor "Intern file" + 
-	  INODE.create_xor "Open" +
-	  INODE.create_xor "Save" +
-	  INODE.create_xor "Save as"
+	  INODE.create_xor "Intern file" priority 100 + 
+	  INODE.create_xor "Open" priority 100 +
+	  INODE.create_xor "Save" priority 100 +
+	  INODE.create_xor "Save as" priority 100
 	) + (
-	  INODE.create_xor "Extern file" +
-	  INODE.create_xor "Import" +
-	  INODE.create_xor "Export"
+	  INODE.create_xor "Extern file" priority 100 +
+	  INODE.create_xor "Import" priority 100 +
+	  INODE.create_xor "Export" priority 100
 	) + (
-	  INODE.create_xor "Output file" +
-	  INODE.create_xor "Print" 
+	  INODE.create_xor "Output file" priority 100 +
+	  INODE.create_xor "Print" priority 100 
 	) + (
-	  INODE.create_xor "Exit manager" +
-	  INODE.create_xor "EXit" 
+	  INODE.create_xor "Exit manager" priority 100 +
+	  INODE.create_xor "EXit" priority 100 
 	)
       ) + (
-	INODE.create_xor "Edit" + (
-	  INODE.create_xor "History" +
-	  INODE.create_xor "Undo" +
-	  INODE.create_xor "Redo"
+	INODE.create_xor "Edit" priority 100 + (
+	  INODE.create_xor "History" priority 100 +
+	  INODE.create_xor "Undo" priority 100 +
+	  INODE.create_xor "Redo" priority 100
 	) + (
-	  INODE.create_xor "Edit object" +
-	  INODE.create_xor "Delete" +
-	  INODE.create_xor "Duplicate" +
-	  INODE.create_xor "Select all"
+	  INODE.create_xor "Edit object" priority 100 +
+	  INODE.create_xor "Delete" priority 100 +
+	  INODE.create_xor "Duplicate" priority 100 +
+	  INODE.create_xor "Select all" priority 100
 	)
       ) + (
-	INODE.create_xor "Presentation" + (
-	  INODE.create_xor "Representation" + 
-	  INODE.create_xor "Magnetic locate" +
-	  INODE.create_xor "Contour"
+	INODE.create_xor "Presentation" priority 100 + (
+	  INODE.create_xor "Representation" priority 100 + 
+	  INODE.create_xor "Magnetic locate" priority 100 +
+	  INODE.create_xor "Contour" priority 100
 	)
       ) + (
-	INODE.create_xor "Disposition" + (
-	  INODE.create_xor "Modify" + 
-	  INODE.create_xor "Text editor" + 
-	  INODE.create_xor "Alignment" + 
-	  INODE.create_xor "To curve"
+	INODE.create_xor "Disposition" priority 100 + (
+	  INODE.create_xor "Modify" priority 100 + 
+	  INODE.create_xor "Text editor" priority 100 + 
+	  INODE.create_xor "Alignment" priority 100 + 
+	  INODE.create_xor "To curve" priority 100
 	) + (
-	  INODE.create_xor "Order" + 
-	  INODE.create_xor "First plan" + 
-	  INODE.create_xor "Last plan"
+	  INODE.create_xor "Order" priority 100 + 
+	  INODE.create_xor "First plan" priority 100 + 
+	  INODE.create_xor "Last plan" priority 100
 	) + (
-	  INODE.create_xor "Link" + 
-	  INODE.create_xor "Group" + 
-	  INODE.create_xor "Degroup" + 
-	  INODE.create_xor "Combine" + 
-	  INODE.create_xor "Decombine" + 
-	  INODE.create_xor "Auto-combine"  
+	  INODE.create_xor "Link" priority 100 + 
+	  INODE.create_xor "Group" priority 100 + 
+	  INODE.create_xor "Degroup" priority 100 + 
+	  INODE.create_xor "Combine" priority 100 + 
+	  INODE.create_xor "Decombine" priority 100 + 
+	  INODE.create_xor "Auto-combine" priority 100  
 	)
       ) + (
-	INODE.create_xor "Window" + (
-	  INODE.create_xor "Display" + 
-	  INODE.create_xor "Refresh draw"
+	INODE.create_xor "Window" priority 100 + (
+	  INODE.create_xor "Display" priority 100 + 
+	  INODE.create_xor "Refresh draw" priority 100
 	)
       ) + (
-	INODE.create_xor "Help" + (
-	  INODE.create_xor "Information" + 
-	  INODE.create_xor "About" +
-	  INODE.create_xor "Bugs report" +
-	  INODE.create_xor "News"
+	INODE.create_xor "Help" priority 100 + (
+	  INODE.create_xor "Information" priority 100 + 
+	  INODE.create_xor "About" priority 100 +
+	  INODE.create_xor "Bugs report" priority 100 +
+	  INODE.create_xor "News" priority 100
 	)
       )
     ) + (
-      tools := INODE.create_xor "Tools" + (
-	INODE.create_xor "Tools group" +
-	INODE.create_xor "Select" +
-	INODE.create_xor "Zoom" + (
-	  INODE.create_xor "Zoom tools" +
-	  INODE.create_xor "Zoom in" +
-	  INODE.create_xor "Zoom out" +
-	  INODE.create_xor "Zoom select" +
-	  INODE.create_xor "Zoom page" +
-	  INODE.create_xor "Zoom 1:1"
+      tools := INODE.create_xor "Tools" priority 100 + (
+	INODE.create_xor "Tools group" priority 100 +
+	INODE.create_xor "Select" priority 100 +
+	INODE.create_xor "Zoom" priority 100 + (
+	  INODE.create_xor "Zoom tools" priority 100 +
+	  INODE.create_xor "Zoom in" priority 100 +
+	  INODE.create_xor "Zoom out" priority 100 +
+	  INODE.create_xor "Zoom select" priority 100 +
+	  INODE.create_xor "Zoom page" priority 100 +
+	  INODE.create_xor "Zoom 1:1" priority 100
 	) + 
-	INODE.create_xor "line" +
-	INODE.create_xor "Rectangle" +
-	INODE.create_xor "Circle" +
-	INODE.create_xor "Text" +
-	INODE.create_xor "Color"
+	INODE.create_xor "line" priority 100 +
+	INODE.create_xor "Rectangle" priority 100 +
+	INODE.create_xor "Circle" priority 100 +
+	INODE.create_xor "Text" priority 100 +
+	INODE.create_xor "Color" priority 100
       )
     ) + (    
-      INODE.create_xor "Page"
+      INODE.create_xor "Page" priority 100
     );
     
     //
