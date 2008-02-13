@@ -29,7 +29,7 @@ src_compile(){
 
 	emake || die "emake failed"
 
-# the emacs plugin is broken for the moment, so it's better to its installation
+# the emacs plugin is broken for the moment, so it's better to disable its installation
 #	if use emacs; then
 #		elisp-compile editor/emacs/lisaac-mode.el || die
 #	fi
