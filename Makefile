@@ -36,10 +36,8 @@
 #
 # TODO:
 # =====
-#  - maybe use /etc/ instead of /usr/lib/lisaac four the compilation options
 #  - do a /usr/share/menu/lisaac ?
 #  - do a /usr/share/doc-base/lisaac ?
-#  - copy examples
 #
 # Comments:
 # =========
