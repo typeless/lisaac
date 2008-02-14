@@ -33,4 +33,22 @@ Section Inherit
 Section Public
   
   - representation:STRING_CONSTANT := "MENU_H";
-  
+  + content:G_EXPR;
+  + largeur:INTEGER;
+  + hauteur:INTEGER;
+
+  - make_representation <-
+  (
+    +name:STRING;
+    +expr:G_EXPR;
+    (list.lower).to (list.upper) do {
+      i:INTEGER;
+      name:=(list.item i).get_name;
+      (i=1).if {
+        expr:=G_BUTTON.create (G_OUT.create name);
+      } else {
+        expr:=expr | G_BUTTON.create (G_OUT.create name);
+      };
+    };
+    content:=(G_RAW.create expr).fix_height.fix_width;
+  );
