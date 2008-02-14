@@ -56,6 +56,8 @@ Section Public
   - list:LINKED_LIST[INODE] <- deferred;
   
   - action:BLOCK <- { root:INODE; };
+
+  - content:G_EXPR <- deferred;
   
   //
   // Flags.
@@ -78,7 +80,23 @@ Section Public
   - open <- deferred;
   
   - close <- deferred;
-  
+
+  - make_representation <- deferred;
+
+  //
+  //getter
+  //
+
+  - get_name:STRING <-
+  (
+    name.to_string
+  );
+
+  - get_content:G_EXPR <-
+  (
+    content
+  );
+
   //
   // Debug routine
   //
