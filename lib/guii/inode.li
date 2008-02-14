@@ -71,6 +71,11 @@ Section Public
   - is_and:BOOLEAN <- operator = '&';
   - is_or:BOOLEAN  <- operator = '|';
 
+
+  //
+  //method
+  //
+
   - '+' other:INODE :INODE <-
   (
     list.add_last other;
@@ -80,6 +85,16 @@ Section Public
   - set_representation new_parent:INTERNAL_INODE <-
   (
     parent_guii:=new_parent;
+    make_representation;
+  );
+
+  - evaluation (l,h:INTEGER) <-
+  (
+    "Largeur : ".print;
+    l.print;
+    "\nHauteur : ".print;
+    h.print;
+    "\n".print;
   );
   
 Section Private
@@ -97,7 +112,7 @@ Section Private
     operator := op;
     name := n;
     priority := p;
-    list := LINKED_LIST[INODE].create;    
+    list := LINKED_LIST[INODE].create;
   );
   
   
