@@ -34,6 +34,7 @@ Section Public
   
   - main <-
   ( + base, menu,tools:INODE;
+    + menu_g_expr:G_EXPR;
     
     base := 
     INODE.create_or "Paint" priority 100 + (
@@ -131,11 +132,20 @@ Section Public
     // Evaluation.
     //
     
-    //base.evaluation; A FAIRE !!!!
+    base.evaluation (1024,768);
     
     // Just for test :
     menu.set_representation MENU_H;
-    tools.set_representation MENU_V;
+    menu_g_expr:=menu.get_content;
+    //tools.set_representation MENU_V;
+    VIDEO.make (800,600);
+
+    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
+      menu_g_expr / G_PAGE.create
+    );
+    INTERFACE.run;
+
+
     // Etc ...
     
     //
