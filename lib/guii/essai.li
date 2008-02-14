@@ -34,7 +34,7 @@ Section Public
   
   - main <-
   ( + base, menu,tools:INODE;
-    + menu_g_expr:G_EXPR;
+    + menu_g_expr, tools_g_expr:G_EXPR;
     
     base := 
     INODE.create_or "Paint" priority 100 + (
@@ -107,11 +107,9 @@ Section Public
 	)
       )
     ) + (
-      tools := INODE.create_xor "Tools" priority 100 + (
-	INODE.create_xor "Tools group" priority 100 +
-	INODE.create_xor "Select" priority 100 +
-	INODE.create_xor "Zoom" priority 100 + (
-	  INODE.create_xor "Zoom tools" priority 100 +
+      tools := INODE.create_xor "Tools" priority 100 + 
+	INODE.create_xor "Select" priority 100 + (
+	INODE.create_xor "Zoom" priority 100 +
 	  INODE.create_xor "Zoom in" priority 100 +
 	  INODE.create_xor "Zoom out" priority 100 +
 	  INODE.create_xor "Zoom select" priority 100 +
@@ -123,9 +121,8 @@ Section Public
 	INODE.create_xor "Circle" priority 100 +
 	INODE.create_xor "Text" priority 100 +
 	INODE.create_xor "Color" priority 100
-      )
     ) + (    
-      INODE.create_xor "Page" priority 100
+      INODE.create_xor "Page" priority 100 width 30 height 20
     );
     
     //
@@ -137,11 +134,14 @@ Section Public
     // Just for test :
     menu.set_representation MENU_H;
     menu_g_expr:=menu.get_content;
-    //tools.set_representation MENU_V;
+    tools.set_representation MENU_V;
+    tools_g_expr:=tools.get_content;
+
+
     VIDEO.make (800,600);
 
     INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
-      menu_g_expr / G_PAGE.create
+      menu_g_expr / (tools_g_expr | G_PAGE.create)
     );
     INTERFACE.run;
 

@@ -57,7 +57,7 @@ Section Public
   
   - action:BLOCK <- { root:INODE; };
 
-  - content:G_EXPR <- deferred;
+  - content:G_EXPR <- ( deferred; NULL);
   
   //
   // Flags.

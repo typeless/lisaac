@@ -44,10 +44,16 @@ Section Public
   + priority:INTEGER_8;
   
   + list:LINKED_LIST[INODE];
-  
+
+  + height:INTEGER;
+	
+  + width:INTEGER;
+
+  - h_screen:INTEGER;
+
+  - w_screen:INTEGER;
   //
   // Creation.
-  
   - create_xor n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
   (
     internal_create n priority p operator '^'
@@ -61,6 +67,21 @@ Section Public
   - create_and n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
   (
     internal_create n priority p operator '&'
+  );  
+
+  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 width w:INTEGER height h:INTEGER :SELF <-
+  (
+    internal_create n priority p operator '^' width w height h
+  );
+  
+  - create_or n:STRING_CONSTANT priority p:INTEGER_8 width w:INTEGER height h:INTEGER :SELF <-
+  (
+    internal_create n priority p operator '|' width w height h
+  );
+  
+  - create_and n:STRING_CONSTANT priority p:INTEGER_8 width w:INTEGER height h:INTEGER :SELF <-
+  (
+    internal_create n priority p operator '&' width w height h
   );  
   
   //
@@ -92,8 +113,10 @@ Section Public
   (
     "Largeur : ".print;
     l.print;
+    h_screen := l;
     "\nHauteur : ".print;
     h.print;
+    w_screen := h;
     "\n".print;
   );
   
@@ -106,6 +129,14 @@ Section Private
     result.make n priority p operator op;
     result
   );
+
+ - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make n priority p operator op width w height h;
+    result
+  );
   
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER <-
   (
@@ -114,5 +145,15 @@ Section Private
     priority := p;
     list := LINKED_LIST[INODE].create;
   );
-  
+
+  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER <-
+  (
+    operator := op;
+    name := n;
+    priority := p;
+    width := w;
+    height := h;
+    list := LINKED_LIST[INODE].create;
+  );
+
   

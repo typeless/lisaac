@@ -45,7 +45,7 @@ Section Public
       i:INTEGER;
       name:=(list.item i).get_name;
       (i=1).if {
-        expr:=G_BUTTON.create (G_OUT.create name);
+        expr:=G_BUTTON.create (G_OUT.create name) ;
       } else {
         expr:=expr | G_BUTTON.create (G_OUT.create name);
       };
