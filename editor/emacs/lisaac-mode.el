@@ -113,37 +113,14 @@
   li-color
 )
 
-(defun li-number ()
-  ""
-  (setq li-color font-lock-keyword-face)
-  
-  li-color
-)
-
-(defun li-comment ()
-  ""
-  (setq li-color font-lock-variable-name-face)
-  ;; Detect local declaration.
-  (if (search-forward "*/" li-here t)
-      (goto-char li-here)
-    )
-  font-lock-comment-face
-)
-
 (defconst li-font-lock-keywords
   '(
-    
-    ;; Hidden comments
-    ("//.*" 0 font-lock-comment-face nil)
-
-    ;; quoted expr's in comments
-    ;("`[^'\n]*'" 0 font-lock-builtin-face t)
-
-    ;; Quoted expression
-    ("'[^'\n]*'" 0 font-lock-constant-face nil)
+    ;; Quoted expression    
+    ("'.*'" 0 font-lock-constant-face nil)
    
     ;; External expression
-    ("`[^`\n]*`" 0 highlight nil)
+    ;("`[^`\n]*`" 0 highlight nil)
+    ("`.*`" 0 highlight nil)
 
     ;; Major keywords :
     ("^Section.*$" 0 font-lock-keyword-face nil)
@@ -157,7 +134,6 @@
     ("Result_[1-9]" 0 font-lock-keyword-face nil)
 
     ;; Number Hexa :
-    ; ("[0-9][0-9a-fA-F_]*[hobd]?" 0 (li-number) nil)
     ("[0-9_]+[A-F][0-9A-F_]*h" 0 font-lock-keyword-face nil)
     ("[0-9_]+\.[0-9]*E[+-]?[0-9]+" 0 font-lock-keyword-face nil)
 
@@ -168,8 +144,7 @@
     ("\\.[ \t\n]*[a-z][a-z0-9_]*" 0 font-lock-function-name-face nil)
     ("[a-z][a-z0-9_]*" 0 (li-message) nil)
 
-    ;; Number :
-    ; ("[0-9][0-9a-fA-F]*[hobd]?" 0 (li-number) nil)
+    ;; Number :   
     ("[0-9][0-9_]*" 0 font-lock-keyword-face nil)
 
     ;; Block :
@@ -179,11 +154,11 @@
     ("<-\\|:=\\|?=" 0 0 nil) 
 
     ;; Symbol declaration :
-    ("^  \\(\\+\\|-\\|\\*\\)" 0 font-lock-warning-face nil)
-    ("\\+\\|-\\|\\*" 0 (li-declaration) nil)
+    ("^  \\(\\+\\|-\\)" 0 font-lock-warning-face nil)
+    ("\\+\\|-" 0 (li-declaration) nil)
 
     ;; Operators :
-    ("[!@#$%^&<|=~/>?\\]+" 0 font-lock-variable-name-face nil)
+    ("[!@#$%^&<|=~/>?\\*\\]+" 0 font-lock-variable-name-face nil)
     )
   "Additional expressions to highlight in Lisaac mode.")
 
@@ -209,11 +184,12 @@
    ; (modify-syntax-entry ?_  "_" st)
     ;; * is second character of comment start,
     ;; and first character of comment end
-    (modify-syntax-entry ?\* ". 23n" st)
-    ;; ( is first character of comment start
-    (modify-syntax-entry ?/ ". 14n" st)
-    ;; ) is last character of comment end
-    (modify-syntax-entry ?/ ". 14n" st)
+    (modify-syntax-entry ?\* ". 23" st)
+    ;; / is first character of comment start
+    (modify-syntax-entry ?/ ". 124b" st)    
+    (modify-syntax-entry ?\n "> b" st)    
+
+    ;(modify-syntax-entry ?` "\"" st)    
     st)
   "Syntax table used while in Lisaac mode.")
 
@@ -333,20 +309,13 @@
 (defun li-indent-previous ()
   "Indent with previous line."
   ; Search a previous line.
-;(insert "lalo")
-;(insert "li")
   (setq li-count-line 1)
-;(insert "0")
   (previous-line 1)
-;(insert "1")
   (beginning-of-line)
-;(insert "2")
   (while (looking-at "[ \t\n]*$")
-;(insert "L")
     (setq li-count-line (+ li-count-line 1))
     (previous-line 1)
     (beginning-of-line))
-;(insert "ici")
   ; Set position on begin of text.
   (forward-to-indentation 0)
 
@@ -500,8 +469,6 @@
 
 (defun li-indent-command ()
   "indent line for Lisaac mode."
- ; (save-excursion
- ;   (progn
   (interactive)
   (beginning-of-line)
   (if (looking-at "[ \t]*Section.*$")
@@ -511,7 +478,6 @@
 	  (end-of-line))
      	;else
       (li-indent-previous))
- ; ))
 )
 
 ;;
@@ -532,7 +498,7 @@
 )
 
 ;;
-;;autoload.
+;; autoload
 ;;
 (defun lisaac-mode ()
   "Major mode for editing typical Lisaac code."
@@ -551,11 +517,11 @@
   (make-local-variable 'li-mode-syntax-table)
   (set-syntax-table li-mode-syntax-table)
 
-  (set (make-local-variable 'comment-start) "(* ")
-  (set (make-local-variable 'comment-end) " *)")
+ ; (set (make-local-variable 'comment-start) "(* ")
+ ; (set (make-local-variable 'comment-end) " *)")
 
-  (make-local-variable 'comment-start-skip)
-  (setq comment-start-skip "(\\*+ *")
+  ;(make-local-variable 'comment-start-skip)
+  ;(setq comment-start-skip "(\\*+ *")
 
   (make-local-variable 'parse-sexp-ignore-comments)
   (setq parse-sexp-ignore-comments nil)
