@@ -775,7 +775,7 @@ Section Private
     "------------------------------------\n".print;
   );
 
-- print_capacity <-
-(
-  print_memory;
-);
+  - print_capacity <-
+  (
+    print_memory;
+  );

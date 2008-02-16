@@ -54,8 +54,8 @@ int main (int argc, char **argv)
             Crv = two * Crv - _1p5;
             Civ = two * Civ - one;
 
-	    printf("cr=%f %f\n",(float) *Cr, (float) *(Cr+1));
-	    printf("ci=%f\n",(float) *Ci);
+	    //printf("cr=%f %f\n",(float) *Cr, (float) *(Cr+1));
+	    //printf("ci=%f\n",(float) *Ci);
 	    //getchar();
 
             for (i=0;i<iter && (islessequal( *Tr    +  *Ti,   limit_sqr) ||
@@ -66,11 +66,11 @@ int main (int argc, char **argv)
                 Trv = Zrv * Zrv;
                 Tiv = Ziv * Ziv;
 
-		printf("tr=%f\n",(float) *Tr);
-		//printf("tr=%f tr2=%f ",(float) *Tr, (float) *(Tr+1));
+		//printf("tr=%f\n",(float) *Tr);
+		printf("tr=%f tr2=%f\n",(float) *Tr, (float) *(Tr+1));
 		//printf("ti=%f ti2=%f\n",(float) *Ti, (float) *(Ti+1));
             }
-	    printf("%d\n",i);
+	    printf("i=%d\n",i);
             byte_acc <<= 2;
             if(islessequal(*Tr + *Ti, limit_sqr))
                 byte_acc |= 0x02;

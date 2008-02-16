@@ -62,16 +62,16 @@ Section Public
       ci  := (y*2).to_real_64 / h - 1.0;
       
       0.to wm1 by 2 do {x : INTEGER;
-	+ zi, zi2:REAL_64;
+        + zi, zi2:REAL_64;
         + tr, ti, tr2, ti2:REAL_64;
         	
 	x2  := x + x;
 	cr  :=     x2.to_real_64 / w - 1.5;
 	cr2 := (x2+2).to_real_64 / w - 1.5;
 	
-	"cr=".print; cr.print_format_c "%f"; ' '.print;
-	cr2.print_format_c "%f"; '\n'.print;
-	"ci=".print; ci.print_format_c "%f"; '\n'.print;
+	//"cr=".print; cr.print_format_c "%f"; ' '.print;
+	//cr2.print_format_c "%f"; '\n'.print;
+	//"ci=".print; ci.print_format_c "%f"; '\n'.print;
 	
 	i := 0;
 	{
@@ -87,8 +87,8 @@ Section Public
 	  ti := zi  * zi;
 	  ti2:= zi2 * zi2;
 	  
-	  "tr=".print; tr.print_format_c "%f"; '\n'.print;
-	  //"tr2=".print; tr2.print_format_c "%f"; ' '.print;
+	  "tr=".print; tr.print_format_c "%f"; ' '.print;
+	  "tr2=".print; tr2.print_format_c "%f"; '\n'.print;
 	  //"ti=".print; ti.print_format_c "%f"; ' '.print;
 	  //"ti2=".print; ti2.print_format_c "%f"; '\n'.print;	  
 	  
@@ -98,7 +98,7 @@ Section Public
 	    (tr + ti <= limit_sqr) || {tr2 + ti2 <= limit_sqr}
 	  }
 	};
-	i.print; '\n'.print;
+	"i=".print; i.print; '\n'.print;
 		
 	byte_acc := byte_acc << 2;
 	(tr + ti <= limit_sqr).if {
