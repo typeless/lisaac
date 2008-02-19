@@ -36,6 +36,7 @@
 #
 # TODO:
 # =====
+#  - maybe use /etc/ instead of /usr/lib/lisaac four the compilation options
 #  - do a /usr/share/menu/lisaac ?
 #  - do a /usr/share/doc-base/lisaac ?
 #
@@ -54,20 +55,27 @@
 #  bug tracker system: https://gna.org/bugs/?func=additem&group=isaac
 #  mail to: Xavier Oswald <x.oswald@free.fr>
 
-LIB=/usr/lib/lisaac
-EXAMPLE=/examples
-HTML=/html
-BIN=/usr/bin
-MAN=/usr/share/man/man1
-DOC=/usr/share/doc/lisaac
+PREFIX=/usr/local
+MAN=$(PREFIX)/share/man/man1
+DOC=$(PREFIX)/share/doc/lisaac
+LIB=$(PREFIX)/share/lisaac
+BIN=$(PREFIX)/bin
+HTMLDOC=/html
 DESTDIR=
-CC=gcc
+
+#CC=gcc
 CFLAGS=-O2
 
-all: bin/lisaac.c bin/shorter.c
-	@echo "#define LISAAC_DIRECTORY \"$(DESTDIR)$(LIB)\"" > bin/path.h
-	$(CC) $(CFLAGS) bin/lisaac.c -o bin/lisaac 
-	$(CC) $(CFLAGS) bin/shorter.c -o bin/shorter
+all: bin/lisaac bin/shorter
+
+bin/path.h:
+	@echo "#define LISAAC_DIRECTORY \"$(LIB)\"" > bin/path.h
+
+bin/lisaac: bin/lisaac.c bin/path.h
+	$(CC) $(CFLAGS) $< -o $@
+
+bin/shorter: bin/shorter.c bin/path.h
+	$(CC) $(CFLAGS) $< -o $@
 
 interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
@@ -75,29 +83,34 @@ interactive_userland: install_lisaac.c
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
 	@echo - please run ./install_lisaac to finish the installation
 
-install:
+install: bin/lisaac bin/shorter
 	mkdir -p $(DESTDIR)$(LIB) 
 	mkdir -p $(DESTDIR)$(BIN)
 	mkdir -p $(DESTDIR)$(MAN)
 	mkdir -p $(DESTDIR)$(DOC)$(HTML)
-	mkdir -p $(DESTDIR)$(DOC)$(EXAMPLE)
 	cp bin/lisaac  $(DESTDIR)$(BIN) 
 	cp bin/shorter  $(DESTDIR)$(BIN)
 	cp path.li  $(DESTDIR)$(LIB)
 	cp -rf lib/  $(DESTDIR)$(LIB)
 	cp -rf lib_os/  $(DESTDIR)$(LIB)
-	cp -rf example/* $(DESTDIR)$(DOC)$(EXAMPLE)
 	cp -rf shorter/  $(DESTDIR)$(LIB)
 	cp -rf manpage/*.gz  $(DESTDIR)$(MAN)
-	#$(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
+
+	# Temprary since shorter is broken
+	# $(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
+	#
+	# previous html documentation:
+	cp lib_html/* $(DESTDIR)$(DOC)$(HTML)
+
+uninstall:
+	-rm -rf $(DESTDIR)$(BIN)/lisaac
+	-rm -rf $(DESTDIR)$(BIN)/shorter
+	-rm -rf $(DESTDIR)$(LIB)
+	-rm -rf $(DESTDIR)$(DOC)
+	-rm -rf $(DESTDIR)$(MAN)/lisaac.1.gz
+	-rm -rf $(DESTDIR)$(MAN)/shorter.1.gz
 
 clean:
-	rm -rf bin/lisaac
-	rm -rf bin/shorter
-	rm -rf bin/path.h
-	rm -rf $(DESTDIR)$(BIN)/lisaac
-	rm -rf $(DESTDIR)$(BIN)/shorter
-	rm -rf $(DESTDIR)$(LIB)
-	rm -rf $(DESTDIR)$(DOC)
-	rm -rf $(DESTDIR)$(MAN)/lisaac.1.gz
-	rm -rf $(DESTDIR)$(MAN)/shorter.1.gz
+	-rm -f path.h bin/lisaac bin/shorter
+
+
