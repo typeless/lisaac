@@ -49,7 +49,7 @@ Status:
 | sum-file           | 0.304   | 0.464s  | C       |                |    YES      |
 | pidigits           | NC      | NC      | NC      | In progress    |             |
 | meteor-contest     | NC      | NC      | NC      | In progress    |             |
-| reverse-complement | NC      | NC      | NC      | BUG !!!        |             |
+| reverse-complement | 0.140s  | 0.128s  | Lisaac  |                |             |
 | mandelbrot         | 1.080s  | 1.000s  | Lisaac  | Warning option |             | 
 | regex-dna          | NC      | NC      | NC      | Library used   |             |
 | chameneos-redux    | NC      | NC      | NC      | Thread used    |             | 

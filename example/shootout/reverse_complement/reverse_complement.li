@@ -31,95 +31,37 @@ Section Inherit
   - parent_any:OBJECT := OBJECT;
 
 Section Public
-  
-  - buffer :NATIVE_ARRAY[CHARACTER];
-  - buffer_count:INTEGER;
+      
+  - iub_pairs:STRING_CONSTANT := "\0TVGH\0\00h\CD\0\0M\0KN\0\0\0YSAABW\0R";
     
-  - iub_pairs:STRING_CONSTANT := "ATCGBVDHKMRY";
-  
-  // 1+UCHAR_MAX -> 255+1
-  - iub_complement :NATIVE_ARRAY[CHARACTER] := NATIVE_ARRAY[CHARACTER].create 256; 
-    
-  - build_iub_complement <-
-  ( 
-    0.to 256 do { i:INTEGER;
-      iub_complement.put (i.to_character) to i;   
-    };
-    
-    (iub_pairs.lower).to (iub_pairs.upper) by 2 do { j:INTEGER;
-      iub_complement.put(iub_pairs.item (j+1)) to (iub_pairs.item  j   .to_integer); 
-      iub_complement.put(iub_pairs.item  j   ) to (iub_pairs.item (j+1).to_integer);
-      iub_complement.put(iub_pairs.item (j+1)) to (iub_pairs.item  j   .to_lower.to_integer); 
-      iub_complement.put(iub_pairs.item  j   ) to (iub_pairs.item (j+1).to_lower.to_integer);
-    };    
-  );
-
-  - in_place_reverse <-
-  ( + i,len:INTEGER;
-    + c:CHARACTER;    
-    
-    i := 0;
-    len := buffer_count - 1;    
-    
-    {i <= len}.while_do {
-      c := buffer.item i;
-      buffer.put (iub_complement.item((buffer.item len).to_integer)) to i;
-      buffer.put (iub_complement.item(c.to_integer)) to len;
-      i := i + 1;
-      len := len - 1;
-    };    
-  );
-  
-  - process <-
-  ( + c :CHARACTER;    
-    + len:INTEGER;
-    + s:NATIVE_ARRAY[CHARACTER];
-    
-    in_place_reverse;
-    
-    s := buffer;
-    len := buffer_count;
-        
-    {len > 60}.while_do {
-      c := s.item 60;
-      s.put '\0' to 60;
-      s.println;
-      s.put c to 60;
-      s := s + 60; 
-      len := len - 60;
-    };
-    
-    s.put '\0' to len;
-    s.println;    
-  );
-
   - main <-
-  ( + line:STRING;
-    + buf:NATIVE_ARRAY[CHARACTER];
-    + l:INTEGER;
+  ( + buf:STRING;
+    + size:INTEGER;
+    + i,j,end:INTEGER;
+    + tmp:CHARACTER;
    
-    buf := buffer := NATIVE_ARRAY[CHARACTER].create 16777216;
-            
-    build_iub_complement;
-              
-    IO.read_line;
-    line := IO.last_string;        
-    {`NULL != fgets(@buf,1023,stdin)`:BOOLEAN(TRUE,FALSE)}.while_do {      
-      (buf.item 0 = '>').if {		
-	(buffer_count > 0).if {
-	  process;	  
-	  buffer_count := 0;	  
-	};	
-	buf.put '>' to 0;
-	buf.println;		
-	buf := buffer;
-      } else {	
-	l := `strlen(@buf)`:INTEGER;
-	buffer_count := buffer_count + l;
-	buf := buf + l;
-      };      
+    buf := STRING.create 25416746;
+        
+    size := FS_MIN.read `stdin`:POINTER in buf size 25416745;
+    i := 1;
+    {i <= size}.while_do {
+      {buf.item i != '\n'}.while_do { i := i + 1; };
+      i := i + 1;
+      j := i;
+      {(buf.item j != '>') && {buf.item j != 0}}.while_do { j := j + 1; };
+      end := j;
+      j := j - 1;
+      {i < j}.while_do {
+        (buf.item i = '\n').if { i := i + 1; };
+        (buf.item j = '\n').if { j := j - 1; };
+        tmp := iub_pairs.item ((buf.item i.to_integer & 1Fh)+1);
+        buf.put (iub_pairs.item ((buf.item j.to_integer & 1Fh)+1)) to i;
+        buf.put tmp to j;
+        i := i + 1;
+        j := j - 1;
+      };
+      i := end;
     };
-    (buffer_count > 0).if {
-      process;
-    };        
+    buf.remove_last 1;
+    buf.println;        
   );
