@@ -1,8 +1,14 @@
+#lisaac mandelbrot2 -q -O
 lisaac mandelbrot -q -O
+#gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o mandelbrot2 mandelbrot2.c -lm
+gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o mandelbrot mandelbrot.c -lm
+
 gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o mandelbrot_c mandelbrot_c.c -lm
-# gcc -O3 -ffast-math -o mandelbrot_c mandelbrot_c.c -lm
+
 echo Lisaac: 
-time ./mandelbrot 3 > out_li.txt
+#time ./mandelbrot2 3000 > out_li2.txt
+time ./mandelbrot 3000 > out_li.txt
 echo C:
-time ./mandelbrot_c 3 > out_c.txt
+time ./mandelbrot_c 3000 > out_c.txt
 diff out_li.txt out_c.txt
+#diff out_li2.txt out_c.txt

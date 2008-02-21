@@ -25,13 +25,13 @@ Section Header
   - comment := "Mandelbrot set generation shootout benchmarck, based on the C version";
   
   - author := "Anthony Pajot <anthony.pajot@etu.enseeiht.fr>, Xavier Oswald <x.oswald@free.fr>";
-  
+    
 Section Inherit
   
   - parent_object : OBJECT := OBJECT;
   
 Section Public
-  
+   
   - main <-
   ( + w, h, bit_num:INTEGER;
     + iter:INTEGER;
@@ -68,15 +68,12 @@ Section Public
 	x2  := x + x;
 	cr  :=     x2.to_real_64 / w - 1.5;
 	cr2 := (x2+2).to_real_64 / w - 1.5;
-	
-	//"cr=".print; cr.print_format_c "%f"; ' '.print;
-	//cr2.print_format_c "%f"; '\n'.print;
-	//"ci=".print; ci.print_format_c "%f"; '\n'.print;
-	
-	i := 0;
+
+        i := 0;
+        byte_acc := byte_acc << 2;
 	{
-	  zi := `2.0`:REAL_64 * zr  * zi  + ci;
-	  zi2:= `2.0`:REAL_64 * zr2 * zi2 + ci;
+	  zi := zr  * zi  * 2.0 + ci;
+	  zi2:= zr2 * zi2 * 2.0 + ci;
 	  
 	  zr := tr  - ti  + cr;
 	  zr2:= tr2 - ti2 + cr2;
@@ -85,41 +82,33 @@ Section Public
 	  tr2:= zr2 * zr2;
 	  
 	  ti := zi  * zi;
-	  ti2:= zi2 * zi2;
-	  
-	  "tr=".print; tr.print_format_c "%f"; ' '.print;
-	  "tr2=".print; tr2.print_format_c "%f"; '\n'.print;
-	  //"ti=".print; ti.print_format_c "%f"; ' '.print;
-	  //"ti2=".print; ti2.print_format_c "%f"; '\n'.print;	  
-	  
-	  i  := i + 1;	  
+          ti2:= zi2 * zi2;
+
+          i  := i + 1;	  
+          
 	}.do_while {
 	  (i < iter) && {
 	    (tr + ti <= limit_sqr) || {tr2 + ti2 <= limit_sqr}
 	  }
 	};
-	"i=".print; i.print; '\n'.print;
 		
-	byte_acc := byte_acc << 2;
 	(tr + ti <= limit_sqr).if {
-	  byte_acc := byte_acc | 02h;
-	};
-	(tr2 + ti2 <= limit_sqr).if {
-	  byte_acc := byte_acc | 01h;
-	};
+          byte_acc := byte_acc | 02h;        
+        };
+        (tr2 + ti2 <= limit_sqr).if {
+          byte_acc := byte_acc | 01h;
+        };	
 	
 	bit_num := bit_num + 2;
 	(bit_num = 8).if {
-	  //byte_acc/*.to_character*/.print; ' '.print;
+	  byte_acc.to_character.print; 
 	  byte_acc := bit_num := 0;
-	} else { 
-	  (x = wm1).if {
-	    byte_acc := byte_acc << mod_w; 
-	    //byte_acc/*.to_character*/.print; ' '.print;
-	    byte_acc := bit_num := 0;
-	  };	
-	};
+	};        
       };
-      '\n'.print;
+      (bit_num != 0).if {
+        byte_acc := byte_acc << mod_w; 
+        byte_acc.to_character.print; 
+        byte_acc := bit_num := 0;
+      };
     };		    
   );
