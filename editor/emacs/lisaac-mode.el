@@ -65,10 +65,27 @@
   (setq li-point3 (point))
   (setq li-string (concat "....+[^a-z0-9_]" li-string2 "\\([ \t]*,[ \t]*[a-z0-9_]*\\)*[ \t]*:[^=]"))
 
-  (setq li-color font-lock-function-name-face)	
+  
   (if (re-search-backward "^  \\(+\\|-\\)" (point-min) t 1)
-      (if (re-search-forward li-string li-point3 t 1)
-	  (setq li-color 0)	  
+      (progn
+	(setq li-point4 (point))
+	(if (and (re-search-forward "<-\\|:=\\|?=\\|;" nil t 1)
+		 (< li-point2 (point)))
+	    (progn
+	      (goto-char li-point4)
+	      (if (re-search-forward li-string li-point3 t 1)
+		  (setq li-color 0)	  
+		(setq li-color li-face)
+		)	      
+	    )
+	  (progn
+	    (goto-char li-point4)
+	    (if (re-search-forward li-string li-point3 t 1)
+		(setq li-color 0)	  
+	      (setq li-color font-lock-function-name-face)	
+	      )
+	    )
+	  )
 	)
     )
 
@@ -156,8 +173,7 @@
     (modify-syntax-entry ?= "." st)
     (modify-syntax-entry ?/ "." st)
     (modify-syntax-entry ?> "." st)
-    (modify-syntax-entry ?\? "." st)
-    (modify-syntax-entry ?\\ "." st)
+    (modify-syntax-entry ?\? "." st)  
     (modify-syntax-entry ?* "." st)
     (modify-syntax-entry ?+ "." st)
     (modify-syntax-entry ?- "." st)
@@ -282,11 +298,16 @@
 (defvar li-point 0)
 (defvar li-point2 0)
 (defvar li-point3 0)
+(defvar li-point4 0)
 (defvar li-char ?b)
 
 (defvar li-indent 0)
 (defvar li-indent-2 0)
 (defvar li-indent-base 0)
+
+(require 'font-lock)
+(defvar li-face		'li-face
+  "Face to use for LaTeX major keywords.")
 
 (defun li-indent-previous ()
   "Indent with previous line."
@@ -520,9 +541,12 @@
   (make-local-variable 'font-lock-defaults)
 
   ; Creation new face.
-;  (make-face 'font-latex-math-face)
-;  (set-face-foreground 'li-string-face "yellow")
-;  (set-face-background 'li-string-face "black")
+  (make-face 'li-face)
+  (set-face-foreground 'li-face "blue")
+  ;(set-face-underline-p 'li-face t)
+  ;(set-face-italic-p 'li-face t)
+  (set-face-bold-p 'li-face t)
+  ;(set-face-background 'li-string-face "black")
 
   ;(setq font-lock-string-face '(li-font-lock-string))
   (setq font-lock-defaults '(li-font-lock-keywords))
