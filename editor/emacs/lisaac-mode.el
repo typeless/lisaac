@@ -51,101 +51,54 @@
 (defvar li-color 0)
 (defvar li-comment 0)
 (defvar li-string nil)
+(defvar li-string2 nil)
+
 
 (defvar li-test 0)
 
+
 (defun li-message ()
-  ""
+  ""  
   (setq li-point2 (point))
-  (setq li-string (match-string 0))  
-  (setq li-color font-lock-function-name-face)
-  (setq li-test 0)
-  (beginning-of-line)  
-  (if (looking-at (concat "  \\(\\+\\|-\\)[ \t\n]" li-string ))
-      (progn  
-	(setq li-color font-lock-builtin-face)	  
-	(setq li-test 1) ;; Stop	  
+  (setq li-string2 (match-string 0))
+  (end-of-line)
+  (setq li-point3 (point))
+  (setq li-string (concat "....+[^a-z0-9_]" li-string2 "\\([ \t]*,[ \t]*[a-z0-9_]*\\)*[ \t]*:[^=]"))
+
+  (setq li-color font-lock-function-name-face)	
+  (if (re-search-backward "^  \\(+\\|-\\)" (point-min) t 1)
+      (if (re-search-forward li-string li-point3 t 1)
+	  (setq li-color 0)	  
 	)
-    )  
-;  (if (= li-test 0) 
-;      (if (looking-at (concat "  \\(\\+\\|-\\).* " li-string "[ \t\n]*[^:]"))
-;	  (progn  
-;	    (setq li-color font-lock-builtin-face)	  
-;	    (setq li-test 1) ;; Stop	  
-;	    )
-;	)  
-;    )
-  (while (= li-test 0)
-    ;; Detect Begin file.
-    (beginning-of-line)
-    (if (= (point) (point-min))
-	(setq li-test 1) ;; Stop
-      )
-    ;; Detect local declaration.
-    (if (looking-at (concat ".....*[^a-z0-9_]" li-string "\\([ \t\n]*,[ \t\n]*[a-z0-9_]*\\)*[ \t\n]*:[ \t\n]*[A-Z_]+"))
-	(progn  
-	  (setq li-test 1) ;; Stop
-	  (setq li-color 0)
-	  )
-      )
-    ;; Detect begin Slot definition.
-    (if (looking-at "  \\(\\+\\|-\\).*")
-	(progn
-	  (setq li-test 1)
-	  )
-      ) ;; Stop
-    ;; Ligne suivante.
-    (if (= li-test 0)
-	(previous-line 1)
-      )
     )
+
+  ;(setq li-color (get-char-property (point) 'face))
+
   (goto-char li-point2)
   li-color
 )
 
 (defun li-declaration ()
-  ""
-  (setq li-color font-lock-variable-name-face)
+  ""  
   ;; Detect local declaration.
-  (if (looking-at "[ \t\n]*[a-z0-9_]*\\([ \t\n]*,[ \t\n]*[a-z0-9_]*\\)*[ \t\n]*:[ \t\n]*[A-Z_]")
+  (if (looking-at "[ \ta-z0-9_,]*:[^=]") 
       (setq li-color font-lock-warning-face)
+    (setq li-color font-lock-variable-name-face)
     )
   li-color
 )
 
 (defconst li-font-lock-keywords
   '(
-    ;; Quoted expression    
-    ("'.*'" 0 font-lock-constant-face nil)
-   
     ;; External expression
-    ;("`[^`\n]*`" 0 highlight nil)
-    ("`.*`" 0 highlight nil)
+    ("`[^`\n]*`" 0 highlight nil)
 
-    ;; Major keywords :
-    ("^Section.*$" 0 font-lock-keyword-face nil)
-    ("Right" 0 font-lock-keyword-face nil)
-    ("Left" 0 font-lock-keyword-face nil)
-    ("Expanded" 0 font-lock-keyword-face nil)
-    ("Strict" 0 font-lock-keyword-face nil)
-    ("Old" 0 font-lock-keyword-face nil)
-    ("Self" 0 font-lock-keyword-face nil)
-    ("Result" 0 font-lock-keyword-face nil)
-    ("Result_[1-9]" 0 font-lock-keyword-face nil)
-
-    ;; Number Hexa :
-    ("[0-9_]+[A-F][0-9A-F_]*h" 0 font-lock-keyword-face nil)
-    ("[0-9_]+\.[0-9]*E[+-]?[0-9]+" 0 font-lock-keyword-face nil)
-
-    ;; Prototype :
-    ("[A-Z][A-Z0-9_]*" 0 font-lock-type-face nil)
-    
-    ;; Identifier :
-    ("\\.[ \t\n]*[a-z][a-z0-9_]*" 0 font-lock-function-name-face nil)
-    ("[a-z][a-z0-9_]*" 0 (li-message) nil)
-
-    ;; Number :   
-    ("[0-9][0-9_]*" 0 font-lock-keyword-face nil)
+    ;; Quoted expression        
+    ("'[\\].[^'\n]*'" 0 font-lock-constant-face nil)  
+    ("'[^\\ '\n]'" 0 font-lock-constant-face nil)
+       
+    ;; quoted expr's in comments
+    ("`[^'\n]*'" 0 font-lock-builtin-face t)
 
     ;; Block :
     ("\{\\|\}" 0 font-lock-comment-face nil)
@@ -159,6 +112,26 @@
 
     ;; Operators :
     ("[!@#$%^&<|=~/>?\\*\\]+" 0 font-lock-variable-name-face nil)
+    
+    ;; Major keywords :
+    ("^Section.*$\\|Right\\|Left\\|Expanded\\|Strict\\|Old\\|Self\\|Result\\(_[1-9]\\)?" 
+     0 font-lock-keyword-face nil)
+ 
+    ;; Hexa-number :
+    ("[0-9]+[0-9A-F_]*h" 0 font-lock-keyword-face nil)
+
+    ;; Prototype :
+    ("[A-Z][A-Z0-9_]*" 0 font-lock-type-face nil)
+    
+    ;; Identifier :
+    ("\\.[ \t\n]*[a-z][a-z0-9_]*" 0 font-lock-function-name-face nil)
+    ("[a-z_]+[a-z0-9_]*" 0 (li-message) nil)
+
+    ;; Number :   
+    ("[0-9][0-9_]*[bodh]?" 0 font-lock-keyword-face nil)
+    ;("[0-9]+[0-9A-Fa-f_]*h" 0 font-lock-keyword-face nil)
+    ("[0-9_]+\.[0-9]*E[+-]?[0-9]+" 0 font-lock-keyword-face nil)
+    
     )
   "Additional expressions to highlight in Lisaac mode.")
 
@@ -167,29 +140,37 @@
 ;;
 (defvar li-mode-syntax-table 
   (let ((st (make-syntax-table)))
-   ; (modify-syntax-entry ?\$ "." st)
-   ; (modify-syntax-entry ?\/ "." st)
-   ; (modify-syntax-entry ?\\ "." st)
-   ; (modify-syntax-entry ?+  "." st)
-   ; (modify-syntax-entry ?-  "." st)
-   ; (modify-syntax-entry ?=  "." st)
-   ; (modify-syntax-entry ?%  "." st)
-   ; (modify-syntax-entry ?<  "." st)
-   ; (modify-syntax-entry ?>  "." st)
-   ; (modify-syntax-entry ?\& "." st)
-   ; (modify-syntax-entry ?\| "." st)
-    ;; quote is part of words
-   ; (modify-syntax-entry ?\' "w" st)
-    ;; underline is part of symbols
-   ; (modify-syntax-entry ?_  "_" st)
-    ;; * is second character of comment start,
-    ;; and first character of comment end
-    (modify-syntax-entry ?\* ". 23" st)
-    ;; / is first character of comment start
+    ;; Symbol 
+    (modify-syntax-entry ?0 "." st)
+    (modify-syntax-entry ?2 "." st)
+    (modify-syntax-entry ?1 "." st)
+    (modify-syntax-entry ?! "." st)
+    (modify-syntax-entry ?@ "." st)
+    (modify-syntax-entry ?# "." st)
+    (modify-syntax-entry ?$  "." st)
+    (modify-syntax-entry ?%  "." st)
+    (modify-syntax-entry ?^  "." st)
+    (modify-syntax-entry ?&  "." st)
+    (modify-syntax-entry ?<  "." st)
+    (modify-syntax-entry ?|  "." st)
+    (modify-syntax-entry ?= "." st)
+    (modify-syntax-entry ?/ "." st)
+    (modify-syntax-entry ?> "." st)
+    (modify-syntax-entry ?\? "." st)
+    (modify-syntax-entry ?\\ "." st)
+    (modify-syntax-entry ?* "." st)
+    (modify-syntax-entry ?+ "." st)
+    (modify-syntax-entry ?- "." st)
+    ;; String, character, external.
+;    (modify-syntax-entry ?\" "\"" st) 
+;    (modify-syntax-entry ?\' "\"" st)
+;    (modify-syntax-entry ?` "$$ " st)    
+    ;; Identifier
+    (modify-syntax-entry ?_  "w" st)
+    ;; Comment
+    (modify-syntax-entry ?\* ". 23" st)    
     (modify-syntax-entry ?/ ". 124b" st)    
     (modify-syntax-entry ?\n "> b" st)    
-
-    ;(modify-syntax-entry ?` "\"" st)    
     st)
   "Syntax table used while in Lisaac mode.")
 
@@ -300,6 +281,7 @@
 (defvar li-count-line 0)
 (defvar li-point 0)
 (defvar li-point2 0)
+(defvar li-point3 0)
 (defvar li-char ?b)
 
 (defvar li-indent 0)
@@ -503,7 +485,21 @@
 (defun lisaac-mode ()
   "Major mode for editing typical Lisaac code."
   (interactive)
-  
+
+; In LaTeX-mode we want this
+;  (add-hook 'LaTeX-mode-hook
+;            (function (lambda ()
+;                        (paren-toggle-matching-quoted-paren 1)
+;                        (paren-toggle-matching-paired-delimiter 1))))
+(autoload 'paren-toggle-matching-paired-delimiter "mic-paren" "" t)
+;(paren-toggle-matching-quoted-paren 1)
+;  (paren-toggle-matching-paired-delimiter 1)
+;(auto-overlay-load-definition
+;'latex
+;'(self ("\\$" (priority . 3) (face . (background-color . "green")))))
+(autoload 'latex-mode "Mode Latex" "jfh" t)
+;(require 'font-latex)
+
   ;; compatibility MS-DOS
   (replace-string "" "")
  ; (global-font-lock-mode t)
@@ -517,21 +513,20 @@
   (make-local-variable 'li-mode-syntax-table)
   (set-syntax-table li-mode-syntax-table)
 
- ; (set (make-local-variable 'comment-start) "(* ")
- ; (set (make-local-variable 'comment-end) " *)")
-
-  ;(make-local-variable 'comment-start-skip)
-  ;(setq comment-start-skip "(\\*+ *")
-
   (make-local-variable 'parse-sexp-ignore-comments)
   (setq parse-sexp-ignore-comments nil)
   
+  (make-local-variable 'font-lock-string-face)
   (make-local-variable 'font-lock-defaults)
 
-  (set-face-foreground 'font-lock-builtin-face "blue")
-  (set-face-bold-p 'font-lock-builtin-face t)
+  ; Creation new face.
+;  (make-face 'font-latex-math-face)
+;  (set-face-foreground 'li-string-face "yellow")
+;  (set-face-background 'li-string-face "black")
 
+  ;(setq font-lock-string-face '(li-font-lock-string))
   (setq font-lock-defaults '(li-font-lock-keywords))
+  
 
   ;; Ne pas remplacer les espaces par des tabulations
   (setq-default indent-tabs-mode nil)
