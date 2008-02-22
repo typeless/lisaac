@@ -55,7 +55,7 @@ Section Inherit
   
   - parent_any:OBJECT := OBJECT;
 
-Section Private
+Section Public
 
   - get_mask i_pos:UINTEGER_32 :UINTEGER_32 <- 1 << i_pos;
   

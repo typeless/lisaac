@@ -35,3 +35,17 @@ Section Public
   + m_vec:UINTEGER_32;
   + m_offset:INTEGER;  
   
+  - set_m_allowed n:UINTEGER_64 <- 
+  (
+    m_allowed := n;
+  );
+  
+  - set_m_vec n:UINTEGER_32 <- 
+  (
+    m_vec := n;
+  );
+  
+  - set_m_offset n:INTEGER <- 
+  (
+    m_offset := n;
+  );
