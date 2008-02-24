@@ -136,7 +136,7 @@ Section Public
     };
   );
   
-  - less_than (Soln & r) :BOOLEAN <-
+  - less_than r:SOLN :BOOLEAN <-
   ( + result,stop:BOOLEAN;
     + lval,rval,x,y:INTEGER;
     
@@ -166,7 +166,7 @@ Section Public
     result
   );
 
-  - spin (Soln & spun) <-
+  - spin spun:SOLN <-
   ( + flipped:INTEGER_8;
     
     set_cells;
