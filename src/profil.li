@@ -380,6 +380,7 @@ Section Public
       (result_list.lower).to (result_list.upper) do { j:INTEGER;
 	v := result_list.item j;
 	v.set_ensure_count (-1);
+	v.set_result TRUE;
 	genere v result TRUE in buffer;
 	buffer.add_last ',';
       };

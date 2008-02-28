@@ -37,6 +37,10 @@ Section Public
   //
   // Copy alias manager.
   //
+
+  + is_result :BOOLEAN := FALSE;
+
+  - set_result r:BOOLEAN <- is_result := r;
   
   - is_alias:BOOLEAN;
   
@@ -244,21 +248,30 @@ Section Public
   //
     
   - create p:POSITION name n:STRING_CONSTANT 
+  style c:CHARACTER type t:TYPE_FULL result r:BOOLEAN :SELF<-
+  ( + result:SELF;
+    result := clone;    
+    result.make p name n style c type t result r;
+    result
+  );
+    
+  - create p:POSITION name n:STRING_CONSTANT 
   style c:CHARACTER type t:TYPE_FULL :SELF<-
   ( + result:SELF;
     result := clone;    
-    result.make p name n style c type t;        
+    result.make p name n style c type t result FALSE;
     result
   );
   
   - make p:POSITION name n:STRING_CONSTANT 
-  style c:CHARACTER type t:TYPE_FULL <-
+  style c:CHARACTER type t:TYPE_FULL result r:BOOLEAN <-
   ( + tmp:TYPES_TMP;
     ? {p.code != 0};
     ? {t != NULL};
 
     position    := p;
     name        := n;
+    is_result   := r;
     intern_name := ALIAS_STR.get_intern n; 
     ((t.is_expanded) && {! t.is_expanded_c}).if {
       type := t + TYPE_FULL.expanded_ref_bit;

@@ -168,7 +168,15 @@ Section Public
   //
   // Variable product.
   //
-  
+
+  - new_local p:POSITION
+      name    n:STRING_CONSTANT
+      style   s:CHARACTER
+      result  r:BOOLEAN         :LOCAL <-
+  (
+    LOCAL.create p name n style s type Self result r
+  );
+
   - new_local p:POSITION name n:STRING_CONSTANT style s:CHARACTER :LOCAL <-
   (
     LOCAL.create p name n style s type Self

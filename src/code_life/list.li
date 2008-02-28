@@ -400,21 +400,23 @@ Section Private
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
 	loc := tab.item j;	
-	(((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
-	  // New line
-	  (t != NULL).if {
-	    buf.append ";\n";	  
-	  };
-	  cur := buf.count;
-	  t := loc.type;
-	  buf.append indent;
-	  t.genere_declaration buf;	      	  
-	  buf.add_last ' ';
-	} else {
-	  buf.add_last ',';
-	};
-	t.genere_star_declaration buf;	    	
-	buf.append (loc.intern_name);	
+        loc.is_result.if_false {
+          (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
+            // New line
+            (t != NULL).if {
+              buf.append ";\n";
+            };
+            cur := buf.count;
+            t := loc.type;
+            buf.append indent;
+            t.genere_declaration buf;
+            buf.add_last ' ';
+          } else {
+            buf.add_last ',';
+          };
+          t.genere_star_declaration buf;
+          buf.append (loc.intern_name);
+        };
       };
       buf.append ";\n";
       tab.clear;
