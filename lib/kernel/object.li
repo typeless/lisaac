@@ -131,6 +131,7 @@ Section Public
       };                                         
       //MEMORY.copy to_pointer to ptr size sz;
       result := CONVERT[POINTER,SELF].on ptr;            
+      //MEMORY.copy to_pointer to ptr size sz;
       copy_intern_in result;      
     };
     result

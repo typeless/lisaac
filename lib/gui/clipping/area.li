@@ -602,7 +602,8 @@ Section AREA
   //                       .
   //                     list_y
   
-  - stack_plan:FAST_ARRAY[PLAN]:=FAST_ARRAY[PLAN].create 16;
+  - stack_plan:FAST_ARRAY[PLAN]:= FAST_ARRAY[PLAN].create 16;
+  
   - last_clip :CLIP;
   - first_clip:CLIP;
   - top_clip  :CLIP;
@@ -868,9 +869,9 @@ Section AREA
 	  winp:=winp.prev;
 	};
 	win:=win.parent;
-      }.do_while {win!=NULL};
-      
+      }.do_while {win!=NULL};            
       stack_plan.force plan to 0;
+            
       first_clip:=NULL; // New clip
       
       elt_y:=list_y; // A Optimiser !

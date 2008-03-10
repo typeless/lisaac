@@ -36,15 +36,15 @@ Section Inherit
 
 Section Private
   
-  + buffer_event:FAST_ARRAY[EVENT_KEYBOARD]; 
+  - buffer_event:FAST_ARRAY[EVENT_KEYBOARD]; 
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
   - p_end:UINTEGER_8;  // Pointer on the buffer (end)
     
-  + bin_code:FAST_ARRAY[UINTEGER_8]; // Binary array of keys (102+7)/8
+  - bin_code:FAST_ARRAY[UINTEGER_8]; // Binary array of keys (102+7)/8
 
-  + cmd:UINTEGER_8;    // 0:CTRL 1:AltGr 2:Alt 3:Cmd 4:Shift 5:Cap 6:NumLock 7:Scrolllock
+  - cmd:UINTEGER_8;    // 0:CTRL 1:AltGr 2:Alt 3:Cmd 4:Shift 5:Cap 6:NumLock 7:Scrolllock
 
-  + ascii_code:UINTEGER_8; // For <Alt>+<NbAscII>
+  - ascii_code:UINTEGER_8; // For <Alt>+<NbAscII>
       
 Section Public
   

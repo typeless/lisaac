@@ -130,7 +130,7 @@ Section Public
     result
   );
   
-Section ENTRY
+Section Public
   
   - make e:ENTRY :BOOLEAN <-
   (

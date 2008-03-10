@@ -63,7 +63,7 @@ Section Public
   // Make array with range [0 .. `new_count' - 1].
   // When `new_count' = 0 the array is empty.
   ( + result:SELF;
-    
+        
     result := clone;        
     result.make new_count;
     result
@@ -124,7 +124,7 @@ Section Public
   ( 
     ( new_count.to_integer > capacity).if {
       // The new one is bigger:
-      storage := NATIVE_ARRAY[V].create new_count;
+      storage := NATIVE_ARRAY[V].create new_count;            
       capacity := new_count;
     }.elseif { (capacity > 0) && { upper >= 0}} then { 
       // The new one is smaller and just need to be cleared:

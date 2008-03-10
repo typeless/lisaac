@@ -325,6 +325,27 @@ Section Public
   [ ...
     +? {count <= other.count.min (Old count)}; 
   ];
+
+  - fast_intersection other:SELF <-
+  // Make the intersection of the `Current' set with `other'.
+  [ ...
+    -? {other != NULL}; 
+  ]
+  ( + i:INTEGER; 
+    + e:V;
+    
+    i := upper;
+    {i < lower}.until_do {
+      e := item i;
+      (! other.fast_has e).if {
+	fast_remove e;
+      };
+      i := i - 1;
+    };
+  )
+  [ ...
+    +? {count <= other.count.min (Old count)}; 
+  ];
   
   - '^' other:SELF :SELF <-
   // Return the intersection of the `Current' set with `other'.
@@ -434,6 +455,35 @@ Section Public
   )
   [ ...
     +? {Result = (Self ^ other).is_empty}; 
+  ];
+  
+  - fast_is_disjoint_from other:SELF :BOOLEAN <-
+  // Is the `Current' set disjoint from `other' ?
+  [ ...
+    -? {other != NULL}; 
+  ]
+  ( + i:INTEGER;
+    + result:BOOLEAN;
+    
+    (Self != other).if {
+      result := TRUE;
+      i := 1;
+      (count <= other.count).if {
+	{(! result) || {i > count}}.until_do {	 
+	  result := ! other.fast_has (item i);
+	  i := i + 1;
+	};
+      } else {
+	{(! result) || {i > other.count}}.until_do {
+	  result := ! fast_has (other.item i);
+	  i := i + 1;
+	};
+      };
+    };
+    result
+  )
+  [ ...
+   // +? {Result = (Self ^ other).is_empty}; 
   ];
   
   - '==' other:SELF :BOOLEAN <-

@@ -99,7 +99,7 @@ Section Public
   ( 
     capacity := n;
     upper    := n - 1;    
-    storage  := NATIVE_ARRAY[E].force_conversion offset;    
+    storage  := CONVERT[UINTEGER_32,NATIVE_ARRAY[E]].on offset;    
   );
   
   - pixel_geometry:E;
@@ -115,7 +115,7 @@ Section Public
   
   - put col:UINTEGER_32 from idx_begin:INTEGER to idx_end:INTEGER <-   
   (  
-    E.color col;    
+    E.make col;    
     idx_begin.to idx_end do { n:INTEGER;
       storage.put E to n;
     };

@@ -209,7 +209,7 @@ Section Public
     result
   );
   
-Section ENTRY  
+Section Public
   
   + child:ENTRY;
     
@@ -351,7 +351,7 @@ Section Public
     
     (alias.has p).if {      
       result := alias.at p;
-    } else {
+    } else {      
       new_entry := ENTRY.clone;
       new_entry.make_entry p.if {
 	alias.put new_entry to (new_entry.path);

@@ -138,21 +138,25 @@ Section Public
     
   - pixel_hard (x,y:INTEGER) color col:UINTEGER_32 <-
   ( 
-    image.item y.put col to x;    
+    //image.item y.put col to x;    
+    get_y_line y.put col to x;
   );
   
   - line_h_hard (x,y:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
   ( 
-    image.item y.put col from x to x1;
+    //image.item y.put col from x to x1;
+    get_y_line y.put col from x to x1;
   );
     
   - line_h_hard (x,y:INTEGER) until x1:INTEGER image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   (     
-    image.item y.put line offset ofs from x to x1;
+    //image.item y.put line offset ofs from x to x1;
+    get_y_line y.put line offset ofs from x to x1;
   );
   
   - get_pixel_hard (x,y:INTEGER) :PIXEL <-
   (
-    image.item y.item x
+    //image.item y.item x
+    get_y_line y.item x
   );
   

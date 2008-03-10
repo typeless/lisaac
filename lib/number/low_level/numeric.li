@@ -321,7 +321,7 @@ Section Public
   //
 
   - to_uinteger_8:UINTEGER_8     <- 
-  [ -? {bound_test (UINTEGER_8.minimum) to (UINTEGER_8.maximum)}; ]
+ // [ -? {bound_test (UINTEGER_8.minimum) to (UINTEGER_8.maximum)}; ]
   ( 
     to_raw_uinteger_8
   );

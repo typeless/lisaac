@@ -103,12 +103,13 @@ Section Inherit
   
 Section Public
   
+  - get_abstract_bitmap:ABSTRACT_BITMAP <- Self;
+  
   - get_y_line y:INTEGER :ABSTRACT_BMP_LINE <-
   (
     deferred;
     NULL
   );
-
   
   //
   // Data.

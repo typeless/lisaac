@@ -149,6 +149,22 @@ Section Public
   [
     +? {Result.is_not_null};    
   ];
+
+  - to_native_array:NATIVE_ARRAY[V] <-
+  // Gives C access into the internal `storage' of the ARRAY.
+  // Result is pointing the element at index `lower'.
+  //
+  // NOTE: do not free/realloc the Result. Resizing of the array
+  //       can makes this pointer invalid.
+  [
+    -? {! is_empty};
+  ]
+  ( 
+    storage
+  )
+  [
+    +? {Result.is_not_null};    
+  ];
   
 Section ARRAYED_COLLECTION
   
