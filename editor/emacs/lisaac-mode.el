@@ -692,6 +692,8 @@
  ; (global-font-lock-mode t)
   (global-set-key "\M-g" 'goto-line)
 
+  (global-font-lock-mode t)
+
   (kill-all-local-variables)
   (setq mode-name "Lisaac")
   (setq major-mode 'lisaac-mode)
