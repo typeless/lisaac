@@ -39,9 +39,9 @@ Section Public
   // Draw.
   //
   
-  - draw_stroke b:BITMAP scale s:REAL_16_16 <- deferred;
+  - draw_stroke b:ABSTRACT_BITMAP scale s:REAL_16_16 <- deferred;
 
-  - draw_fill b:BITMAP scale s:REAL_16_16 <- deferred;
+  - draw_fill b:ABSTRACT_BITMAP scale s:REAL_16_16 <- deferred;
   
   //
   // Display.

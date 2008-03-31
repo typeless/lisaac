@@ -68,7 +68,7 @@ Section Public
   // Draw
   //
 
-  - draw_stroke b:BITMAP scale s:REAL_16_16 <-
+  - draw_stroke b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
   ( + i_wx1,i_wy1,i_wx2,i_wy2,i_x,i_y:INTEGER;
     
     i_wx1 := (wx1 * s).rounded;
@@ -82,7 +82,7 @@ Section Public
     b.spline_w1 (i_wx1,i_wy1) w2 (i_wx2,i_wy2) to (i_x,i_y);
   ); 
 
-  - draw_fill b:BITMAP scale s:REAL_16_16 <-
+  - draw_fill b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
   ( + i_wx1,i_wy1,i_wx2,i_wy2,i_x,i_y:INTEGER;
     
     i_wx1 := (wx1 * s).rounded;

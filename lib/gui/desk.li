@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  + name    := INTERFACE;
+  + name    := DESK;
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -38,32 +38,79 @@ Section Inherit
         
 Section Public
   
-  - screen:AREA; // Physical screen.
+  - physical_screen:AREA; 
   
-  - make bmp:ABSTRACT_BITMAP size (w,h:INTEGER) with elt:G_EXPR <-
+  - virtual_screen:VIRTUAL_SCREEN;
+  
+  //   Video.width
+  // +----------+
+  // | Physical |
+  // |  Screen  | Video.height
+  // +----------+
+  //   /      \
+  // |\     +----------+
+  //  L     |   Desk   |
+  // Mouse  |          |
+  //        +----------+
+  //             |
+  //             |  Video.width * w
+  //        +-----------------------+
+  //        |   Virtual Screen      | Video.height * h
+  //        |                       |
+  //        +-----------------------+
+  
+  - make bmp:ABSTRACT_BITMAP with elt:G_EXPR <-
   (
+    make bmp scale (1,1) with elt;
+  );
+    
+  - make bmp:ABSTRACT_BITMAP scale (w,h:INTEGER) with elt:G_EXPR <-
+  [
+    -? {w > 0};
+    -? {h > 0};
+  ]
+  ( + msg:EVENT;    
+    + input:INPUT;
+
     set_video_support bmp;
-    screen := AREA.clone;
-    screen.make NULL from (0,0) size (bmp.width,bmp.height);    
-    make screen from (0,0) size (w,h);
-    EVENT_SYSTEM.make;
-    focus := Self;
+    physical_screen := AREA.clone;
+    physical_screen.make NULL from (0,0) size (bmp.width,bmp.height);    
+    //
     root := elt;
     //
+    EVENT_SYSTEM.make;
+    focus := Self;    
+    //    
+    set_position physical_screen at (0,0) 
+    size (physical_screen.width,physical_screen.height);
+    
+    virtual_screen := VIRTUAL_SCREEN.create Self scale (w,h);
     connect_to MOUSE;
     connect_to KEYBOARD;
     connect_to TIMER;
+    {
+      EVENT_SYSTEM.get_event;
+      
+      {storage_message.is_empty}.until_do {
+	msg := storage_message.first;
+	storage_message.remove_first;
+	msg.set_destination focus;
+	focus.receive msg;	
+	input ?= msg.source;
+	input.acknowledge;
+      };      
+    }.do_while {`1`:BOOLEAN(TRUE,FALSE)}; // Infinity Loop     
   );
   
   //
   // Display.
   //
-  
+
   - draw_slave bmp:ABSTRACT_BITMAP from (x0,y0:INTEGER) to (x1,y1:INTEGER) <-
   (     
     bmp.rectangle_fill (x0,y0) to (x1,y1) color color_back; 
   );
-     
+
   //
   // Connect.
   //    
@@ -84,29 +131,9 @@ Section Public
   - resize_window (w,h:INTEGER) <-
   (    
     VIDEO.resize (w,h);
-    screen.resize (w,h);
-    resize (w,h);
-    root.set_position Self at (0,0) size (w,h);    
-  );
-  
-  - run <-
-  ( + msg:EVENT;    
-    + input:INPUT;
-    
-    root.set_position Self at (0,0) size (width,height);
-    {
-      EVENT_SYSTEM.get_event;
-      
-      {storage_message.is_empty}.until_do {
-	msg := storage_message.first;
-	storage_message.remove_first;
-	msg.set_destination focus;
-	focus.receive msg;	
-	input ?= msg.source;
-	input.acknowledge;
-      };      
-    }.do_while {`1`:BOOLEAN(TRUE,FALSE)}; // Infinity Loop 
-    
+    physical_screen.resize (w,h);        
+    virtual_screen.update_size;
+    set_position physical_screen at (0,0) size (w,h);
   );
   
   //
@@ -129,10 +156,10 @@ Section Public
       // Other message.
       mouse ?= msg;
       (mouse != NULL).if {
-	win := get_object ((mouse.x_current),(mouse.y_current));
-	(win != focus).if {
+	win := get_object (mouse.x_current,mouse.y_current);
+	((win != focus) && {win != NULL}).if {
 	  focus := win;
-	  msg.set_destination focus;
+          msg.set_destination focus;
 	  focus.receive msg;		  
 	};
       };

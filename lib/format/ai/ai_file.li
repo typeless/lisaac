@@ -37,7 +37,7 @@ Section Public
 
   + height:INTEGER;
 
-  - fill_bitmap b:BITMAP scale s:REAL_16_16 <-
+  - fill_bitmap b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
   ( + tmp_buf:FAST_ARRAY[CHARACTER];
     + ai_parser:AI_PARSER;
     

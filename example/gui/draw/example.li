@@ -240,7 +240,7 @@ Section Public
     ).fix_width.fix_height;
 
     // Screen definition.
-    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (             
+    DESK.make VIDEO with (             
       menu_bar / (tools_bar | G_PAGE.create) 
     );
     
@@ -253,6 +253,4 @@ Section Public
     // | l |                 |
     // | s |                 |
     // +---+-----------------+
-            
-    INTERFACE.run;    
   );

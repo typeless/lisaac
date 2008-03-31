@@ -20,77 +20,79 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  + name    := AI_LAYER;
+  + name    := VIRTUAL_SCREEN;
 
+  - copyright   := "2003-2008 Benoit Sonntag";
+    
+  - bibliography:="http://IsaacOS.com";
+  - author      :="Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     :="Virtual screen.";
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
-  - comment := "Layer of a AI document.";
-
-  - version := 1;    
+  - version := 1;  
   
 Section Inherit  
   
-  - parent_object:OBJECT := OBJECT;
-  
+  + parent_area:Expanded AREA;
+        
 Section Public
   
-  + color:AI_COLOR;
+  + scale_width:INTEGER;
+  + scale_height:INTEGER;
   
-  + operation:LINKED_LIST[AI_OPERATION];
+  + desk:DESK;
   
-  + is_fill:BOOLEAN;
-  
-  + is_stroke:BOOLEAN;
-      
-  //
-  // Creation.
-  //
-  
-  - create lst_op:LINKED_LIST[AI_OPERATION] color col:AI_COLOR fill f:BOOLEAN stroke s:BOOLEAN :SELF <-
+  - create d:DESK scale (w,h:INTEGER) :SELF <-
   ( + result:SELF;
+    
     result := clone;
-    result.make lst_op color col fill f stroke s;
+    result.make d scale (w,h);
+    result    
+  );
+    
+  - make d:DESK scale (w,h:INTEGER) <-
+  ( 
+    desk := d;
+    scale_width  := w;
+    scale_height := h;
+    make d from (0,0) size (d.width*w,d.height*h);
+  );
+  
+  //
+  // Display.
+  //
+
+  - slave_pixel_hard (x,y:INTEGER) color col:UINTEGER_32 <- 
+  ( 
+    pixel_hard (x,y) color col;
+  );
+  
+  - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER color col:UINTEGER_32 <- 
+  ( 
+    line_h_hard (x1,y) until x2 color col;
+  );  
+  
+  - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER 
+  image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
+  ( 
+    line_h_hard (x1,y) until x2 image line offset ofs;
+  );
+  
+  - get_object (x,y:INTEGER) :AREA <-
+  ( + result:AREA;
+    result := parent_area.get_object (x,y);
+    (result = Self).if {
+      result := NULL;
+    };
     result
   );
   
-  - make lst_op:LINKED_LIST[AI_OPERATION] color col:AI_COLOR fill f:BOOLEAN stroke s:BOOLEAN <-
-  (
-    color     := col;
-    operation := lst_op;
-    is_stroke := s;
-    is_fill   := f;
+  //
+  // Resize
+  //    
+  
+  - update_size <-
+  (    
+    resize (scale_width * desk.width,scale_height * desk.height);
   );
   
-  //
-  // Draw
-  //
   
-  - draw b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
-  (
-    ? { color != NULL};
-    ? { operation !=  NULL};
-    
-    /*
-    (operation.lower).to (operation.upper) do { i:INTEGER;      
-      operation.item i.display; 
-    };
-    */
-
-    is_fill.if {      
-      b.color (color.rgbcolor_fill);
-      (operation.lower).to (operation.upper) do { i:INTEGER;
-	operation.item i.draw_fill b scale s;
-      };
-      b.poly_trace;
-    };
-    is_stroke.if {
-      b.color (color.rgbcolor_stroke);
-      (operation.lower).to (operation.upper) do { i:INTEGER;
-	operation.item i.draw_stroke b scale s;
-      };
-    };
-
-  );
-  
-

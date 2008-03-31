@@ -196,7 +196,7 @@ Section Public
 	  // Out.	  
 	  ((stat & 10b) = 0).if {
 	    stat := 0;	  
-	    INTERFACE.receive msg;
+	    DESK.receive msg;
 	  };
 	};
 	refresh;	

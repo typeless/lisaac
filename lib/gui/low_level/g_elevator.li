@@ -196,7 +196,7 @@ Section Public
     
     mouse ?= msg;
     (mouse != NULL).if {
-      win := INTERFACE.get_object ((mouse.x_current),(mouse.y_current));
+      win := DESK.get_object ((mouse.x_current),(mouse.y_current));
       (is_vertical).if {
 	mouse_d := mouse.dy;
 	mouse_p := mouse.y_current - y_window;
@@ -208,7 +208,7 @@ Section Public
 	// No press.
 	(win != Self).if {
 	  new_stat := 0;	  	  
-	  INTERFACE.receive msg;	  
+	  DESK.receive msg;	  
 	} else {	  
 	  (mouse.left).if {	     
 	    py1 := cursor_begin;
@@ -234,7 +234,7 @@ Section Public
 	} else {
 	  (win != Self).if {
 	    new_stat := 0;
-	    INTERFACE.receive msg;
+	    DESK.receive msg;
 	  };
 	};
       };

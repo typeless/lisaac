@@ -79,6 +79,7 @@ Section Common
   
   + lib    := lisaac + "lib/";
   + lib_os := lisaac + "lib_os/";
+  + libs   := lisaac + "../libs/";
   
   + unix    := lib_os + "unix/";
   + windows := lib_os + "windows/";
@@ -108,6 +109,29 @@ Section Common
   - lib + "string/";
   - lib + "system/";
   - lib + "time/";
+    
+  - libs + "math/";
+  - libs + "opengl-binding/";
+  
+  - libs + "opengl-binding/opengl/";
+  - libs + "opengl-binding/image_format/";
+  
+  - libs + "opengl-binding/gfx_engine/";
+  - libs + "opengl-binding/gfx_engine/model_format";
+  - libs + "opengl-binding/gfx_engine/low_level/";
+  
+  //
+  //
+  //
+  
+  + application := lisaac + "example/";
+
+  - application + "su_doku/";
+  - application + "tetris/";
+  - application + "fouronline/";
+  - application + "gui/calculator/";
+  - application + "gui/viewer/";
+  - application + "gui/about/";
   
 Section UNIX, DOS, COMPILER, SHORTER
 
@@ -120,15 +144,14 @@ Section UNIX
   
   - unix   + "video/";
   
-  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -o " + 
+  - libs   + "opengl-binding/unix/";
+  
+  * "gcc " + input_file + " -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
     output_file + " -L" + path_lib_x11 + option_gcc;
 
-//  * "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
-//  output_file + " " + input_file + " -lm";
-  
-  //* "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
-  //"mandelbrot_c mandelbrot_c.c -lm";
-  
+//  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
+//    output_file + " -L" + path_lib_x11 + option_gcc;
+
 Section WINDOWS
   
   - unix   + "system/";
@@ -155,7 +178,8 @@ Section X86, IPAQ, ST2XX, LINUX
   
   + isaac := "/home/sonntag/svn/isaacos/trunk/isaacos/";  
   + isaac_stdlib   := isaac + "stdlib/";
-  + isaac_software := isaac + "software/";
+  
+  //+ isaac_software := isaac + "software/";
   
   - isaac + "interface/";
   
@@ -186,17 +210,17 @@ Section X86, IPAQ, ST2XX, LINUX
   //
   // Software
   //
+    
+//  - isaac_software + "about/";
   
-  - isaac_software + "about/";
+//  - isaac_software + "console/";
   
-  - isaac_software + "console/";
+//  - isaac_software + "game/fouronline";
+//  - isaac_software + "game/tetris";
   
-  - isaac_software + "game/fouronline";
-  - isaac_software + "game/tetris";
+//  - isaac_software + "panel";
   
-  - isaac_software + "panel";
-  
-  - isaac_software + "viewer";
+//  - isaac_software + "viewer";
   
 Section X86  
   

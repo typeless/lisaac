@@ -1243,7 +1243,7 @@ Section Public
     
     x0 := spot_x;
     y0 := spot_y;
-        
+    
     d_x := px0 - x0;
     d_y := py0 - y0;
     num_points := (d_x*d_x + d_y*d_y).sqrt;  
@@ -1257,14 +1257,8 @@ Section Public
     num_points := (num_points + (d_x*d_x + d_y*d_y).sqrt).sqrt;
     num_points := num_points + (num_points >> 2); // * 1.25 .sqrt
     
-    (num_points > 128).if {
-      num_points := 128; // Max points
-    };
+    num_points := num_points.min 128.max 2;
     
-    (num_points < 2).if {
-      num_points := 2;   // Min points
-    };
-
     dt := 1.to_real_16_16 /# (num_points - 1);
     dt2 := dt * dt;
     dt3 := dt2 * dt;
@@ -1297,7 +1291,7 @@ Section Public
       ddy := ddy + dddy;
       dy  := dy + ddy;
       y   := y + dy;
-      poly_line_to ((x.to_integer),(y.to_integer)); 
+      poly_line_to (x.to_integer,y.to_integer); 
     };    
   );
   
@@ -1309,11 +1303,12 @@ Section Public
     y1 := y + ray_y;
     dx := (ray_x * 5) / 9;
     dy := (ray_y * 5) / 9;
+    
     poly_move_to (x,y0);    
-    poly_spline_w1 ((x+dx),y0) w2 (x1,(y-dy)) to (x1,y) ;
-    poly_spline_w1 (x1,(y+dy)) w2 ((x+dx),y1) to (x ,y1);
-    poly_spline_w1 ((x-dx),y1) w2 (x0,(y+dy)) to (x0,y) ;
-    poly_spline_w1 (x0,(y-dy)) w2 ((x-dx),y0) to (x ,y0);    
+    poly_spline_w1 (x+dx,y0) w2 (x1,y-dy) to (x1,y) ;
+    poly_spline_w1 (x1,y+dy) w2 (x+dx,y1) to (x ,y1);
+    poly_spline_w1 (x-dx,y1) w2 (x0,y+dy) to (x0,y) ;
+    poly_spline_w1 (x0,y-dy) w2 (x-dx,y0) to (x ,y0);     
   );
   
   - poly_trace <-
@@ -1323,109 +1318,110 @@ Section Public
     + idx_y:INTEGER;
     + trace:INTEGER;
     + line :INTEGER;    
-    ? {edges_upper != 0};
     
-    (poly_ymax >= clip_y0).if {
-      // Connexion with first point.    
-      connect_first;
+    (edges_upper != 0).if {
+      (poly_ymax >= clip_y0).if {
+        // Connexion with first point.    
+        connect_first;
+        
+        // Optimize clip_y0
+        (poly_list_y.upper).downto 0 do { j:INTEGER;
+          edge := poly_list_y.item j;
+          {(edge != NULL) && {edge.y1 < clip_y0}}.while_do {
+            edge := edge.next_y;
+          };
+          (edge = NULL).if {
+            poly_list_y.remove j;	  
+          } else {
+            poly_list_y.put edge to j;	  
+          };
+        };
+        
+        // Sort on Y.    
+        sort_list_y;
+        
+        poly_ymax := poly_ymax.min clip_y1;
+        line := 1;
+        // for each scanline in the polygon.
+        (poly_list_y.first.y0).to poly_ymax do { y:INTEGER;
+          // Active edges.
+          {(idx_y <= poly_list_y.upper) && {poly_list_y.item idx_y.y0 = y}}.while_do {
+            x_edges := poly_list_y.item idx_y.add x_edges;
+            idx_y   := idx_y + 1;
+          };
+          
+          // Draw horizontal line. 
+          x1:=INTEGER.minimum.to_integer;
+          edge:=x_edges;
+          {edge!=NULL}.while_do {
+            next_edge:=edge.next_x;	
+            // Trace.
+            (y >= clip_y0).if { 
+              
+              (trace = 0).if {
+                // Begin point.    
+                new_x := (edge.x+127)>>8;
+                ((new_x != x1) && {new_x != (x1 + 1)}).if {
+                  ((x0 <= clip_x1) && {x1 >= clip_x0}).if { 
+                    x0:=x0.max clip_x0;
+                    x1:=x1.min clip_x1;
+                    line_h_hard (x0,y) until x1 color rgbcolor; 
+                  };  
+                  x0 := new_x;
+                };
+              };
+              
+              (edge.is_point).if {
+                trace := trace + edge.dx; 
+              } else {
+                trace := trace + line;
+                line  := - line;
+              };
+              
+              (trace = 0).if {
+                // End point.
+                x1 := (edge.x+128)>>8;	    
+              };	  
+            };
             
-      // Optimize clip_y0
-      (poly_list_y.upper).downto 0 do { j:INTEGER;
-	edge := poly_list_y.item j;
-	{(edge != NULL) && {edge.y1 < clip_y0}}.while_do {
-	  edge := edge.next_y;
-	};
-	(edge = NULL).if {
-	  poly_list_y.remove j;	  
-	} else {
-	  poly_list_y.put edge to j;	  
-	};
-      };
-
-      // Sort on Y.    
-      sort_list_y;
-
-      poly_ymax := poly_ymax.min clip_y1;
-      line := 1;
-      // for each scanline in the polygon.
-      (poly_list_y.first.y0).to poly_ymax do { y:INTEGER;
-	// Active edges.
-	{(idx_y <= poly_list_y.upper) && {poly_list_y.item idx_y.y0 = y}}.while_do {
-	  x_edges := poly_list_y.item idx_y.add x_edges;
-	  idx_y   := idx_y + 1;
-	};
-	
-	// Draw horizontal line. 
-	x1:=INTEGER.minimum.to_integer;
-	edge:=x_edges;
-	{edge!=NULL}.while_do {
-	  next_edge:=edge.next_x;	
-	  // Trace.
-	  (y >= clip_y0).if { 
-	    
-	    (trace = 0).if {
-	      // Begin point.    
-	      new_x := (edge.x+127)>>8;
-	      ((new_x != x1) && {new_x != (x1 + 1)}).if {
-		((x0 <= clip_x1) && {x1 >= clip_x0}).if { 
-		  x0:=x0.max clip_x0;
-		  x1:=x1.min clip_x1;
-		  line_h_hard (x0,y) until x1 color rgbcolor; 
-		};  
-		x0 := new_x;
-	      };
-	    };
-	    
-	    (edge.is_point).if {
-	      trace := trace + edge.dx; 
-	    } else {
-	      trace := trace + line;
-	      line  := - line;
-	    };
-	    
-	    (trace = 0).if {
-	      // End point.
-	      x1 := (edge.x+128)>>8;	    
-	    };	  
-	  };
-	  
-	  // Inc edges.	  
-	  (edge.width!=0).if { 	    
-	    edge.new_step;
-	    
-	    // Sort with X :
-	    edgep:=edge.prev_x;
-	    {(edgep!=NULL) && {edge.x<edgep.x}}.while_do {
-	      edgep:=edgep.prev_x;
-	    };
-	    (edgep!=edge.prev_x).if {
-	      edge.prev_x.set_next_x (edge.next_x);
-	      (edge.next_x!=NULL).if {
-		edge.next_x.set_prev_x (edge.prev_x);
-	      };
-	      edge.set_prev_x edgep;
-	      (edgep!=NULL).if {
-		edge.set_next_x (edgep.next_x);
-		edgep.set_next_x edge;
-	      } else {
-		edge.set_next_x x_edges;
-		x_edges:=edge;
-	      };
-	      (edge.next_x!=NULL).if {
-		edge.next_x.set_prev_x edge;
-	      };
-	    };
-	  } else {
-	    // Next line.
-	    x_edges:=edge.next_line x_edges; 
-	  };
-	  edge := next_edge;
-	};
-	((x0 <= clip_x1) && {x1 >= clip_x0}).if { 
-	  x0:=x0.max clip_x0;
-	  x1:=x1.min clip_x1;
-	  line_h_hard (x0,y) until x1 color rgbcolor; 
-	};
+            // Inc edges.	  
+            (edge.width!=0).if { 	    
+              edge.new_step;
+              
+              // Sort with X :
+              edgep:=edge.prev_x;
+              {(edgep!=NULL) && {edge.x<edgep.x}}.while_do {
+                edgep:=edgep.prev_x;
+              };
+              (edgep!=edge.prev_x).if {
+                edge.prev_x.set_next_x (edge.next_x);
+                (edge.next_x!=NULL).if {
+                  edge.next_x.set_prev_x (edge.prev_x);
+                };
+                edge.set_prev_x edgep;
+                (edgep!=NULL).if {
+                  edge.set_next_x (edgep.next_x);
+                  edgep.set_next_x edge;
+                } else {
+                  edge.set_next_x x_edges;
+                  x_edges:=edge;
+                };
+                (edge.next_x!=NULL).if {
+                  edge.next_x.set_prev_x edge;
+                };
+              };
+            } else {
+              // Next line.
+              x_edges:=edge.next_line x_edges; 
+            };
+            edge := next_edge;
+          };
+          ((x0 <= clip_x1) && {x1 >= clip_x0}).if { 
+            x0:=x0.max clip_x0;
+            x1:=x1.min clip_x1;
+            line_h_hard (x0,y) until x1 color rgbcolor; 
+          };
+        };
       };
     };
     // Init structure for next.

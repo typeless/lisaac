@@ -38,15 +38,15 @@ Section Private
   - gray_to_rgb g:REAL_16_16 :UINTEGER_32 <-
   ( + tmp:UINTEGER_32;
     
-    tmp := (g *# 255).to_uinteger;
+    tmp := (g *# 255).to_integer;
     (tmp << 16) | (tmp << 8) | tmp
   );
   
   - cmyk_to_rgb (c,m,y,k:REAL_16_16) :UINTEGER_32 <-
   ( + r,g,b:UINTEGER_32;
-    r   := ((- (c + k).min 1 + 1) *# 255).to_uinteger;
-    g   := ((- (m + k).min 1 + 1) *# 255).to_uinteger;
-    b   := ((- (y + k).min 1 + 1) *# 255).to_uinteger;           
+    r   := ((- (c + k).min 1 + 1).max 0 *# 255).to_integer;
+    g   := ((- (m + k).min 1 + 1).max 0 *# 255).to_integer;
+    b   := ((- (y + k).min 1 + 1).max 0 *# 255).to_integer;           
     (r << 16) | (g << 8) | b
   );
   

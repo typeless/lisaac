@@ -225,7 +225,7 @@ Section Public
 	  // Out.	  
 	  ((stat & 10b) = 0).if {
 	    stat := stat & 100b;	  
-	    INTERFACE.receive msg;
+	    DESK.receive msg;
 	  };
 	};
 	refresh;	

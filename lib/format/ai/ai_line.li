@@ -59,12 +59,12 @@ Section Public
   // Draw.
   //
   
-  - draw_stroke b:BITMAP scale s:REAL_16_16 <-
+  - draw_stroke b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
   (
     b.line_to (((x * s).rounded),((y * s).rounded));
   );
 
-  - draw_fill b:BITMAP scale s:REAL_16_16 <-
+  - draw_fill b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
   (
     b.poly_line_to (((x * s).rounded),((y * s).rounded));
   );

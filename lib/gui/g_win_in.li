@@ -142,9 +142,9 @@ Section Public
         
     mouse ?= msg;
     (mouse != NULL).if {                  
-      win := INTERFACE.get_object (mouse.x_current,mouse.y_current);
+      win := DESK.get_object (mouse.x_current,mouse.y_current);
       (win != Self).if {
-	INTERFACE.receive msg;	
+	DESK.receive msg;	
       };
     };    
   );

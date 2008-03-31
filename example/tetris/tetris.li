@@ -190,11 +190,8 @@ Section Public
   // Creation.
   //  
   
-  - main <-
-  (     
-    // Init window.
-    VIDEO.make (640,400);
-        
+  - init <-
+  (
     // Initialization.
     face  :=FAST_ARRAY3[INTEGER]  .create (4,4,2);
     screen:=FAST_ARRAY2[UINTEGER_8].create (10,22);
@@ -202,15 +199,27 @@ Section Public
     level := 1;
     stat  := 2;
     random := 015AAC005h;
-    
+  );
+  
+  - run:G_WIN_OUT <-
+  ( 
+    init;
+    G_WIN_OUT.create "Tetris" with Self
+  );
+  
+  - main <-
+  (     
+    // Init window.
+    VIDEO.make (640,400);
+        
+    init;
     // Screen definition.
-    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
+    DESK.make VIDEO with (
       G_OUT.create "Tetris" justify (G_OUT.center) /
       G_RAW.create (
         Self.fix_height.fix_width 
       )
     );    
-    INTERFACE.run; 
   );
   
   //
@@ -393,7 +402,7 @@ Section Public
   - mouse_event evt:EVENT_MOUSE <-
   ( + win:AREA;
     
-    win := INTERFACE.get_object (evt.x_current,evt.y_current);
+    win := DESK.get_object (evt.x_current,evt.y_current);
     (win != Self).if {
       // Pause.
       (stat < 2).if {
@@ -401,7 +410,7 @@ Section Public
         stat := 3;	
         refresh;
       };
-      INTERFACE.receive evt;
+      DESK.receive evt;
     } else {
       (evt.left_down).if {
         (stat = 2).if {

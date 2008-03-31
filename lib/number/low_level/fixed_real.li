@@ -95,6 +95,11 @@ Section Public
     floor.to_raw_integer_64
   );
   
+  - to_integer:INTEGER <-
+  (
+    floor
+  );
+  
   //
   // - To unsigned fixed reals
   //
@@ -184,7 +189,16 @@ Section Public
 
   - atan:SELF <- not_yet_implemented;
 
-  - sqrt:SELF <- not_yet_implemented;
+  - sqrt:SELF <-   
+  // The Heron approximation Algorithm.
+  [ -? {Self > 0}; ]
+  ( + result:SELF;
+    result := Self;
+    0.to 7 do { j:INTEGER;    
+      result := (result + Self / result) /# 2;
+    };
+    result
+  );
 
   - log:SELF  <- not_yet_implemented;
 

@@ -1680,12 +1680,12 @@ Section Public
     string_tmp := STRING.create 250;
     list_layer := LINKED_LIST[AI_LAYER].create;
     current_color := AI_COLOR.clone;
-    current_list  := LINKED_LIST[AI_OPERATION];
+    current_list  := LINKED_LIST[AI_OPERATION].create;
     trace := FALSE;
     read_document;    
   );
   
-  - draw b:BITMAP scale coef:REAL_16_16 <-
+  - draw b:ABSTRACT_BITMAP scale coef:REAL_16_16 <-
   ( + s:REAL_16_16;
     ? {list_layer != NULL};
     ? {b != NULL};
@@ -1695,7 +1695,7 @@ Section Public
     // BSBS: Avec b.make tu reallou de la mémoire, c'est à revoir ...
     ((width != b.width) || {height != b.height}).if {
       b.make (width,height);
-      b.rectangle_fill (0,0) to ((width -1),(height - 1)) color (b.gray);
+      b.rectangle_fill (0,0) to ((width -1),(height - 1)) color 083AAD3h;
     };    
     (s <= 0).if {
       s := 1;

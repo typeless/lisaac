@@ -103,6 +103,6 @@ Section Public
   - delete <-
   (
     parent_area.delete;
-    INTERFACE.set_focus INTERFACE;
+    DESK.set_focus DESK;
   );
   

@@ -44,6 +44,7 @@ Section Public
   
   - open_by src:G_GROUP <-
   ( + px,py,w,h:INTEGER;
+    + p:AREA;
     
     (stat = 0).if {	
       ((title = NULL) && {src != NULL}).if {	
@@ -52,27 +53,38 @@ Section Public
 	(src.is_horizontal).if {
 	  px := src.x_window;
 	  py := src.y_window + src.height;
-	  ((px + w) > INTERFACE.x_max).if {
-	    px := INTERFACE.x_max - w;
+	  ((px + w) > DESK.x_max).if {
+	    px := DESK.x_max - w;
 	  };
-	  ((py + h) > INTERFACE.y_max).if {
+	  ((py + h) > DESK.y_max).if {
 	    py := src.y_window - h;
 	  };
 	} else {
 	  px := src.x_window + src.width;
 	  py := src.y_window;
-	  ((px + w) > INTERFACE.x_max).if {
+	  ((px + w) > DESK.x_max).if {
 	    px := src.x_window - w;
 	  };
-	  ((py + h) > INTERFACE.y_max).if {
-	    py := INTERFACE.y_max - h;
+	  ((py + h) > DESK.y_max).if {
+	    py := DESK.y_max - h;
 	  };
-	};	  	  
+        };	  	  
+        p := src.parent;
+        {(p != NULL) && {p != DESK.virtual_screen}}.while_do {
+          p := p.parent;
+        };
+        (p = NULL).if {
+          set_position DESK at (px,py);
+        } else {
+          set_position (DESK.virtual_screen) at 
+          (px-DESK.virtual_screen.x_window,py-DESK.virtual_screen.y_window);
+        };
       } else {
-	px := (INTERFACE.width  - width_min ) / 2;
-	py := (INTERFACE.height - height_min) / 2;
-      };
-      set_position INTERFACE at (px,py);
+	px := (DESK.width  - width_min ) / 2;
+        py := (DESK.height - height_min) / 2;
+        set_position (DESK.virtual_screen) at 
+        (px-DESK.virtual_screen.x_window,py-DESK.virtual_screen.y_window);
+      };      
       stat := 01b;	
     };       
   );
@@ -240,9 +252,9 @@ Section Public
       ((mouse.is_moving_only) && {mouse.left}).if {
 	move ((mouse.dx),(mouse.dy));
       } else {	
-	win := INTERFACE.get_object ((mouse.x_current),(mouse.y_current));
+	win := DESK.get_object ((mouse.x_current),(mouse.y_current));
 	(win != Self).if {	  
-	  INTERFACE.receive msg;
+	  DESK.receive msg;
 	};
       };
     };
@@ -278,11 +290,11 @@ Section Public
       ((evt_mouse.is_moving_only) && {evt_mouse.left}).if {
 	move ((evt_mouse.dx),(evt_mouse.dy));
       } else {
-	win := INTERFACE.get_object ((evt_mouse.x_current),(evt_mouse.y_current));
+	win := DESK.get_object ((evt_mouse.x_current),(evt_mouse.y_current));
 	(win != Self).if {
 	  stat := 0;
 	  refresh;
-	  INTERFACE.receive msg;
+	  DESK.receive msg;
 	} else {
 	  (stat != 1).if {
 	    stat := 1;
@@ -300,7 +312,7 @@ Section Public
   - close <-
   ( 
     (is_reduce).if {
-      INTERFACE.screen.remove_bar self;
+      DESK.screen.remove_bar self;
     };
     delete;
   );
@@ -312,12 +324,12 @@ Section Public
   - reduce <-
   ( 
     (is_reduce).if {
-      INTERFACE.screen.remove_bar self;  
+      DESK.screen.remove_bar self;  
       set_position x_old,y_old;
     } else {
       x_old := get_x_window;
       y_old := get_y_window;
-      INTERFACE.screen.add_bar self;      
+      DESK.screen.add_bar self;      
     };    
     is_reduce := ! is_reduce;
   );

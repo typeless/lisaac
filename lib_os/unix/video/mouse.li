@@ -103,7 +103,7 @@ Section Public
         
     // MASK
     mask := FAST_ARRAY[UINTEGER_16].create 16;
-    make (INTERFACE.screen) from (x_current,y_current) size (16,16);
+    make (DESK.physical_screen) from (x_current,y_current) size (16,16);
   );
   
   - get_event <-
@@ -116,7 +116,7 @@ Section Public
 	set_position (x_current,y_current);
       };
       { p != p_end }.while_do {
-	evt := buffer_event.item p;
+        evt := buffer_event.item p;        
 	(list_client.lower).to (list_client.upper) do { j:INTEGER;
 	  list_client.item j.receive (buffer_event.item p);
 	};      

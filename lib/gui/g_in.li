@@ -139,6 +139,9 @@ Section Public
     rectangle_fill (x_min,y_min) to (x_max,y_max) color white;
     //    
     ((stat & 11b) = 2).if {
+      (cursor > text.upper).if {
+        cursor := text.upper;
+      };
       text.insert '|' to cursor;
     };
     ((stat & 11b) = 0).if {
@@ -201,10 +204,10 @@ Section Public
         
     mouse ?= msg;
     (mouse != NULL).if {
-      win := INTERFACE.get_object (mouse.x_current,mouse.y_current);
+      win := DESK.get_object (mouse.x_current,mouse.y_current);
       (stat = -1).if {
 	(win != Self).if {
-	  INTERFACE.receive msg;
+	  DESK.receive msg;
 	};
       } else {
 	(stat & 11b)
@@ -213,7 +216,7 @@ Section Public
 	    stat := 1;
 	    refresh;
 	  } else {
-	    INTERFACE.receive msg;
+	    DESK.receive msg;
 	  };
 	}
 	.when 1 then {
@@ -239,20 +242,20 @@ Section Public
 		cursor := text.count;
 	      };
 	    };
-	    INTERFACE.receive msg;
+	    DESK.receive msg;
 	  };
 	};
       };
     };
     
     keyb ?= msg;
-    ((keyb != NULL) && {(stat & 11b) = 2}).if {
+    ((keyb != NULL) && {(stat & 11b) = 2}).if {      
       cmd := (keyb.key >> 8).to_uinteger_8;
       key := (keyb.key & 0FFh).to_character;
       ((cmd & 8) != 0).if {
 	key
 	// Enter
-	.when '\13\' then {	  
+	.when '\13\' or '\20h\' then {	  
 	  text.add_last '\n';
 	  cursor := cursor + 1;
 	  refresh;
@@ -265,7 +268,7 @@ Section Public
 	  };	  
 	  ((stat & 100b) != 0).if {	    
 	    stat := 0;
-	    INTERFACE.receive msg;
+	    DESK.receive msg;
 	  };
 	}
 	// Move cursor.	

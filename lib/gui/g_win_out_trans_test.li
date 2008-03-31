@@ -103,27 +103,27 @@ Section Public
 	(src.is_horizontal).if {
 	  px := src.x_window;
 	  py := src.y_window + src.height;
-	  ((px + w) > INTERFACE.x_max).if {
-	    px := INTERFACE.x_max - w;
+	  ((px + w) > DESK.x_max).if {
+	    px := DESK.x_max - w;
 	  };
-	  ((py + h) > INTERFACE.y_max).if {
+	  ((py + h) > DESK.y_max).if {
 	    py := src.y_window - h;
 	  };
 	} else {
 	  px := src.x_window + src.width;
 	  py := src.y_window;
-	  ((px + w) > INTERFACE.x_max).if {
+	  ((px + w) > DESK.x_max).if {
 	    px := src.x_window - w;
 	  };
-	  ((py + h) > INTERFACE.y_max).if {
-	    py := INTERFACE.y_max - h;
+	  ((py + h) > DESK.y_max).if {
+	    py := DESK.y_max - h;
 	  };
 	};	  	  
       } else {
-	px := (INTERFACE.width  - width_min ) / 2;
-	py := (INTERFACE.height - height_min) / 2;
+	px := (DESK.width  - width_min ) / 2;
+	py := (DESK.height - height_min) / 2;
       };
-      set_position INTERFACE at (px,py);
+      set_position DESK at (px,py);
       stat := 01b;	
     };       
   );
@@ -333,9 +333,9 @@ Section Public
       ((mouse.is_moving_only) && {mouse.left}).if {
 	move ((mouse.dx),(mouse.dy));
       } else {	
-	win := INTERFACE.get_object ((mouse.x_current),(mouse.y_current));
+	win := DESK.get_object ((mouse.x_current),(mouse.y_current));
 	(win != Self).if {	  
-	  INTERFACE.receive msg;
+	  DESK.receive msg;
 	};
       };
     };
