@@ -131,9 +131,9 @@ Section Public
   - resize_window (w,h:INTEGER) <-
   (    
     VIDEO.resize (w,h);
-    physical_screen.resize (w,h);        
-    virtual_screen.update_size;
+    physical_screen.resize (w,h);    
     set_position physical_screen at (0,0) size (w,h);
+    virtual_screen.update_size;
   );
   
   //

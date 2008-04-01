@@ -47,18 +47,23 @@ Section Public
   - is_actif:BOOLEAN;
   
   - add_client obj:INBOX <-
-  (
+  ( + idx:INTEGER;
     (list_client = NULL).if {
       list_client := LINKED_LIST[INBOX].create;      
     };
-    list_client.add_last obj;
+    idx := list_client.fast_index_of obj start (list_client.lower);    
+    (idx > list_client.upper).if {
+      list_client.add_last obj;
+    };
   );
 
   - sub_client obj:INBOX <-
   ( + idx:INTEGER;
     
-    idx := list_client.fast_index_of obj;
-    list_client.remove idx;
+    idx := list_client.fast_index_of obj start (list_client.lower);    
+    (idx <= list_client.upper).if {
+      list_client.remove idx;
+    };
   );
   
   - make <-

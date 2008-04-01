@@ -366,36 +366,38 @@ Section Public
   ( + x0,y0,x1,y1,x2,y2,x3,y3:INTEGER;
     + old_plan:PLAN;
     ? {parent!=NULL};
-    ? {(x!=0) || {y!=0}};
-    old_plan:=plan;
-    (plan!=NULL).if {
-      x0:=plan.x0.value; 
-      x1:=plan.x1.value;
-      y0:=plan.y0.value; 
-      y1:=plan.y1.value-1;
-    };
-    sub_move (x,y);
-    clip_type1;
-    (plan!=NULL).if {
-      x2:=plan.x0.value; 
-      x3:=plan.x1.value;
-      y2:=plan.y0.value; 
-      y3:=plan.y1.value-1;
-    };
-    ((old_plan!=NULL) && {plan!=NULL}).if {
-      (((x.abs)>width) || {(y.abs)>height}).if {
-	redraw (x0,y0) to (x1,y1);
-	redraw (x2,y2) to (x3,y3);
-      } else {	
-	redraw ((x0.min x2),(y0.min y2)) to ((x1.max x3),(y1.max y3));
+    
+    ((x != 0) || {y != 0}).if {
+      old_plan:=plan;
+      (plan!=NULL).if {
+        x0:=plan.x0.value; 
+        x1:=plan.x1.value;
+        y0:=plan.y0.value; 
+        y1:=plan.y1.value-1;
       };
-    } else {
-      (old_plan!=NULL).if {
-	redraw (x0,y0) to (x1,y1); 
-      }.elseif {plan!=NULL} then {
-	redraw (x2,y2) to (x3,y3);
+      sub_move (x,y);
+      clip_type1;
+      (plan!=NULL).if {
+        x2:=plan.x0.value; 
+        x3:=plan.x1.value;
+        y2:=plan.y0.value; 
+        y3:=plan.y1.value-1;
       };
-    };    
+      ((old_plan!=NULL) && {plan!=NULL}).if {
+        (((x.abs)>width) || {(y.abs)>height}).if {
+          redraw (x0,y0) to (x1,y1);
+          redraw (x2,y2) to (x3,y3);
+        } else {	
+          redraw ((x0.min x2),(y0.min y2)) to ((x1.max x3),(y1.max y3));
+        };
+      } else {
+        (old_plan!=NULL).if {
+          redraw (x0,y0) to (x1,y1); 
+        }.elseif {plan!=NULL} then {
+          redraw (x2,y2) to (x3,y3);
+        };
+      };    
+    };
   );
   
   - set_position (x,y:INTEGER) <-
@@ -403,11 +405,8 @@ Section Public
     ? {parent!=NULL};    
     
     dx:=x-(x_window-parent.x_window); 
-    dy:=y-(y_window-parent.y_window);
-    // BSBS : A Revoir Pas normal que ca plante !! ? {(dx!=0) || {dy!=0}};
-    ((dx!=0) || {dy!=0}).if {
-      move (dx,dy);
-    };
+    dy:=y-(y_window-parent.y_window);    
+    move (dx,dy);
   );
   
   //

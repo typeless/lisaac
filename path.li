@@ -132,6 +132,7 @@ Section Common
   - application + "gui/calculator/";
   - application + "gui/viewer/";
   - application + "gui/about/";
+  - application + "gui/clock/";
   
 Section UNIX, DOS, COMPILER, SHORTER
 

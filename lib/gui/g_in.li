@@ -182,6 +182,7 @@ Section Public
     };
     (py > height).if {
       text.remove_last (text.upper - idx + 2);
+      cursor := cursor.min (text.upper);
       stat := stat | 4;
     };
     //
