@@ -58,6 +58,14 @@ Section Public
   // Loop :
   //
   
+  - loop_without_end <-
+  (
+    (`1`:BOOLEAN(TRUE,FALSE)).if {
+      value;
+      loop_without_end;
+    };
+  );
+  
   - while_do body:BLOCK <-
   ( //? {body!=NULL};
     

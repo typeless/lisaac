@@ -154,8 +154,8 @@ Section Public
   //
   
   - draw_slave bmp:ABSTRACT_BITMAP from (x0,y0:INTEGER) to (x1,y1:INTEGER) <-
-  (
-    bmp.rectangle_fill (x0,y0) to (x1,y1) color color_back; 
+  (    
+    // Nothing.
   );
   
   - draw (x0,y0:INTEGER) to (x1,y1:INTEGER) <-
@@ -197,7 +197,7 @@ Section Public
   ( 
     (title != NULL).if {
       ( ((y<16) && {x>(title_len+1+y)}) || 
-      { (y.in_range 20 to (y_max-4)) && {x.in_range 4 to (x_max-4)}} ).if {
+      { (y.in_range 17 to (y_max-1)) && {x.in_range 1 to (x_max-1)}} ).if {
 	pixel_hard (x,y) color col;
       };
     };
@@ -210,9 +210,9 @@ Section Public
       ((y<16) && {x2>(title_len+1+y)}).if {
 	new_x1:=x1.max (title_len+2+y);
 	line_h_hard (new_x1,y) until x2 color col;
-      }.elseif {(y.in_range 20 to (y_max-4)) && {x1<(x_max-3)} && {x2>3}} then {
-	new_x1:=x1.max 4;
-	new_x2:=x2.min (x_max-4);
+      }.elseif {(y.in_range 17 to (y_max-1)) && {x1<(x_max-1)} && {x2>0}} then {
+	new_x1:=x1.max 1;
+	new_x2:=x2.min (x_max-1);
 	line_h_hard (new_x1,y) until new_x2 color col;
       };
     };
@@ -227,9 +227,9 @@ Section Public
 	new_x1  := x1.max (title_len+2+y);
 	new_ofs := ofs + new_x1 - x1;
 	line_h_hard (new_x1,y) until x2 image line offset new_ofs;
-      }.elseif {(y.in_range 20 to (y_max-4)) && {x1<(x_max-3)} && {x2>3}} then {
-	new_x1  := x1.max 4;
-	new_x2  := x2.min (x_max-4);
+      }.elseif {(y.in_range 17 to (y_max-1)) && {x1<(x_max-1)} && {x2>0}} then {
+	new_x1  := x1.max 1;
+	new_x2  := x2.min (x_max-1);
 	new_ofs := ofs + new_x1 - x1;
 	line_h_hard (new_x1,y) until new_x2 image line offset new_ofs;
       };

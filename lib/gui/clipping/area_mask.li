@@ -54,7 +54,7 @@ Section Public
     0.to (h-1) do { y:INTEGER;
       mask.add_last (FAST_ARRAY[UINTEGER_16].create_with_capacity 2);
     };
-    parent_area.make father from (x0,y0) size (w,h);
+    parent_area.make father from (x0,y0) size (w,h);    
   );
   
   - resize (lx,ly:INTEGER) <-
@@ -112,7 +112,7 @@ Section Public
   - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER color col:UINTEGER_32 <- 
   ( + line:FAST_ARRAY[UINTEGER_16];
     + idx,xb,xe,xx2:INTEGER;
-    
+        
     line := mask.item y;
     ((line.is_empty) || {x2 < line.first} || {x1 > line.last}).if { 
       parent_area.line_h_hard (x1,y) until x2 color col;
@@ -146,7 +146,8 @@ Section Public
     };
   );
 
-  - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
+  - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER 
+  image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   ( + l:FAST_ARRAY[UINTEGER_16];
     + idx,xb,xe,xx2:INTEGER;
     
