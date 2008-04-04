@@ -114,6 +114,7 @@ Section Common
   - libs + "opengl-binding/";
   
   - libs + "opengl-binding/opengl/";
+  - libs + "opengl-binding/opengl/extensions/";
   - libs + "opengl-binding/image_format/";
   
   - libs + "opengl-binding/gfx_engine/";
