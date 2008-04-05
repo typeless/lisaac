@@ -34,6 +34,11 @@ Section Inherit
   
 Section Public  
   
+  - margin_resize_button:INTEGER := 4;
+  - length_resize_button:INTEGER := 12;
+  
+  - is_resizable:BOOLEAN <- (! root.is_fix_width) || {! root.is_fix_height};
+  
   + title_len:INTEGER;
   
   + title:ABSTRACT_STRING;
@@ -109,7 +114,7 @@ Section Public
   
   - make t:ABSTRACT_STRING with elt:G_EXPR <-
   (
-    title_len := BITMAP[PIXEL_32].font_width t + 2; //+ 25;
+    title_len := BITMAP[PIXEL_32].font_width t + 2 + 12;
     title := t;
     root := elt;
   );
@@ -119,8 +124,13 @@ Section Public
   //
   
   - width_min:INTEGER <-
-  (
-    parent_g_group.width_min + 2
+  ( + result:INTEGER;
+    
+    result := parent_g_group.width_min + 2;
+    ((title != NULL) && {is_resizable}).if {
+      result := result + margin_resize_button;
+    };
+    result
   );
   
   - height_min:INTEGER <-
@@ -130,8 +140,11 @@ Section Public
     (title = NULL).if {
       result := result + 2;
     } else {
-      result := result + 17 + 1
-    };
+      result := result + 17 + 1;
+      (is_resizable).if {
+        result := result + margin_resize_button;
+      };
+    };    
     result
   );
 
@@ -140,13 +153,22 @@ Section Public
   //
     
   - set_position rac:AREA at (x,y:INTEGER) size (w,h:INTEGER) <-
-  (
+  ( + px,py,pw,ph:INTEGER;
     update rac from (x,y) size (w,h);
+    px := 1;
+    pw := w-2;
     (title = NULL).if {
-      root.set_position Self at (1, 1) size (w-2,h-2);
+      py := 1;      
+      ph := h-2;      
     } else {
-      root.set_position Self at (1,17) size (w-2,h-18);
-    };
+      py := 17;
+      ph := h-18;
+      (is_resizable).if {
+        pw := pw - margin_resize_button;
+        ph := ph - margin_resize_button;
+      };
+    };    
+    root.set_position Self at (px,py) size (pw,ph);
   );
   
   //
@@ -159,7 +181,7 @@ Section Public
   );
   
   - draw (x0,y0:INTEGER) to (x1,y1:INTEGER) <-
-  ( 
+  ( + xm,ym:INTEGER;
     clipping (x0,y0) to (x1,y1);    
     
     (title = NULL).if {      
@@ -169,71 +191,193 @@ Section Public
       color 646496h;
       line_v (0,15) until 0;
       line_h_until (title_len+1);
-      line_to ((title_len+1+15),15);
+      line_to (title_len+1+15,15);
         
       // Border out.
-      rectangle (0,16) to (x_max,y_max) color black;
-      draw_slave Self from (1,17) to (x_max-1,y_max-1);
-            
+      (is_resizable).if {
+        xm := x_max - margin_resize_button;        
+        ym := y_max - margin_resize_button;
+        color 646496h;                
+        line_v (xm-length_resize_button,ym+1) until y_max;
+        line_h_until x_max;
+        line_v_until (ym-length_resize_button);
+        line_h_until (xm+1);
+        rectangle_fill (xm-length_resize_button+1,ym+1) to (x_max-1,y_max-1) color 0C8C8FFh;
+        rectangle_fill (xm+1,ym-length_resize_button+1) to (x_max-1,ym);
+      } else {
+        xm := x_max;
+        ym := y_max;
+      };      
+      rectangle (0,16) to (xm,ym) color black;      
+                        
       // Title background.
       color 0C8C8FFh;
       poly_move_to (1,1);
       poly_line_to ((title_len+1),1);
       poly_line_to ((title_len+15),15);
       poly_line_to (1,15);
+      poly_line_to (1,1);
+      poly_rectangle (2,3) to (4+9,3+9);      
       poly_trace;
-    
+            
+      draw_border_in (3,3) to (3+9,3+9);
+      rectangle_fill (4,4) to (3+8,3+8) color color_back;
+      
       // Title.
-      ((stat & 10b) = 0).if {
-	color black;
-      } else {
-	color red;
-      };    
-      print title to (3,(-1));    
+      //((stat & 10b) = 0).if {
+      color black;
+      //} else {
+	//color red;
+      //};    
+      print title to (3+12,(-1));    
     };
   );
   
   - slave_pixel_hard (x,y:INTEGER) color col:UINTEGER_32 <- 
-  ( 
+  ( + xm,ym:INTEGER;
     (title != NULL).if {
-      ( ((y<16) && {x>(title_len+1+y)}) || 
-      { (y.in_range 17 to (y_max-1)) && {x.in_range 1 to (x_max-1)}} ).if {
-	pixel_hard (x,y) color col;
+      (y < 16).if {
+        (x > (title_len+1+y)).if {
+          pixel_hard (x,y) color col;
+        };
+      } else {
+        (is_resizable).if {
+          xm := x_max - margin_resize_button;
+          ym := y_max - margin_resize_button;
+          (
+            (
+              (y.in_range 17 to (ym-1)) && 
+              {x.in_range  1 to (xm-1)}
+            ) || {
+              (y > ym) &&
+              {x < xm-length_resize_button}
+            } || {
+              (y < ym-length_resize_button) &&
+              {x > xm}
+            }
+          ).if {
+            pixel_hard (x,y) color col;
+          };
+        } else {
+          ((y != 16) && {y != y_max} && {x != 0} && {x != x_max}).if {
+            pixel_hard (x,y) color col;
+          };
+        };
       };
     };
   );
   
   - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER color col:UINTEGER_32 <- 
-  ( + new_x1,new_x2:INTEGER;
+  ( + new_x1,new_x2,xm,ym:INTEGER;
     
-    (title != NULL).if {
-      ((y<16) && {x2>(title_len+1+y)}).if {
-	new_x1:=x1.max (title_len+2+y);
-	line_h_hard (new_x1,y) until x2 color col;
-      }.elseif {(y.in_range 17 to (y_max-1)) && {x1<(x_max-1)} && {x2>0}} then {
-	new_x1:=x1.max 1;
-	new_x2:=x2.min (x_max-1);
-	line_h_hard (new_x1,y) until new_x2 color col;
+    (title != NULL).if {            
+      (y < 16).if {
+        (x2 > (title_len+1+y)).if {
+          new_x1:=x1.max (title_len+2+y);
+          line_h_hard (new_x1,y) until x2 color col;
+        };
+      } else {
+        (is_resizable).if {
+          xm := x_max - margin_resize_button;
+          ym := y_max - margin_resize_button;
+          (y = 16).if {              
+            (x2 > xm).if {
+              new_x1 := x1.max (xm+1);
+              line_h_hard (new_x1,y) until x2 color col;
+            };
+          }.elseif {y < ym - length_resize_button} then {            
+            (x2 > xm).if {
+              new_x1 := x1.max (xm+1);
+              line_h_hard (new_x1,y) until x2 color col;              
+            };
+            (x1 < xm).if {
+              new_x1 := x1.max 1;
+              new_x2 := x2.min (xm-1);
+              (new_x1 <= new_x2).if {
+                line_h_hard (new_x1,y) until new_x2 color col;
+              };
+            };
+          }.elseif {y < ym} then {
+            new_x1 := x1.max 1;
+            new_x2 := x2.min (xm-1);
+            (new_x1 <= new_x2).if {
+              line_h_hard (new_x1,y) until new_x2 color col;
+            };
+          }.elseif {y > ym} then {
+            (x1 < xm-length_resize_button).if {
+              new_x2 := x2.min (xm-length_resize_button-1);
+              line_h_hard (x1,y) until new_x2 color col;
+            };
+          };            
+        } else {
+          ((y != 16) && {y != y_max} && {x2 > 0} && {x1 < x_max}).if {
+            new_x1:=x1.max 1;
+            new_x2:=x2.min (x_max-1);            
+            line_h_hard (new_x1,y) until new_x2 color col;
+          };
+        };
       };
     };
   );
 
   - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER 
   image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
-  ( + new_x1,new_x2,new_ofs:INTEGER;
+  ( + new_x1,new_x2,new_ofs,xm,ym:INTEGER;
     
-    (title != NULL).if {
-      ((y<16) && {x2>(title_len+1+y)}).if {
-	new_x1  := x1.max (title_len+2+y);
-	new_ofs := ofs + new_x1 - x1;
-	line_h_hard (new_x1,y) until x2 image line offset new_ofs;
-      }.elseif {(y.in_range 17 to (y_max-1)) && {x1<(x_max-1)} && {x2>0}} then {
-	new_x1  := x1.max 1;
-	new_x2  := x2.min (x_max-1);
-	new_ofs := ofs + new_x1 - x1;
-	line_h_hard (new_x1,y) until new_x2 image line offset new_ofs;
+    (title != NULL).if {            
+      (y < 16).if {
+        (x2 > (title_len+1+y)).if {
+          new_x1:=x1.max (title_len+2+y);
+          new_ofs := ofs + new_x1 - x1;
+          line_h_hard (new_x1,y) until x2 image line offset new_ofs;
+        };
+      } else {
+        (is_resizable).if {
+          xm := x_max - margin_resize_button;
+          ym := y_max - margin_resize_button;
+          (y = 16).if {              
+            (x2 > xm).if {
+              new_x1 := x1.max (xm+1);
+              new_ofs := ofs + new_x1 - x1;
+              line_h_hard (new_x1,y) until x2 image line offset new_ofs;
+            };
+          }.elseif {y < ym - length_resize_button} then {            
+            (x2 > xm).if {
+              new_x1 := x1.max (xm+1);
+              new_ofs := ofs + new_x1 - x1;
+              line_h_hard (new_x1,y) until x2 image line offset new_ofs;
+            };
+            (x1 < xm).if {
+              new_x1 := x1.max 1;
+              new_x2 := x2.min (xm-1);
+              (new_x1 <= new_x2).if {
+                new_ofs := ofs + new_x1 - x1;
+                line_h_hard (new_x1,y) until new_x2 image line offset new_ofs;
+              };
+            };
+          }.elseif {y < ym} then {
+            new_x1 := x1.max 1;
+            new_x2 := x2.min (xm-1);
+            (new_x1 <= new_x2).if {
+              new_ofs := ofs + new_x1 - x1;
+              line_h_hard (new_x1,y) until new_x2 image line offset new_ofs;
+            };
+          }.elseif {y > ym} then {
+            (x1 < xm-length_resize_button).if {
+              new_x2 := x2.min (xm-length_resize_button-1);
+              line_h_hard (x1,y) until new_x2 image line offset ofs;
+            };
+          };            
+        } else {
+          ((y != 16) && {y != y_max} && {x2 > 0} && {x1 < x_max}).if {
+            new_x1:=x1.max 1;
+            new_x2:=x2.min (x_max-1);            
+            new_ofs := ofs + new_x1 - x1;
+            line_h_hard (new_x1,y) until new_x2 image line offset new_ofs;
+          };
+        };
       };
-    };
+    };    
   );
 
   //
@@ -242,20 +386,68 @@ Section Public
     
   - receive msg:EVENT <-  
   ( + mouse:EVENT_MOUSE;
+    + timer:EVENT_TIMER;
     + win:AREA;    
+    + xr,yr,new_width,new_height:INTEGER;
+    + new_stat:INTEGER_8;
 
     mouse ?= msg;        
-    (mouse != NULL).if {       
-      (mouse.right_down).if {
-	first;
+    timer ?= msg;
+    (mouse != NULL).if {             
+      xr := mouse.x_relative;
+      yr := mouse.y_relative;
+      (
+        (xr.in_range 4 to (3+8)) &&
+        {yr.in_range 4 to (3+8)}
+      ).if {
+        // Cancel.
+        new_stat := 0011b;
+      }.elseif {yr < 16} then {
+        // Move / First.
+        new_stat := 0101b;
+      } else {
+        // Resize.
+        new_stat := 1001b;
       };
-      ((mouse.is_moving_only) && {mouse.left}).if {
-	move ((mouse.dx),(mouse.dy));
-      } else {	
-	win := DESK.get_object ((mouse.x_current),(mouse.y_current));
-	(win != Self).if {	  
-	  DESK.receive msg;
-	};
+      (mouse.left_up).if {
+        stat := new_stat;
+      }.elseif {mouse.left_down} then {
+        ((stat = new_stat) && {new_stat = 0011b}).if {
+          close;
+        } else {
+          (stat = 1001b).if {
+            set_position parent at (get_x_window,get_y_window) size (width,height);
+          };
+          stat := 0001b;        
+        };
+      }.elseif {(mouse.left) && {mouse.is_moving_only}} then {
+        (stat = 0101b).if {
+          move (mouse.dx,mouse.dy);
+        }.elseif {stat = 1001b} then {          
+          (root.is_fix_width).if {
+            new_width := width;
+          } else {
+            new_width  := (xr+1).max width_min;
+          };
+          (root.is_fix_height).if {
+            new_height := height;
+          } else {
+            new_height := (yr+1).max height_min;
+          };
+          resize (new_width,new_height);
+          //
+        };
+      }.elseif {(mouse.right_down) && {new_stat = 0101b}} then {
+        first;
+      } else {
+        win := DESK.get_object ((mouse.x_current),(mouse.y_current));
+        (win != Self).if {	  
+          DESK.receive msg;
+        };
+      };      
+    }.elseif {timer != NULL} then {
+      (stat = 1001b).if {
+        set_position parent at (get_x_window,get_y_window) size (width,height);
       };
     };
   );
@@ -269,72 +461,21 @@ Section Public
     (result = Self).if {
       (title != NULL).if {
 	rel_x := x - x_window;
-	rel_y := y - y_window;
-	((rel_y >= 16) || {rel_x > (title_len+1+rel_y)}).if {
-	  result := NULL;
+        rel_y := y - y_window;
+        ((rel_y >= 16) || {rel_x > (title_len+1+rel_y)}).if {
+          (is_resizable).if {
+            (
+              (rel_y < y_max-margin_resize_button-length_resize_button) ||
+              {rel_x < x_max-margin_resize_button-length_resize_button}
+            ).if {
+              result := NULL;
+            };            
+          } else {
+            result := NULL;
+          };	  
 	};
       };
     };
     result
   );
-/*    
-  - receive msg:EVENT <-  
-  ( + evt_mouse:EVENT_MOUSE;
-    + win:AREA;
-    
-    evt_mouse ?= msg;
-    (evt_mouse != NULL).if { 
-      (evt_mouse.right_down).if {
-	first;
-      };
-      ((evt_mouse.is_moving_only) && {evt_mouse.left}).if {
-	move ((evt_mouse.dx),(evt_mouse.dy));
-      } else {
-	win := DESK.get_object ((evt_mouse.x_current),(evt_mouse.y_current));
-	(win != Self).if {
-	  stat := 0;
-	  refresh;
-	  DESK.receive msg;
-	} else {
-	  (stat != 1).if {
-	    stat := 1;
-	    refresh;
-	  };
-	};
-      };
-    };
-  );
-*/  
-  //
-  // Message.
-  //
-/*  
-  - close <-
-  ( 
-    (is_reduce).if {
-      DESK.screen.remove_bar self;
-    };
-    delete;
-  );
-  
-  + x_old:INTEGER;
-  
-  + y_old:INTEGER;
-  
-  - reduce <-
-  ( 
-    (is_reduce).if {
-      DESK.screen.remove_bar self;  
-      set_position x_old,y_old;
-    } else {
-      x_old := get_x_window;
-      y_old := get_y_window;
-      DESK.screen.add_bar self;      
-    };    
-    is_reduce := ! is_reduce;
-  );
 
-  - action who:OBJECT <-
-  (
-  );
-  */

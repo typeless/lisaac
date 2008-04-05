@@ -1230,6 +1230,15 @@ Section Public
     };    
   );
   
+  - poly_rectangle (x0,y0:INTEGER) to (x1,y1:INTEGER) <-
+  (
+    poly_move_to (x0,y0);
+    poly_line_to (x1,y0);
+    poly_line_to (x1,y1);
+    poly_line_to (x0,y1);
+    poly_line_to (x0,y0);
+  );
+
   - poly_spline_w1 (px0,py0:INTEGER) w2 (px1,py1:INTEGER) to (x1,y1:INTEGER) <-
   ( + x0,y0,d_x,d_y:INTEGER;
     + num_points:INTEGER;
