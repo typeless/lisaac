@@ -308,7 +308,7 @@ Section Public
   - run:G_WIN_OUT <-
   ( 
     init;
-    G_WIN_OUT.create "Power 4" with Self
+    G_WIN_OUT.create "Power 4" with (Self.fix_width.fix_height)
   );
     
   - main <-

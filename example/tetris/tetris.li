@@ -190,7 +190,7 @@ Section Public
   // Creation.
   //  
   
-  - init <-
+  - init:G_EXPR <-
   (
     // Initialization.
     face  :=FAST_ARRAY3[INTEGER]  .create (4,4,2);
@@ -199,26 +199,20 @@ Section Public
     level := 1;
     stat  := 2;
     random := 015AAC005h;
+    G_RAW.create (Self.fix_height.fix_width)
   );
   
   - run:G_WIN_OUT <-
   ( 
-    init;
-    G_WIN_OUT.create "Tetris" with Self
+    G_WIN_OUT.create "Tetris" with init
   );
   
   - main <-
   (     
     // Init window.
     VIDEO.make (640,400);
-        
-    init;
-    // Screen definition.
     DESK.make VIDEO with (
-      G_OUT.create "Tetris" justify (G_OUT.center) /
-      G_RAW.create (
-        Self.fix_height.fix_width 
-      )
+      G_OUT.create "Tetris" justify (G_OUT.center) / init      
     );    
   );
   

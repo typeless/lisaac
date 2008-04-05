@@ -372,7 +372,7 @@ Section Public
     dir := FILE_SYSTEM;
     
  //   new_command;    
-    my_window := G_WIN_OUT.create "Mini Shell" with Self
+    my_window := G_WIN_OUT.create "Mini Shell" with (Self.fix_width.fix_height)
   );
   
   //
