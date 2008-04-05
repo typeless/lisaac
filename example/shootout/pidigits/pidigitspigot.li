@@ -24,13 +24,21 @@ Section Private
 
 Section Public
 
+  - create:SELF <- 
+  (
+    + result :SELF;
+    result := clone;
+    result.make;
+    result
+  );
+
   - make <-
   (
-    z := TRANSFORMATION.make(1,0,0,1);
-    x := TRANSFORMATION.make(0,0,0,0);
-    inverse := TRANSFORMATION.make(0,0,0,0);
+    z := TRANSFORMATION.create_integer(1,0,0,1);
+    x := TRANSFORMATION.create_integer(0,0,0,0);
+    inverse := TRANSFORMATION.create_integer(0,0,0,0);
   );
-    
+
   - next :INTEGER <-
   ( + y      :INTEGER;
     + result :INTEGER;
@@ -39,7 +47,7 @@ Section Public
 
     (is_safe y).if {
       z      := produce y;
-      result := y
+      result := y;
     }else{
       z      := consume x.next;
       result := next;

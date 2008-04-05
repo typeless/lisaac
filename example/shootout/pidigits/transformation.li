@@ -28,57 +28,77 @@ Section Private
 
 Section Public
 
-  - make_integer (_q, _r, _s, _t:INTEGER) <-
-  (
-    q := _q.to_uinteger_big;
-    r := _r.to_uinteger_big;
-    s := _s.to_uinteger_big;
-    t := _t.to_uinteger_big;
-    // k := 0;
+  - create_integer (pq, pr, ps, pt:INTEGER) :SELF <- 
+  ( + result :SELF;
+    result := clone;
+    result.make_integer(pq, pr, ps, pt);
+    result
   );
 
-  - make_big_integer (_q, _r, _s, _t:UINTEGER_BIG) <-
+  - create_big_integer (pq, pr, ps, pt:UINTEGER_BIG) :SELF <-
+  ( + result :SELF;
+    result := clone;
+    result.make_big_integer(pq, pr, ps, pt);
+    result
+  );
+
+  - make_integer (pq, pr, ps, pt:INTEGER) <-
   (
-    q := _q;
-    r := _r;
-    s := _s;
-    t := _t;
-    // k := 0;
+    q := pq.to_uinteger_big;
+    r := pr.to_uinteger_big;
+    s := ps.to_uinteger_big;
+    t := pt.to_uinteger_big;
+    k := 0;
+  );
+
+  - make_big_integer (pq, pr, ps, pt:UINTEGER_BIG) <-
+  (
+    q := pq;
+    r := pr;
+    s := ps;
+    t := pt;
+    k := 0;
   );
 
   - next :TRANSFORMATION <-
   (
     k := k + 1;
-    q := k;
-    r := 4 * k + 2;
-    s := 0;
-    t := 2 * k + 1;
-    // return this;
+    q := k.to_uinteger_big;
+    r := (4 * k + 2).to_uinteger_big;
+    s := 0.to_uinteger_big;
+    t := (2 * k + 1).to_uinteger_big;
+    Self
   );
 
   - extract j:INTEGER :INTEGER <-
   ( + bigj        :UINTEGER_BIG;
     + numerator   :UINTEGER_BIG;
     + denominator :UINTEGER_BIG;
-
     bigj := j.to_uinteger_big;
     numerator := q * bigj + r;
     denominator := s * bigj + t;
     (numerator/denominator).to_integer
   );
 
-  - qrst (_q, _r, _s, _t:INTEGER) :TRANSFORMTATION <-
+  - qrst (pq, pr, ps, pt:INTEGER) :TRANSFORMATION <-
   (
-    q := _q.to_uinteger_big;
-    r := _r.to_uinteger_big;
-    s := _s.to_uinteger_big;
-    t := _t.to_uinteger_big;
+    q := pq.to_uinteger_big;
+    r := pr.to_uinteger_big;
+    s := ps.to_uinteger_big;
+    t := pt.to_uinteger_big;
     k := 0;
-    //return this
+    Self 
   );
 
   - compose (a :TRANSFORMATION) :TRANSFORMATION <-
-  (
+  ( + trans :TRANSFORMATION;
+
+    trans.create_integer(q*a.q,
+                     (q*a.r)+(r*a.t),
+                     (s*a.q)+(t*a.s),
+                     (s*a.r)+(t*a.t));
+    trans
+
     /*   return new Transformation(
          q.multiply(a.q)
          ,(q.multiply(a.r)).add( (r.multiply(a.t)) )

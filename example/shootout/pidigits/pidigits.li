@@ -18,29 +18,33 @@ Section Public
 
   - main <-
   ( + j, n :INTEGER;
-    // digits clone here
+    + digits :PIDIGITSPIGOT;
+
+    digits := PIDIGITSPIGOT.clone;
+    digits.create;
 
     (COMMAND_LINE.upper = 1).if {
       n := COMMAND_LINE.item 1.to_integer;
     };
 
-    (n > 0).while {
+    {n > 0}.while_do{
       (n >= 10).if {
-        0.to 10 do {
+        0.to 9 do { x:INTEGER;
           (digits.next).print;
           j := j + 10;
         };
       }else{
-        0.to n do {
+        0.to (n-1) do { x:INTEGER;
           (digits.next).print;
         };
-        n.to 10 do {
+        n.to 10 do { x:INTEGER;
           ' '.print;
-        }
+        };
         j := j + n;
       };
       "\t:".print;
       j.print;
+      ' '.print;
       n := n - 10;
     };
   );
