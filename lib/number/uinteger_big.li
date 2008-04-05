@@ -33,13 +33,13 @@ Section Inherit
 
 Section UINTEGER_BIG
   
-  + storage:FAST_ARRAY[UINTEGER];
+  + storage:FAST_ARRAY[UINTEGER_32];
   
-  - last_modulo:UINTEGER;
+  - last_modulo:UINTEGER_32;
   
-  - make init:UINTEGER :SELF <-
+  - make init:UINTEGER_32 :SELF <-
   (     
-    storage:=FAST_ARRAY[UINTEGER].create 1; 
+    storage:=FAST_ARRAY[UINTEGER_32].create 1; 
     storage.put init to 0;
     Self 
   );
@@ -50,15 +50,15 @@ Section UINTEGER_BIG
 
   - upper:INTEGER <- storage.upper;
 
-  - item idx:INTEGER :UINTEGER <- storage.item idx;
+  - item idx:INTEGER :UINTEGER_32 <- storage.item idx;
 
   - copy other:UINTEGER_BIG <- storage.copy (other.storage);
 
-  - force elt:UINTEGER to idx:INTEGER <- storage.force elt to idx;
+  - force elt:UINTEGER_32 to idx:INTEGER <- storage.force elt to idx;
   
-  - put elt:UINTEGER to idx:INTEGER <- storage.put elt to idx;
+  - put elt:UINTEGER_32 to idx:INTEGER <- storage.put elt to idx;
   
-  - add_last elt:UINTEGER <- storage.add_last elt;
+  - add_last elt:UINTEGER_32 <- storage.add_last elt;
   
   - resize new_size:INTEGER <-
   (
@@ -68,7 +68,7 @@ Section UINTEGER_BIG
   
 Section INTEGER
 
-  - create init:UINTEGER :UINTEGER_BIG <- UINTEGER_BIG.clone.make init;
+  - create init:UINTEGER_32 :UINTEGER_BIG <- UINTEGER_BIG.clone.make init;
   
 Section Public  
   
@@ -93,9 +93,9 @@ Section Public
     storage.first.to_uinteger_64 + (storage.item 1.to_uinteger_64 << 32) 
   );
   
-  - to_uinteger:UINTEGER   <- 
+  - to_uinteger_32:UINTEGER_32   <- 
   ( ? {count = 1};
-    storage.first.to_uinteger
+    storage.first.to_uinteger_32
   );
   
   - to_uinteger_16:UINTEGER_16 <- 
@@ -163,7 +163,7 @@ Section Public
 	((substr >> 32) == 1).if {
 	  over := 1;
 	};
-	result.put ((substr & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to idx;
+	result.put ((substr & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
       };
     };
     
@@ -188,7 +188,7 @@ Section Public
       ((substr >> 32) == 1).if {
 	over := 1;
       };
-      result.put ((substr & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to 0;
+      result.put ((substr & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to 0;
       idx := idx + 1;
       {over == 0}.until_do {
 	part1 := item idx;
@@ -196,7 +196,7 @@ Section Public
 	((substr >> 32) == 1).if {
 	  over := 1;
 	};
-	result.put ((substr & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to idx;
+	result.put ((substr & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
 	idx := idx + 1;
       };      
     };
@@ -220,17 +220,17 @@ Section Public
         part1:=item idx;
         part2:=other.item idx;
         sum:=part1+part2+over;
-        result.put ((sum & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to idx;
+        result.put ((sum & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
         over:=sum >> 32;
       };
       (other.upper+1).to upper do { idx:INTEGER;
         part1:=item idx;
         sum:=part1+over;
-        result.put ((sum & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to idx;
+        result.put ((sum & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
         over:=sum >> 32;
       };
       (over!==0).if {
-        result.add_last (over.to_uinteger);
+        result.add_last (over.to_uinteger_32);
       };
     };    
     result
@@ -245,19 +245,19 @@ Section Public
     result.resize count;
     part1 := item 0;
     sum := part1 + other;
-    result.put ((sum & (UINTEGER.maximum)).to_uinteger) to 0;
+    result.put ((sum & (UINTEGER_32.maximum)).to_uinteger_32) to 0;
     idx := idx + 1;
     over:=sum >> 32;
     {(over == 0) || {idx > upper}}.until_do {
       part1 := item idx;
       sum := part1 + over;
-      result.put ((sum & (UINTEGER.maximum)).to_uinteger) to idx;
+      result.put ((sum & (UINTEGER_32.maximum)).to_uinteger_32) to idx;
       idx := idx + 1; 
       over:=sum >> 32;
     };
     
     (over!==0).if {
-      result.add_last (over.to_uinteger);
+      result.add_last (over.to_uinteger_32);
     };
     
     result
@@ -283,12 +283,12 @@ Section Public
       (other.lower).to (other.upper) do { idx_other:INTEGER;
 	part2 := other.item idx_other;
 	product := part1 * part2;	
-	(product < (UINTEGER.maximum.to_uinteger_64)).if {
-	  result_current.put (product.to_uinteger) to index_result;
+	(product < (UINTEGER_32.maximum.to_uinteger_64)).if {
+	  result_current.put (product.to_uinteger_32) to index_result;
 	} else {
-	  result_current.put ((product & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to index_result;
+	  result_current.put ((product & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to index_result;
 	  index_result := index_result + 1;
-	  result_current.force ((product >> 32).to_uinteger) to index_result;
+	  result_current.force ((product >> 32).to_uinteger_32) to index_result;
 	  index_result := index_result + 1;
 	};
       };
@@ -310,17 +310,17 @@ Section Public
     lower.to upper do { idx:INTEGER;      
       part1 := item idx;      
       product :=  part1 * other + over;      
-      (product < (UINTEGER.maximum.to_uinteger_64)).if {
-	result.put (product.to_uinteger) to idx;
+      (product < (UINTEGER_32.maximum.to_uinteger_64)).if {
+	result.put (product.to_uinteger_32) to idx;
 	over := 0;
       } else {
-	result.put ((product & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to idx;
+	result.put ((product & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
 	over := product >> 32;
       };
     };
     
     (over!==0).if {
-      result.add_last (over.to_uinteger);
+      result.add_last (over.to_uinteger_32);
     };    
     
     result.clean;
@@ -356,10 +356,10 @@ Section Public
 	last_mod := last_mod % (other.to_uinteger_64); 
       };      
       (div !== 0).if {
-	result.put ((div & (UINTEGER.maximum.to_uinteger_64)).to_uinteger) to idx;
+	result.put ((div & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
       };
     };
-    last_modulo := last_mod.to_uinteger;
+    last_modulo := last_mod.to_uinteger_32;
     result.clean;
     result
   );
@@ -453,12 +453,12 @@ Section Public
 
   - factorial:SELF <-
   ( + result,value:SELF;
-    + value2:UINTEGER;
+    + value2:UINTEGER_32;
     ? {Self >=# 0};
     
     (count = 1).if {
       result := 1;
-      value2 := to_uinteger;
+      value2 := to_uinteger_32;
       {value2 <= 1}.until_do {
 	result := result *# value2;
 	value2  := value2 - 1;
@@ -483,7 +483,7 @@ Section Public
   // Append in the `buffer' the equivalent of `to_string'. No new STRING
   // creation during the process.
   ( + value:UINTEGER_BIG; 
-    + mod:UINTEGER;
+    + mod:UINTEGER_32;
     + counter:INTEGER;
     + old_upper,new_upper:INTEGER;
     
