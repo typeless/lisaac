@@ -62,7 +62,7 @@ Section Public
     + w,h:INTEGER;
     + bmp:BITMAP[PIXEL_24];
     
-    entry := ENTRY.get_entry filename;
+    entry := FILE_SYSTEM.get_entry filename;
     ((entry = NULL) || {! entry.is_file}).if {
       VIDEO.message ("ERROR: File '" + filename + "' not found.\n");
       die_with_code exit_failure_code;

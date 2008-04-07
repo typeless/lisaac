@@ -33,7 +33,7 @@ Section Inherit
   
   - parent_collection:COLLECTION[V] := COLLECTION[V];
   
-Section ARRAYED_COLLECTION, BMP_FILE, TYPES
+Section Public //ARRAYED_COLLECTION, BMP_FILE, TYPES
   
   + storage:NATIVE_ARRAY[V];
   // Internal access to storage location.

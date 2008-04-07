@@ -144,8 +144,7 @@ Section Public
   //
   
   - '-' Left 80  other:SELF :SELF <- 
-  (
-    + result:UINTEGER_BIG;
+  ( + result:UINTEGER_BIG;
     + over,substr,part1,part2:UINTEGER_64;
 
     (other > Self).if {
@@ -265,8 +264,7 @@ Section Public
   
   
   - '*'  Left 100 other:SELF :SELF <- 
-  (
-    + result:UINTEGER_BIG;
+  ( + result:UINTEGER_BIG;
     + part1,part2,product:UINTEGER_64;
     + index_result:INTEGER;
     
@@ -328,8 +326,9 @@ Section Public
   );
   
   - '/'  Left 100 other:SELF :SELF <- 
-  (
-    not_yet_implemented; Self
+  ( + result:UINTEGER_BIG;
+    
+    
   );
   
   
@@ -519,7 +518,200 @@ Section Public
     };
   );
   
-
+Section Private
+/*  
+  - divide_to (other, quotient, remainder:SELF) <-
+  // Euclidian division.
+  // Calculates the `quotient' and `remainder' of `Current'
+  // divided by `other'. (The contents of `Current' and `other' are
+  // not changed.)			
+  [ -? {! other.is_zero};
+    -? {quotient != NULL};
+    -? {remainder != NULL};
+    -? {quotient != other};
+    -? {quotient != Self};
+    -? {remainder != other};
+    -? {remainder != Self};
+  ]
+  ( + cmp, shift, nlen, dlen, qlen, j, k, v1, v2, u1, u2, rem: INTEGER;
+    + qhat, rhat, v2qhat_1, v2qhat_2, d_offset: INTEGER; 
+    + q_storage, r_storage, d_storage:FAST_ARRAY[UINTEGER_32];
+    + q_capacity, r_capacity:INTEGER;
+    + borrow:BOOLEAN;
+    
+    (integer_length = 0).if {
+      // Dividend is zero:
+      quotient.set_with_zero;
+      remainder.set_with_zero;
+    } else {
+      cmp := abs_compare other;
+      (cmp < 0).if { 
+        // Dividend less than divisor:
+        quotient.set_with_zero;
+        remainder.copy Self;
+        // Sign correction
+        remainder.set_negative FALSE;
+        divide_sign_correction (other, quotient, remainder);
+      }.elseif {cmp = 0} then {
+        // Dividend equal to divisor:
+        (negative = other.negative).if {
+          quotient.from_integer 1;
+        } else {
+          quotient.from_integer (-1);
+        };
+        remainder.set_with_zero;
+      }.elseif {other.integer_length = 1} then {
+        // Special case one word divisor:
+        quotient.copy Self;
+        //|*** replace by "from_unsigned_integer" ? (Vincent Croizier)
+        remainder.set_with_zero;
+        rem := quotient.divide_one_word (other.item (other.offset));
+        (rem != 0).if {
+          remainder.put rem to 0;
+          remainder.set_ilo(1, 0);
+        } else {
+          ? {remainder.is_zero};
+        };		
+        // Sign correction
+        divide_sign_correction(other, quotient, remainder);
+      } else {
+        // Copy divisor storage to protect divisor:
+        register1.copy(other)
+        --|***
+        remainder.copy(Current)
+        -- D1 normalize the divisor:
+        shift := register1.normalize
+        (shift != 0).if {
+          remainder.shift_left shift;
+        };
+        // D2 Initialize j:        
+        r_storage := remainder.storage
+        r_capacity := remainder.capacity
+        ? {remainder.offset = 0};
+        nlen := remainder.integer_length -- To avoid invariant class violation
+        remainder.set_with_zero
+        d_storage := register1.storage
+        d_offset := register1.offset
+        dlen := register1.integer_length
+        j := nlen - 1
+        u2 := r_storage.item(j)
+        k := register1.offset + dlen - 1
+        v1 := register1.item(k)
+        v2 := register1.item(k - 1)
+        (unsigned_greater_or_equal(u2, v1)).if {
+          k := nlen - dlen;
+          qlen := k + 1;
+        } else {
+          qlen := nlen - dlen;
+          k := qlen - 1;
+          j := j - 1;
+          u1 := u2;
+          u2 := r_storage.item j;
+        };
+        // Resize quotient if necessary
+        q_capacity := quotient.capacity;
+        (q_capacity < qlen).if {
+          // reallocation
+          q_capacity := capacity_from_lower_bound(q_capacity, qlen);
+          q_storage := storage.calloc q_capacity;
+        } else {
+          q_storage := quotient.storage;
+        };
+        // To avoid invariant violation on `quotient'
+        quotient.set_with_zero;
+        {k < 0}.until_do {				
+          j := j - 1; // D3 Calculate qhat - estimate qhat
+          (u1 = v1).if {
+            qhat := ~0;
+          } else {
+            qhat := mbi_divide(u1, u2, v1, $rhat); // Correct qhat
+            (qhat = 0).if {
+            } else {
+              v2qhat_1 := mbi_multiply(v2, qhat, $v2qhat_2);
+              (unsigned_greater_than(v2qhat_1, rhat)).if {
+                qhat := qhat - 1;
+                (mbi_subtract(v2qhat_2, v2, $v2qhat_2)).if {
+                  v2qhat_1 := v2qhat_1 - 1;
+                };
+                (mbi_add(rhat, v1, $rhat)).if {
+                }.elseif {unsigned_greater_than(v2qhat_1, rhat)} then {
+                  qhat := qhat - 1;
+                }.elseif {j < 0} then {
+                  ((v2qhat_1 = rhat) && {v2qhat_2 != 0}).if {
+                    qhat := qhat - 1;
+                  };
+                }.elseif {v2qhat_1 = rhat and then unsigned_greater_than(v2qhat_2, r_storage.item(j))} then {
+                  qhat := qhat - 1;
+                };
+              }.elseif {j < 0} then {
+                if v2qhat_1 = rhat and then v2qhat_2 /= 0 then
+										qhat := qhat - 1
+									end
+								elseif v2qhat_1 = rhat and then unsigned_greater_than(v2qhat_2, r_storage.item(j)) then
+									qhat := qhat - 1
+								end
+							end
+						end
+						-- D4 Multiply and subtract:
+						if qhat = 0 then
+							q_storage.put(0, k)
+						else
+							borrow := multiply_and_subtract(u1, qhat, d_storage, d_offset, r_storage, j - dlen + 2, dlen)
+							-- D5 Test remainder: Result is negative ?
+							if borrow then
+								-- D6 Add back
+								borrow := add_back(u1, d_storage, d_offset, r_storage, j - dlen + 2, dlen)
+								check
+									borrow
+								end
+								q_storage.put(qhat - 1, k)
+							else
+								q_storage.put(qhat, k)
+							end
+						end
+						-- D7 loop on j
+						k := k - 1
+						u1 := r_storage.item(j + 1)
+						u2 := r_storage.item(j)
+					end
+					-- Remove leading zero of quotient
+					k := qlen - 1
+					if q_storage.item(k) = 0 then
+						qlen := k
+					end
+					quotient.set_all(q_storage, q_capacity, qlen, 0, False)
+					-- Remove leading zero of remainder
+					from
+						j := dlen - 1
+					until
+						j < 0 or else r_storage.item(j) /= 0
+					loop
+						j := j - 1
+					end
+					j := j + 1
+					check
+						j >= 0
+					end
+					if j = 0 then
+						check
+							remainder.is_zero
+						end
+					else
+						remainder.set_all(r_storage, r_capacity, j, 0, False)
+					end
+					-- D8 Unnormalize:
+					if shift > 0 then
+						remainder.shift_right(shift)
+					end
+					-- Sign correction
+					divide_sign_correction(other, quotient, remainder)
+				end
+			end
+		ensure
+			is_a_good_divide(other, quotient, remainder)
+			not remainder.negative and remainder.abs_compare(other) = -1
+		end
+*/
 
 
 

@@ -170,11 +170,11 @@ Section Public
       (is_directory).if {
 	result := TRUE;
 	dir ?= open;
-	i := dir.lower;
+        i := dir.lower;        
 	{(i > dir.upper) || {! result}}.until_do {
 	  result := dir.item i.remove;	  
 	  i := i + 1;
-	};	
+        };	        
 	result.if {
 	  result := physical_remove_directory;
 	};
@@ -247,6 +247,7 @@ Section Public
 
     st.replace_all '\\' with '/';
     i := st.lower;
+
     {i > st.upper}.until_do {
       car := st.item i;
       (car = '/').if {
@@ -330,6 +331,7 @@ Section Public
 	st.remove_between idx to (i-1);
       };
     };
+    
     (st.is_empty).if {
       st.add_last '/';
     };

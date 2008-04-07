@@ -130,10 +130,12 @@ Section Common
   - application + "su_doku/";
   - application + "tetris/";
   - application + "fouronline/";
+  - application + "shell/";
   - application + "gui/calculator/";
   - application + "gui/viewer/";
   - application + "gui/about/";
   - application + "gui/clock/";
+  - application + "gui/desktop/";
   
 Section UNIX, DOS, COMPILER, SHORTER
 
@@ -148,11 +150,11 @@ Section UNIX
   
   - libs   + "opengl-binding/unix/";
   
-  * "gcc " + input_file + " -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
-    output_file + " -L" + path_lib_x11 + option_gcc;
-
-//  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
+//  * "gcc " + input_file + " -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
 //    output_file + " -L" + path_lib_x11 + option_gcc;
+
+  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
+    output_file + " -L" + path_lib_x11 + option_gcc;
 
 Section WINDOWS
   
@@ -236,6 +238,7 @@ Section X86
   * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
   * isaac+"tool/elf2eof/elf2eof -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
   * "rm startup.sys;mv startup.eof startup.sys;./dosemu c startup.sys .;./dosemu e";
+ // * "rm startup.sys;mv startup.eof startup.sys;./dosemu c startup.sys .;./hdtolive";
   
 Section IPAQ  
   

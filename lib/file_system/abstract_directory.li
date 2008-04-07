@@ -104,10 +104,11 @@ Section Public
   - has e:ENTRY :BOOLEAN <-
   ( + i:INTEGER;
     
-    i:= lower;
+    i:= lower;    
     {(i>upper) || {item i = e}}.until_do {
       i := i + 1;
     };
+    
     (i<=upper)
   );
   
@@ -115,9 +116,11 @@ Section Public
   ( + result:INTEGER;
    
     result := lower;
+    
     {(result > upper) || {e = item result}}.until_do {
       result := result + 1;
     };
+    
     ? { lower <= result };
     ? { result <= upper + 1 };
     ? { (result <= upper) ->> {e = item result}};    

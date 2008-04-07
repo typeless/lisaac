@@ -20,8 +20,7 @@ Section Public
   ( + j, n :INTEGER;
     + digits :PIDIGITSPIGOT;
 
-    digits := PIDIGITSPIGOT.clone;
-    digits.create;
+    digits := PIDIGITSPIGOT.create;
 
     (COMMAND_LINE.upper = 1).if {
       n := COMMAND_LINE.item 1.to_integer;
