@@ -118,6 +118,7 @@ Section Common
   - libs + "opengl-binding/image_format/";
   
   - libs + "opengl-binding/gfx_engine/";
+  - libs + "opengl-binding/gfx_engine/primitives/";
   - libs + "opengl-binding/gfx_engine/model_format";
   - libs + "opengl-binding/gfx_engine/low_level/";
   
