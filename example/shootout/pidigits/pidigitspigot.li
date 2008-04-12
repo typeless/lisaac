@@ -16,11 +16,11 @@ Section Inherit
 
 Section Private
 
-  - z       :TRANSFORMATION;
+  + z       :TRANSFORMATION;
 
-  - x       :TRANSFORMATION;
+  + x       :TRANSFORMATION;
 
-  - inverse :TRANSFORMATION;
+  + inverse :TRANSFORMATION;
 
 Section Public
 
