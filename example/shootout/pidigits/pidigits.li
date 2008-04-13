@@ -1,49 +1,25 @@
 /* The Computer Language Shootout Benchmarks
    http://shootout.alioth.debian.org/
-   contributed by Xavier Oswald
+   contributed by Benoit Sonntag
 
    Compilation:
      - lisaac -O -i20 pidigits.li
 */
-
 Section Header
   
   + name := PIDIGITS;
   
-Section Inherit
-  
-  - parent_any:OBJECT := OBJECT;
-
 Section Public
 
   - main <-
-  ( + j, n :INTEGER;
-    + digits :PIDIGITSPIGOT;
-
-    digits := PIDIGITSPIGOT.create;
-
-    (COMMAND_LINE.upper = 1).if {
+  ( + n:INTEGER;
+    
+    (COMMAND_LINE.count > 1).if {
       n := COMMAND_LINE.item 1.to_integer;
+    } else {
+      n := 27;
     };
-
-    {n > 0}.while_do{
-      (n >= 10).if {
-        0.to 9 do { x:INTEGER;
-          (digits.next).print;
-          j := j + 10;
-        };
-      }else{
-        0.to (n-1) do { x:INTEGER;
-          (digits.next).print;
-        };
-        n.to 10 do { x:INTEGER;
-          ' '.print;
-        };
-        j := j + n;
-      };
-      "\t:".print;
-      j.print;
-      ' '.print;
-      n := n - 10;
-    };
+    CTX.pidigits n;
   );
+
+

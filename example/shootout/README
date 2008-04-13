@@ -47,7 +47,7 @@ Status:
 | nsieve             | 3.264s  | 3.308s  | C       |                 |    YES      |
 | partial-sums       | 1.444s  | 1.580s  | C       |                 |    YES      |
 | sum-file           | 0.304   | 0.464s  | C       |                 |    YES      |
-| pidigits           | NC      | NC      | NC      | In progress(Xav)|             |
+| pidigits           | 0.416s  | 0.404s  | Lisaac  |                 |  Ready      |
 | meteor-contest     | NC      | NC      | NC      | In progress(Ben)|             |
 | reverse-complement | 0.140s  | 0.128s  | Lisaac  |                 |  Ready      |
 | mandelbrot         | 1.080s  | 1.000s  | Lisaac  | Warning option  |  Ready      | 

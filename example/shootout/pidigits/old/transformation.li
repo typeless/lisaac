@@ -10,10 +10,16 @@ Section Header
   
   + name := TRANSFORMATION;
   
+  - external := `#include <gmp.h>`;
+  
 Section Inherit
   
   - parent_any:OBJECT := OBJECT;
-
+  
+Section Private
+  
+  -
+  
 Section Private
 
   + q :UINTEGER_BIG;

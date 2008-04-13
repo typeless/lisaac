@@ -1,0 +1,15 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Benoit Sonntag
+
+   Compilation:
+     - lisaac -O -i20 pidigits.li
+*/
+Section Header
+  
+  + name := Expanded MPZ;
+  
+  - type := `mpz_t`;
+    
+  - default := `n`:MPZ;
+  
