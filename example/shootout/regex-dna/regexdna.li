@@ -12,74 +12,45 @@ int re_eo;
 const char *re_e;
 `;
 
+Section Inherit
+  
+  - parent_object:OBJECT := OBJECT;
+
 Section Public
-  - pcre_compile (p:STRING_CONSTANT) <-
-  ( + storage:NATIVE_ARRAY[CHARACTER];
-    storage := p.storage;
-    `re = pcre_compile(@storage, PCRE_CASELESS, &re_e, &re_eo, NULL)`;
-  );
   
-  - pcre_study <-
-  (
-    re_ex = pcre_study(re, 0, &re_e);
-  );
-  
-  - pcre_exec src:STRING :INTEGER <-
-  ( + storage:NATIVE_ARRAY[CHARACTER];
-    + len:INTEGER;
-    storage := src.storage;
-    len := src.count;
-    `pcre_exec(re, re_ex, @storage, src->len, pos, 0, m, 3)
-  );
+  - mem:NATIVE_ARRAY[INTEGER] := NATIVE_ARRAY[INTEGER].create 3;
   
   - fb_subst(dst,src:STRING, p:STRING_CONSTANT,r:STRING_CONSTANT) :INTEGER <-
   // Substitute pattern p with replacement r, copying from src to dst buffer. 
-  ( + dp:NATIVE_ARRAY[CHARACTER];
-    int re_eo, m[3], pos, rlen, clen;
-    
+  ( + pos:INTEGER;
+        
     pcre_compile p;
-    (`re`:POINTER = NULL).if {
-      die_with_code 1;
-    };
     pcre_study;
-    dst.clear;
-    rlen := r.count;
-    pos := 0;
-    {pcre_exec(re, re_ex, src->buf, src->len, pos, 0, m, 3) >= 0}.while_do {
-      pos := m.item 1;
-      clen := m.item 0 - pos;
-      
-      dp := fb_need(dst, clen+rlen);
-      1.to clen do { j:INTEGER;
-        dst.add_last (src.item (pos+j));
+    dst.clear;    
+    pos := src.lower;
+    {pcre_exec src position pos mem mem >= 0}.while_do {                   
+      pos.to (mem.item 0) do { j:INTEGER;
+        dst.add_last (src.item j);
       };    
-      1.to rlen do { j:INTEGER;
-        dst.add_last (r.item j);
-      };    
+      dst.append r;
+      pos  := mem.item 1 + 1;
     };    
-    1.to clen do { j:INTEGER;
-      dst.add_last (src.item (pos+j));
+    // Copy end.    
+    pos.to (src.upper) do { j:INTEGER;
+      dst.add_last (src.item j);
     };      
     dst.count
   );
 
-  
   - fb_countmatches (src:STRING, p:STRING_CONSTANT) :INTEGER <-
   // Count all matches with pattern p in src buffer. 
-  ( pcre *re;
-    pcre_extra *re_ex;
-    const char *re_e;
+  ( + pos,count:INTEGER;
     
-    int re_eo, m[3], pos, count;
-    
-    + p_storage:NATIVE_ARRAY[CHARACTER];
-    p_storage := p.storage;
-    (! (re := `pcre_compile(@p_storage, PCRE_CASELESS, &re_e, &re_eo, NULL)` ) ).if {
-      die_with_code 1;
-    };
-    re_ex := pcre_study(re, 0, &re_e);
-    {`pcre_exec(re, re_ex, src->buf, src->len, pos, 0, m, 3)` >= 0}.while_do {
-      pos := m.item 1;
+    pcre_compile p;
+    pcre_study;    
+    pos := src.lower;
+    {pcre_exec src position pos mem mem >= 0}.while_do {
+      pos := mem.item 1 + 1;
       count := count + 1;
     };
     count
@@ -88,19 +59,19 @@ Section Public
   - variants:FAST_ARRAY[STRING_CONSTANT] := 
   ( + result:FAST_ARRAY[STRING_CONSTANT];
     
-    result := FAST_ARRAY[STRING_CONSTANT].create_with_capacity 10;
+    result := FAST_ARRAY[STRING_CONSTANT].create_with_capacity 9;
     result.add_last "agggtaaa|tttaccct";         result.add_last "[cgt]gggtaaa|tttaccc[acg]";
     result.add_last "a[act]ggtaaa|tttacc[agt]t"; result.add_last "ag[act]gtaaa|tttac[agt]ct";
     result.add_last "agg[act]taaa|ttta[agt]cct"; result.add_last "aggg[acg]aaa|ttt[cgt]ccct";
     result.add_last "agggt[cgt]aa|tt[acg]accct"; result.add_last "agggta[cgt]a|t[acg]taccct";
-    result.add_last "agggtaa[cgt]|[acg]ttaccct"; result.add_last NULL;
+    result.add_last "agggtaa[cgt]|[acg]ttaccct"; 
     result
   );
 
   - subst:FAST_ARRAY[STRING_CONSTANT] := 
   ( + result:FAST_ARRAY[STRING_CONSTANT];
     
-    result := FAST_ARRAY[STRING_CONSTANT].create_with_capacity 23;
+    result := FAST_ARRAY[STRING_CONSTANT].create_with_capacity 22;
     result.add_last "B"; result.add_last "(c|g|t)"; 
     result.add_last "D"; result.add_last "(a|g|t)";
     result.add_last "H"; result.add_last "(a|c|t)";
@@ -112,35 +83,39 @@ Section Public
     result.add_last "V"; result.add_last "(a|c|g)";
     result.add_last "W"; result.add_last "(a|t)";
     result.add_last "Y"; result.add_last "(c|t)";
-    result.add_last NULL;
     result
   );
 
   - main <-
-  ( + seq_0,seq_1:STRING;
+  ( + seq:FAST_ARRAY[STRING];
+    + ilen, clen, slen:INTEGER;
+    + flip:INTEGER;
     
-    const char **pp;
-    size_t ilen, clen, slen;
-    int flip;
-    
-    seq_0 := STRING.create 1024;
-    seq_1 := STRING.create 1024;
+    seq := FAST_ARRAY[STRING].create_with_capacity 2;
+    seq.add_last (STRING.create 1024);
+    seq.add_last (STRING.create 1024);
     IO.read_line;
     {IO.end_of_input}.until_do {
-      seq_0.append (IO.last_string);
+      seq.first.append (IO.last_string);
+      seq.first.add_last '\n';
       IO.read_line;
     };
+    ilen := seq.first.count;
+        
+    clen := fb_subst (seq.second,seq.first, ">.*|\n", "");
     
-    clen = fb_subst(&seq[1], &seq[0], ">.*|\n", "");
-    
-    for (pp = variants; *pp; pp++)
-    printf("%s %d\n", *pp, fb_countmatches(&seq[1], *pp));
-    
-    slen := 0;
-    flip := 1;
-    
-    for (slen = 0, flip = 1, pp = subst; *pp; pp += 2, flip = 1-flip)
-    slen = fb_subst(&seq[1-flip], &seq[flip], *pp, pp[1]);
+    (variants.lower).to (variants.upper) do { i:INTEGER;
+      variants.item i.print; 
+      ' '.print;
+      fb_countmatches (seq.second, variants.item i).print;
+      '\n'.print;
+    };
+            
+    flip := 1;    
+    (subst.lower).to (subst.upper) by 2 do { i:INTEGER;    
+      slen := fb_subst(seq.item (1-flip), seq.item flip, subst.item i, subst.item (i+1));
+      flip := 1-flip;
+    };
     '\n'.print;
     ilen.print;
     '\n'.print;
@@ -149,4 +124,28 @@ Section Public
     slen.print;
     '\n'.print;        
   );
-
+  
+Section Private
+  
+  //
+  // External Function.
+  //
+  
+  - pcre_compile p:STRING_CONSTANT <-
+  ( + storage:NATIVE_ARRAY[CHARACTER];
+    storage := p.storage;
+    `re = pcre_compile(@storage, PCRE_CASELESS, &re_e, &re_eo, NULL)`;
+  );
+  
+  - pcre_study <-
+  (
+    `re_ex = pcre_study(re, 0, &re_e)`;
+  );
+  
+  - pcre_exec src:STRING position pos:INTEGER mem m:NATIVE_ARRAY[INTEGER] :INTEGER <-
+  ( + storage:NATIVE_ARRAY[CHARACTER];
+    + len:INTEGER;
+    storage := src.storage;
+    len := src.count;
+    `pcre_exec(re, re_ex, @storage, @len, @pos-1, 0, @m, 3)`:INTEGER
+  );

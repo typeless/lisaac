@@ -2,7 +2,7 @@ lisaac regexdna -q -O -i20
 gcc -O3 -fomit-frame-pointer -o regexdna_c regexdna_c.c -lpcre
 # g++ -O3 -lboost_regex regexdna_c.cc -o regexdna_c
 echo Lisaac: 
-time ./regexdna 25000000 > out_li.txt
+time ./regexdna < input10000.txt > out_li.txt
 echo C:
-time ./regexdna_c 25000000 > out_c.txt
+time ./regexdna_c < input10000.txt > out_c.txt
 diff out_li.txt out_c.txt
