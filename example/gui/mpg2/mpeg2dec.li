@@ -45,11 +45,12 @@ Section Public
   
   - init:G_EXPR <-
   (    
+    TIMER.add_client Self;
     (page := G_RAW.create (Self.fix_height.fix_width)) /
     G_BUTTON.create (G_OUT.create "Play" justify (G_OUT.center)) action {
       b:G_BUTTON;
-      (stat = 4).if {
-        stat := 0;
+      (stat_mpg = 4).if {
+        stat_mpg := 0;
       };
     }.fix_height 
   );
@@ -58,7 +59,8 @@ Section Public
   ( 
     is_isaacos := TRUE;
     load_default;
-    G_WIN_OUT.create "Video" with init
+    stat_mpg := 4;
+    page := G_WIN_OUT.create "Video" with init
   );
   
   - main <-
@@ -67,8 +69,7 @@ Section Public
     process_options;    
     
     (output_type = 0).if {
-      VIDEO.make (640,480);        
-      TIMER.add_client Self;
+      VIDEO.make (640,480);              
       DESK.make VIDEO with (
         G_OUT.create "Video" justify (G_OUT.center).fix_height / init      
       ); 
@@ -280,17 +281,17 @@ Section Private
     };
   );
   
-  - stat:INTEGER_8;
+  - stat_mpg:INTEGER_8;
   - bitstream_framenum:INTEGER;    
   - sequence_framenum:INTEGER;        
       
   - decode_picture <-
   ( 
-    (stat = 0).if {
+    (stat_mpg = 0).if {
       LAYER_DATA.make main_bitstream_filename;
       ld := LAYER_DATA;
-      stat := 1;
-    }.elseif {stat = 1} then {
+      stat_mpg := 1;
+    }.elseif {stat_mpg = 1} then {
       //
       // Begin sequence.
       //      
@@ -307,11 +308,11 @@ Section Private
           bitstream_framenum := bitstream_framenum + 1;
           sequence_framenum  := sequence_framenum  + 1;
         };
-        stat := 2;
+        stat_mpg := 2;
       } else {
-        stat := 4;
+        stat_mpg := 4;
       };
-    }.elseif {stat = 2} then {
+    }.elseif {stat_mpg = 2} then {
       //
       // Next picture.
       //
@@ -325,9 +326,9 @@ Section Private
           sequence_framenum  := sequence_framenum  + 1;
         };
       } else {
-        stat := 3;
+        stat_mpg := 3;
       };      
-    }.elseif {stat = 3} then {
+    }.elseif {stat_mpg = 3} then {
       //
       // Last picture
       //
@@ -339,8 +340,8 @@ Section Private
       
       // deinitialize sequence
       ld.set_mpeg2_flag FALSE;      
-      stat := 1;
-    }.elseif {stat = 4} then {
+      stat_mpg := 1;
+    }.elseif {stat_mpg = 4} then {
       //
       // End of sequence.
       //
@@ -419,7 +420,11 @@ Section Public
     }.elseif {(evt_time != NULL) && {evt_time.destination = NULL}} then {
       // Decode Picture...
       decode_picture;
-      ((width != width_min) || {height != height_min}).if {
+      (
+        (page != NULL) && {page.parent != NULL} && {
+          (width != width_min) || {height != height_min}
+        }
+      ).if {
         (is_isaacos).if {          
           page.set_position (page.parent) 
           at   (page.get_x_window,page.get_y_window) 
