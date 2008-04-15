@@ -177,7 +177,7 @@
     
     ;; Identifier :
     ("\\.[ \t\n]*[a-z][a-z0-9_]*" 0 font-lock-function-name-face nil)
-    ("[a-z_]+[a-z0-9_]*" 0 (li-message) nil)
+    ("[a-z]+[a-z0-9_]*" 0 (li-message) nil)
 
     ;; Number :   
     ("[0-9][0-9_]*" 0 font-lock-keyword-face nil)
