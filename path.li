@@ -155,7 +155,7 @@ Section UNIX
 //  * "gcc " + input_file + " -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
 //    output_file + " -L" + path_lib_x11 + option_gcc;
 
-  * "gcc " + input_file + " -O3  -fomit-frame-pointer -lpcre -lgmp -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
+  * "gcc " + input_file + " -O3  -fomit-frame-pointer -lpcre -lgmp -lm -lpthread -lX11 -lGL -lGLU -lXxf86vm -o " + 
     output_file + " -L" + path_lib_x11 + option_gcc;
 
 Section WINDOWS
