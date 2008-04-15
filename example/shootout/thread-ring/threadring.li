@@ -34,7 +34,7 @@ Section External
     l := CONVERT[POINTER,INTEGER].on num;
     r := (l+1) % threads;
    
-    {`(1)`:BOOLEAN(TRUE,FALSE)}.while_do {
+    {`(1)`:BOOLEAN(TRUE,FALSE)}.while_do { // It's always TRUE
       mutex.item l.lock;
       token := data.item l;
       (token != 0).if {
@@ -67,10 +67,9 @@ Section Public
     
     mutex.first.unlock;
     THREAD.join;
-    `/*`;
+    die_with_code 0;
     thread 0;
-    thread 1;
-    `*/`;    
+    thread 1;    
   );
   
 Section Private
