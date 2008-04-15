@@ -487,9 +487,7 @@ Section Public
   
   - print_positif <-
   // Display this number without memory.
-  [
-    -? {Self >= 0};
-  ]
+  [ -? {Self >=# 0}; ]
   ( + char:CHARACTER;
     + val:SELF;    
         

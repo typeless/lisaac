@@ -101,7 +101,9 @@ Section Public
   
   - '<=#' Right 60 other:INTEGER :BOOLEAN <- ! (Self ># other);
   
-  - '>=#' Right 60 other:INTEGER :BOOLEAN <- (Self ># other) | (Self == other);
+  - '>=#' Right 60 other:INTEGER :BOOLEAN <- (Self ># other) | (Self ==# other);
+  
+  - '==#' Right 60 other:INTEGER :BOOLEAN <- (Self = other);
 
   //
   // Test binary operator :
@@ -346,8 +348,7 @@ Section Public
 
   - to_uinteger_big:UINTEGER_BIG <- 
   ( 
-    deferred;
-    NULL
+    UINTEGER_BIG.create Self
   );
   
   //

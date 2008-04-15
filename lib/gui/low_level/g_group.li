@@ -42,6 +42,11 @@ Section Public
   // Width / Height
   //
   
+  - predict_size (w,h:INTEGER) :(INTEGER,INTEGER) <-
+  (
+    w, h
+  );
+  
   - width_min:INTEGER  <- root.width_min;
   
   - height_min:INTEGER <- root.height_min;

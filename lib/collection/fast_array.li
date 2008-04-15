@@ -252,7 +252,27 @@ Section Public
   (     
     storage.put element to i;    
   ); 
-    
+  
+  - add element:V first n:INTEGER <-
+  [ -? {n > 0}; ]
+  ( + new_capacity,new_count:INTEGER;
+
+    new_count := count + n;
+    (capacity = 0).if {
+      storage := NATIVE_ARRAY[V].create new_count;
+      capacity := new_count;
+    }.elseif {new_count > capacity} then {
+      new_capacity := capacity * 2;
+      {new_capacity >= new_count}.until_do {
+        new_capacity := new_capacity * 2;
+      };
+      storage := storage.realloc capacity with new_capacity;
+      capacity := new_capacity;
+    };
+    storage.move 0 to upper by n;
+    storage.set_slice_with element from lower until (n-1);
+  );
+  
   - add_first element:V <-
   ( 
     add_last element;

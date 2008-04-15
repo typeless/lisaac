@@ -123,6 +123,19 @@ Section Public
   // Size.
   //
   
+  - predict_size (w,h:INTEGER) with_title t:BOOLEAN :(INTEGER,INTEGER) <-
+  ( + rw,rh:INTEGER;
+    
+    (t).if {
+      rw := w +  2 + margin_resize_button;
+      rh := h + 18 + margin_resize_button;
+    } else {
+      rw := w + 2;
+      rh := h + 2;
+    };
+    rw , rh
+  );  
+  
   - width_min:INTEGER <-
   ( + result:INTEGER;
     

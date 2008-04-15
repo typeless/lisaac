@@ -47,6 +47,11 @@ Section Public
   // Size.
   //
   
+  - predict_size (lw,lh:INTEGER) and (rw,rh:INTEGER) :(INTEGER,INTEGER) <-
+  (
+    lw + rw, lh.max rh
+  );
+  
   - width_min:INTEGER <-
   (
     left.width_min + right.width_min

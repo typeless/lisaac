@@ -57,6 +57,11 @@ Section Public
   // Width / Height
   //
   
+  - predict_size (car,line:INTEGER) :(INTEGER,INTEGER) <-
+  (
+    car * 8, line * 16
+  );  
+  
   + width_min:INTEGER;
   
   + height_min:INTEGER;  

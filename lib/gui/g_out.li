@@ -48,23 +48,19 @@ Section Public
   // Width / Height
   //
   
+  - predict_size txt:ABSTRACT_STRING :(INTEGER,INTEGER) <-
+  ( 
+    width_min_on txt, height_min_on txt
+  );
+  
   - width_min:INTEGER <-
-  ( + beg,idx,siz:INTEGER;
-    + result:INTEGER;
-    
-    beg := text.lower;
-    {
-      idx    := text.index_of '\n' since beg;
-      siz    := font_width text at beg to (idx-1);
-      result := result.max siz;      
-      beg    := idx + 1;
-    }.do_until {idx > text.count};
-    result
+  ( 
+    width_min_on text
   );
   
   - height_min:INTEGER <-
   (
-    (text.occurrences '\n' + 1) * 16
+    height_min_on text
   );
   
   //
@@ -138,4 +134,25 @@ Section Public
       py  := py + 16;
       beg := idx + 1;
     }.do_until {idx > text.count};
+  );
+  
+Section Private
+  
+  - width_min_on txt:ABSTRACT_STRING :INTEGER <-
+  ( + beg,idx,siz:INTEGER;
+    + result:INTEGER;
+    
+    beg := txt.lower;
+    {
+      idx    := txt.index_of '\n' since beg;
+      siz    := font_width txt at beg to (idx-1);
+      result := result.max siz;      
+      beg    := idx + 1;
+    }.do_until {idx > txt.count};
+    result
+  );
+  
+  - height_min_on txt:ABSTRACT_STRING :INTEGER <-
+  (
+    (txt.occurrences '\n' + 1) * 16
   );

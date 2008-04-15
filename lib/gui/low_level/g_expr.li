@@ -115,7 +115,7 @@ Section Public
   [
     +? {Result >= height_min};
   ];
-
+  
   //
   // Operator position.
   //

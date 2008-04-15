@@ -42,6 +42,34 @@ Section Public
   // Width / Height
   //
   
+  - predict_size filename:ABSTRACT_STRING :(INTEGER,INTEGER) <-
+  ( + entry:ENTRY;
+    + bmp_file:BMP_FILE;
+    //+ ai_file:AI_FILE;
+    + w,h:INTEGER;
+    
+    entry := FILE_SYSTEM.get_entry filename;
+    ((entry = NULL) || {! entry.is_file}).if {
+      VIDEO.message ("ERROR: File '" + filename + "' not found.\n");
+      die_with_code exit_failure_code;
+    };    
+    (entry.path.has_suffix ".bmp").if {
+      bmp_file := entry.open_bmp;    
+      bmp_file.read_header;
+      (! bmp_file.is_valid_bmp).if {
+        VIDEO.message "Error: BMP format invalid.\n";
+        die_with_code exit_failure_code;      
+      };
+      w := bmp_file.header.width;
+      h := bmp_file.header.height;      
+      bmp_file.close;
+    }.elseif {entry.path.has_suffix ".ai"} then {
+      not_yet_implemented;
+    };
+    //
+    w,h
+  );
+
   - width_min :INTEGER <- bitmap.width;
   
   - height_min:INTEGER <- bitmap.height;

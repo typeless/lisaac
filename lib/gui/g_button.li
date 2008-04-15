@@ -79,6 +79,11 @@ Section Public
   // Size.
   //
   
+  - predict_size (w,h:INTEGER) :(INTEGER,INTEGER) <-
+  (
+    w + 4, h + 4
+  );
+
   - width_min:INTEGER <-
   (
     parent_g_group.width_min + 4

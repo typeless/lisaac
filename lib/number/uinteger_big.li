@@ -25,11 +25,9 @@ Section Header
                                
   - comment     := "Integer without bits limit! (Just for fun!)";
 
-  //- default     := 0;
-
 Section Inherit
 
-  - parent_unsigned:UNSIGNED_INTEGER := UNSIGNED_INTEGER;
+  - parent_object:OBJECT := OBJECT;
 
 Section UINTEGER_BIG
   
@@ -37,13 +35,6 @@ Section UINTEGER_BIG
   
   - last_modulo:UINTEGER_32;
   
-  - make init:UINTEGER_32 :SELF <-
-  (     
-    storage:=FAST_ARRAY[UINTEGER_32].create 1; 
-    storage.put init to 0;
-    Self 
-  );
-
   - count:INTEGER <- storage.count;
 
   - lower:INTEGER <- storage.lower;
@@ -68,211 +59,196 @@ Section UINTEGER_BIG
   
   - last:UINTEGER_32 <- storage.last;
   
-Section INTEGER
-
-  - create init:UINTEGER_32 :UINTEGER_BIG <- UINTEGER_BIG.clone.make init;
-  
-Section Public  
-  
-  - object_size:INTEGER <- `52`; 
- 
-  //
-  // Range.
-  //
-  
-  - maximum:UINTEGER_64 <- 
+  - normalize <-
   (
-    crash_with_message "UINTEGER_BIG's maximum is undefined.";
-    0
+    {(storage.count != 1) && {storage.last == 0}}.while_do {
+      storage.remove_last;
+    };	
   );
+
+Section Public 
+
+  - create init:UINTEGER_32 :UINTEGER_BIG <- 
+  ( + result:SELF;
     
+    result := clone;
+    result.make init;
+    result
+  );
+        
+  - make init:UINTEGER_32 :SELF <-
+  (     
+    (storage = NULL).if {
+      storage := FAST_ARRAY[UINTEGER_32].create_with_capacity 4; 
+    } else {
+      storage.clear;
+    };
+    storage.add_last 0;
+  );
+
   //
   // Conversion format with test.
   //
   
   - to_uinteger_64:UINTEGER_64   <- 
-  ( ? {count <= 2}; // Bound limit control.
-    storage.first.to_uinteger_64 + (storage.item 1.to_uinteger_64 << 32) 
+  [ -? {count <= 2}; ] // Bound limit control.
+  ( + result:UINTEGER_64;
+    
+    result := storage.first;
+    (count > 1).if {
+      result := result | (storage.item 1.to_uinteger_64 << 32);
+    };
+    result
   );
   
   - to_uinteger_32:UINTEGER_32   <- 
-  ( ? {count = 1};
-    storage.first.to_uinteger_32
+  [ -? {count = 1}; ]
+  ( 
+    storage.first
   );
   
   - to_uinteger_16:UINTEGER_16 <- 
-  ( ? {in_range 0 to (UINTEGER_16.maximum)};
+  [ -? {count = 1}; ]
+  ( 
     storage.first.to_uinteger_16
   );
   
   - to_uinteger_8:UINTEGER_8 <- 
-  ( ? {in_range 0 to (UINTEGER_8.maximum)};
+  [ -? {count = 1}; ]
+  ( 
     storage.first.to_uinteger_8
   );
   
   - to_integer_64:INTEGER_64     <- 
-  ( ? {in_range (INTEGER_64.minimum) to (INTEGER_64.maximum)};
-    storage.first.to_integer_64
+  [ -? {(to_uinteger_64 >> 63) = 0}; ]
+  ( 
+    to_uinteger_64.to_integer_64
   );
   
   - to_integer:INTEGER     <- 
-  ( ? {in_range (INTEGER.minimum) to (INTEGER.maximum)};
+  [ -? {(to_uinteger_64 >> 31) = 0}; ]
+  ( 
     storage.first.to_integer
   );
   
   - to_integer_16:INTEGER_16   <- 
-  ( ? {in_range (INTEGER_16.minimum) to (INTEGER_16.maximum)};
+  [ -? {(to_uinteger_16 >> 15) = 0}; ]
+  ( 
     storage.first.to_uinteger_16
   );
   
   - to_integer_8:INTEGER_8   <- 
-  ( ? {in_range (INTEGER_8.minimum) to (INTEGER_8.maximum)};
+  [ -? {(to_uinteger_8 >> 7) = 0}; ]
+  ( 
     storage.first.to_integer_8
   );
-
-  //- to_ureal_26_6:UREAL_26_6 <- self;
-
-  - to_ulargeint:UINTEGER_BIG <- Self;
-  
-  - clean <-
-  (
-    {(storage.count!=1) && {storage.last == 0}}.while_do {
-      storage.remove_last;
-    };	
-  );
-  
+    
   //
   // binary operator :
   //
   
-  - '-' Left 80  other:SELF :SELF <- 
-  ( + result:UINTEGER_BIG;
-    + over,substr,part1,part2:UINTEGER_64;
+  - substract other:SELF :SELF <- 
+  [ ? {Self >= other}; ]
+  ( + over,substr,part1,part2:UINTEGER_64;
+    + idx:INTEGER;
 
-    (other > Self).if {
-      crash;
-      result := 0;
-    } else {      
-      result.resize count;
-      (other.count < count).if {
-	other.resize count;
-      };
-      lower.to upper do { idx:INTEGER;
+    (Self == other).if {
+      set_with_zero;
+    } else {                  
+      idx := lower;
+      {idx > other.upper}.until_do {
 	part1 := item idx;
 	part2 := other.item idx.to_uinteger_64 + over;
 	substr := part1 - part2;
-	((substr >> 32) == 1).if {
-	  over := 1;
-	};
-	result.put ((substr & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
+        over := substr >> 32;
+        put ((substr & 0FFFF_FFFFh).to_uinteger_32) to idx;
+        idx := idx + 1;
       };
-    };
-    
-    result.clean;
-    result
-  );
-  
-  
-  - '-#' Left 80 other:INTEGER :SELF <-
-  (
-    + result:UINTEGER_BIG;
-    + part1,over,substr:UINTEGER_64;
-    + idx:INTEGER;
-
-    (Self <# other).if {
-      crash;
-      result := 0;
-    } else {
-      result.resize count;
-      part1 := item 0;
-      substr := part1 - other;
-      ((substr >> 32) == 1).if {
-	over := 1;
-      };
-      result.put ((substr & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to 0;
-      idx := idx + 1;
-      {over == 0}.until_do {
+      {over = 0}.until_do {
 	part1 := item idx;
 	substr := part1 - over;
-	((substr >> 32) == 1).if {
-	  over := 1;
-	};
-	result.put ((substr & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
+        over := substr >> 32;
+	put ((substr & 0FFFF_FFFFh).to_uinteger_32) to idx;
 	idx := idx + 1;
       };      
-    };
-    
-    result.clean;
-    result
-  );
-  
-  
-  - '+'  Left 80  other:SELF :SELF <- 
-  (
-    + result:UINTEGER_BIG;
-    + part1,part2,sum,over:UINTEGER_64;
-
-    (other.count > count).if {
-      result := other + Self;
-    } else {
-      result := 0;
-      result.resize count;
-      (other.lower).to (other.upper) do { idx:INTEGER;
-        part1:=item idx;
-        part2:=other.item idx;
-        sum:=part1+part2+over;
-        result.put ((sum & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
-        over:=sum >> 32;
-      };
-      (other.upper+1).to upper do { idx:INTEGER;
-        part1:=item idx;
-        sum:=part1+over;
-        result.put ((sum & (UINTEGER_32.maximum.to_uinteger_64)).to_uinteger_32) to idx;
-        over:=sum >> 32;
-      };
-      (over!==0).if {
-        result.add_last (over.to_uinteger_32);
-      };
+      normalize;
     };    
-    result
-  );  
-  
-  
-  - '+#' Left 80  other:INTEGER :SELF <-
-  (
-    + result:UINTEGER_BIG;
-    + part1,sum,over:UINTEGER_64;
+  );
+    
+  - substract_integer other:INTEGER :SELF <-
+  [ ? {Self >=# other}; ]
+  ( + part1,over,substr:UINTEGER_64;
     + idx:INTEGER;
-    result.resize count;
+
+    (Self ==# other).if {
+      set_with_zero;
+    } else {      
+      part1 := item 0;
+      substr := part1 - other;
+      over := substr >> 32;
+      put ((substr & 0FFFF_FFFFh).to_uinteger_32) to 0;
+      idx := idx + 1;
+      {over = 0}.until_do {
+	part1 := item idx;
+	substr := part1 - over;
+        over := substr >> 32;
+	put ((substr & 0FFFF_FFFFh).to_uinteger_32) to idx;
+	idx := idx + 1;
+      };      
+      normalize;
+    };    
+  );
+    
+  - addition other:SELF :SELF <- 
+  [ -? {Self >= other}; ]
+  ( + part1,part2,sum,over:UINTEGER_64;
+    + idx:INTEGER;
+    
+    idx := lower;
+    {idx > other.upper}.until_do {
+      part1 := item idx;
+      part2 := other.item idx;
+      sum := part1 + part2 + over;
+      put ((sum & 0FFFF_FFFFh).to_uinteger_32) to idx;
+      over := sum >> 32;
+      idx := idx + 1;
+    };
+    {(idx <= upper) && {over != 0}}.while_do {
+      part1 := item idx;
+      sum   := part1 + over;
+      put ((sum & 0FFFF_FFFFh).to_uinteger_32) to idx;
+      over := sum >> 32;
+    };
+    (over != 0).if {
+      add_last (over.to_uinteger_32);
+    };    
+  );  
+    
+  - addition_integer other:INTEGER :SELF <-
+  ( + part1,sum,over:UINTEGER_64;
+    + idx:INTEGER;
+   
     part1 := item 0;
     sum := part1 + other;
-    result.put ((sum & (UINTEGER_32.maximum)).to_uinteger_32) to 0;
-    idx := idx + 1;
-    over:=sum >> 32;
-    {(over == 0) || {idx > upper}}.until_do {
+    put ((sum & 0FFFF_FFFFh).to_uinteger_32) to 0;
+    idx  := idx + 1;
+    over := sum >> 32;
+    {(idx <= upper) && {over != 0}}.while_do {
       part1 := item idx;
       sum := part1 + over;
-      result.put ((sum & (UINTEGER_32.maximum)).to_uinteger_32) to idx;
-      idx := idx + 1; 
-      over:=sum >> 32;
-    };
-    
-    (over!==0).if {
-      result.add_last (over.to_uinteger_32);
-    };
-    
-    result
+      put ((sum & 0FFFF_FFFFh).to_uinteger_32) to idx;
+      idx  := idx + 1; 
+      over := sum >> 32;
+    };    
+    (over != 0).if {
+      add_last (over.to_uinteger_32);
+    };    
   );
-  
-  
-  - '*'  Left 100 other:SELF :SELF <- 
-  ( + result:UINTEGER_BIG;
-    + part1,part2,product:UINTEGER_64;
+    
+  - multiply other:SELF :SELF <- 
+  ( + part1,part2,product:UINTEGER_64;
     + index_result:INTEGER;
-    
-    result := 0;
-    result.resize (count + other.count);
-    
+            
     lower.to upper do { idx:INTEGER;
       + result_current:UINTEGER_BIG;
       
@@ -335,11 +311,10 @@ Section Public
   
   
   - '/#' Left 100 other:INTEGER :SELF <-
-  (
-    + result:UINTEGER_BIG;
+  ( + result:SELF;
     + last_mod,div:UINTEGER_64;
     + idx:INTEGER;
-    result := 0;
+    
     result.resize count;
     idx := upper;
     last_mod := item idx;    
@@ -364,12 +339,26 @@ Section Public
     result.clean;
     result
   );
+    
+  - and_binary other:SELF :SELF <-
+  (     
+    (other.upper < upper).if {
+      storage.remove_tail (upper - other.upper);
+    };
+    lower.to upper do { i:INTEGER;
+      put (item i & other.item i) to i;
+    };
+    normalize;
+  );
   
-  
-  
-  - '&'  Left 100 other:SELF :SELF <-
-  (
-    not_yet_implemented; Self
+  - or_binary other:SELF :SELF <-
+  (         
+    lower.to (upper.min (other.upper)) do { i:INTEGER;
+      put (item i | other.item i) to i;
+    };
+    upper.to (other.upper) do { i:INTEGER;
+      add_last (other.item i);
+    };    
   );
 
   //
@@ -434,45 +423,20 @@ Section Public
   );
   
   //
-  // prefix : Unary operator
+  // Function.
   //
-    
-  - '~' :SELF <- 
-  (
-    not_yet_implemented; Self 
-  );  
-  
-  - '-' :SELF <-
-  (
-    lower.to upper do { idx:INTEGER;
-      force (~item idx) to idx;
-    };
-    
-    Self + 1
-  );
 
-
-  - factorial:SELF <-
-  ( + result,value:SELF;
-    + value2:UINTEGER_32;
-    ? {Self >=# 0};
-    
-    (count = 1).if {
-      result := 1;
-      value2 := to_uinteger_32;
-      {value2 <= 1}.until_do {
-	result := result *# value2;
-	value2  := value2 - 1;
-      };
+  - factorial_integer n:INTEGER <-
+  [ -? {n >= 0}; ]
+  (         
+    (n = 0).if {
+      set_with_zero;
+      put 1 to 0;
     } else {
-      result := 1;
-      value  := Self;
-      {value <=# 1}.until_do {
-	result := result * value;
-	value  := value -# 1;
+      2.to n do { i:INTEGER;
+        multiply_integer i; 
       };
     };
-    result
   );
   
   //
@@ -518,7 +482,38 @@ Section Public
       };
     };
   );
-  
+    
+  - print_positif <-
+  (
+    string_tmp.clear;
+    append_in string_tmp;
+    string_tmp.print;
+  );
+/*  
+  - append_in buffer:STRING <-
+  ( + val:SELF;
+    + i,j:INTEGER;     
+    ? {buffer!=NULL};
+    
+    (self == 0).if {
+      buffer.extend '0';
+    } else {      
+      i := buffer.upper + 1;      
+      val.copy Self;
+      {val == 0}.until_do {
+	buffer.extend ((val %# 10).digit);
+	val := val /# 10;
+      };
+      j := buffer.upper;
+            
+      {i >= j}.until_do {
+	buffer.swap i with j;
+	j := j - 1;
+	i := i + 1;
+      };
+    };
+  );
+  */
 Section Public
   
   - set_with_zero <-
@@ -601,7 +596,7 @@ Section Public
     result
   );
   
-  - normalize:INTEGER_8 <-
+  - normalize_shift:INTEGER_8 <-
   // Shift left until the most significant bit is on.
   // Result give the number of left shift.
   [ -? {! is_zero}; ]
@@ -804,6 +799,7 @@ Section Public
   // Calculates the `quotient' and `remainder' of `Current'
   // divided by `other'. (The contents of `Current' and `other' are
   // not changed.)			
+  // Note: Uses Algorithm D in Knuth
   [ -? {! other.is_zero};
     -? {quotient  != NULL};
     -? {remainder != NULL};
@@ -843,7 +839,7 @@ Section Public
         register1.copy other;
         remainder.copy Self;
         // D1 normalize the divisor:
-        shift := register1.normalize;        
+        shift := register1.normalize_shift;        
         (shift != 0).if {
           remainder.shift_left shift;
         };
