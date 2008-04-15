@@ -85,30 +85,28 @@ Section Public
     result.add_last "Y"; result.add_last "(c|t)";
     result
   );
-
+  
+  - string_tmp:STRING := STRING.create 512;
+  
   - main <-
   ( + seq:FAST_ARRAY[STRING];
     + ilen, clen, slen:INTEGER;
     + flip:INTEGER;
     
     seq := FAST_ARRAY[STRING].create_with_capacity 2;
-    seq.add_last (STRING.create 1024);
-    seq.add_last (STRING.create 1024);
-    IO.read_line;
-    {IO.end_of_input}.until_do {
-      seq.first.append (IO.last_string);
-      seq.first.add_last '\n';
-      IO.read_line;
-    };
+    seq.add_last (STRING.create (5.mb));
+    seq.add_last (STRING.create (5.mb));
+    read_stdin (seq.first);    
+    
     ilen := seq.first.count;
         
     clen := fb_subst (seq.second,seq.first, ">.*|\n", "");
     
     (variants.lower).to (variants.upper) do { i:INTEGER;
-      variants.item i.print; 
-      ' '.print;
-      fb_countmatches (seq.second, variants.item i).print;
-      '\n'.print;
+      string_tmp.append (variants.item i);
+      string_tmp.add_last ' ';
+      fb_countmatches (seq.second, variants.item i).append_in string_tmp;
+      string_tmp.add_last '\n';
     };
             
     flip := 1;    
@@ -116,16 +114,32 @@ Section Public
       slen := fb_subst(seq.item (1-flip), seq.item flip, subst.item i, subst.item (i+1));
       flip := 1-flip;
     };
-    '\n'.print;
-    ilen.print;
-    '\n'.print;
-    clen.print;
-    '\n'.print;
-    slen.print;
-    '\n'.print;        
+    string_tmp.add_last '\n';    
+    ilen.append_in string_tmp;
+    string_tmp.add_last '\n';    
+    clen.append_in string_tmp;
+    string_tmp.add_last '\n';
+    slen.append_in string_tmp;
+    string_tmp.println;
   );
   
 Section Private
+  
+  - read_stdin str:STRING <-
+  // BS: put this function in library...
+  ( + storage:NATIVE_ARRAY[CHARACTER];
+    + n,cap:INTEGER;
+    {
+      cap := str.capacity;
+      ((cap - str.count) < 1024).if {
+        cap := cap * 2;
+        str.set_capacity cap;
+      };
+      storage := str.storage + str.upper;
+      n := `fread(@storage,1,@cap,stdin)`:INTEGER;
+      str.set_count (str.count+n);
+    }.do_until {n = 0};    
+  );
   
   //
   // External Function.
