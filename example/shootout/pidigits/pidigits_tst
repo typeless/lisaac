@@ -1,4 +1,5 @@
-lisaac pidigits -q -O -i20
+lisaac pidigits -O -i20
+gcc pidigits.c -o pidigits -O3 -fomit-frame-pointer -lgmp
 gcc pidigits_c.c -o pidigits_c -O3 -fomit-frame-pointer -lgmp
 echo Lisaac: 
 time ./pidigits 2500 > out_li.txt
