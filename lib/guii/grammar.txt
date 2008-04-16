@@ -14,6 +14,7 @@ Group:
 
 - MENU_H     = FRAME* 
       FRAME  = ( BUTTON | CHECK )*
+      BUTTON = ( TEXT | ICON | SHORTCUT )*
 
 :: IN_WIN_OUT 
 

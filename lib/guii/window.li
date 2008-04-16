@@ -1,0 +1,131 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := WINDOW;
+
+  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
+
+  - comment   := "Vertical menu for GUII.";
+  
+Section Inherit
+  
+  - parent_internal_inode:INTERNAL_INODE := INTERNAL_INODE;
+  
+Section Public
+
+ - representation:STRING_CONSTANT := "WINDOW";
+// + content:G_EXPR;
+
+- depth_node n:INODE of base:INODE from depth:INTEGER :INTEGER <-
+  (
+      +result:INTEGER;
+      +depth2:INTEGER;
+
+      depth2:=depth+1;
+      (n.name=base.name).if {
+        result:=depth2;
+      } else {
+        (!base.list.is_empty).if {
+          base.list.foreach {
+            i:INODE;
+            result:=result+depth2+(depth_node n of i from depth2);
+          };
+        } else {
+          result:=0;
+        };
+      };
+
+      result
+  );
+
+  - compute_size_from_prc p:INTEGER <-
+  [ ? {! list.is_empty}; ]
+  (
+    height:=0;
+    width:=0;
+
+    //attention ce calcul n'est pas le bon, c'est les dimensions au max
+    //les bonnes dimensions se calculent en fonction du placement des items
+    list.foreach {
+      i:INODE;
+      (i.priority > p).if {
+        height:=height+i.height;
+        width:=width+i.width;
+        "i.height := ".print;i.height.print;"\n".print;
+        "i.width := ".print;i.width.print;"\n".print;
+      };
+    }
+  );
+
+- space_evaluation (w,h:REAL_32) :REAL_32<-
+  [? {!list.is_empty}; ]
+  (
+      + r,result:REAL_32;
+
+      // Space evaluation
+      compute_size_from_prc 0;
+      ((height > h) || {width > w}).if {
+	"Priority 0 failed\n".print;
+	compute_size_from_prc 25;
+	((height > h) || {width > w}).if {
+	   "Priority 25 failed\n".print;
+	   compute_size_from_prc 50;
+	   ((height > h) || {width > w}).if {
+		"Priority 50 failed\n".print;
+		r:=0;
+		set_height 0;
+		set_width 0;
+           } else {
+		r:=get_nitem_from_prc 50;
+	   };
+	} else {
+	   r:=get_nitem_from_prc 25;
+	};
+      } else {
+	r:=list.count;
+     };
+     result:=(r/list.count)*100;
+     "area := ".print;(get_area_prc (w,h)).print;"\n".print;
+     result:=result-(get_area_prc (w,h))/100;
+     "result := ".print;result.print;"%\n".print;
+     result
+  );
+
+- evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
+  (
+
+     + result:REAL_32;
+     result:=0;
+
+     n.set_representation WINDOW;
+     "Semantic evaluation of ".print;n.name.print;"\n".print;
+     //Semantic evaluation: if the "base" son doesn't have any sons itself then it is a PAGE at 100%
+     ((n.depth) > 2).if {
+      "Space evaluation of ".print;n.name.print;"\n".print;
+       result:=n.space_evaluation (w,h);
+     };
+     "Its depth is: ".print;n.depth.print;"\n".print;
+     "WINDOW result of ".print;n.name.print;"= ".print;result.print;"% \n".print;
+     n.set_representation INTERNAL_INODE;
+     result
+  );
+
