@@ -1,5 +1,6 @@
-lisaac threadring -q -O -i20
+#lisaac threadring -O -i20
 gcc -pipe -Wall -O3 -fomit-frame-pointer -march=pentium4 -lpthread threadring_c.c -o threadring_c
+gcc -pipe -Wall -O3 -fomit-frame-pointer -march=pentium4 -lpthread threadring.c -o threadring
 echo Lisaac: 
 time ./threadring 10000000 > out_li.txt
 echo C:
