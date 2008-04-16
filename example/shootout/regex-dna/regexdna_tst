@@ -1,4 +1,5 @@
-lisaac regexdna -q -O -i20
+lisaac regexdna -O -i20
+gcc -O3 -fomit-frame-pointer -o regexdna regexdna.c -lpcre
 gcc -O3 -fomit-frame-pointer -o regexdna_c regexdna_c.c -lpcre
 # g++ -O3 -lboost_regex regexdna_c.cc -o regexdna_c
 echo Lisaac: 

@@ -1,3 +1,12 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 fasta.li
+     - gcc -O3 -fomit-frame-pointer -o regexdna regexdna.c -lpcre
+*/
+
 Section Header
   
   + name := REGEXDNA;
