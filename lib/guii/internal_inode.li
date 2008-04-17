@@ -76,6 +76,9 @@ Section Public
   //
   // Method.
   //
+  
+  - get_menu_parent:INTERNAL_INODE <- ( deferred; NULL);
+  
   - open <- deferred;
   - close <- deferred;
 //  - make_representation <- deferred;
