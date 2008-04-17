@@ -86,24 +86,18 @@ Section Public
   (
     /*
      * GUII doit lancer l'évaluation de ses fils avec MENU_BAR, TOOL_BAR, et PAGE.
-     * MENU_BAR lance l'évaluation de ses fils avec les widgets appropriés, idem pour
+     * MENU_BAR lance l'évaluation de ses fils avec les pattern appropriés, idem pour
      * TOOL_BAR et PAGE. La faisabilité de MENU_BAR est calculée en fonction de la 
      * faisablité de ses fils qui elle-même est caluclée en fonction de celle des petits-fils,
      * et ainsi de suite.
      */
 
 
-    //MENU_H.evaluate node guii SELF;
-
     node.list.foreach {
       i:INODE;
-
-      "\nMENU_BAR evaluation for ".print;i.name.print;"\n".print;
-      MENU_BAR.evaluate i width width height height;
-      "\nTOOL_BAR: evaluation for ".print;i.name.print;"\n".print;
-      TOOL_BAR.evaluate i width width height height;
-      "\nPAGE: evaluation for ".print;i.name.print;"\n".print;
-      PAGE.evaluate i width width height height;
+      MENU_BAR.evaluate i width width height height;"\n".print;
+      TOOL_BAR.evaluate i width width height height;"\n".print;
+      PAGE.evaluate i width width height height;"\n".print;
     };
     appli.display;
   );

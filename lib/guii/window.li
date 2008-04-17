@@ -76,6 +76,54 @@ Section Public
     }
   );
 
+- semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
+  (
+    bugw_screen:=w;
+    bugh_screen:=h;
+
+    (!list.is_empty) &&
+    {depth > 2} &&
+    {
+      +nb:INTEGER;
+
+      list.foreach {
+        i:INODE;
+        +tmp:REAL_32;
+        +best_prc:REAL_32;
+
+        tmp:=PAGE.evaluate i width bugw_screen height bugh_screen;"\n".print;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation PAGE;
+        };
+        tmp:=MENU_V.evaluate i width bugw_screen height bugh_screen;"\n".print;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation MENU_BAR;
+        };
+        tmp:=MENU_H.evaluate i width bugw_screen height bugh_screen;"\n".print;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation TOOL_BAR;
+        };
+        tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;"\n".print;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation DROP_DOWN_MENU;
+        };
+        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;"\n".print;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation CHECK;
+        };
+        (best_prc > 0).if {
+          nb:=nb+1;
+        };
+      };
+      nb=list.count
+    }
+  );
+
 - space_evaluation (w,h:REAL_32) :REAL_32<-
   [? {!list.is_empty}; ]
   (
@@ -112,18 +160,15 @@ Section Public
 
 - evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
   (
-
      + result:REAL_32;
-     result:=0;
 
      n.set_representation WINDOW;
-     "Semantic evaluation of ".print;n.name.print;"\n".print;
+     "WINDOW semantic evaluation of ".print;n.name.print;"\n".print;
      //Semantic evaluation: if the "base" son doesn't have any sons itself then it is a PAGE at 100%
-     ((n.depth) > 2).if {
-      "Space evaluation of ".print;n.name.print;"\n".print;
+     (semantic_evaluation (w,h)).if {
+      "WINDOW space evaluation of ".print;n.name.print;"\n".print;
        result:=n.space_evaluation (w,h);
      };
-     "Its depth is: ".print;n.depth.print;"\n".print;
      "WINDOW result of ".print;n.name.print;"= ".print;result.print;"% \n".print;
      n.set_representation INTERNAL_INODE;
      result

@@ -31,7 +31,7 @@ Section Header
 Section Inherit
   
   - parent_object:OBJECT := OBJECT;
-  
+
 Section Private  
   
   //
@@ -56,6 +56,7 @@ Section Public
   - min_height:REAL_32 <- deferred;
   - min_width:REAL_32 <- deferred;
   - type:INTEGER <- (deferred; 0);
+  - depth:INTEGER <- (deferred; 0);
   //bug compilo 0.13
   - bugw_screen:REAL_32 <- (deferred;0);
   - bugh_screen:REAL_32 <- (deferred;0);

@@ -118,7 +118,7 @@ Section Public
         (i.operator!='&')
       }
     } && {
-      browse_group {
+/*      browse_group {
         i:INODE;
         +tmp:REAL_32;
         +best_prc:REAL_32;
@@ -148,7 +148,38 @@ Section Public
           i.set_representation WINDOW;
         };
         best_prc > 0
-      }
+      }*/
+      +nb:INTEGER;
+      list.foreach {
+        i:INODE;
+        +tmp:REAL_32;
+        +best_prc:REAL_32;
+
+        tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation MENU_V_OUT;
+        };
+        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation CHECK;
+        };
+        tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation WINDOW;
+        };
+        tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;
+        (tmp > best_prc).if {
+          best_prc:=tmp;
+          i.set_representation DROP_DOWN_MENU;
+        };
+        (best_prc > 0).if {
+          nb:=nb+1;
+        };
+      };
+      nb=list.count
     }
   );
 
@@ -191,10 +222,10 @@ Section Public
     n.set_representation MENU_H;
 
     // Semantic evaluation && Space evaluation.
-    "Semantic evaluation of ".print;n.name.print;"\n".print;
+    "MENU_H semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
       //" OK\n".print;
-      "Space evaluation of ".print;n.name.print;"\n".print;
+      "MENU_H space evaluation of ".print;n.name.print;"\n".print;
       result:=n.space_evaluation (w,h);
     } else {
       // " FAILED\n".print;

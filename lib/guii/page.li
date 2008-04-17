@@ -34,8 +34,8 @@ Section Public
 
  - representation:STRING_CONSTANT := "PAGE";
  + content:G_EXPR;
- + width:INTEGER;
- + height:INTEGER;
+ + width:REAL_32;
+ + height:REAL_32;
 
  - make_representation <-
  (
@@ -48,7 +48,7 @@ Section Public
      
      + result:INTEGER;
 
-     "Semantic evaluation of ".print;n.name.print;"\n".print;
+     "PAGE semantic evaluation of ".print;n.name.print;"\n".print;
      result:=0;
      //Semantic evaluation (if the "base" son doesn't have any sons itself then it is a PAGE at 100%
      (n.list.is_empty).if {

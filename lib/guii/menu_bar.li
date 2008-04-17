@@ -102,7 +102,7 @@ Section Public
 //
 
 - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
- // [ ? {(menu_parent=MENU_H) || {menu_parent=MENU_V}}; ]
+ [ ? {(menu_parent=MENU_H)}; ]
   (
     bugw_screen:=w;
     bugh_screen:=h;
@@ -115,7 +115,6 @@ Section Public
     } && {
       browse_group { 
         i:INODE;
-        "MENU_V_OUT evaluation for ".print;i.name.print;"\n".print;
         MENU_V_OUT.evaluate i width bugw_screen height bugh_screen > 0
       }
     }
@@ -157,10 +156,10 @@ Section Public
     n.set_representation MENU_BAR;
 
     // Semantic evaluation && Space evaluation.
-    "Semantic evaluation of ".print;n.name.print;"\n".print;
+    "MENU_BAR semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
       //" OK\n".print;
-      "Space evaluation of ".print;n.name.print;"\n".print;
+      "MENU_BAR space evaluation of ".print;n.name.print;"\n".print;
       result:=n.space_evaluation (w,h);
     } else {
       // " FAILED\n".print;

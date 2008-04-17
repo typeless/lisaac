@@ -32,16 +32,6 @@ Section Inherit
   + parent_guii:INTERNAL_INODE := INTERNAL_INODE;
   
 Section Public
-  
-  //
-  // Constant.
-  //
-  
-  - menu_bar:INTEGER := 0;
-  - tool_bar:INTEGER := 1;
-  - extern:INTEGER   := 2;
-  
-  
   //
   // Data.
   //
