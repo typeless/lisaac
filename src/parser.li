@@ -1217,8 +1217,8 @@ Section Private
     + tb:ITM_TYPE_BLOCK;
     
     (
-      ((self_first) && {read_this_keyword (ALIAS_STR.variable_self)}) || 
-      {read_identifier}
+      ((  self_first) && {read_this_keyword (ALIAS_STR.variable_self)}) || 
+      {(! self_first) && {read_identifier}}
     ).if {      
       pos := current_position;
       n   := last_string;
@@ -2737,7 +2737,7 @@ Section Public
     
     // Source information.
     string_tmp.copy pl;    
-    string_tmp.append "path_new.li";
+    string_tmp.append "path2.li";
     entry := FS_MIN.open_read string_tmp;
     ((entry = NULL) /*|| {! entry.is_file}*/).if {
       "File `".print;
