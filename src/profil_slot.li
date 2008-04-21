@@ -57,6 +57,7 @@ Section Public
   with (typ_self:TYPE_FULL,call_lst:FAST_ARRAY[EXPR]) 
   verify is_first:BOOLEAN :FAST_ARRAY[WRITE] <-
   ( + loc:LOCAL;
+    + typ:TYPE_FULL;
     + item_lst:FAST_ARRAY[ARGUMENT];       
     + idx_result:INTEGER;
     + types:FAST_ARRAY[TYPE_FULL];    
@@ -109,7 +110,7 @@ Section Public
 	  idx_result := idx_result + 1;
 	};
       };
-      result_last := result_type.fix.get (s.position) result idx_result;
+      result_last := s.result_type.fix.get (s.position) result idx_result;
     };
     //
     result := write_argument call_lst;

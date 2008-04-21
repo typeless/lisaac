@@ -47,9 +47,9 @@ Section Public
   );
   
   - make p:POSITION call sl:SLOT self arg:EXPR res e:EXPR <-
-  ( + sd:SLOT_DATA;
-    + loc:LOCAL;
-    + rd:READ_LOCAL;
+  ( //+ sd:SLOT_DATA;
+    //+ loc:LOCAL;
+    //+ rd:READ_LOCAL;
     ? {sl != NULL};    
     position := p;          
     context := profil;

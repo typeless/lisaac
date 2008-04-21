@@ -1,0 +1,118 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := GUII;
+  
+  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
+  
+Section Inherit
+  
+  - parent_object:OBJECT := OBJECT;
+  
+Section Private
+
+  - internal_create a:INODE width w:INTEGER height h:INTEGER<-
+  (
+    appli:=a;
+    width:=w;
+    height:=h;
+  );
+  
+Section Public
+  
+  + appli:INODE;
+  + width:REAL_32;
+  + height:REAL_32;
+  + menu_bar:G_EXPR;
+  + tool_bar:G_EXPR;
+  + page:G_EXPR;
+  
+
+  - create a:INODE width w:INTEGER height h:INTEGER :GUII<-
+  (
+    +result:SELF;
+    
+    result:=clone;
+    result.internal_create a width w height h;
+    result
+  );
+  
+  - run_interface <-
+  (
+    VIDEO.make (width,height);
+    
+    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
+      menu_bar / G_PAGE.create
+    );
+    INTERFACE.run;
+  );
+  
+
+  - set_depth base:INODE from j:INTEGER <-
+    (
+	+dpth:INTEGER;
+	
+	dpth:=j+1;
+	base.list.foreach{
+		i:INODE;
+		i.set_depth dpth;
+		(!i.list.is_empty).if {
+			set_depth i from dpth;
+		};
+	};
+    );		
+	
+	
+  - evaluation node:INODE <-
+  (
+    /*
+     * GUII doit lancer l'évaluation de ses fils avec MENU_BAR, TOOL_BAR, et PAGE.
+     * MENU_BAR lance l'évaluation de ses fils avec les pattern appropriés, idem pour
+     * TOOL_BAR et PAGE. La faisabilité de MENU_BAR est calculée en fonction de la 
+     * faisablité de ses fils qui elle-même est caluclée en fonction de celle des petits-fils,
+     * et ainsi de suite.
+     */
+
+
+    node.list.foreach {
+      i:INODE;
+      MENU_BAR.evaluate i width width height height;"\n".print;
+      TOOL_BAR.evaluate i width width height height;"\n".print;
+      PAGE.evaluate i width width height height;"\n".print;
+    };
+    appli.display;
+  );
+
+  - set_tool_bar g:G_EXPR <-
+  (
+    tool_bar:=g;
+  );
+  
+  - set_menu_bar g:G_EXPR <-
+  (
+    menu_bar:=g;
+  );
+  
+  - set_page g:G_EXPR <-
+  (
+    page:=g;
+  );

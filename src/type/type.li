@@ -130,7 +130,7 @@ Section Public
       {slot_run.item j.id_section.is_inherit_or_insert} &&
       {result = NULL}	
     }.while_do {
-      typ    := slot_run.item j.get_type_result.raw;
+      typ    := slot_run.item j.result_type.raw;
       result := typ.prototype.slot_list.fast_reference_at n;
       ((result = NULL) || {result.require = NULL}).if {
 	result := typ.search_require n;
@@ -153,7 +153,7 @@ Section Public
       {slot_run.item j.id_section.is_inherit_or_insert} &&
       {result = NULL}	
     }.while_do {
-      typ    := slot_run.item j.get_type_result.raw;
+      typ    := slot_run.item j.result_type.raw;
       result := typ.prototype.slot_list.fast_reference_at n;
       ((result = NULL) || {result.ensure = NULL}).if {
 	result := typ.search_ensure n;
@@ -648,7 +648,7 @@ Section Public
 	{! result}
       }.while_do {
 	(slot_run.item idx.id_section.is_inherit).if {
-	  type_parent := slot_run.item idx.get_type_result.raw;	
+	  type_parent := slot_run.item idx.result_type.raw;	
 	  result := type_parent.is_sub_type_with_name n;
 	};
 	idx := idx + 1;

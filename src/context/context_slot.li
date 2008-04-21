@@ -51,6 +51,12 @@ Section Public
     NULL
   );
   
+  - push p:POSITION slot prof:PROFIL_SLOT self type_self:TYPE_FULL :LOCAL <-
+  (
+    not_yet_implemented;
+    NULL
+  );
+  
   - push p:POSITION slot prof:PROFIL_SLOT :LOCAL <-
   ( + result:CONTEXT_SLOT;
     

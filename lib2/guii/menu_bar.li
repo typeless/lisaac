@@ -1,0 +1,183 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := MENU_BAR;
+
+  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
+
+  - comment   := "Vertical menu for GUII.";
+  
+Section Inherit
+  
+  - menu_parent:MENU_H:=MENU_H;
+  
+Section Public
+  
+  - get_menu_parent:INTERNAL_INODE <- 
+  ( + is_menu_bar:MENU_BAR;
+    
+    is_menu_bar ?= Self;
+    is_menu_bar.menu_parent
+  );
+ 
+  - representation:STRING_CONSTANT := "MENU_BAR";
+
+  /*- make_representation <-
+  (
+    +name:STRING;
+    +under:G_WIN_OUT;
+    +under_expr:G_EXPR;
+
+    //pour chaque fils
+    (list.lower).to (list.upper) do {
+      i:INTEGER;
+
+      name:=(list.item i).get_name;
+      //(list.item i).evaluation(screen_h,screen_w);
+
+      //on instancie chaque fils
+      (!(list.item i).get_list.is_empty).if {
+        (list.item i).set_representation MENU_V;
+        under_expr:=(list.item i).get_content;
+        under:=G_WIN_OUT.create(under_expr);
+      } else {
+	under:=NULL;
+      };
+
+      //on crée les boutons qui vont composer le menu_h
+      (i=1).if {
+        content:=G_BUTTON.create (G_OUT.create name) connect under.fix_width;
+      } else {
+        content:=content | G_BUTTON.create (G_OUT.create name) connect under.fix_width;
+      };
+    };
+    content.fix_height.fix_width;
+    width:=content.width_min;
+    height:=content.height_min;
+    screen_h:=screen_h-height;
+    screen_w:=screen_w-width;
+    (screen_w<0).if {
+      "Largeur écran dépassée!\n".print;
+    };
+    (screen_h<0).if {
+      "Hauteur écran dépassée!\n".print;
+    };
+  );*/
+
+/*  - compute_size_from_prc p:INTEGER <-
+  [ ? {! list.is_empty}; ]
+  (
+	+ expr:G_EXPR;
+
+	expr:=NULL;
+	list.foreach {
+		i:INODE;
+		(i.priority > p).if {
+			(expr = NULL).if{
+				expr:=G_BUTTON.create (G_OUT.create name);
+			};
+				expr:=expr | G_BUTTON.create (G_OUT.create name);
+		};
+	};
+	expr.fix_width.fix_height;
+	height:=expr.height_min;
+	width:=expr.width_min;
+  );*/
+
+//
+// Evaluation.
+//
+
+- semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
+[ + is_menu_h:MENU_H;
+  
+  is_menu_h ?= get_menu_parent;
+   ? {is_menu_h != NULL}; 
+ ]
+  (
+    bugw_screen:=w;
+    bugh_screen:=h;
+
+    !list.is_empty && {
+      browse_group { 
+        i:INODE;
+        (i.operator = '^')
+      }
+    } && {
+      browse_group { 
+        i:INODE;
+        MENU_V_OUT.evaluate i width bugw_screen height bugh_screen > 0
+      }
+    }
+  );
+
+/*- space_evaluation (w,h:REAL_32) :REAL_32<-
+  (
+    + r:REAL_32;
+
+    compute_size_from_prc 0;
+      (width > w).if {
+	"Priority 0 failed\n".print;
+	compute_size_from_prc 25;
+	(width > w).if {
+	   "Priority 25 failed\n".print;
+	   compute_size_from_prc 50;
+	   (width > w).if {
+		"Priority 50 failed\n".print;
+		r:=0;
+		width:=0;
+		height:=0;
+           } else {
+		r:=get_nitem_from_prc 50;
+	   };
+	} else {
+	   r:=get_nitem_from_prc 25;
+	};
+      } else {
+	r:=list.count;
+     };
+     (r/list.count)*100
+  );*/
+
+- evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
+  (
+    + result:REAL_32;
+
+    // change parent of the node for having access to the method of MENU_BAR
+    n.set_representation MENU_BAR;
+
+    // Semantic evaluation && Space evaluation.
+    "MENU_BAR semantic evaluation of ".print;n.name.print;"\n".print;
+    (n.semantic_evaluation (w,h)).if {
+      //" OK\n".print;
+      "MENU_BAR space evaluation of ".print;n.name.print;"\n".print;
+      result:=n.space_evaluation (w,h);
+    } else {
+      // " FAILED\n".print;
+       result:=0;
+    };
+
+    "MENU_BAR result for ".print;n.name.print;"= ".print;result.print;"%\n".print;
+    n.set_representation INTERNAL_INODE;
+    result
+  )
+  [ ? {Result.in_range 0 to 100}; ];

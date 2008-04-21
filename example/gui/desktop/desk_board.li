@@ -45,39 +45,39 @@ Section Public
     path_base := path_dir;
     isaac := G_WIN_OUT.create (
       G_RAW.create (        
-        G_BUTTON.create (G_IMG.create (path "icons/terminal.bmp") | G_OUT.create " Terminal ")
+        G_BUTTON.create (G_IMG.create (path "terminal.bmp") | G_OUT.create " Terminal ")
         connect (SHELL.run)
       ) /
       G_RAW.create (
-        G_BUTTON.create (G_IMG.create (path "icons/about.bmp") | G_OUT.create " About ") 
+        G_BUTTON.create (G_IMG.create (path "about.bmp") | G_OUT.create " About ") 
         connect (ABOUT.run) /
-        G_BUTTON.create (G_IMG.create (path "icons/reboot.bmp") | G_OUT.create " Reboot ")
+        G_BUTTON.create (G_IMG.create (path "reboot.bmp") | G_OUT.create " Reboot ")
         action { b:G_BUTTON; "Reboot...\n".print; die_with_code 0; }
       )
     );    
     tools := G_WIN_OUT.create (
       G_RAW.create (
-        G_BUTTON.create (G_IMG.create (path "icons/calculator.bmp") | G_OUT.create " Calculator ")
+        G_BUTTON.create (G_IMG.create (path "calc.bmp") | G_OUT.create " Calculator ")
         connect (CALCULATOR.run)
       )
     );
     multimedia := G_WIN_OUT.create (
       G_RAW.create (
-        G_BUTTON.create (G_IMG.create (path "icons/viewer.bmp") | G_OUT.create " Viewer ")
+        G_BUTTON.create (G_IMG.create (path "viewer.bmp") | G_OUT.create " Viewer ")
         connect (VIEWER.run) 
       ) /
       G_RAW.create (
-        G_BUTTON.create (G_IMG.create (path "icons/video.bmp") | G_OUT.create " Video ")
-        connect (MPEG2DEC.run)
+        G_BUTTON.create (G_IMG.create (path "video.bmp") | G_OUT.create " Video ")
+       // connect (MPEG2DEC.run)
       )
     );    
     game := G_WIN_OUT.create (
       G_RAW.create (
-        G_BUTTON.create (G_IMG.create (path "icons/tetris.bmp") | G_OUT.create " Tetris ") 
+        G_BUTTON.create (G_IMG.create (path "tetris.bmp") | G_OUT.create " Tetris ") 
         connect (TETRIS.run) /
-        G_BUTTON.create (G_IMG.create (path "icons/power4.bmp") | G_OUT.create " Power 4 ") 
+        G_BUTTON.create (G_IMG.create (path "power4.bmp") | G_OUT.create " Power 4 ") 
         connect (FOURONLINE.run) /
-        G_BUTTON.create (G_IMG.create (path "icons/sudoku.bmp") | G_OUT.create " Sudoku ")
+        G_BUTTON.create (G_IMG.create (path "sudoku.bmp") | G_OUT.create " Sudoku ")
         connect (SU_DOKU.run)
       )
     );
@@ -85,19 +85,19 @@ Section Public
     make (
       G_RAW.create
       (
-        G_BUTTON.create (G_IMG.create (path "icons/isaac.bmp"))     connect isaac |
-        G_BUTTON.create (G_IMG.create (path "icons/tools.bmp"))      connect tools |
-        G_BUTTON.create (G_IMG.create (path "icons/multimedia.bmp")) connect multimedia |
-        G_BUTTON.create (G_IMG.create (path "icons/game.bmp"))       connect game
+        G_BUTTON.create (G_IMG.create (path "isaac.bmp"))     connect isaac |
+        G_BUTTON.create (G_IMG.create (path "tools.bmp"))      connect tools |
+        G_BUTTON.create (G_IMG.create (path "media.bmp")) connect multimedia |
+        G_BUTTON.create (G_IMG.create (path "game.bmp"))       connect game
       ).fix_width |
       G_OUT.create "Isaac Operating System" justify (G_OUT.center) |
       G_RAW.create 
       (
-        G_BUTTON.create (G_IMG.create (path "icons/desk1.bmp")) 
+        G_BUTTON.create (G_IMG.create (path "desk1.bmp")) 
         action { b:G_BUTTON;
           move_virtual_screen 0;
         } |
-        G_BUTTON.create (G_IMG.create (path "icons/desk2.bmp")) 
+        G_BUTTON.create (G_IMG.create (path "desk2.bmp")) 
         action { b:G_BUTTON;
           move_virtual_screen (-DESK.width);
         }

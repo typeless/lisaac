@@ -13,9 +13,10 @@ Section Insert
   - parent_object:OBJECT := OBJECT;
   
 Section Public
-  
+    
   - init   <- `pthread_mutex_init(&@Self, NULL)`;
   
   - lock   <- `pthread_mutex_lock(&@Self)`;
   
   - unlock <- `pthread_mutex_unlock(&@Self)`;
+  

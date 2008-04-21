@@ -84,7 +84,7 @@ Section Public
   ( + new_expr:EXPR;
           
     (larg.lower + 1).to (larg.upper) do { i:INTEGER;      
-      new_expr := larg.item i.check_type (arguments.item i) with position;
+      new_expr := larg.item i.check_type (arguments.item i.type) with position;
       larg.put new_expr to i;
     };            
   );

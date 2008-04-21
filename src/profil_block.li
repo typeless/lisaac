@@ -116,7 +116,8 @@ Section Public
     (base.argument != NULL).if {      
       argument_list := FAST_ARRAY[LOCAL].create_with_capacity (base.argument.count+1);            
       argument_list.add_last NULL;
-      base.argument.to_run argument_list;      
+      not_yet_implemented;
+      //base.argument.to_run argument_list;      
     } else {
       argument_list := FAST_ARRAY[LOCAL].create 1; 
     };   

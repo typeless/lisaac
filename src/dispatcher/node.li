@@ -122,11 +122,14 @@ Section Public
     // Control argument type.            
     data.slot.check_argument_type_for larg;    
     //
-    data.make (data.position) call (data.slot) with larg;
-    make rec with data;
+    dta ?= data;
+    dta.make (data.position) call (data.slot) with larg;
+    not_yet_implemented;
+    //make rec with data;
     //
     CONTEXT.pop;
-    node_list.add_last Self;
+    not_yet_implemented;
+    //node_list.add_last Self;
   );
   
   //

@@ -1,0 +1,59 @@
+Section Header
+  
+  + name        := TEST_GUI2;
+  
+Section Inherit
+  
+  - parent_object:OBJECT := OBJECT;
+  
+Section Public  
+	- main <-
+	(
+		//+menu_h:G_EXPR;
+		+menu_bar:G_EXPR;
+		+file_menu:G_WIN_OUT;
+		+edit_menu:G_WIN_OUT;
+
+		VIDEO.make (800,600);
+
+		file_menu:=G_WIN_OUT.create (
+			G_RAW.create (
+				G_BUTTON.create (G_OUT.create "New")
+			) /
+			G_RAW.create (
+				G_BUTTON.create (G_OUT.create "Hello")             /
+				G_BUTTON.create (G_OUT.create "Salut les loulou!")
+			)
+		);
+
+		edit_menu:=G_WIN_OUT.create (
+			G_RAW.create (
+				G_BUTTON.create (G_OUT.create "Prout")  /
+				G_BUTTON.create (G_OUT.create "Prout2") /
+				G_BUTTON.create (G_OUT.create "Prout3") /
+				G_BUTTON.create (G_OUT.create "Prout4")
+			)
+		);
+
+		menu_bar:=(
+			G_BUTTON.create (G_OUT.create "Fichier") connect file_menu |
+			G_BUTTON.create (G_OUT.create "Edition") connect edit_menu
+		).fix_height.fix_width;
+
+/*		menu_h:=(
+			G_RAW.create(
+				G_BUTTON.create(G_OUT.create "File") |
+				G_BUTTON.create(G_OUT.create "Edit")
+			) |
+			G_RAW.create(
+				G_BUTTON.create(G_OUT.create "Quit")
+			)
+		).fix_height.fix_width;
+*/
+
+		INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
+			//menu_h / G_PAGE.create
+			menu_bar / G_PAGE.create;
+		);
+		INTERFACE.run;
+	);
