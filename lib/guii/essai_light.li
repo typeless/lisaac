@@ -1,0 +1,110 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := ESSAI_LIGHT;
+
+  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
+
+  - comment   := "Interface Node for GUII.";
+  
+Section Inherit
+  
+  - parent_object:OBJECT := OBJECT;
+  
+Section Public
+  
+  - main <-
+  ( + base, menu:INODE;
+    + guii:GUII;
+    //+ menu_g_expr, tools_g_expr:G_EXPR;
+
+    base := 
+    INODE.create_or "Paint" priority 100 + (
+      menu := INODE.create_xor "Menu" priority 100 + (
+	INODE.create_xor "File" priority 100 + (
+	  INODE.create_xor "Clear file" priority 100 + 
+	  INODE.create_xor "New" priority 100
+	) + (
+	  INODE.create_xor "Intern file" priority 100 + 
+	  INODE.create_xor "Open" priority 100 +
+	  INODE.create_xor "Save" priority 100 +
+	  INODE.create_xor "Save as" priority 100
+	) + (
+	  INODE.create_xor "Extern file" priority 100 +
+	  INODE.create_xor "Import" priority 100 +
+	  INODE.create_xor "Export" priority 100
+	) + (
+	  INODE.create_xor "Output file" priority 100 +
+	  INODE.create_xor "Print" priority 100 
+	) + (
+	  INODE.create_xor "Exit manager" priority 100 +
+	  INODE.create_xor "EXit" priority 100 
+	)
+      )
+    );
+    
+    //
+    // Evaluation.
+    //
+
+    guii:=GUII.create base width 230 height 768;
+    guii.set_depth base from 0;
+    guii.evaluation base;
+/*    
+    base.evaluation (1024,768);
+    
+    // Just for test :
+    "Largeur: ".print;
+    base.get_screen_w.print;
+    "\nHauteur: ".print;
+    base.get_screen_h.print;
+    "\n".print;
+    "set_representation...Menu_H\n".print;
+    menu.set_representation MENU_BAR;
+    menu_g_expr:=menu.get_content;
+    "set_representation...Menu_V\n".print;
+    tools.set_representation MENU_V;
+    tools_g_expr:=tools.get_content;
+    "Largeur".print;
+    base.get_screen_w.print;
+    "\nHauteur".print;
+    base.get_screen_h.print;
+    "\n".print;
+
+    VIDEO.make (800,600);
+
+    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
+      menu_g_expr / (tools_g_expr | G_PAGE.create)
+    );
+    INTERFACE.run;
+
+
+    // Etc ...
+    
+    //
+    // Display result.
+    //
+*/    
+    //base.display;
+  );
+  
+  
