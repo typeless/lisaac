@@ -33,9 +33,6 @@ Section Inherit
 Section Public
 
  - representation:STRING_CONSTANT := "PAGE";
- + content:G_EXPR;
- + width:REAL_32;
- + height:REAL_32;
 
  - make_representation <-
  (

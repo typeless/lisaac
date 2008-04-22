@@ -33,8 +33,6 @@ Section Inherit
 Section Public
   
   - representation:STRING_CONSTANT := "CHECK";
-  + content:G_CHECK; 				//objet G_EXPR représentant le menu_h
-
 
   - make_representation <-
   [? {list.is_empty}; ]

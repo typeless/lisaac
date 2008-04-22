@@ -78,10 +78,9 @@ Section Public
   //
   
   - get_menu_parent:INTERNAL_INODE <- ( deferred; NULL);
-  
   - open <- deferred;
   - close <- deferred;
-//  - make_representation <- deferred;
+  - make_representation <- deferred;
   - compute_size_from_prc p:INTEGER <- deferred;
   - semantic_evaluation (w,h:REAL_32) :BOOLEAN <- (deferred; FALSE);
   - space_evaluation (w,h:REAL_32) :REAL_32 <- (deferred; 0);

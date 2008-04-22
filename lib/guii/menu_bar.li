@@ -28,18 +28,18 @@ Section Header
   
 Section Inherit
   
-  - menu_parent:MENU_H:=MENU_H;
+  + menu_parent:MENU_H:=MENU_H;
   
 Section Public
-  
-  - get_menu_parent:INTERNAL_INODE <- 
-  ( + is_menu_bar:MENU_BAR;
-    
-    is_menu_bar ?= Self;
-    is_menu_bar.menu_parent
-  );
- 
+
   - representation:STRING_CONSTANT := "MENU_BAR";
+
+  - get_menu_parent:INTERNAL_INODE <- 
+  ( + is_tool_bar:MENU_BAR;
+
+    is_tool_bar ?= Self;
+    is_tool_bar.menu_parent
+  );
 
   /*- make_representation <-
   (
