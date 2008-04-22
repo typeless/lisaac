@@ -35,12 +35,12 @@ Section Public
  
   - representation:STRING_CONSTANT := "TOOL_BAR";
 
-  - get_menu_parent:INTERNAL_INODE <- 
+/*  - get_menu_parent:INTERNAL_INODE <- 
   ( + is_menu_bar:TOOL_BAR;
 
     is_menu_bar ?= Self;
     is_menu_bar.menu_parent
-  );
+  );*/
 
   /*- make_representation <-
   (
@@ -88,13 +88,13 @@ Section Public
   //
 
 - semantic_evaluation (w,h:REAL_32) :BOOLEAN <-
-  [ +is_menu_h:MENU_H;
+/*  [ +is_menu_h:MENU_H;
     +is_menu_v:MENU_V;
 
     is_menu_h ?= get_menu_parent;
     is_menu_v ?= get_menu_parent;
     ? {(is_menu_h!=NULL) || {is_menu_v!=NULL}};
-  ]
+  ]*/
   (
     bugw_screen:=w;
     bugh_screen:=h;
@@ -172,20 +172,20 @@ Section Public
           best_prc:=tmp;
           i.set_representation WINDOW;
         };
-        (is_menu_h!=NULL).if {
+//        (is_menu_h!=NULL).if {
           tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation DROP_DOWN_MENU;
           };
-        };
-        (is_menu_v!=NULL).if {
+//        };
+/*        (is_menu_v!=NULL).if {
           tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation MENU_H_OUT;
           };
-        };
+        };*/
         (best_prc > 0).if {
           nb:=nb+1;
         };

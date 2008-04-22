@@ -33,7 +33,7 @@ Section Inherit
 Section Public
 
   - representation:STRING_CONSTANT := "DROP_DOWN_MENU";
-  + content:G_EXPR; 				//objet G_EXPR représentant le menu_h
+//  + content:G_EXPR; 				//objet G_EXPR représentant le menu_h
 //  + width:REAL_32;				//largeur et hauteur du menu_h
 //  + height:REAL_32;
 

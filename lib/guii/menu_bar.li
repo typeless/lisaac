@@ -34,12 +34,12 @@ Section Public
 
   - representation:STRING_CONSTANT := "MENU_BAR";
 
-  - get_menu_parent:INTERNAL_INODE <- 
+/*  - get_menu_parent:INTERNAL_INODE <- 
   ( + is_tool_bar:MENU_BAR;
 
     is_tool_bar ?= Self;
     is_tool_bar.menu_parent
-  );
+  );*/
 
   /*- make_representation <-
   (
@@ -108,11 +108,11 @@ Section Public
 //
 
 - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
-[ + is_menu_h:MENU_H;
+/*[ + is_menu_h:MENU_H;
   
   is_menu_h ?= get_menu_parent;
    ? {is_menu_h != NULL}; 
- ]
+ ]*/
   (
     bugw_screen:=w;
     bugh_screen:=h;
