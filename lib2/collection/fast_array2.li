@@ -162,17 +162,17 @@ Section Public
   // Implementation of others feature from COLLECTION2:
   //
   
-  - item (line, column:INTEGER) :V <-
+  - item (line, column:INTEGER) :[V] <-
   (
     storage.item (line * count2 + column)
   );
     
-  - put element:V to (line, column:INTEGER) <-
+  - put element:[V] to (line, column:INTEGER) <-
   (
     storage.put element to (line * count2 + column);
   );
     
-  - force element:V to (line , column :INTEGER) <-
+  - force element:[V] to (line , column :INTEGER) <-
   (
     (! valid_index (line, column)).if {
       resize (line.max upper1,column.max upper2);
@@ -198,7 +198,7 @@ Section Public
   // Writing.
   //
   
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   //  All element are set with the value v.
   (
     storage.set_all_with v until (count - 1);   
@@ -223,7 +223,7 @@ Section Public
     };
   ); 
     
-  - set_slice (l1,up1:INTEGER) to (l2,up2:INTEGER) with element:V <-
+  - set_slice (l1,up1:INTEGER) to (l2,up2:INTEGER) with element:[V] <-
   // Set all the elements in the range [(l1,up1),(l2,up2)] of
   // self with the element 'element'.
   (
@@ -235,7 +235,7 @@ Section Public
   );
     
   - swap (line1, column1:INTEGER) with (line2, column2:INTEGER) <-
-  ( + tmp:V;
+  ( + tmp:[V];
     + c2, index1, index2:INTEGER;
     
     c2 := count2;
@@ -250,12 +250,12 @@ Section Public
   // Looking and comparison:
   //
   
-  - occurrences elt:V :INTEGER <-
+  - occurrences elt:[V] :INTEGER <-
   (
     storage.occurrences elt until (count - 1)
   );
     
-  - fast_occurrences elt:V :INTEGER <-
+  - fast_occurrences elt:[V] :INTEGER <-
   (
     storage.fast_occurrences elt until (count - 1)
   );
@@ -296,7 +296,7 @@ Section Public
   // Looking and Searching:
   //
   
-  - has x:V :BOOLEAN <-
+  - has x:[V] :BOOLEAN <-
   // Look for `x' using `equal' for comparison.
   ( + result:BOOLEAN;
     
@@ -306,7 +306,7 @@ Section Public
     result
   ); 
     
-  - fast_has x:V :BOOLEAN <-
+  - fast_has x:[V] :BOOLEAN <-
   // Same as `has' but use `=' for comparison
   ( + result:BOOLEAN;
     
@@ -320,12 +320,12 @@ Section Public
   // Other features:
   //
   
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   (
     storage.replace_all old_value with new_value until (count - 1);
   );
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   (
     storage.fast_replace_all old_value with new_value until (count - 1);
   );

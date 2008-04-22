@@ -55,12 +55,12 @@ Section Public
   // Adding and removing:
   //
   
-  - remove e:V <-
+  - remove e:[V] <-
   (
     root := do_remove (root, e);
   );
 
-  - fast_remove e:V <-
+  - fast_remove e:[V] <-
   (
     root := fast_do_remove (root, e);
   );
@@ -71,7 +71,7 @@ Section SELF
 
   + rebalance:BOOLEAN;
 
-  + item_memory:V;
+  + item_memory:[V];
 
   - set_value_and_key n:AVL_TREE_NODE[V] <-
   (
@@ -264,7 +264,7 @@ Section SELF
     };
   ];
 
-  - fast_do_remove (n:AVL_TREE_NODE[V],e:V) :AVL_TREE_NODE[V] <-
+  - fast_do_remove (n:AVL_TREE_NODE[V],e:[V]) :AVL_TREE_NODE[V] <-
   ( + result:AVL_TREE_NODE[V];
     
     (n = NULL).if {
@@ -309,7 +309,7 @@ Section SELF
     +? {rebalance = (node_height Result < Old node_height n)};
   ];
 
-  - do_remove (n:AVL_TREE_NODE[V],e:V) :AVL_TREE_NODE[V] <-
+  - do_remove (n:AVL_TREE_NODE[V],e:[V]) :AVL_TREE_NODE[V] <-
   ( + result:AVL_TREE_NODE[V];
     
     (n = NULL).if {
@@ -531,13 +531,13 @@ Section Public
   // Looking and searching:
   //
   
-  - has e:V :BOOLEAN <-
+  - has e:[V] :BOOLEAN <-
   // Is element `e' in the set?
   (
     (root != NULL) && {root.has e}
   );
 
-  - fast_has e:V :BOOLEAN <-
+  - fast_has e:[V] :BOOLEAN <-
   // Is element `e' in the set?
   (
     (root != NULL) && {root.fast_has e}

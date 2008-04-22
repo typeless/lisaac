@@ -57,20 +57,21 @@ Section Public
   + type_argument:ITM_TYPE;
   + type_result:ITM_TYPE;
   
-  - get typ_arg:ITM_TYPE and typ_res:ITM_TYPE :SELF <-
-  ( + result:SELF;  
+  - get typ_arg:ITM_TYPE and typ_res:ITM_TYPE :ITM_TYPE_BLOCK <-
+  ( + result:ITM_TYPE_BLOCK;  
     + idx:INTEGER;
     
     idx := dico.lower;
     {
-      (idx <= dico.upper) && 
-      {dico.item idx.type_argument != typ_arg} && 
-      {dico.item idx.type_result   != typ_res}
+      (idx <= dico.upper) && {
+        {dico.item idx.type_argument != typ_arg} ||
+        {dico.item idx.type_result   != typ_res}
+      }
     }.while_do {
       idx := idx + 1;
     };    
     (idx <= dico.upper).if {
-      result ?= dico.item idx;
+      result := dico.item idx;
     } else {
       result := create typ_arg and typ_res;
       dico.add_last result;
@@ -91,7 +92,8 @@ Section Public
     (type_argument != NULL).if {
       type_argument.display buffer;
       buffer.add_last ';';
-    };
+      buffer.add_last ' ';
+    };    
     (type_result != NULL).if {
       typ_mul ?= type_result;
       (typ_mul = NULL).if {
@@ -100,6 +102,7 @@ Section Public
 	typ_mul.display_row buffer;
       };
     };
+    buffer.add_last '}';
   );
   
   //

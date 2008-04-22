@@ -59,7 +59,7 @@ Section Public
   
   - is_empty:BOOLEAN <- first_link = NULL;
   
-  - add_first element:V <-
+  - add_first element:[V] <-
   ( 
     (first_link = NULL).if {
       first_link := LINK2[V].create element previous NULL next NULL;
@@ -78,7 +78,7 @@ Section Public
     +? { upper = 1 + Old upper };
   ];
     
-  - add_last element:V <-
+  - add_last element:[V] <-
   ( 
     (first_link = NULL).if {
       first_link := LINK2[V].create element previous NULL next NULL;
@@ -93,7 +93,7 @@ Section Public
     };
   );
     
-  - add element:V to index:INTEGER <-
+  - add element:[V] to index:INTEGER <-
   ( + link:LINK2[V];
     
     (index = 1).if {
@@ -150,11 +150,11 @@ Section Public
     };
   );
     
-  - first:V <- first_link.item;
+  - first:[V] <- first_link.item;
   
-  - last:V <- last_link.item;
+  - last:[V] <- last_link.item;
   
-  - item index:INTEGER :V <-
+  - item index:INTEGER :[V] <-
   (
     (index != mem_idx).if {
       go_item index;
@@ -162,7 +162,7 @@ Section Public
     mem_lnk.item
   );
     
-  - put element:V to index:INTEGER <-
+  - put element:[V] to index:INTEGER <-
   ( 
     (index != mem_idx).if {
       go_item index;
@@ -172,7 +172,7 @@ Section Public
     
   - count:INTEGER <- upper;
   
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   ( 
     (first_link != NULL).if {
       first_link.set_all_with v;
@@ -223,7 +223,7 @@ Section Public
     result
   );
     
-  - index_of x:V start start_index:INTEGER :INTEGER <-
+  - index_of x:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     + safe_equal:SAFE_EQUAL[V];
     
@@ -234,7 +234,7 @@ Section Public
     result
   );
   
-  - reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + safe_equal:SAFE_EQUAL[V]; 
     + temporary_idx:INTEGER;
     + temporary_lnk:LINK2[V];
@@ -257,7 +257,7 @@ Section Public
     result
   );
 
-  - fast_index_of x:V start start_index:INTEGER :INTEGER <-
+  - fast_index_of x:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     + u:INTEGER;
     
@@ -269,7 +269,7 @@ Section Public
     result
   );	
 
-  - fast_reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - fast_reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + temporary_idx:INTEGER;
     + temporary_lnk:LINK2[V];
     + result:INTEGER;
@@ -354,7 +354,7 @@ Section Public
     result
   );
     
-  - occurrences element:V :INTEGER <-
+  - occurrences element:[V] :INTEGER <-
   ( + lnk:LINK2[V];
     + safe_equal:SAFE_EQUAL[V];
     + result:INTEGER;
@@ -369,7 +369,7 @@ Section Public
     result
   );
     
-  - fast_occurrences element:V :INTEGER <-
+  - fast_occurrences element:[V] :INTEGER <-
   ( + lnk:LINK2[V];
     + result:INTEGER;
     
@@ -383,8 +383,8 @@ Section Public
     result
   );
     
-  - force element:V to index:INTEGER <-
-  ( + v:V;
+  - force element:[V] to index:INTEGER <-
+  ( + v:[V];
     
     {index <= upper}.until_do {
       add_last v;
@@ -394,7 +394,7 @@ Section Public
     
   - all_default:BOOLEAN <-
   ( + l:LINK2[V];
-    + d:V;
+    + d:[V];
     + result:BOOLEAN;
     
     result := TRUE;
@@ -429,7 +429,7 @@ Section Public
     };    
   );
     
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   ( + safe_equal:SAFE_EQUAL[V];
     
     lower.to upper do { i:INTEGER;
@@ -439,7 +439,7 @@ Section Public
     };   
   );
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   ( 
     lower.to upper do { i:INTEGER;
       (item i = old_value).if {
@@ -449,7 +449,7 @@ Section Public
   );
   
   - reverse <-
-  ( + temp:V; 
+  ( + temp:[V]; 
     + low:LINK2[V]; 
     + high:LINK2[V];
     + i:INTEGER;

@@ -131,7 +131,7 @@ Section Public
   // Adding and removing:
   //
   
-  - add e:V <-
+  - add e:[V] <-
   // Add a new item to the set:the mathematical definition of
   // adding in a set is followed.
   ( + h, idx:INTEGER;
@@ -155,7 +155,7 @@ Section Public
     };
   );
 
-  - fast_add e:V <-
+  - fast_add e:[V] <-
   // Add a new item to the set:the mathematical definition of
   // adding in a set is followed.
   ( + h, idx:INTEGER;
@@ -179,7 +179,7 @@ Section Public
     };   
   );  
   	 
-  - remove e:V <-
+  - remove e:[V] <-
   // Remove item `e' from the set:the mathematical definition of
   // removing from a set is followed.
   ( + h, idx:INTEGER;
@@ -209,7 +209,7 @@ Section Public
     };    
   );
   
-  - fast_remove e:V <-
+  - fast_remove e:[V] <-
   // Remove item `e' from the set:the mathematical definition of
   // removing from a set is followed.
   ( + h, idx:INTEGER;
@@ -254,7 +254,7 @@ Section Public
   // Looking and searching:
   //
   
-  - has e:V :BOOLEAN <-
+  - has e:[V] :BOOLEAN <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE[V];
@@ -267,7 +267,7 @@ Section Public
     node != NULL        
   );
   
-  - fast_has e:V :BOOLEAN <-
+  - fast_has e:[V] :BOOLEAN <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE[V];
@@ -280,10 +280,10 @@ Section Public
     node != NULL
   );
   
-  - reference_at e:V :V <-
+  - reference_at e:[V] :[V] <-
   ( + idx:INTEGER; 
     + node:HASHED_SET_NODE[V];
-    + result:V;
+    + result:[V];
 				
     idx := e.hash_code % capacity;
     node := buckets.item idx;
@@ -300,7 +300,7 @@ Section Public
   // To provide iterating facilities:
   //
     
-  - item i:INTEGER :V <-
+  - item i:INTEGER :[V] <-
   // Return the item indexed by `index'.
   (         
     set_cache_user i;
@@ -450,7 +450,7 @@ Section Private
   
   - union other:SELF <-
   // Make the union of the `self' set with `other'.
-  ( + e:V;
+  ( + e:[V];
     + old_count:INTEGER;
     
     ? {old_count := count; 
@@ -466,7 +466,7 @@ Section Private
   - fast_union other:SELF <-
   // Make the union of the `self' set with `other'.
   ( + old_count:INTEGER;
-    + e:V;
+    + e:[V];
     ? {old_count := count; 
        other != NULL};
     
@@ -677,7 +677,7 @@ Section Private
   // NONE
   
     
-  - force e:V <-  
+  - force e:[V] <-  
   // Add a new item to the set: the mathematical definition of
   // adding in a set is followed.
   ( + h, idx: INTEGER;
@@ -695,11 +695,11 @@ Section Private
     ? {fast_has e};
   );
   
-    - search e:V :V <-
+    - search e:[V] :[V] <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE[V];
-    + result:V;
+    + result:[V];
     ? { e != NULL };
     idx := e.hash_code % capacity;
     node := buckets.item idx;
@@ -712,11 +712,11 @@ Section Private
     result
   );
   
-  - get_if cmp:BLOCK with_hash h:INTEGER :V <-
+  - get_if cmp:BLOCK with_hash h:INTEGER :[V] <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE[V];
-    + result:V;
+    + result:[V];
 
     idx := h % capacity;
     node := buckets.item idx;
@@ -729,11 +729,11 @@ Section Private
     result
   );
 
-  - fast_search e:V :V <-
+  - fast_search e:[V] :[V] <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE[V];
-    + result:V;
+    + result:[V];
     ? { e != NULL };
     idx := e.hash_code % capacity;
     node := buckets.item idx;
@@ -746,7 +746,7 @@ Section Private
     result
   );
   
-  - fast_index_of elt:V :INTEGER <-
+  - fast_index_of elt:[V] :INTEGER <-
   ( + result:INTEGER;
     
     result := upper;

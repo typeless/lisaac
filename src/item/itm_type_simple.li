@@ -38,7 +38,6 @@ Section ITM_TYPE_SIMPLE, ITM_TYPE_SELF
   ( + result:HASHED_DICTIONARY[ITM_TYPE_SIMPLE,STRING_CONSTANT];
     
     result := HASHED_DICTIONARY[ITM_TYPE_SIMPLE,STRING_CONSTANT].create;
-    ITM_TYPE_SELF.make;
     result.fast_put ITM_TYPE_SELF to (ALIAS_STR.prototype_self);
     result
   );

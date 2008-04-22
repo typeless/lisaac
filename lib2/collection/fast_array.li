@@ -243,17 +243,17 @@ Section Public
   
   - is_empty:BOOLEAN <- ( upper < 0 ); // end is_empty
     
-  - item i:INTEGER :V <- 
+  - item i:INTEGER :[V] <- 
   (    
     storage.item i
   ); 
     
-  - put element:V to i:INTEGER <-
+  - put element:[V] to i:INTEGER <-
   (     
     storage.put element to i;    
   ); 
   
-  - add element:V first n:INTEGER <-
+  - add element:[V] first n:INTEGER <-
   [ -? {n > 0}; ]
   ( + new_capacity,new_count:INTEGER;
 
@@ -273,7 +273,7 @@ Section Public
     storage.set_slice_with element from lower until (n-1);
   );
   
-  - add_first element:V <-
+  - add_first element:[V] <-
   ( 
     add_last element;
     (upper = 0).if {
@@ -285,7 +285,7 @@ Section Public
     }; 
   ); 
     
-  - add_last element:V <-
+  - add_last element:[V] <-
   ( + new_capacity:INTEGER;
         
     (upper + 1 <= capacity - 1 ).if {
@@ -334,7 +334,7 @@ Section Public
     upper := other_upper;
   ); 
   
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   ( 
     storage.set_all_with v until upper;    
   ) ; 
@@ -423,17 +423,17 @@ Section Public
     storage.all_default upper
   ); 
     
-  - occurrences element:V :INTEGER <- 
+  - occurrences element:[V] :INTEGER <- 
   (    
     storage.occurrences element until upper    
   ); 
     
-  - fast_occurrences element:V :INTEGER <- 
+  - fast_occurrences element:[V] :INTEGER <- 
   (     
     storage.fast_occurrences element until upper    
   ); 
   
-  - first_index_of element:V :INTEGER <- 
+  - first_index_of element:[V] :INTEGER <- 
   ( + result:INTEGER;
     
     (upper >= 0).if {
@@ -442,7 +442,7 @@ Section Public
     result
   ); 
 
-  - index_of element:V start start_index:INTEGER :INTEGER <- 
+  - index_of element:[V] start start_index:INTEGER :INTEGER <- 
   ( + result:INTEGER;
     
     (upper >= 0).if {
@@ -451,12 +451,12 @@ Section Public
     result 
   ); 
   
-  - reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   (
     storage.reverse_index_of (element, start_index)
   );
     
-  - fast_first_index_of element:V :INTEGER <- 
+  - fast_first_index_of element:[V] :INTEGER <- 
   ( + result:INTEGER;    
     
     (upper >= 0).if {
@@ -465,7 +465,7 @@ Section Public
     result
   ); 
 
-  - fast_index_of element:V start start_index:INTEGER :INTEGER <- 
+  - fast_index_of element:[V] start start_index:INTEGER :INTEGER <- 
   ( + result:INTEGER;    
     
     (upper >= 0).if {
@@ -474,7 +474,7 @@ Section Public
     result
   ); 
   
-  - fast_reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - fast_reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   (
     storage.fast_reverse_index_of (element, start_index)
   );
@@ -488,7 +488,7 @@ Section Public
     result
   ); 
     
-  - force element:V to index:INTEGER <- 
+  - force element:[V] to index:INTEGER <- 
   (     
     ( index <= upper ).if {
       storage.put element to index;

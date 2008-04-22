@@ -228,7 +228,7 @@ Section Public
   // Implementation of others feature from COLLECTION3:
   //
   
-  - item (line, column, depth:INTEGER) :V <-
+  - item (line, column, depth:INTEGER) :[V] <-
   (
     storage.item (
       (line - lower1) * count2 * count3 + 
@@ -236,7 +236,7 @@ Section Public
     )
   );
     
-  - put element:V to (line, column, depth:INTEGER) <-
+  - put element:[V] to (line, column, depth:INTEGER) <-
   (
     storage.put element to (
       (line - lower1) * count2 * count3 + 
@@ -244,7 +244,7 @@ Section Public
     );
   );
     
-  - force x:V to (line, column, depth:INTEGER) <-
+  - force x:[V] to (line, column, depth:INTEGER) <-
   (
     (! valid_index (line,column,depth)).if {
       resize (line.min lower1,column.min lower2,depth.min lower3) 
@@ -253,17 +253,17 @@ Section Public
     put x to (line,column,depth);
   );
     
-  - set_all_with element:V <-
+  - set_all_with element:[V] <-
   (
     storage.set_all_with element with (count - 1);
   );
     
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   (
     storage.replace_all old_value with new_value until (count - 1);
   );
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   (
     storage.fast_replace_all old_value with new_value until (count - 1);
   );
@@ -298,17 +298,17 @@ Section Public
   // Looking and comparison:
   //
   
-  - occurrences elt:V :INTEGER <-
+  - occurrences elt:[V] :INTEGER <-
   (
     storage.occurrences elt until (count - 1)
   );
     
-  - fast_occurrences elt:V :INTEGER <-
+  - fast_occurrences elt:[V] :INTEGER <-
   (
     storage.fast_occurrences elt until (count - 1)
   );
     
-  - has x:V :BOOLEAN <-
+  - has x:[V] :BOOLEAN <-
   //Search if a element x is in the array using `equal'.
   //See also `fast_has' to choose the apropriate one.
   ( + result:BOOLEAN;
@@ -319,7 +319,7 @@ Section Public
     result
   );
     
-  - fast_has x:V :BOOLEAN <-
+  - fast_has x:[V] :BOOLEAN <-
   // Search if a element x is in the array using `='.
   ( + result:BOOLEAN;
     
@@ -335,7 +335,7 @@ Section Public
   );
     
   - swap (line1, column1, depth1:INTEGER) with (line2, column2, depth2:INTEGER) <-
-  ( + tmp:V;
+  ( + tmp:[V];
     + index1, index2:INTEGER;
     
     index1 := (line1 - lower1) * count2 * count3 + (column1 - lower2) * count3 + depth1 - lower3;

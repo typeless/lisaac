@@ -46,8 +46,8 @@ Section Public
   - element_sizeof:INTEGER <- 
   // The size in number of bytes for type `E'.
   ( + result:INTEGER;
-    (V.is_expanded_type).if {
-      result := V.object_size;
+    ([V].is_expanded_type).if {
+      result := [V].object_size;
     } else {
       result := POINTER.object_size;
     };
@@ -119,9 +119,9 @@ Section Public
     +? {Result != NULL};
   ];
   
-  - first:V <- item 0;
+  - first:[V] <- item 0;
     
-  - item index:INTEGER :V <-
+  - item index:INTEGER :[V] <-
   // To read an `item'.
   // Assume that `calloc' is already done and that `index' is 
   // the range [0 .. `nb_elements'-1].
@@ -132,7 +132,7 @@ Section Public
     `10` 
   );
   
-  - put element:V to index:INTEGER <-
+  - put element:[V] to index:INTEGER <-
   // To write an item.
   // Assume that `calloc' is already done and that `index'
   // is the range [0 .. `nb_elements'-1].
@@ -150,7 +150,7 @@ Section Public
   // Displacement
   //
   
-  - '+' Left 80 other:INTEGER :NATIVE_ARRAY[V] <- 
+  - Self:SELF '+' Left 80 other:INTEGER :NATIVE_ARRAY[V] <- 
   // other is in element index
   ( + ptr:POINTER;
     
@@ -237,7 +237,7 @@ Section Public
     -? {(capacity > 0) ->> {other.is_not_null}};
   ]
   ( + result:BOOLEAN;  // BEN : A REVOIR, il y a + efficace...
-    + e1,e2:V;
+    + e1,e2:[V];
     + i:INTEGER;
     
     result := TRUE;
@@ -268,7 +268,7 @@ Section Public
     -? {(other_upper >= other_lower) ->> {other.is_not_null}};
   ]
   ( + i:INTEGER; 
-    + e1,e2:V;
+    + e1,e2:[V];
     + result:BOOLEAN;
 	
     i := other_upper - other_lower;
@@ -295,7 +295,7 @@ Section Public
   // Searching:
   //
   
-  - first_index_of element:V until upper:INTEGER :INTEGER <-
+  - first_index_of element:[V] until upper:INTEGER :INTEGER <-
   // Give the index of the first occurrence of `element' using
   // `==' for comparison.
   // Answer `upper + 1' when `element' is not inside.
@@ -311,7 +311,7 @@ Section Public
     idx
   );
   
-  - index_of (element:V,start_index:INTEGER) until upper:INTEGER :INTEGER <-
+  - index_of (element:[V],start_index:INTEGER) until upper:INTEGER :INTEGER <-
   // Using `is_equal' for comparison, gives the index of the first occurrence of `element' 
   // at or after `start_index'. Answer `upper + 1' when the search fail.
   // See also `fast_index_of', `reverse_index_of'.
@@ -332,7 +332,7 @@ Section Public
     +? {(Result <= upper) ->> {safe_equal (element,item Result)}};
   ];
   
-  - reverse_index_of element:V from upper:INTEGER :INTEGER <-
+  - reverse_index_of element:[V] from upper:INTEGER :INTEGER <-
   // Give the index of the first occurrence of `element' using
   // `==' for comparison, from upper to lower.
   // Answer -1 when `element' is not inside.
@@ -352,7 +352,7 @@ Section Public
     +? {(Result > 0) ->> {safe_equal (element, item Result)}};
   ];
   
-  - fast_index_of (element:V,start_index:INTEGER) until upper:INTEGER :INTEGER <-
+  - fast_index_of (element:[V],start_index:INTEGER) until upper:INTEGER :INTEGER <-
   // Using basic `=' for comparison, gives the index of the first occurrence of 
   // `element' at or after `start_index'. Answer `upper + 1' when the search fail.
   // See also `index_of', `reverse_index_of'.
@@ -373,7 +373,7 @@ Section Public
     +? {(Result <= upper) ->> {element = item Result}};
   ];
   
-  - fast_reverse_index_of element:V from upper:INTEGER :INTEGER <-
+  - fast_reverse_index_of element:[V] from upper:INTEGER :INTEGER <-
   // Same as `reverse_index_of' but use basic `=' for comparison.
   // Search is done in reverse direction, which means from `upper' down to the
   // `0'. Answer `-1' when the search fail.
@@ -394,7 +394,7 @@ Section Public
     +? {(Result > 0) ->> {element = item Result}};
   ];
 
-  - fast_first_index_of element:V until upper:INTEGER :INTEGER <-
+  - fast_first_index_of element:[V] until upper:INTEGER :INTEGER <-
   // Same as `index_of' but use basic `=' for comparison.
   // `0'. Answer `upper + 1' when the search fail.
   // See also `fast_index_of', `reverse_index_of'.
@@ -413,7 +413,7 @@ Section Public
     +? {(Result <= upper) ->> {element = item Result}};
   ];    
   
-  - has element:V until upper:INTEGER :BOOLEAN <-
+  - has element:[V] until upper:INTEGER :BOOLEAN <-
   // Look for `element' using `==' for comparison.
   // Also consider `has' to choose the most appropriate.
   [ ...
@@ -430,7 +430,7 @@ Section Public
     result
   );
   
-  - fast_has element:V until upper:INTEGER :BOOLEAN <-
+  - fast_has element:[V] until upper:INTEGER :BOOLEAN <-
   // Look for `element' using basic `=' for comparison.
   // Also consider `has' to choose the most appropriate.
   [
@@ -483,7 +483,7 @@ Section Public
   // Replacing:
   //
   
-  - replace_all old_value:V with new_value:V until upper:INTEGER <-
+  - replace_all old_value:[V] with new_value:[V] until upper:INTEGER <-
   // Replace all occurences of the element `old_value' by `new_value'
   // using `==' for comparison.
   // See also `fast_replace_all' to choose the apropriate one.
@@ -498,7 +498,7 @@ Section Public
     };
   );
   
-  - fast_replace_all old_value:V with new_value:V until upper:INTEGER <-
+  - fast_replace_all old_value:[V] with new_value:[V] until upper:INTEGER <-
   // Replace all occurences of the element `old_value' by `new_value'
   // using basic `=' for comparison.
   // See also `replace_all' to choose the apropriate one.
@@ -559,7 +559,7 @@ Section Public
   // Other:
   //
   
-  - set_all_with v:V until upper:INTEGER <-
+  - set_all_with v:[V] until upper:INTEGER <-
   // Set all elements in range [0 .. upper] with
   // value `v'.
   [ ...
@@ -571,7 +571,7 @@ Section Public
     };
   );
   
-  - set_slice_with v:V from lower:INTEGER until upper:INTEGER <-
+  - set_slice_with v:[V] from lower:INTEGER until upper:INTEGER <-
   // Set all elements in range [`lower' .. `upper'] with value `v'.
   [ ...
     -? {lower >= 0};
@@ -592,7 +592,7 @@ Section Public
   [ ...
     -? {upper >= -1};
   ]
-  ( + v:V;
+  ( + v:[V];
     
     upper.downto 0 do { i:INTEGER;      
       put v to i;
@@ -606,7 +606,7 @@ Section Public
     -? {lower >= 0};
     -? {upper >= lower};
   ]
-  ( + v:V;
+  ( + v:[V];
         
     lower.to upper do { i:INTEGER;
       put v to i;
@@ -631,7 +631,7 @@ Section Public
   [ ...
     -? {capacity >= 0};
   ]
-  ( + element:V;
+  ( + element:[V];
     + result:NATIVE_ARRAY[V];
        
     (capacity > 0).if {
@@ -668,7 +668,7 @@ Section Public
     };
   );
   
-  - occurrences element:V until upper:INTEGER :INTEGER <-
+  - occurrences element:[V] until upper:INTEGER :INTEGER <-
   // Number of occurrences of `element' in range [0..upper]
   // using `equal' for comparison.
   // See also `fast_occurrences' to chose the apropriate one.
@@ -685,7 +685,7 @@ Section Public
     count
   );
   
-  - slice_occurrences element:V from lower:INTEGER until upper:INTEGER :INTEGER <-
+  - slice_occurrences element:[V] from lower:INTEGER until upper:INTEGER :INTEGER <-
   // Number of occurrences of `element' in range [`lower' .. `upper'] using 
   // `is_equal' for comparison.
   // See also `slice_fast_occurrences' to chose the apropriate one.
@@ -705,7 +705,7 @@ Section Public
     result
   );
 
-  - fast_occurrences element:V until upper:INTEGER :INTEGER <-
+  - fast_occurrences element:[V] until upper:INTEGER :INTEGER <-
   // Number of occurrences of `element' in range [0..upper]
   // using basic "=" for comparison.
   // See also `fast_occurrences' to chose the apropriate one.
@@ -722,7 +722,7 @@ Section Public
     count
   );
   
-  - slice_fast_occurrences element:V from lower:INTEGER until upper:INTEGER :INTEGER <-
+  - slice_fast_occurrences element:[V] from lower:INTEGER until upper:INTEGER :INTEGER <-
   // Number of occurrences of `element' in range [`lower' .. `upper']
   // using basic "=" for comparison.
   // See also `slice_occurrences' to chose the apropriate one.
@@ -749,7 +749,7 @@ Section Public
     -? {upper >= -1};
   ]
   ( + result:BOOLEAN;
-    + model:V;
+    + model:[V];
     ? {upper >= -1};
     result := TRUE;
     upper.downto 0 do { i:INTEGER;
@@ -768,7 +768,7 @@ Section Public
     -? {upper >= lower - 1};
   ]
   ( + i:INTEGER; 
-    + v:V;
+    + v:[V];
     + result:BOOLEAN;
 		
     result := TRUE;
@@ -800,7 +800,7 @@ Section Public
   
   - println <- `puts(@Self)`;
   
-  - force_put element:V to index:INTEGER <-
+  - force_put element:[V] to index:INTEGER <-
   // Used in Memory count: not to use directly without caution !
   [ ...
     -? {index>=0};

@@ -31,20 +31,17 @@ Section Inherit
   
   + parent_itm_type_simple:Expanded ITM_TYPE_SIMPLE;
   
-Section ITM_TYPE_SIMPLE
-  
-  - make <-
-  (
-    to_run_intern := TYPE_PARAMETER.create (ALIAS_STR.prototype_self);
-  );
-  
-  - to_run_intern:TYPE_PARAMETER;
-  
 Section Public
   
-  - name:STRING_CONSTANT <- to_run_intern.parameter_name;
+  // BSBS: Voir si il est encore necessaire avec ITM_TYPE_PARAMETER
   
-  - to_run:TYPE_FULL <- to_run_intern;        
+  - name:STRING_CONSTANT <- ALIAS_STR.prototype_self;
+  
+  - to_run:TYPE_FULL <-
+  (
+    not_yet_implemented;
+    NULL
+  );
 
   
   

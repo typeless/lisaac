@@ -214,17 +214,17 @@ Section Public
   
   - count:INTEGER <- ( upper - lower + 1 );
   
-  - item i:INTEGER :V <-
+  - item i:INTEGER :[V] <-
   ( 
     storage.item (i - lower)
   );
   
-  - put element:V to i:INTEGER <-
+  - put element:[V] to i:INTEGER <-
   ( 
     storage.put element to (i - lower);    
   );
     
-  - force element:V to index:INTEGER <-
+  - force element:[V] to index:INTEGER <-
   (     
     (upper < index).if {
       (index = upper + 1).if {
@@ -259,7 +259,7 @@ Section Public
     };
   );
   
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   ( 
     storage.set_all_with v until (upper - lower);    
   );
@@ -296,7 +296,7 @@ Section Public
     +? {capacity = Old capacity};   
   ];
   
-  - add_first element:V <-
+  - add_first element:[V] <-
   ( 
     (upper < lower).if {
       add_last element;
@@ -307,7 +307,7 @@ Section Public
     };
   );
   
-  - add_last element:V <-
+  - add_last element:[V] <-
   ( + new_capacity:INTEGER;
     
     ( capacity < count + 1 ).if {
@@ -343,17 +343,17 @@ Section Public
     storage.all_default (upper - lower)
   );
   
-  - occurrences element:V :INTEGER <-
+  - occurrences element:[V] :INTEGER <-
   ( 
     storage.occurrences element until (upper - lower)
   );
   
-  - fast_occurrences element:V :INTEGER <-
+  - fast_occurrences element:[V] :INTEGER <-
   ( 
     storage.fast_occurrences element until (upper - lower)
   );
   
-  - first_index_of element:V :INTEGER <-
+  - first_index_of element:[V] :INTEGER <-
   ( + result:INTEGER;
     
     (upper >= lower).if {
@@ -363,7 +363,7 @@ Section Public
     };
   );
   
-  - index_of element:V start start_index:INTEGER :INTEGER <-
+  - index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     
     (upper >= lower).if {
@@ -374,7 +374,7 @@ Section Public
     result    
   );
   
-  - reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     
     (upper >= lower).if {
@@ -384,7 +384,7 @@ Section Public
     };
   );
   
-  - fast_index_of element:V start start_index:INTEGER :INTEGER <-
+  - fast_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     
     (upper >= lower).if {
@@ -395,7 +395,7 @@ Section Public
     result
   );
   
-  - fast_reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - fast_reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     
     (upper >= lower).if {

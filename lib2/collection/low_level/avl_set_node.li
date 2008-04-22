@@ -42,7 +42,7 @@ Section AVL_SET
   // Creation:
   //
   
-  - create i:V :SELF <-
+  - create i:[V] :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -50,7 +50,7 @@ Section AVL_SET
     result
   );
   
-  - make i:V <-
+  - make i:[V] <-
   (
     set_balance balanced;
     left  := NULL;

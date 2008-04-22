@@ -61,7 +61,7 @@ Section Public
   // Basic access:
   //
   
-  - has k:K :BOOLEAN <-
+  - has k:[K] :BOOLEAN <-
   // Is there a value currently associated with key `k'?
   ( + idx:INTEGER;
     + node:HASHED_DICTIONARY_NODE[V,K];
@@ -74,9 +74,9 @@ Section Public
     node != NULL
   );
   
-  - at k:K :V <-
+  - at k:[K] :[V] <-
   // Return the value associated to key `k'.
-  // (See also `reference_at' if V is a reference type.)
+  // (See also `reference_at' if [V] is a reference type.)
   ( + idx:INTEGER;
     + node:HASHED_DICTIONARY_NODE[V,K];  
        
@@ -88,14 +88,14 @@ Section Public
     node.item
   );
   
-  - reference_at k:K :V <-
+  - reference_at k:[K] :[V] <-
   // Return NULL or the value associated with key `k'. Actually, this 
   // feature is useful when the type of values (the type E) is a 
   // reference type, to avoid using `has' just followed by `at' to get 
   // the corresponding value.
   ( + idx:INTEGER;
     + node:HASHED_DICTIONARY_NODE[V,K];
-    + result:V;
+    + result:[V];
     
     idx := k.hash_code % capacity;
     node := buckets.item idx;
@@ -108,7 +108,7 @@ Section Public
     result
   );
   
-  - fast_has k:K :BOOLEAN <-
+  - fast_has k:[K] :BOOLEAN <-
   ( + idx:INTEGER; 
     + node:HASHED_DICTIONARY_NODE[V,K];
     
@@ -120,7 +120,7 @@ Section Public
     node != NULL
   );
 
-  - fast_at k:K :V <-
+  - fast_at k:[K] :[V] <-
   ( + idx:INTEGER; 
     + node:HASHED_DICTIONARY_NODE[V,K];
     
@@ -132,14 +132,14 @@ Section Public
     node.item
   );
   
-  - fast_reference_at k:K :V <-
+  - fast_reference_at k:[K] :[V] <-
   // Return NULL or the value associated with key `k'. Actually, this 
   // feature is useful when the type of values (the type V) is a 
   // reference type, to avoid using `has' just followed by `at' to get 
   // the corresponding value.
   ( + idx:INTEGER;
     + node:HASHED_DICTIONARY_NODE[V,K];
-    + result:V;
+    + result:[V];
     
     idx := k.hash_code % capacity;
     node := buckets.item idx;
@@ -154,7 +154,7 @@ Section Public
   
 Section Public  
 
-  - put v:V to k:K  <-
+  - put v:[V] to k:[K]  <-
   // Change some existing entry or `add' the new one. If there is
   // as yet no key `k' in the dictionary, enter it with item `v'.
   // Otherwise overwrite the item associated with key `k'.
@@ -182,7 +182,7 @@ Section Public
     };    
   );
 
-  - fast_put v:V to k:K  <-
+  - fast_put v:[V] to k:[K]  <-
   // Change some existing entry or `add' the new one. If there is
   // as yet no key `k' in the dictionary, enter it with item `v'.
   // Otherwise overwrite the item associated with key `k'.
@@ -210,7 +210,7 @@ Section Public
     };    
   );
     
-  - add v:V to k:K <-
+  - add v:[V] to k:[K] <-
   // To add a new entry `k' with its associated value `v'. Actually, this
   // is equivalent to call `put', but may run a little bit faster.
   ( + idx:INTEGER;
@@ -230,7 +230,7 @@ Section Public
   // Removing:
   //
   
-  - remove k:K <-
+  - remove k:[K] <-
   // Remove entry `k' (which may exist or not before this call).
   ( + h, idx:INTEGER;
     + node, previous_node:HASHED_DICTIONARY_NODE[V,K]; 
@@ -259,7 +259,7 @@ Section Public
     };    
   );
   
-  - fast_remove k:K <-
+  - fast_remove k:[K] <-
   ( + h, idx:INTEGER; 
     + node, previous_node:HASHED_DICTIONARY_NODE[V,K];
 		
@@ -302,13 +302,13 @@ Section Public
   // To provide iterating facilities:
   //
     
-  - item i:INTEGER :V <-
+  - item i:INTEGER :[V] <-
   (    
     set_cache_user i;
     cache_node.item    
   );
     
-  - key index:INTEGER :K <-
+  - key index:INTEGER :[K] <-
   (    
     set_cache_user index;
     cache_node.key    
@@ -369,11 +369,11 @@ Section Public
   // Other features:
   //
   
-  - internal_key k:K :K <-
+  - internal_key k:[K] :[K] <-
   // Retrieve the internal key object which correspond to the existing
   // entry `k' (the one memorized into the `self' dictionary).
   ( + node:HASHED_DICTIONARY_NODE[V,K];
-    + result:K;
+    + result:[K];
         
     node := buckets.item (k.hash_code % capacity);
     result := node.key;
@@ -484,7 +484,7 @@ Section Private
     +? {Result = Old node.next};
   ];
 
-  - new_node v:V to k:K next nxt:HASHED_DICTIONARY_NODE[V,K] :HASHED_DICTIONARY_NODE[V, K] <-
+  - new_node v:[V] to k:[K] next nxt:HASHED_DICTIONARY_NODE[V,K] :HASHED_DICTIONARY_NODE[V, K] <-
   // Create a new one.
   (
     HASHED_DICTIONARY_NODE[V,K].create v to k next nxt
@@ -570,7 +570,7 @@ Section Public
   - is_empty:BOOLEAN <- count = 0;
   // Is it empty ?
   
-  - fast_has k:K :BOOLEAN <-
+  - fast_has k:[K] :BOOLEAN <-
   // Is there a value currently associated with key `k'?
   (
     + idx:INTEGER;
@@ -585,7 +585,7 @@ Section Public
     node != NULL
   );
   
-  - fast_at k:K :V <-
+  - fast_at k:[K] :[V] <-
   // Return the value associated to key `k'.
   // (See also `reference_at' if V is a reference type.)
   (
@@ -604,7 +604,7 @@ Section Public
   );
   
   
-  - '@' Left 1 k:K :V <-
+  - '@' Left 1 k:[K] :[V] <-
   (
     at k
   );
@@ -613,7 +613,7 @@ Section Public
   // Looking and searching some value:
   
   
-  - occurrences v:V :INTEGER <-
+  - occurrences v:[V] :INTEGER <-
   // Number of occurrences using `equal'.
   // See also `fast_occurrences' to chose the apropriate one.
   (
@@ -629,7 +629,7 @@ Section Public
   );
   
   
-  - fast_occurrences v:V :INTEGER <-
+  - fast_occurrences v:[V] :INTEGER <-
   // Number of occurrences using `='.
   // See also `occurrences' to chose the apropriate one.
   (
@@ -647,11 +647,11 @@ Section Public
   );
   
   
-  - key_at v:V :K <-
+  - key_at v:[V] :[K] <-
   // Retrieve the key used for value `v' using `equal' for comparison.
   (
     + i:INTEGER;
-    + result:K;
+    + result:[K];
     
     ? { occurrences v = 1};
     i := 1;
@@ -666,11 +666,11 @@ Section Public
   );
   
   
-  - fast_key_at v:V :K <-
+  - fast_key_at v:[V] :[K] <-
   // Retrieve the key used for value `v' using `=' for comparison.
   (
     + i:INTEGER;         
-    + result:K;
+    + result:[K];
     
     ? { fast_occurrences v = 1 };
     i := 1;
@@ -739,7 +739,7 @@ Section Public
   // Both keys and values are compared with `=='. See also `=='.
   (
     + i:INTEGER;
-    + k:K; 
+    + k:[K]; 
     + result:BOOLEAN;
     (Self = other ).if {
       result := TRUE;

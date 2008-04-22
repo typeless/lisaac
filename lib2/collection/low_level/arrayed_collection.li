@@ -44,8 +44,8 @@ Section Public
   // The size in number of bytes for type `E'.
   ( + result:INTEGER;
     
-    (V.is_expanded_type).if {
-      result := V.object_size;
+    ([V].is_expanded_type).if {
+      result := [V].object_size;
     } else {
       result := POINTER.object_size;
     };
@@ -81,13 +81,13 @@ Section Public
   // Implementation of deferred:
   //
   
-  - first:V <- storage.item 0;
+  - first:[V] <- storage.item 0;
   
-  - second:V <- storage.item 1;
+  - second:[V] <- storage.item 1;
   
-  - last :V <- item upper;
+  - last :[V] <- item upper;
   
-  - add element:V to index:INTEGER <-
+  - add element:[V] to index:INTEGER <-
   ( 
     (index = upper + 1).if {
       add_last element;
@@ -108,12 +108,12 @@ Section Public
     upper := upper - n;
   );
   
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   ( 
     storage.replace_all old_value with new_value until (count - 1);    
   );
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   ( 
     storage.fast_replace_all old_value with new_value until (count - 1);    
   );

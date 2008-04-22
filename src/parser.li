@@ -1228,15 +1228,16 @@ Section Private
 	t := read_type TRUE;
 	(t = NULL).if {
 	  syntax_error (current_position,"Incorrect type.");
-	};
+        };
+                        
 	(
-	  (self_first) && {
-	    (t != ITM_TYPE_SELF) || {
-	      (object.name = ALIAS_STR.prototype_block) && 
-	      {tb ?= t; tb = NULL}
-	    }
-	  }
-        ).if {          
+	  (self_first) && 
+          {t != ITM_TYPE_SELF} && 
+          {
+            (object.name != ALIAS_STR.prototype_block) || 
+            {tb ?= t; tb = NULL}
+          }
+        ).if {                    
 	  syntax_error (current_position,"Type `SELF' is needed.");
 	};
 	result := ITM_ARG.create pos name n type t;
@@ -1429,8 +1430,7 @@ Section Private
     lst
   );
     
-  //++ TYPE         -> '[' cap_identifier ']'
-  //++               | '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'
+  //++ TYPE         -> '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'
   //++               | [type] PROTOTYPE
   - read_type is_local:BOOLEAN :ITM_TYPE_MONO <-
   ( + style:STRING_CONSTANT;
@@ -1438,16 +1438,7 @@ Section Private
     + lst:FAST_ARRAY[ITM_TYPE_MONO];
     + typ_arg,typ_res:ITM_TYPE;
     
-    (read_character '[').if {
-      // '[' cap_identifier ']'
-      (! read_cap_identifier).if {
-	syntax_error (current_position,"Incorrect parameter type.");
-      };            
-      result := ITM_TYPE_PARAMETER.get last_string;
-      (! read_character ']').if {
-	warning_error (current_position,"Added ']'.");
-      }; // if      	
-    }.elseif {read_character '{'} then {
+    (read_character '{').if {
       // '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'      
       (read_character '(').if {
 	// Read vector argument.
@@ -1491,7 +1482,7 @@ Section Private
       (! read_character '}').if {
 	warning_error (current_position,"Added '}'.");
       }; // if      	
-      result := ITM_TYPE_BLOCK.get typ_arg and typ_res;
+      result := ITM_TYPE_BLOCK.get typ_arg and typ_res;      
     } else {    
       // Expanded | Strict 
       (
@@ -1510,14 +1501,24 @@ Section Private
   );  // read_type
     
   //++ PROTOTYPE    -> cap_identifier ['['TYPE_LIST {identifier TYPE_LIST} ']']
+  //++               | '[' cap_identifier ']'
   - read_prototype style:STRING_CONSTANT :ITM_TYPE_MONO <-
   ( + name:STRING_CONSTANT;    
     + genericity:FAST_ARRAY[ITM_TYPE_MONO];
     + continue:BOOLEAN;
     + t,result:ITM_TYPE_MONO;    
     + old_pos,old_derive,sav_derive:INTEGER;
-       
-    read_cap_identifier.if {            
+    
+    (read_character '[').if {
+      // '[' cap_identifier ']'
+      (! read_cap_identifier).if {
+        syntax_error (current_position,"Incorrect parameter type.");
+      };            
+      result := ITM_TYPE_PARAMETER.get last_string;
+      (! read_character ']').if {
+        warning_error (current_position,"Added ']'.");
+      }; // if      	
+    }.elseif {read_cap_identifier} then {            
       old_pos    := position;
       old_derive := short_derive;
       
@@ -2168,9 +2169,7 @@ Section Private
   // name, export, import, type, default, external, version, date, comment, author,
   // bibliography, language, bug_report, copyright.
   - read_slot_header first:BOOLEAN :BOOLEAN <-
-  ( + result:BOOLEAN;
-    //+ j:INTEGER;
-    + t:ITM_TYPE_MONO;    
+  ( + result:BOOLEAN;    
     + v:ITM_CODE;
     + cast:FAST_ARRAY[ITM_TYPE_MONO];
     + style:CHARACTER;
@@ -2221,11 +2220,7 @@ Section Private
 	  
 	  (last_string != object.name).if {
 	    syntax_error (current_position,"Incorrect name (filename != name).");
-	  };
-	  (last_string.count = 1).if {
-	    syntax_error (current_position,"Incorrect name (name length > 1).");
-	  };
-	  
+          };          
 	  (read_character '[').if {
 	    //
 	    // Generic loader.
@@ -2273,43 +2268,7 @@ Section Private
 		syntax_error (current_position,"Invalid generic list number.");
 	      };
 	    };
-	  };
-	  
-	  {(is_export := read_symbol (ALIAS_STR.symbol_auto_export)) || 
-	  {read_symbol (ALIAS_STR.symbol_auto_import)}}.while_do {
-	    //
-	    // Auto-cast system.
-	    //
-	    
-	    warning_error (current_position,"Obsolete syntax : Use `export' or `import' slot.");
-	    
-	    // ('->' | '<-') TYPE {',' TYPE}
-	    (is_export).if {
-	      cast := object.export_list;
-	    } else {
-	      cast := object.import_list;
-	    };
-	    (cast = NULL).if {
-	      cast := FAST_ARRAY[ITM_TYPE_MONO].create_with_capacity 4;	   
-	    };
-	    t := read_type TRUE;
-	    (t = NULL).if {
-	      syntax_error (current_position,"Incorrect type.");
-	    };
-	    {read_character ','}.while_do {
-	      cast.add_last t;
-	      t := read_type TRUE;
-	      (t = NULL).if {
-		syntax_error (current_position,"Incorrect type.");
-	      };
-	    };
-	    cast.add_last t;
-	    (is_export).if {
-	      object.set_export_list cast;
-	    } else {
-	      object.set_import_list cast;
-	    };
-	  };	 
+	  };	  
 	} else {
 	  syntax_error (current_position,"Slot `name' must to be first slot.");
 	};

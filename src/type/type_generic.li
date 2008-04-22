@@ -267,13 +267,17 @@ Section Public
     old_data := data_current;
     data_current := data_tmp;
     data_current.set_generic Self;
-    export_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.export_list.count);
-    (prototype.export_list.lower).to (prototype.export_list.upper) do { j:INTEGER;
-      export_list.add_last (prototype.export_list.item j.to_run);
+    (prototype.export_list != NULL).if {
+      export_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.export_list.count);
+      (prototype.export_list.lower).to (prototype.export_list.upper) do { j:INTEGER;
+        export_list.add_last (prototype.export_list.item j.to_run);
+      };
     };
-    import_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.import_list.count);
-    (prototype.import_list.lower).to (prototype.import_list.upper) do { j:INTEGER;
-      import_list.add_last (prototype.import_list.item j.to_run);
+    (prototype.import_list != NULL).if {
+      import_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.import_list.count);
+      (prototype.import_list.lower).to (prototype.import_list.upper) do { j:INTEGER;
+        import_list.add_last (prototype.import_list.item j.to_run);
+      };
     };
     data_current := old_data;
   );

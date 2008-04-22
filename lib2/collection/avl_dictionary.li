@@ -42,26 +42,26 @@ Section Inherit
   
 Section Private
   
-  - key_memory:K <- item_memory;
+  - key_memory:[K] <- item_memory;
 		
 Section Public
   
   - capacity:INTEGER <- count;
 
-  - at k:K :V <- 
+  - at k:[K] :[V] <- 
   ( + dic:AVL_DICTIONARY_NODE[V,K];
     dic ?= root.at k;
     dic.value
   );
 
-  - fast_at k:K :V <- 
+  - fast_at k:[K] :[V] <- 
   ( + dic:AVL_DICTIONARY_NODE[V,K];
     dic ?= root.fast_at k;
     dic.value
   );
 
-  - reference_at k:K :V <-
-  ( + result:V;
+  - reference_at k:[K] :[V] <-
+  ( + result:[V];
     + n:AVL_DICTIONARY_NODE[V, K];
     
     (root != NULL).if {
@@ -73,8 +73,8 @@ Section Public
     result
   );
 
-  - fast_reference_at k:K :V <-
-  ( + result:V;
+  - fast_reference_at k:[K] :[V] <-
+  ( + result:[V];
     + n:AVL_DICTIONARY_NODE[V, K];
 		
     (root != NULL).if {
@@ -86,23 +86,23 @@ Section Public
     result
   );
   
-  - put v:V to k:K <- add v to k;
+  - put v:[V] to k:[K] <- add v to k;
   
-  - add v:V to k:K <-
+  - add v:[V] to k:[K] <-
   (
     value_memory := v;
     key_memory := k;
     root := do_insert root;
   );
 
-  - fast_put v:V to k:K <-
+  - fast_put v:[V] to k:[K] <-
   (
     value_memory := v;
     key_memory := k;
     root := fast_do_insert root;
   );
 
-  - occurrences v:V :INTEGER <-
+  - occurrences v:[V] :INTEGER <-
   ( + result:INTEGER;
     
     (root != NULL).if {
@@ -111,7 +111,7 @@ Section Public
     result
   );
 
-  - fast_occurrences v:V :INTEGER <-
+  - fast_occurrences v:[V] :INTEGER <-
   ( + result:INTEGER;
     
     (root != NULL).if {
@@ -120,9 +120,9 @@ Section Public
     result
   );
 
-  - key_at v:V :K <- root.key_at v;
+  - key_at v:[V] :[K] <- root.key_at v;
 		
-  - fast_key_at v:V :K <- root.fast_key_at v;
+  - fast_key_at v:[V] :[K] <- root.fast_key_at v;
 
   - clear_count <- clear_count_and_capacity;
 
@@ -136,7 +136,7 @@ Section Public
     };
   );
 
-  - item i:INTEGER :V <-
+  - item i:INTEGER :[V] <-
   ( + dic:AVL_DICTIONARY_NODE[V,K];
     (map_dirty).if {
       build_map;
@@ -145,7 +145,7 @@ Section Public
     dic.value
   );
 
-  - key index:INTEGER :K <-
+  - key index:INTEGER :[K] <-
   (
     (map_dirty).if {
       build_map;
@@ -153,7 +153,7 @@ Section Public
     map.item (index - 1).key
   );
 
-  - internal_key k:K :K <- root.at(k).key;
+  - internal_key k:[K] :[K] <- root.at(k).key;
   
   - make <-
   (
@@ -167,7 +167,7 @@ Section Public
 
 Section Private
   
-  + value_memory:V;
+  + value_memory:[V];
 
   - set_value_and_key n:AVL_TREE_NODE[K] <-
   ( + dic:AVL_DICTIONARY_NODE[V,K];
@@ -193,8 +193,8 @@ Section Private
   );
 
   - discard_node n:AVL_DICTIONARY_NODE[V, K] <-
-  ( + v:V;
-    + k:K;
+  ( + v:[V];
+    + k:[K];
 		
     n.make (v, k);
   );

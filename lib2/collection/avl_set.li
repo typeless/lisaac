@@ -33,13 +33,13 @@ Section Inherit
   
 Section Public 
   
-  - add e:V <-
+  - add e:[V] <-
   (
     item_memory := e;
     root := do_insert root;
   );
 
-  - fast_add e:V <-
+  - fast_add e:[V] <-
   (
     item_memory := e;
     root := fast_do_insert root;
@@ -55,9 +55,9 @@ Section Public
     };
   );
 
-  - reference_at e:V :V <-
+  - reference_at e:[V] :[V] <-
   ( + n:AVL_SET_NODE[V];
-    + result:V;
+    + result:[V];
     
     (root != NULL).if {
       n := root.at e;
@@ -68,8 +68,8 @@ Section Public
     result
   );
 
-  - item index:INTEGER :V <-
-  ( + result:V;
+  - item index:INTEGER :[V] <-
+  ( + result:[V];
     
     (map_dirty).if {
       build_map;
@@ -96,7 +96,7 @@ Section Private
   );
 
   - discard_node n:AVL_SET_NODE[V] <-
-  ( //+ i:V;
+  ( //+ i:[V];
     
     //n.make i;
     //n.set_left (lost_nodes.item);

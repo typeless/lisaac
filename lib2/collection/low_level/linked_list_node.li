@@ -33,13 +33,13 @@ Section Inherit
   
 Section Public
   
-  + item:V;
+  + item:[V];
   
   + next:LINKED_LIST_NODE[V];
   
 Section LINKED_LIST
   
-  - create i:V next n:LINKED_LIST_NODE[V] :SELF <-
+  - create i:[V] next n:LINKED_LIST_NODE[V] :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -47,7 +47,7 @@ Section LINKED_LIST
     result
   );
   
-  - make i:V next n:LINKED_LIST_NODE[V] <-
+  - make i:[V] next n:LINKED_LIST_NODE[V] <-
   (    
     item := i;
     next := n;
@@ -60,7 +60,7 @@ Section LINKED_LIST
   
 Section LINKED_LIST_NODE,LINKED_LIST
   
-  - set_item i:V <-
+  - set_item i:[V] <-
   (
     item := i;
   )
@@ -76,7 +76,7 @@ Section LINKED_LIST_NODE,LINKED_LIST
     +? {next = n};
   ];
     
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   ( + lnk:SELF;
     
     lnk := Self;

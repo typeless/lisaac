@@ -61,7 +61,7 @@ Section Public
 
   + right:AVL_TREE_NODE[V];
 
-  + item:V;
+  + item:[V];
 
   + balance:INTEGER;
   // Balance factor; either `balanced' (the tree is balanced),
@@ -110,7 +110,7 @@ Section Public
     +? {map.count = Old map.count + count};
   ];
 
-  - has e:V :BOOLEAN <-
+  - has e:[V] :BOOLEAN <-
   // Is element `e' in the tree?
   ( + result:BOOLEAN;
 		
@@ -125,7 +125,7 @@ Section Public
     result
   );	
 
-  - fast_has e:V :BOOLEAN <-
+  - fast_has e:[V] :BOOLEAN <-
   // Is element `e' in the tree?
   ( + result:BOOLEAN;
 		
@@ -143,7 +143,7 @@ Section Public
     +? {Result -> (count > 0)};
   ];
 
-  - at e:V :AVL_TREE_NODE[V] <-
+  - at e:[V] :AVL_TREE_NODE[V] <-
   // Is element `e' in the tree?
   ( + result:AVL_TREE_NODE[V];
 			
@@ -161,7 +161,7 @@ Section Public
     result
   );
 
-  - set_item i:V <-
+  - set_item i:[V] <-
   [
     // Equality admitted for the free list
     -? {(left != NULL) ->> {(left.item = i) || {left.item < i}}};

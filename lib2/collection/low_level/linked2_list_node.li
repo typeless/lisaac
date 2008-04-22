@@ -33,7 +33,7 @@ Section Inherit
   
 Section Public
   
-  + item:V;
+  + item:[V];
   
   + previous:LINKED2_LIST_NODE[V];
   
@@ -41,7 +41,7 @@ Section Public
 
 Section LINKED2_LIST
   
-  - create i:V previous p:SELF next n:SELF :SELF<-
+  - create i:[V] previous p:SELF next n:SELF :SELF<-
   ( + result:SELF;
     
     result := clone;
@@ -49,7 +49,7 @@ Section LINKED2_LIST
     result
   );
     
-  - make i:V previous p:SELF next n:SELF <-
+  - make i:[V] previous p:SELF next n:SELF <-
   (
     item := i;
     previous := p;
@@ -63,7 +63,7 @@ Section LINKED2_LIST
 
 Section LINKED2_LIST,LINKED2_LIST_NODE
   
-  - set_item i:V <-
+  - set_item i:[V] <-
   (
     item := i;
   )
@@ -79,7 +79,7 @@ Section LINKED2_LIST,LINKED2_LIST_NODE
     +? {next = n};
   ];
   
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   ( + lnk:SELF;
     
     lnk := Self;    

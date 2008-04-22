@@ -86,9 +86,9 @@ Section Public
   // Reading:
   //
   
-  - item (line, column:INTEGER) :V <-
+  - item (line, column:INTEGER) :[V] <-
   [ -? { valid_index (line,column) }; ]
-  ( + result:V;
+  ( + result:[V];
     
     deferred;
     result
@@ -98,14 +98,14 @@ Section Public
   // Writing:
   //
   
-  - put element:V to (line, column:INTEGER) <-
+  - put element:[V] to (line, column:INTEGER) <-
   [ -? { valid_index (line,column) }; ]
   (
     deferred;
   )
   [ +? { item (line,column) = element}; ];
     
-  - force element:V to (line, column:INTEGER) <-
+  - force element:[V] to (line, column:INTEGER) <-
   // Put `element' at position (`line',`column'). Collection is
   // resized first when (`line',`column') is not inside current
   // bounds. New bounds are initialized with default values.
@@ -216,7 +216,7 @@ Section Public
     +? { count = Old count };
   ];
     
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   // Set all item with value `v'.
   (
     deferred;
@@ -227,7 +227,7 @@ Section Public
     
   - clear_all <-
   // Set all items to default values.
-  ( + value:V;
+  ( + value:[V];
         
     set_all_with value;
   )
@@ -339,7 +339,7 @@ Section Public
   
   - fill_tagged_out_memory <-
   ( + line:INTEGER;
-    +v:V;
+    +v:[V];
     
     tagged_out_memory.append "lower1:";
     lower1.append_in tagged_out_memory;
@@ -378,7 +378,7 @@ Section Public
   // Miscellaneous features:
   //
   
-  - occurrences elt:V :INTEGER <-
+  - occurrences elt:[V] :INTEGER <-
   // Number of occurrences using `equal'.
   //
   // See also `fast_occurrences' to chose the apropriate one.
@@ -388,7 +388,7 @@ Section Public
   )
   [ +? { Result >= 0 }; ];
     
-  - fast_occurrences elt:V :INTEGER <-
+  - fast_occurrences elt:[V] :INTEGER <-
   // Number of occurrences using `='.
   //
   // See also `occurrences' to chose the apropriate one.
@@ -398,7 +398,7 @@ Section Public
   )
   [ +? { Result >= 0 }; ];
      
-  - has x:V :BOOLEAN <-
+  - has x:[V] :BOOLEAN <-
   // Search if a element x is in the array using `equal'.
   //
   // See also `fast_has' to chose the apropriate one.
@@ -407,14 +407,14 @@ Section Public
     FALSE
   );
     
-  - fast_has x:V :BOOLEAN <-
+  - fast_has x:[V] :BOOLEAN <-
   //  Search if a element x is in the array using `='.
   (
     deferred;
     FALSE
   );
     
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   // Replace all occurences of the element `old_value' by `new_value'
   // using `equal' for comparison.
   //
@@ -427,7 +427,7 @@ Section Public
     +? { occurrences old_value = 0 };
   ];
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   // Replace all occurences of the element `old_value' by `new_value'
   // using operator `=' for comparison.
   //
@@ -454,7 +454,7 @@ Section Public
     +? { result != NULL };
   ];
     
-  - set_area (line_min,column_min:INTEGER) to (line_max,column_max:INTEGER) with element:V <-
+  - set_area (line_min,column_min:INTEGER) to (line_max,column_max:INTEGER) with element:[V] <-
   // Set all the elements of the selected area rectangle with `element'.
   [
     -? { valid_index (line_min,column_min) };

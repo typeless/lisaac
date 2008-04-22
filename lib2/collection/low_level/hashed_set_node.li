@@ -33,7 +33,7 @@ Section Inherit
   
 Section Public
   
-  + item:V;
+  + item:[V];
   
   + next:HASHED_SET_NODE[V];
   // The `next' one when some clash occurs.
@@ -48,7 +48,7 @@ Section Public
   
 Section HASHED_SET
   
-  - create i:V next n:HASHED_SET_NODE[V] :SELF <-
+  - create i:[V] next n:HASHED_SET_NODE[V] :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -56,7 +56,7 @@ Section HASHED_SET
     result
   );
   
-  - make i:V next n:HASHED_SET_NODE[V] <-
+  - make i:[V] next n:HASHED_SET_NODE[V] <-
   (
     item := i;
     next := n;

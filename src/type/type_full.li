@@ -71,6 +71,9 @@ Section TYPE
   //
   
   - create typ:TYPE with code:UINTEGER_8 :SELF <-
+  [ 
+    -? {typ != NULL}; 
+  ]
   ( + result:SELF;
     
     result := clone;

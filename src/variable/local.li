@@ -282,7 +282,7 @@ Section Public
     
     (is_static).if {      
       tmp := TYPES_TMP.new;      
-      tmp.add (t.raw);
+      tmp.add (t.raw);      
       type_list := tmp.to_types;
     } else {
       type_list := TYPES_TMP.types_empty;

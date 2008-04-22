@@ -35,15 +35,15 @@ Section Inherit
   
 Section Public
   
-  - key:K <- item;
+  - key:[K] <- item;
   
-  - set_key i:K <- set_item i;
+  - set_key i:[K] <- set_item i;
   
 Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
   
-  + value:V;
+  + value:[V];
 
-  - set_value v:V <-
+  - set_value v:[V] <-
   (
     value := v;
   )
@@ -51,7 +51,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
     +? {value = v};
   ];
 
-  - fast_at k:K :AVL_DICTIONARY_NODE[V, K] <-
+  - fast_at k:[K] :AVL_DICTIONARY_NODE[V, K] <-
   // Is element `e' in the tree?
   ( + result:AVL_DICTIONARY_NODE[V, K];
     
@@ -72,18 +72,18 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
     result
   );
 
-  - occurrences v:V :INTEGER <-
+  - occurrences v:[V] :INTEGER <-
   (
     occurrences v start 0
   );
 
-  - fast_occurrences v:V :INTEGER <-
+  - fast_occurrences v:[V] :INTEGER <-
   (
     fast_occurrences v start 0
   );
 
-  - key_at v:V :K <-
-  ( + result:K;
+  - key_at v:[V] :[K] <-
+  ( + result:[K];
     
     (v == value /*SAFE_EQUAL[V].test v and value*/).if {
       result := key;
@@ -95,8 +95,8 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
     result
   );
 
-  - fast_key_at v:V :K <-
-  ( + result:K;
+  - fast_key_at v:[V] :[K] <-
+  ( + result:[K];
     
     (v = value).if {
       result := key;
@@ -110,7 +110,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
 	
 Section AVL_DICTIONARY_NODE
   
-  - occurrences v:V start cnt:INTEGER :INTEGER <-
+  - occurrences v:[V] start cnt:INTEGER :INTEGER <-
   ( + result:INTEGER;
 
     result := cnt;
@@ -129,7 +129,7 @@ Section AVL_DICTIONARY_NODE
     +? {Result >= cnt};
   ];
 
-  - fast_occurrences v:V start cnt:INTEGER :INTEGER <-
+  - fast_occurrences v:[V] start cnt:INTEGER :INTEGER <-
   ( + result:INTEGER;
     result := cnt;
     (v = value).if {
@@ -153,7 +153,7 @@ Section AVL_DICTIONARY
   // Creation:
   //
   
-  - create (v:V,k:K) :SELF <-
+  - create (v:[V],k:[K]) :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -161,7 +161,7 @@ Section AVL_DICTIONARY
     result
   );
   
-  - make (v:V,k:K) <-
+  - make (v:[V],k:[K]) <-
   (
     set_balance balanced;
     left  := NULL;

@@ -33,14 +33,14 @@ Section Inherit
   
 Section Public
   
-  + item:V;
+  + item:[V];
   
-  + key:K;
+  + key:[K];
   
   + next:HASHED_DICTIONARY_NODE[V,K];
   // The `next' one when some clash occurs.
   
-  - set_item i:V <-
+  - set_item i:[V] <-
   (
     item := i;
   )
@@ -56,7 +56,7 @@ Section Public
     +? {next = n};
   ];  
   
-  - create i:V to k:K next n:HASHED_DICTIONARY_NODE[V,K] :SELF<-
+  - create i:[V] to k:[K] next n:HASHED_DICTIONARY_NODE[V,K] :SELF<-
   ( + result:SELF;
     
     result := clone;
@@ -64,7 +64,7 @@ Section Public
     result
   );
   
-  - make i:V to k:K next n:HASHED_DICTIONARY_NODE[V,K] <-
+  - make i:[V] to k:[K] next n:HASHED_DICTIONARY_NODE[V,K] <-
   (
     item := i;
     key  := k;

@@ -29,6 +29,6 @@ Section Header
 
 Section Public
     
-  - on src:S :D <- `13`;
+  - on src:[S] :[D] <- `13`;
 
   

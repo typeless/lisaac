@@ -186,12 +186,12 @@ Section Public
   // Implementation of others feature from COLLECTION2:
   //
   
-  - item (line,column:INTEGER) :V <-
+  - item (line,column:INTEGER) :[V] <-
   (
     storage.item ((line - lower1) * count2 + column - lower2)
   );
     
-  - put element:V to (line,column:INTEGER) <-
+  - put element:[V] to (line,column:INTEGER) <-
   (
     storage.put element to ((line - lower1) * count2 + column - lower2);
   );
@@ -211,7 +211,7 @@ Section Public
     count1 * count2
   );
     
-  - force x:V to (line, column:INTEGER) <-
+  - force x:[V] to (line, column:INTEGER) <-
   (
     (! valid_index (line,column)).if {
       resize (line.min lower1,column.min lower2) to 
@@ -220,17 +220,17 @@ Section Public
     put x to (line,column);
   );
     
-  - set_all_with element:V <-
+  - set_all_with element:[V] <-
   (
     storage.set_all_with element until (count - 1);
   );
     
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   (
     storage.replace_all old_value with new_value until (count - 1);
   );
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   (
     storage.fast_replace_all old_value with new_value until (count - 1);
   );
@@ -260,17 +260,17 @@ Section Public
   // Looking and comparison:
   //
   
-  - occurrences elt:V :INTEGER <-
+  - occurrences elt:[V] :INTEGER <-
   (
     storage.occurrences elt until (count - 1)    
   );
     
-  - fast_occurrences elt:V :INTEGER <-
+  - fast_occurrences elt:[V] :INTEGER <-
   (
     storage.fast_occurrences elt until (count - 1)    
   );
     
-  - has x:V :BOOLEAN <-
+  - has x:[V] :BOOLEAN <-
   // Search if a element x is in the array using `equal'.
   // See also `fast_has' to chose the apropriate one.
   ( + result:BOOLEAN;
@@ -281,7 +281,7 @@ Section Public
     result
   );
     
-  - fast_has x:V :BOOLEAN <-
+  - fast_has x:[V] :BOOLEAN <-
   //  Search if a element x is in the array using `='.
   ( + result:BOOLEAN;
     
@@ -297,7 +297,7 @@ Section Public
   );
     
   - swap (line1, column1:INTEGER) with (line2, column2:INTEGER) <-
-  ( + tmp:V;
+  ( + tmp:[V];
     + c2, index1, index2:INTEGER; 
     
     c2 := count2;

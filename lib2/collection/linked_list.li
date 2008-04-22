@@ -70,7 +70,7 @@ Section Public
     
   - is_empty:BOOLEAN <- first_link = NULL;
   
-  - add_first element:V <-
+  - add_first element:[V] <-
   ( 
     (first_link = NULL).if {
       first_link := LINKED_LIST_NODE[V].create element next NULL;
@@ -85,7 +85,7 @@ Section Public
     };    
   );
   
-  - add_last element:V <-
+  - add_last element:[V] <-
   ( + lnk:LINKED_LIST_NODE[V];
     
     (first_link = NULL).if {
@@ -102,7 +102,7 @@ Section Public
     };
   );
   
-  - add element:V to index:INTEGER <-
+  - add element:[V] to index:INTEGER <-
   ( + link:LINKED_LIST_NODE[V];
 
     (index = 1).if {
@@ -155,11 +155,11 @@ Section Public
     };    
   );
   
-  - first:V <- first_link.item;
+  - first:[V] <- first_link.item;
   
-  - last:V <- last_link.item;
+  - last:[V] <- last_link.item;
   
-  - item i:INTEGER :V <-
+  - item i:INTEGER :[V] <-
   (
     (i != mem_idx).if {
       go_item i;
@@ -167,7 +167,7 @@ Section Public
     mem_lnk.item
   );
     
-  - put element:V to i:INTEGER <-
+  - put element:[V] to i:INTEGER <-
   ( 
     (i != mem_idx).if {
       go_item i;
@@ -177,7 +177,7 @@ Section Public
   
   - count:INTEGER <- upper;
   
-  - set_all_with v:V <-
+  - set_all_with v:[V] <-
   ( 
     (first_link != NULL).if {
       first_link.set_all_with v;
@@ -228,7 +228,7 @@ Section Public
     result
   );
   
-  - index_of x:V start start_index:INTEGER :INTEGER <-
+  - index_of x:[V] start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
     + safe_equal:SAFE_EQUAL[V];
     
@@ -239,7 +239,7 @@ Section Public
     result
   );
 
-  - reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + safe_equal: SAFE_EQUAL[V]; 
     + temporary_idx, new_mem_idx:INTEGER;
     + temporary_lnk, new_mem_lnk:LINKED_LIST_NODE[V];
@@ -265,7 +265,7 @@ Section Public
     result
   );
      
-  - fast_index_of element:V start start_index:INTEGER :INTEGER <-
+  - fast_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + u:INTEGER;
     + result:INTEGER;
     
@@ -277,7 +277,7 @@ Section Public
     result
   );
   
-  - fast_reverse_index_of element:V start start_index:INTEGER :INTEGER <-
+  - fast_reverse_index_of element:[V] start start_index:INTEGER :INTEGER <-
   ( + safe_equal: SAFE_EQUAL[V]; 
     + temporary_idx, new_mem_idx:INTEGER;
     + temporary_lnk, new_mem_lnk:LINKED_LIST_NODE[V];
@@ -368,7 +368,7 @@ Section Public
     result
   );
   
-  - occurrences element:V :INTEGER <-
+  - occurrences element:[V] :INTEGER <-
   ( + lnk:LINKED_LIST_NODE[V];
     + result:INTEGER;
     + safe_equal:SAFE_EQUAL[V];
@@ -383,7 +383,7 @@ Section Public
     result
   );
   
-  - fast_occurrences element:V :INTEGER <-
+  - fast_occurrences element:[V] :INTEGER <-
   ( + lnk:LINKED_LIST_NODE[V];
     + result:INTEGER;
     
@@ -397,8 +397,8 @@ Section Public
     result
   );
   
-  - force element:V to index:INTEGER <-
-  ( + v:V;
+  - force element:[V] to index:INTEGER <-
+  ( + v:[V];
     
     {index <= upper}.until_do {
       add_last v;
@@ -409,7 +409,7 @@ Section Public
   - all_default:BOOLEAN <-
   ( + result:BOOLEAN;
     + l:LINKED_LIST_NODE[V];
-    + d:V;
+    + d:[V];
     
     result := TRUE;
     l := first_link;
@@ -442,7 +442,7 @@ Section Public
     };    
   );
   
-  - replace_all old_value:V with new_value:V <-
+  - replace_all old_value:[V] with new_value:[V] <-
   ( + safe_equal:SAFE_EQUAL[V];
     
     lower.to upper do { i:INTEGER;
@@ -452,7 +452,7 @@ Section Public
     };    
   );
     
-  - fast_replace_all old_value:V with new_value:V <-
+  - fast_replace_all old_value:[V] with new_value:[V] <-
   ( 
     lower.to upper do { i:INTEGER;
       (item i = old_value).if {

@@ -73,12 +73,12 @@ Section Public
     };
   );
 
-  - first_index_of element:V :INTEGER <-
+  - first_index_of element:[V] :INTEGER <-
   (
     index_of element start lower
   );
 			
-  - fast_first_index_of element:V :INTEGER <-
+  - fast_first_index_of element:[V] :INTEGER <-
   (
     fast_index_of element start lower
   );
@@ -93,7 +93,7 @@ Section Public
     create
   );
 
-  - manifest_put index:INTEGER to element:V <-
+  - manifest_put index:INTEGER to element:[V] <-
   (
     add_last element;
   );
