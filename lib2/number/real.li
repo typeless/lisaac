@@ -39,7 +39,7 @@ Section Insert
   
 Section Public
   
-  - '+'  Left 80  other:SELF :SELF <- `@Self + @other`:SELF;
+  - Self:SELF '+'  Left 80  other:SELF :SELF <- `@Self + @other`:SELF;
 
   - bound_test low:INTEGER_64 to up:UINTEGER_64 :BOOLEAN <-  
   (
@@ -60,12 +60,12 @@ Section Public
 
   - pow exp:SELF :SELF <- `pow(@Self,@exp)`:SELF;
 
-  - '**' Right 120 exp:SELF :SELF <-
+  - Self:SELF '**' Right 120 exp:SELF :SELF <-
   (
     Self.pow exp
   );
 
-  - '^' Right 120 exp:SELF :SELF <- 
+  - Self:SELF '^' Right 120 exp:SELF :SELF <- 
   (
     Self.pow exp
   );
@@ -99,7 +99,7 @@ Section Public
   // Comparaison.
   //
   
-  - '~=' other:SELF :BOOLEAN <-
+  - Self:SELF '~=' other:SELF :BOOLEAN <-
   (
     (Self - other).abs < 0.001
   );

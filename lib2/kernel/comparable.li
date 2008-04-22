@@ -34,9 +34,9 @@ Section Inherit
   
 Section Public
   
-   - '=='  Right 60 other:SELF :BOOLEAN <- (! (Self < other)) && { ! (other < Self)};
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <- (! (Self < other)) && { ! (other < Self)};
 
-  - '<' Left 1 other:SELF :BOOLEAN <-
+  - Self:SELF '<' Left 1 other:SELF :BOOLEAN <-
   // Is `self' strictly less than `other'?
   (
     ? { other != NULL };
@@ -44,7 +44,7 @@ Section Public
     //? { result -> ! (other < self)};
   );
 
-  - '<=' Left 1 other:SELF :BOOLEAN <-
+  - Self:SELF '<=' Left 1 other:SELF :BOOLEAN <-
   // Is `self' less than or equal `other'?
   (
     + result:BOOLEAN;
@@ -56,14 +56,14 @@ Section Public
     result
   );
 
-  -  '>' other:SELF :BOOLEAN <-
+  -  Self:SELF '>' other:SELF :BOOLEAN <-
   // Is `self' strictly greater than `other'?
   (
     ?{ other != NULL };
     other < Self
   );
 
-  - '>=' other:SELF :BOOLEAN <-
+  - Self:SELF '>=' other:SELF :BOOLEAN <-
   // Is `self' greater than or equal than `other'?
   (
     ?{ other != NULL };

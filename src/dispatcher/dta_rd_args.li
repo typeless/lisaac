@@ -30,7 +30,7 @@ Section Header
     
 Section Inherit
   
-  + parent_dta:Expanded DTA;
+  + parent_dta:Expanded DTA_RD;
   
 Section Public
   
@@ -57,9 +57,9 @@ Section Public
   - make p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] <-
   (
     position      := p;    
-    context       := profil;
     slot          := sl;
     argument_list := args;
+    self          := self_arg.static_type;
     result_expr   := slot.get_expr_result;
   );
   

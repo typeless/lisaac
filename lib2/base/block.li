@@ -37,12 +37,12 @@ Section Public
   // Conditional :
   //
   
-  - Self:{BOOLEAN} '||' Left 10 other:{} :BOOLEAN <-
+  - Self:{BOOLEAN} '||' Left 10 other:{BOOLEAN} :BOOLEAN <-
   (
     value || other
   );
   
-  - Self:{BOOLEAN} '&&' Left 20 other:{} :BOOLEAN <-
+  - Self:{BOOLEAN} '&&' Left 20 other:{BOOLEAN} :BOOLEAN <-
   (
     value && other
   );

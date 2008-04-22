@@ -1,16 +1,2 @@
-item/itm_type_generic_elt.li:    type_generic ?= ITM_TYPE_SELF.self_up;            
-
-variable/slot.li:      ITM_TYPE_SELF.set_self_up receiver_type;
-variable/slot.li:      ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
-variable/slot.li:	ITM_TYPE_SELF.set_self_up receiver_type;
-variable/slot.li:	ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
-variable/slot.li:    ITM_TYPE_SELF.set_self_up receiver_type;
-variable/slot.li:    ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
-variable/slot.li:    type_self := ITM_TYPE_SELF.run_value;        
-variable/slot.li:    ITM_TYPE_SELF.set_self_up receiver_type;
-variable/slot.li:    ITM_TYPE_SELF.set_run NULL;
-variable/slot.li:    ITM_TYPE_SELF.set_run type_self;
-variable/slot.li:    ITM_TYPE_SELF.set_self_up (Old ITM_TYPE_SELF.self_up);
-
-
-
+type/prototype.li:    context_main := CONTEXT_SLOT.push position slot NULL;
+type/prototype.li:    CONTEXT.pop;

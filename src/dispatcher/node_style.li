@@ -131,7 +131,7 @@ Section Private
     + type:TYPE_FULL;
     + my_profil:PROFIL;
     + wrt_lst:FAST_ARRAY[WRITE];
-    + ctext:LOCAL;
+    //+ ctext:LOCAL;
     + new_type_self:TYPE_FULL;
     
     result := LIST.create position;
@@ -182,6 +182,9 @@ Section Private
       type := new_larg.first.static_type;            
       //      
       (debug_level_option != 0).if {	
+        not_yet_implemented;
+        // BSBS: Poser le PUSH avant le NODE
+        /*
 	(data.context = NULL).if {
 	  ctext := context_main;
 	} else {
@@ -189,7 +192,8 @@ Section Private
 	};
 	result.add_last (
 	  PUSH.create position context ctext first FALSE
-	);
+        );
+        */
       };
       //
       (type.is_strict).if {

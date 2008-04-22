@@ -104,9 +104,9 @@ Section Public
   // Common Function.
   //
   
-  - '=='  Right 60 other:SELF :BOOLEAN <- ( deferred; FALSE);
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <- ( deferred; FALSE);
   
-  - '!==' Right 60 other:SELF :BOOLEAN <- (! (Self == other));
+  - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- (! (Self == other));
   
   
   - clone_allocation_size:UINTEGER_32;

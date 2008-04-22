@@ -115,10 +115,10 @@ Section Public
   // Debug: Require / Ensure / Check
   //
   
-  - '?'  test:BLOCK <- test ? Self;
+  - Self:SELF '?'  test:BLOCK <- test ? Self;
   
-  - '-?' test:BLOCK <- test -? Self;
+  - Self:SELF '-?' test:BLOCK <- test -? Self;
   
-  - '+?' test:BLOCK <- test +? Self;
+  - Self:SELF '+?' test:BLOCK <- test +? Self;
     
 

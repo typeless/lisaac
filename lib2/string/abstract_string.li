@@ -59,7 +59,7 @@ Section Public
     storage.item (index - 1)
   );
   
-  - '@' Left 1 index:INTEGER :CHARACTER <-
+  - Self:SELF '@' Left 1 index:INTEGER :CHARACTER <-
   // Character at position `index'.
   (
     item index
@@ -103,7 +103,7 @@ Section Public
     result
   );
   
-  - '<' other:ABSTRACT_STRING :BOOLEAN <-
+  - Self:SELF '<' other:ABSTRACT_STRING :BOOLEAN <-
   // Is Current less than `other' ?
   ( + i: INTEGER;
     + result: BOOLEAN;
@@ -176,7 +176,7 @@ Section Public
     result
   );
   
-  - '==' Left 40 other:ABSTRACT_STRING :BOOLEAN <-
+  - Self:SELF '==' Left 40 other:ABSTRACT_STRING :BOOLEAN <-
   // Has Current the same text as `other' ?
   ( + result:BOOLEAN;
     ? {other != NULL};
@@ -720,7 +720,7 @@ Section Public
   // Modification:
   //
   
-  - '+' other:ABSTRACT_STRING :STRING <-
+  - Self:SELF '+' other:ABSTRACT_STRING :STRING <-
   // Create a new STRING which is the concatenation of
   // `self' and `other'.
   ( + result:STRING;

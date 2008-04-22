@@ -66,14 +66,15 @@ Section Public
   
   - style:STRING_CONSTANT; // NULL
   
-  - get n:STRING_CONSTANT :SELF <-
-  ( + result:SELF;
+  - get n:STRING_CONSTANT :ITM_TYPE_SIMPLE <-
+  ( + result:ITM_TYPE_SIMPLE;
   
-    result ?= dico.fast_reference_at n;
+    result := dico.fast_reference_at n;    
     (result = NULL).if {
       result := create n;
       dico.fast_put result to n;
     };
+        
     result
   );
   

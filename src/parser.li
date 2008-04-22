@@ -1082,6 +1082,7 @@ Section Private
 	result := read_slot_keyword list_arg;
       };
     } else {
+      list_arg.add_last arg;
       (read_character '.').if {
 	result := read_slot_keyword list_arg;
       }.elseif {read_character '\''} then { 
@@ -1168,6 +1169,7 @@ Section Private
       (arg = NULL).if {
 	syntax_error (current_position,"Operator declaration invalid.");
       };
+      list_arg.add_last arg;
       name := operator (ALIAS_STR.slot_postfix) name name;
       (associativity != NULL).if {
 	syntax_error (current_position,"Not associativity for postfix operator.");
@@ -1234,7 +1236,7 @@ Section Private
 	      {tb ?= t; tb = NULL}
 	    }
 	  }
-	).if {
+        ).if {          
 	  syntax_error (current_position,"Type `SELF' is needed.");
 	};
 	result := ITM_ARG.create pos name n type t;
@@ -1436,12 +1438,12 @@ Section Private
     + lst:FAST_ARRAY[ITM_TYPE_MONO];
     + typ_arg,typ_res:ITM_TYPE;
     
-    (read_character ']').if {
+    (read_character '[').if {
       // '[' cap_identifier ']'
       (! read_cap_identifier).if {
 	syntax_error (current_position,"Incorrect parameter type.");
-      };      
-      result := ITM_TYPE_PARAMETER.get last_string;	 
+      };            
+      result := ITM_TYPE_PARAMETER.get last_string;
       (! read_character ']').if {
 	warning_error (current_position,"Added ']'.");
       }; // if      	
@@ -2237,7 +2239,7 @@ Section Private
 	    (! read_cap_identifier).if {
 	      syntax_error (current_position,"Identifier parameter type is needed.");
 	    };
-	    parameter_type := ITM_TYPE_PARAMETER.get last_string;
+	    parameter_type ?= ITM_TYPE_PARAMETER.get last_string;
 	    
 	    short (ALIAS_STR.short_keyprototype) token
 	    (position - last_string.count) to position;
@@ -2254,7 +2256,7 @@ Section Private
 	      (! read_cap_identifier).if {
 		syntax_error (current_position,"Identifier parameter type is needed.");
 	      };	      
-	      parameter_type := ITM_TYPE_PARAMETER.get last_string;
+	      parameter_type ?= ITM_TYPE_PARAMETER.get last_string;
 	      
 	      short (ALIAS_STR.short_keyprototype) token
 	      (position - last_string.count) to position;

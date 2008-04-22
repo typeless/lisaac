@@ -53,7 +53,6 @@ Section Public
   - make p:POSITION slot sl:SLOT self arg:EXPR code v:ITM_CODE <-
   (
     position    := p;
-    context     := profil;
     slot        := sl;
     self_arg    := arg;
     result_expr := slot.get_expr_result;

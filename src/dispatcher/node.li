@@ -75,31 +75,31 @@ Section Public
   //
   
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR self my_self:EXPR :NODE <-
-  ( + dta:DTA_RD;    
-    + result:NODE_TYPE;
+  ( + result:NODE_TYPE;
+    + old_data:DTA_RD;
     
-    CONTEXT_TMP.push (my_self.static_type);
+    old_data := data_current;    
     //    
-    dta := DTA_RD.create p call s self my_self;
-    result := NODE_TYPE.create rec with dta;
+    data_current := DTA_RD.create p call s self my_self;
+    result := NODE_TYPE.create rec with data_current;
     //    
-    CONTEXT.pop;    
+    data_current := old_data;
     node_list.add_last result;
     result
   );
 
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
   ( + dta:DTA_RD_ARGS;    
+    + old_data:DTA_RD;
     + result:NODE_TYPE;
     
-    CONTEXT_TMP.push (larg.first.static_type);
+    old_data := data_current;
     // Control argument type.            
+    data_current := dta := DTA_RD_ARGS.create p call s with larg;
     s.check_argument_type_for larg;    
-    //
-    dta := DTA_RD_ARGS.create p call s with larg;
     result := NODE_TYPE.create rec with dta;
     //
-    CONTEXT.pop;
+    data_current := old_data;
     node_list.add_last result;
     result
   );
@@ -117,17 +117,18 @@ Section Public
   
   - new_read_finalize rec:EXPR with larg:FAST_ARRAY[EXPR] <-
   ( + dta:DTA_RD_ARGS;    
+    + old_data:DTA_RD;
     
-    CONTEXT_TMP.push (larg.first.static_type);
+    old_data := data_current;
+    dta ?= data;
+    data_current := dta;
     // Control argument type.            
     data.slot.check_argument_type_for larg;    
-    //
-    dta ?= data;
     dta.make (data.position) call (data.slot) with larg;
     not_yet_implemented;
     //make rec with data;
     //
-    CONTEXT.pop;
+    data_current := old_data;
     not_yet_implemented;
     //node_list.add_last Self;
   );
@@ -185,6 +186,8 @@ Section Public
     + new_expr:EXPR;
     + block_model:PROFIL_BLOCK;
     + pos:POSITION;
+    
+    not_yet_implemented;
     
     lst_typ := TYPES_TMP.new;      
     e.get_type lst_typ;

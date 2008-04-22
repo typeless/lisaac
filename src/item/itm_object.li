@@ -54,9 +54,12 @@ Section Public
     };
     (j >= stack_local_lower).if {
       result := stack_local.item j;
+      
+      /*
       ((j < CONTEXT.limit_context) && {result.style != '-'}).if {
 	context_extern := result;
       };
+      */
     }.elseif {profil_slot != NULL} then {
       result := profil_slot.lookup n;            
       ((result != NULL) && {result.name != ALIAS_STR.variable_self}).if {

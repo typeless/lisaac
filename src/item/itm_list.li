@@ -143,13 +143,15 @@ Section Public
   - to_run_expr:EXPR <- 
   // List intern.
   ( + result:EXPR;
+    + old_list:LIST;
                 
-    CONTEXT_LIST.push position;        
+    old_list := list_current;    
+    list_current := LIST.create position;
     
     to_run_base TRUE;        
     result := create_result_expr;
     
-    CONTEXT.pop;
+    list_current := old_list;
     list_current.add_last last_expr;
     
     result
@@ -158,14 +160,16 @@ Section Public
   - to_run_contract:LIST <- 
   // List intern.
   ( + lst:LIST;
+    + old_list:LIST;
     ? {! code.is_empty};
     
-    CONTEXT_LIST.push position;        
+    old_list := list_current;    
+    list_current := LIST.create position;
     //    
     to_run_base TRUE;
     lst := list_current;
     //
-    CONTEXT.pop;    
+    list_current := old_list;
     lst
   );
   

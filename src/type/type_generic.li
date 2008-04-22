@@ -232,6 +232,7 @@ Section Public
 
   - make (itm_typ:ITM_TYPE_SIMPLE,n:STRING_CONSTANT) with gen:FAST_ARRAY[TYPE_FULL] <-
   ( + mask_bit:UINTEGER_8;    
+    + old_data:DTA_RD;
     
     index        := index_count;
     index_count  := index_count + 1;
@@ -263,7 +264,9 @@ Section Public
     // BSBS: Size ???
     
     // Import / Export.
-    CONTEXT_TMP.push_generic Self;
+    old_data := data_current;
+    data_current := data_tmp;
+    data_current.set_generic Self;
     export_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.export_list.count);
     (prototype.export_list.lower).to (prototype.export_list.upper) do { j:INTEGER;
       export_list.add_last (prototype.export_list.item j.to_run);
@@ -272,7 +275,7 @@ Section Public
     (prototype.import_list.lower).to (prototype.import_list.upper) do { j:INTEGER;
       import_list.add_last (prototype.import_list.item j.to_run);
     };
-    CONTEXT.pop;
+    data_current := old_data;
   );
 
  

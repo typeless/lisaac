@@ -77,27 +77,27 @@ Section Public
   // Binary operator :
   //
   
-  - '||' Left 10  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean;
+  - Self:SELF '||' Left 10  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean;
   
-  - '&&' Left 20  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean; 
+  - Self:SELF '&&' Left 20  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean; 
   
-  - '|'  Left 10  other:BOOLEAN :BOOLEAN <- deferred_boolean;
+  - Self:SELF '|'  Left 10  other:BOOLEAN :BOOLEAN <- deferred_boolean;
   
-  - '&'  Left 20  other:BOOLEAN :BOOLEAN <- deferred_boolean;
+  - Self:SELF '&'  Left 20  other:BOOLEAN :BOOLEAN <- deferred_boolean;
   
-  - '^' Left 10  other:BOOLEAN :BOOLEAN  <- deferred_boolean;
+  - Self:SELF '^' Left 10  other:BOOLEAN :BOOLEAN  <- deferred_boolean;
   
-  - '->' Right 25 other:BOOLEAN :BOOLEAN <- deferred_boolean;
+  - Self:SELF '->' Right 25 other:BOOLEAN :BOOLEAN <- deferred_boolean;
 
-  - '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- deferred_boolean;
+  - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- deferred_boolean;
   
-  - '=>' s:ABSTRACT_STRING <- deferred;
+  - Self:SELF '=>' s:ABSTRACT_STRING <- deferred;
   
   //
   // Prefix operator
   //
   
-  - '!' :BOOLEAN <- deferred;
+  - '!' Self:SELF :BOOLEAN <- deferred;
   
   //
   // Convertion

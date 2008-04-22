@@ -329,12 +329,19 @@ Section Public
   ( + self_var:LOCAL;
     + val,rec:EXPR;
     + wrt:WRITE;
-            
+    + old_data:DTA_RD;
+    
+    // BSBS: Dois être differe et linear => mettre a plat!!!
+    // Il faut le rentrer dans le model des NODEs...
     ((value = NULL) && {(base_slot.affect != '<') || {Self = slot_id}}).if {                  
       // Context.      
-      CONTEXT_SLOT.push position slot NULL 
-      self (receiver_type.default.to_strict) 
-      generic receiver_type;
+      old_data := data_current;
+      (old_data = data_tmp).if {
+        crash_with_message "SLOT_DATA : Context en cascade !!! (à faire)";
+      };
+      data_current := data_tmp;
+      data_current.set_self (receiver_type.default.to_strict);
+      data_current.set_generic receiver_type;
       //
       value := list_current;      
       (Self = slot_id).if {
@@ -367,7 +374,7 @@ Section Public
       list_current.add_last wrt;    
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS: Alias
       // Context.
-      CONTEXT.pop;      
+      data_current := old_data;
     };
   );
   

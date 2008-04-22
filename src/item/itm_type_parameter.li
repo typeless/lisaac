@@ -31,13 +31,17 @@ Section Inherit
   
   + parent_itm_type:Expanded ITM_TYPE_SIMPLE;
   
-Section ITM_TYPE_SIMPLE, ITM_TYPE_SELF
-  
-  - dico:HASHED_DICTIONARY[ITM_TYPE_PARAMETER,STRING_CONSTANT] := 
-  HASHED_DICTIONARY[ITM_TYPE_PARAMETER,STRING_CONSTANT].create;
-  
 Section Public
-        
+  
+  - get n:STRING_CONSTANT :ITM_TYPE_SIMPLE <-
+  ( 
+    string_tmp.clear;
+    string_tmp.add_last '[';
+    string_tmp.append n;
+    string_tmp.add_last ']';
+    parent_itm_type.get (ALIAS_STR.get string_tmp)
+  );
+  
   - to_run:TYPE_FULL <- 
   (
     not_yet_implemented;

@@ -76,25 +76,25 @@ Section Public
   // Binary operator :
   //
   
-  - '=='  Right 60 other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '=='  Right 60 other:BOOLEAN :BOOLEAN <- other;
   
-  - '!==' Right 60 other:BOOLEAN :BOOLEAN <- ! other;
+  - Self:SELF '!==' Right 60 other:BOOLEAN :BOOLEAN <- ! other;
   
-  - '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- TRUE;   // or else
+  - Self:SELF '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- TRUE;   // or else
   
-  - '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- other.value;  // and then
+  - Self:SELF '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- other.value;  // and then
   
-  - '|'   Left 10  other:BOOLEAN :BOOLEAN <- TRUE;  // or
+  - Self:SELF '|'   Left 10  other:BOOLEAN :BOOLEAN <- TRUE;  // or
   
-  - '&'   Left 20  other:BOOLEAN :BOOLEAN <- other; // and
+  - Self:SELF '&'   Left 20  other:BOOLEAN :BOOLEAN <- other; // and
   
-  - '^'  Left 10  other:BOOLEAN :BOOLEAN <- ! other;
+  - Self:SELF '^'  Left 10  other:BOOLEAN :BOOLEAN <- ! other;
   
-  - '->'  Right 25 other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '->'  Right 25 other:BOOLEAN :BOOLEAN <- other;
 
-  - '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- other.value;
+  - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- other.value;
   
-  - '=>' s:ABSTRACT_STRING <-
+  - Self:SELF '=>' s:ABSTRACT_STRING <-
   (
     s.print;
     `while (1)`;
@@ -104,7 +104,7 @@ Section Public
   // Prefix operator
   //
   
-  - '!':BOOLEAN <- FALSE;
+  - '!' Self:SELF :BOOLEAN <- FALSE;
   
   //
   // Conversion

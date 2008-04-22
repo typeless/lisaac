@@ -228,7 +228,14 @@ Section Public
     //
     // Creation list execution.
     //    
-    context_main := CONTEXT_SLOT.push position slot NULL;
+    list_current := LIST.create position;
+    (debug_level_option != 0).if {
+      // Debug mode : Add context local.
+      context_main := TYPE_CONTEXT.default.new_local position 
+      name (ALIAS_STR.variable_context) style '+';
+      context_main.set_ensure_count 1;      
+      list_current.add_last (PUSH.create position context context_main first TRUE);
+    };
         
     // Command argument.
     (is_ansi).if {      
@@ -256,7 +263,6 @@ Section Public
     // Result.    
     list_current.add_last (INTEGER_CST.create position value 0 type (type_integer.default)); 
     list_main := list_current;
-    CONTEXT.pop;
             
     //
     // Detect life code.

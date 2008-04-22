@@ -53,8 +53,8 @@ Section Public
       
   - make e:EXPR with d:DTA <-
   (
-    expr     := e;
-    data     := d;
+    expr := e;
+    data := d;
     late_binding_counter := late_binding_counter + 1;
   );
   

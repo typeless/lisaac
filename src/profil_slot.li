@@ -73,8 +73,16 @@ Section Public
     slot_code := s;
     type_self := typ_self;
     //
-    context := CONTEXT_SLOT.push (slot_code.position) 
-    slot Self self typ_self;
+    list_current := LIST.create (s.position);
+    profil := profil_slot := Self;    
+    //
+    (debug_level_option != 0).if {
+      // Debug mode : Add context local.
+      context := TYPE_CONTEXT.default.new_local (s.position) 
+      name (ALIAS_STR.variable_context) style '+';
+      context.set_ensure_count 1;      
+      list_current.add_last (PUSH.create (slot_code.position) context context first TRUE);
+    };
     //
     code := list_current;
     //
@@ -115,8 +123,7 @@ Section Public
     //
     result := write_argument call_lst;
     //        
-    slot_code.create_code is_first;               
-    CONTEXT.pop;    
+    slot_code.create_code is_first;   
     //
     result
   );

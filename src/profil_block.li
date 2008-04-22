@@ -110,7 +110,16 @@ Section Public
     name := ALIAS_STR.get_intern (ALIAS_STR.slot_value);    
     
     // Create code.    
-    context := CONTEXT_BLOCK.push (list.position) block Self;        
+    profil       := Self;
+    list_current := LIST.create (list.position);    
+    ITM_OBJECT.set_context_extern NULL;
+    // Add context debug.
+    (debug_level_option != 0).if {      
+      context := TYPE_CONTEXT.default.new_local (list.position) 
+      name (ALIAS_STR.variable_context) style '+';
+      context.set_ensure_count 1;      
+      list_current.add_last (PUSH.create (list.position) context context first TRUE);
+    };
     
     // Append arguments.    
     (base.argument != NULL).if {      
@@ -137,7 +146,6 @@ Section Public
     };
     context_extern := ITM_OBJECT.context_extern;
     //
-    CONTEXT.pop;
     NODE.set_node_list old_node_list;    
   );
   

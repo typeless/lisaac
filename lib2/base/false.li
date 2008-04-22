@@ -87,25 +87,25 @@ Section Public
   // Binary operator :
   //
   
-  - '=='  Right 60 other:BOOLEAN :BOOLEAN <- ! other;
+  - Self:SELF '=='  Right 60 other:BOOLEAN :BOOLEAN <- ! other;
   
-  - '!==' Right 60 other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '!==' Right 60 other:BOOLEAN :BOOLEAN <- other;
   
-  - '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- other.value;
+  - Self:SELF '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- other.value;
   
-  - '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- FALSE;
+  - Self:SELF '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- FALSE;
   
-  - '|'   Left 10  other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '|'   Left 10  other:BOOLEAN :BOOLEAN <- other;
   
-  - '&'   Left 20  other:BOOLEAN :BOOLEAN <- FALSE;
+  - Self:SELF '&'   Left 20  other:BOOLEAN :BOOLEAN <- FALSE;
   
-  - '^'  Left 10  other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '^'  Left 10  other:BOOLEAN :BOOLEAN <- other;
   
-  - '->'  Right 25 other:BOOLEAN :BOOLEAN <- TRUE;
+  - Self:SELF '->'  Right 25 other:BOOLEAN :BOOLEAN <- TRUE;
   
-  - '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- TRUE;
+  - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- TRUE;
   
-  - '=>' s:ABSTRACT_STRING <-
+  - Self:SELF '=>' s:ABSTRACT_STRING <-
   (
   );
   
@@ -113,7 +113,7 @@ Section Public
   // Prefix operator
   //
   
-  - '!' :BOOLEAN <- TRUE;
+  - '!' Self:SELF :BOOLEAN <- TRUE;
   
   //
   // Convertion

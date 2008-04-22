@@ -33,15 +33,13 @@ Section Inherit
   + parent_itm_object:Expanded ITM_OBJECT;
   
 Section Public
-    
-  + context:PROFIL;
-  
+        
   + result_expr:EXPR;
   
   + slot:SLOT;
   
   + self_arg:EXPR;
-    
+      
   //
   // Service
   //
@@ -68,7 +66,7 @@ Section NODE_TYPE, DTA
         
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {                  
-      TYPE_NULL.product_error position for result_expr in result with context;
+      TYPE_NULL.product_error position in result;
     } else {
       lookup t with e in result;
     };

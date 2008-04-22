@@ -106,20 +106,15 @@ Section Public
     + typ:TYPE_FULL;
     + type_multiple:ITM_TYPE_MULTI;
     + type_mono:ITM_TYPE_MONO;
+    + old_data:DTA_RD;
     
     base_slot := s;
     receiver_type := t;
     position  := s.position;
-    CONTEXT_TMP.push_generic t;
     //
-    (s.affect = '<').if {
-      // Code.      
-      styl := slot_code_intern := SLOT_CODE.create Self with (base_slot.value);      
-    } else {
-      // Data      
-      create_slot_data;
-      styl := slot_data_intern;
-    };    
+    old_data := data_current;
+    data_current := data_tmp;
+    data_current.set_generic t;    
     // Arguments.
     item_lst  := base_slot.argument_list; 
     arguments := FAST_ARRAY[ARGUMENT].create_with_capacity (base_slot.argument_count);    
@@ -139,7 +134,16 @@ Section Public
       type_mono ?= base_slot.type;
       result_type := type_mono.to_run;
     };      
-    CONTEXT.pop;
+    //
+    (s.affect = '<').if {
+      // Code.      
+      styl := slot_code_intern := SLOT_CODE.create Self with (base_slot.value);      
+    } else {
+      // Data      
+      create_slot_data;
+      styl := slot_data_intern;
+    };    
+    data_current := old_data;
     //
     styl
   );
