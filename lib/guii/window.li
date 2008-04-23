@@ -33,7 +33,6 @@ Section Inherit
 Section Public
 
  - representation:STRING_CONSTANT := "WINDOW";
-// + content:G_EXPR;
 
 - depth_node n:INODE of base:INODE from depth:INTEGER :INTEGER <-
   (
@@ -60,9 +59,6 @@ Section Public
   - compute_size_from_prc p:INTEGER <-
   [ ? {! list.is_empty}; ]
   (
-    height:=0;
-    width:=0;
-
     //attention ce calcul n'est pas le bon, c'est les dimensions au max
     //les bonnes dimensions se calculent en fonction du placement des items
     list.foreach {
@@ -70,10 +66,10 @@ Section Public
       (i.priority > p).if {
         height:=height+i.height;
         width:=width+i.width;
-        "i.height := ".print;i.height.print;"\n".print;
-        "i.width := ".print;i.width.print;"\n".print;
+
       };
-    }
+    };
+    (width,height):=G_WIN_OUT.predict_size (height.rounded,width.rounded) with_title TRUE;
   );
 
 - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
@@ -91,30 +87,38 @@ Section Public
         +tmp:REAL_32;
         +best_prc:REAL_32;
 
-        tmp:=PAGE.evaluate i width bugw_screen height bugh_screen;"\n".print;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation PAGE;
-        };
-        tmp:=MENU_V.evaluate i width bugw_screen height bugh_screen;"\n".print;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_BAR;
-        };
-        tmp:=MENU_H.evaluate i width bugw_screen height bugh_screen;"\n".print;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation TOOL_BAR;
-        };
-        tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;"\n".print;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation DROP_DOWN_MENU;
-        };
-        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;"\n".print;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation CHECK;
+        (!i.list.is_empty).if {
+          tmp:=PAGE.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation PAGE;
+          };
+          tmp:=MENU_V.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation MENU_BAR;
+          };
+          tmp:=MENU_H.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation TOOL_BAR;
+          };
+          tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation DROP_DOWN_MENU;
+          };
+        } else {
+          tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation CHECK;
+          };
+          tmp:=ACTION.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation ACTION;
+          };
         };
         (best_prc > 0).if {
           nb:=nb+1;
@@ -153,8 +157,7 @@ Section Public
      };
      result:=(r/list.count)*100;
      "area := ".print;(get_area_prc (w,h)).print;"\n".print;
-     result:=result-(get_area_prc (w,h))/100;
-     "result := ".print;result.print;"%\n".print;
+     result:=result-(get_area_prc (w,h));
      result
   );
 
@@ -165,7 +168,7 @@ Section Public
      n.set_representation WINDOW;
      "WINDOW semantic evaluation of ".print;n.name.print;"\n".print;
      //Semantic evaluation: if the "base" son doesn't have any sons itself then it is a PAGE at 100%
-     (semantic_evaluation (w,h)).if {
+     (n.semantic_evaluation (w,h)).if {
       "WINDOW space evaluation of ".print;n.name.print;"\n".print;
        result:=n.space_evaluation (w,h);
      };

@@ -105,58 +105,16 @@ Section Public
         (i.operator != '&')
       }
     } && {
-/*      browse_group {
-        i:INODE;
-        +tmp:REAL_32;
-        +best_prc:REAL_32;
-
-        "MENU_V_OUT evaluation for ".print;i.name.print;"\n".print;
-        tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_V_OUT;
-        };
-        "CHECK evaluation for ".print;i.name.print;"\n".print;
-        tmp:=CHECK.evaluation i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation CHECK;
-        };
-        "WINDOW evaluation for ".print;i.name.print;"\n".print;
-        tmp:=WINDOW.evaluation i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation WINDOW;
-        };
-        (menu_parent=MENU_H).if {
-          "DROP DOWN MENU evaluation for ".print;i.name.print;"\n".print;
-          tmp:=DROP_DOWN_MENU.evaluation i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation DROP_DOWN_MENU;
-          };
-        };
-        (menu_parent=MENU_V).if {
-	  "MENU_H_OUT evaluation for ".print;i.name.print;"\n".print;
-          tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation MENU_H_OUT;
-          };
-        };
-        best_prc > 0
-      }*/
-
       +nb:INTEGER;
       list.foreach {
         i:INODE;
         +tmp:REAL_32;
         +best_prc:REAL_32;
-        +is_menu_h:MENU_H;
+/*        +is_menu_h:MENU_H;
         +is_menu_v:MENU_V;
 
         is_menu_h ?= get_menu_parent;
-        is_menu_v ?= get_menu_parent;
+        is_menu_v ?= get_menu_parent;*/
         tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
         (tmp > best_prc).if {
           best_prc:=tmp;
@@ -194,36 +152,7 @@ Section Public
     }
   );
 
-  - space_evaluation (w,h:REAL_32) :REAL_32<-
-  (
-    + r:REAL_32;
-
-    compute_size_from_prc 0;
-      (width > w).if {
-	"Priority 0 failed\n".print;
-	compute_size_from_prc 25;
-	(width > w).if {
-	   "Priority 25 failed\n".print;
-	   compute_size_from_prc 50;
-	   (width > w).if {
-		"Priority 50 failed\n".print;
-		r:=0;
-		set_width 0;
-		set_height 0;
-           } else {
-		r:=get_nitem_from_prc 50;
-	   };
-	} else {
-	   r:=get_nitem_from_prc 25;
-	};
-      } else {
-	r:=list.count;
-     };
-     (r/list.count)*100
-  );
-
-
-  - evaluate n:INODE :INTEGER <-  
+  - evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
   (
     + result:REAL_32;
 
@@ -233,11 +162,9 @@ Section Public
     // Semantic evaluation && Space evaluation.
     "TOOL_BAR semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
-      /*" OK\n".print;*/
       "TOOL_BAR space evaluation of ".print;n.name.print;"\n".print;
       result:=n.space_evaluation (w,h);
     } else {
-      /*" FAILED\n".print;*/
        result:=0;
     };
 

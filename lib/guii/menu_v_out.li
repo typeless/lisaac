@@ -81,24 +81,17 @@ Section Public
   - compute_size_from_prc p:INTEGER <-
   [ ? {! list.is_empty}; ]
   (
-    +expr:G_EXPR;
-    +window:G_WIN_OUT;
-    height:=0;
-    width:=0;
-
     list.foreach {
       i:INODE;
+
       (i.priority > p).if {
-        (expr=NULL).if {
-          expr:=(G_BUTTON.create (G_OUT.create (i.name))).fix_width.fix_height;
-        } else {
-          expr:=expr / ((G_BUTTON.create (G_OUT.create (i.name)))).fix_width.fix_height;
+        (i.width>width).if {
+          width:=i.width;
         };
+	height:=height+i.height;
       };
     };
-    window:=(G_WIN_OUT.create (G_RAW.create expr)).fix_width.fix_height;
-    height:=window.height_min;
-    width:=window.width_min;
+    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
   );
 
 
@@ -155,26 +148,35 @@ Section Public
         +tmp:REAL_32;
         +best_prc:REAL_32;
 
-        tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_V_OUT;
+        (!i.list.is_empty).if {
+          tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation MENU_V_OUT;
+          };
+          tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation WINDOW;
+          };
+          tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation MENU_H_OUT;
+          };
+        } else {
+          tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation CHECK;
+          };
+          tmp:=ACTION.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation ACTION;
+          };
         };
-        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation CHECK;
-        };
-        tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation WINDOW;
-        };
-        tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_H_OUT;
-        };
+
         (best_prc > 0).if {
           nb:=nb+1;
         };
@@ -210,8 +212,7 @@ Section Public
      };
      result:=(r/list.count)*100;
      "area := ".print;(get_area_prc (w,h)).print;"\n".print;
-     result:=result-(get_area_prc (w,h))/100;
-    "result := ".print;result.print;"%\n".print;
+     result:=result-(get_area_prc (w,h));
     result
   )
   [ ? {Result.in_range 0 to 100}; ];
@@ -221,17 +222,13 @@ Section Public
   (
     + result:REAL_32;
 
-    // changer le parent de n pour pouvoir utiliser les méthodes spécifiques à MENU_V_OUT
-    n.set_representation MENU_V_OUT;
 
-    // Semantic evaluation && Space evaluation.
+    n.set_representation MENU_V_OUT;
     "MENU_V_OUT semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
-      //" OK\n".print;
       "MENU_V_OUT space evaluation of ".print;n.name.print;"\n".print;
       result:=n.space_evaluation (w,h);
     } else {
-      // " FAILED\n".print;
        result:=0;
     };
     "MENU_V_OUT result for ".print;n.name.print;"= ".print;result.print;"%\n".print;

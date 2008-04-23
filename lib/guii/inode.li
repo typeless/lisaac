@@ -42,9 +42,8 @@ Section Public
   + list:LINKED_LIST[INODE];
   + min_height:INTEGER;
   + min_width:INTEGER;
-  - screen_h:INTEGER;
-  - screen_w:INTEGER;
   + depth:INTEGER;
+  + action:BLOCK;
   
   
   //
@@ -80,37 +79,33 @@ Section Public
     internal_create n priority p operator '&' width w height h
   );
   
-  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 type t:INTEGER :SELF <-
+  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 action b:BLOCK :SELF<-
   (
-    internal_create n priority p operator '^'
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '^' action b;
+    result
   );
-  
-  - create_or n:STRING_CONSTANT priority p:INTEGER_8 type t:INTEGER :SELF <-
+
+  - create_or n:STRING_CONSTANT priority p:INTEGER_8 action b:BLOCK :SELF<-
   (
-    internal_create n priority p operator '|'
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '|' action b;
+    result
   );
-  
-  - create_and n:STRING_CONSTANT priority p:INTEGER_8 type t:INTEGER :SELF <-
+
+  - create_and n:STRING_CONSTANT priority p:INTEGER_8 action b:BLOCK :SELF<-
   (
-    internal_create n priority p operator '&'
-  );  
-  
-  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 type t:INTEGER width w:INTEGER height h:INTEGER :SELF <-
-  (
-    internal_create n priority p operator '^' width w height h type t
+     +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '&' action b;
+    result
   );
-  
-  - create_or n:STRING_CONSTANT priority p:INTEGER_8 type t:INTEGER width w:INTEGER height h:INTEGER :SELF <-
-  (
-    internal_create n priority p operator '|' width w height h type t
-  );
-  
-  - create_and n:STRING_CONSTANT priority p:INTEGER_8 type t:INTEGER width w:INTEGER height h:INTEGER :SELF <-
-  (
-    internal_create n priority p operator '&' width w height h type t
-  );
-  
-  
+
   //
   // Flags.
   //
@@ -130,44 +125,57 @@ Section Public
     list.add_last other;
     Self
   );
-  
+
   - set_representation new_parent:INTERNAL_INODE <-
   (
     parent_guii:=new_parent;
-    //make_representation;
   );
-  
-/*  - set_resolution (w,h:INTEGER) <-
-  (
-    screen_h := h;
-    screen_w := w;
-  );*/
+
 
   - set_depth dpth:INTEGER <-
-   (		
-	depth:=dpth;
-   );
+  (	
+      depth:=dpth;
+  );
+
+  - get_parent:INTERNAL_INODE <- 
+  ( 
+    parent_guii
+  );
+
+  - print <-
+  (
+    "INODE".print;
+  );
 
 Section Private
-  
+
   - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER :SELF <-
   (
     + result:SELF;
-    
+
     result := clone;
     result.make n priority p operator op;
     result
   );
-  
+
   - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER :SELF <-
   (
     + result:SELF;
-    
+
     result := clone;
     result.make n priority p operator op width w height h;
     result
   );
-  
+
+  - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER action b:BLOCK :SELF <-
+  (
+    + result:SELF;
+
+    result := clone;
+    result.make n priority p operator op action b;
+    result
+  );
+
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER <-
   (
     operator := op;
@@ -175,7 +183,7 @@ Section Private
     priority := p;
     list := LINKED_LIST[INODE].create;
   );
-  
+
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER <-
   (
     operator := op;
@@ -185,45 +193,16 @@ Section Private
     min_height := h;
     list := LINKED_LIST[INODE].create;
   );
-  
-  - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER type t:INTEGER :SELF <-
-  (
-    + result:SELF;
-    
-    result := clone;
-    result.make n priority p operator op type t;
-    result
-  );
-  
-  - internal_create n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER type t:INTEGER :SELF <-
-  (
-    + result:SELF;
-    
-    result := clone;
-    result.make n priority p operator op width w height h type t;
-    result
-  );
-  
-  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER type t:INTEGER <-
+
+  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER action b:BLOCK <-
   (
     operator := op;
     name := n;
     priority := p;
-    type := t;
+    action := b;
     list := LINKED_LIST[INODE].create;
   );
-  
-  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER type t:INTEGER<-
-  (
-    operator := op;
-    name := n;
-    priority := p;
-    min_width := w;
-    min_height := h;
-    type := t;
-    list := LINKED_LIST[INODE].create;
-  );
-  
+
 Section INTERNAL_INODE
   
   

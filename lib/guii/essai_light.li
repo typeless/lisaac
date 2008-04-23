@@ -33,32 +33,29 @@ Section Inherit
 Section Public
   
   - main <-
-  ( + base, menu:INODE;
+  ( + base,menu:INODE;
     + guii:GUII;
-    //+ menu_g_expr, tools_g_expr:G_EXPR;
 
     base := 
     INODE.create_or "Paint" priority 100 + (
-      menu := INODE.create_xor "Menu" priority 100 + (
-	INODE.create_xor "File" priority 100 + (
-	  INODE.create_xor "Clear file" priority 100 + 
-	  INODE.create_xor "New" priority 100
-	) + (
-	  INODE.create_xor "Intern file" priority 100 + 
-	  INODE.create_xor "Open" priority 100 +
-	  INODE.create_xor "Save" priority 100 +
-	  INODE.create_xor "Save as" priority 100
-	) + (
-	  INODE.create_xor "Extern file" priority 100 +
-	  INODE.create_xor "Import" priority 100 +
-	  INODE.create_xor "Export" priority 100
-	) + (
-	  INODE.create_xor "Output file" priority 100 +
-	  INODE.create_xor "Print" priority 100 
-	) + (
-	  INODE.create_xor "Exit manager" priority 100 +
-	  INODE.create_xor "EXit" priority 100 
-	)
+      menu:=INODE.create_xor "Menu" priority 100 + (
+        INODE.create_xor "File" priority 100 action {"File\n".print;} +
+	  INODE.create_xor "New" priority 100 action {"New\n".print;} +
+	  INODE.create_xor "Open" priority 100 action {"Open\n".print;} +
+	  INODE.create_xor "Save" priority 100 action {"Save\n".print;} +
+	  INODE.create_xor "Save as" priority 100 action {"Save as\n".print;} +
+	  INODE.create_xor "Import" priority 100 action {"Import\n".print;} +
+	  INODE.create_xor "Export" priority 100 action {"Export\n".print;} +
+	  INODE.create_xor "Print" priority 100 action {"Print\n".print;} +
+	  INODE.create_xor "Exit" priority 100 action {"Exit\n".print;}
+      ) + (
+        INODE.create_xor "Edit" priority 100 +
+          INODE.create_xor "History" priority 100 +
+          INODE.create_xor "Undo" priority 100 +
+          INODE.create_xor "Redo" priority 100 +
+	  INODE.create_xor "Delete" priority 100 +
+	  INODE.create_xor "Duplicate" priority 100 +
+	  INODE.create_xor "Select all" priority 100
       )
     );
     
@@ -66,7 +63,7 @@ Section Public
     // Evaluation.
     //
 
-    guii:=GUII.create base width 230 height 768;
+    guii:=GUII.create base width 800 height 600;
     guii.set_depth base from 0;
     guii.evaluation base;
 /*    

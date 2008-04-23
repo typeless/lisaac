@@ -95,9 +95,9 @@ Section Public
 
     node.list.foreach {
       i:INODE;
-      MENU_BAR.evaluate i width width height height;"\n".print;
-      TOOL_BAR.evaluate i width width height height;"\n".print;
-      PAGE.evaluate i width width height height;"\n".print;
+      MENU_BAR.evaluate i width width height height;"\n\n".print;
+      TOOL_BAR.evaluate i width width height height;"\n\n".print;
+      PAGE.evaluate i width width height height;"\n\n".print;
     };
     appli.display;
   );

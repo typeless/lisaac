@@ -79,21 +79,17 @@ Section Public
   - compute_size_from_prc p:INTEGER <-
   [ ? {! list.is_empty}; ]
   (
-	+ expr:G_EXPR;
+    list.foreach {
+      i:INODE;
 
-	list.foreach {
-		i:INODE;
-		(i.priority > p).if {
-			(expr = NULL).if {
-				expr:=G_BUTTON.create (G_OUT.create name);
-			} else {
-				expr:=expr / G_BUTTON.create (G_OUT.create name);
-			};
-		};
-	};
-	expr.fix_width.fix_height;
-	height:=expr.height_min;
-	width:=expr.width_min;
+      (i.priority > p).if {
+        (i.height>height).if {
+          height:=i.height;
+        };
+	width:=width+i.width;
+      };
+    };
+    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
   );
 
 //
@@ -138,7 +134,7 @@ Section Public
     };
      result:=(r/list.count)*100;
      "area := ".print;(get_area_prc (w,h)).print;"\n".print;
-     result:=result-(get_area_prc (w,h))/100;
+     result:=result-(get_area_prc (w,h));
     "result := ".print;result.print;"%\n".print;
     result
   )
@@ -149,17 +145,13 @@ Section Public
   (
     + result:REAL_32;
 
-    // changer le parent de n pour pouvoir utiliser les méthodes spécifiques à MENU_BAR
     n.set_representation DROP_DOWN_MENU;
-
     // Semantic evaluation && Space evaluation.
     "DROP_DOWN_MENU semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
-      //" OK\n".print;
       "DROP_DOWN_MENU space evaluation of ".print;n.name.print;"\n".print;
       result:=n.space_evaluation (w,h);
     } else {
-      // " FAILED\n".print;
        result:=0;
     };
     "DROP_DOWN_MENU result for ".print;n.name.print;"= ".print;result.print;"%\n".print;
