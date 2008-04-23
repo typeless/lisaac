@@ -81,17 +81,15 @@ Section Public
   - compute_size_from_prc p:INTEGER <-
   [ ? {! list.is_empty}; ]
   (
-    list.foreach {
+/*    list.foreach {
       i:INODE;
-
       (i.priority > p).if {
-        (i.height>height).if {
-          height:=i.height;
-        };
-	width:=width+i.width;
-      };
+      (width,height):=G_OR_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
     };
-    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
+    };
+    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));*/
+	height:=0;
+	width:=0;
   );
 
 

@@ -81,17 +81,16 @@ Section Public
   - compute_size_from_prc p:INTEGER <-
   [ ? {! list.is_empty}; ]
   (
-    list.foreach {
+/*    list.foreach {
       i:INODE;
-
       (i.priority > p).if {
-        (i.width>width).if {
-          width:=i.width;
-        };
-	height:=height+i.height;
-      };
+      (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
     };
+   };
     (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
+   */
+	height:=0;
+	width:=0;
   );
 
 
@@ -106,42 +105,6 @@ Section Public
         (i.operator != '&')
       }
     } && {
- /*      browse_group {
-        i:INODE;
-       +tmp:REAL_32;
-
-        "MENU_V_OUT evaluation for ".print;i.name.print;"\n".print;
-        tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_V_OUT;
-        };
-        "CHECK evaluation for ".print;i.name.print;"\n".print;
-        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation CHECK;
-        };
-        "WINDOW evaluation for ".print;i.name.print;"\n".print;
-        tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation WINDOW;
-        };
-        "MENU_H_OUT evaluation for ".print;i.name.print;"\n".print;
-        tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_H_OUT;
-        };
-      "best pourcentage: ".print;best_prc.print;"\n".print;
-      (best_prc > 0).if {
-        "best_prc > 0\n".print;
-      } else {
-        "best_prc < 0\n".print;
-      };
-        best_prc > 0
-      }*/
       +nb:INTEGER;
       list.foreach {
         i:INODE;
@@ -188,6 +151,9 @@ Section Public
 - space_evaluation (w,h:REAL_32) :REAL_32<-
   (
       + r,result:REAL_32;
+
+      "w_screen".print;w.print;"\n".print;
+      "h_screen".print;h.print;"\n".print;
       // Space evaluation
       compute_size_from_prc 0;
       (height > h).if {

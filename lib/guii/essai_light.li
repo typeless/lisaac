@@ -44,10 +44,10 @@ Section Public
 	  INODE.create_xor "Open" priority 100 action {"Open\n".print;} +
 	  INODE.create_xor "Save" priority 100 action {"Save\n".print;} +
 	  INODE.create_xor "Save as" priority 100 action {"Save as\n".print;} +
-	  INODE.create_xor "Import" priority 100 action {"Import\n".print;} +
-	  INODE.create_xor "Export" priority 100 action {"Export\n".print;} +
-	  INODE.create_xor "Print" priority 100 action {"Print\n".print;} +
-	  INODE.create_xor "Exit" priority 100 action {"Exit\n".print;}
+	  INODE.create_xor "Import" priority 25 action {"Import\n".print;} +
+	  INODE.create_xor "Export" priority 25 action {"Export\n".print;} +
+	  INODE.create_xor "Print" priority 25 action {"Print\n".print;} +
+	  INODE.create_xor "Exit" priority 25 action {"Exit\n".print;}
       ) + (
         INODE.create_xor "Edit" priority 100 +
           INODE.create_xor "History" priority 100 +

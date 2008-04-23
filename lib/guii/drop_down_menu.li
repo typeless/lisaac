@@ -81,15 +81,14 @@ Section Public
   (
     list.foreach {
       i:INODE;
-
       (i.priority > p).if {
-        (i.height>height).if {
-          height:=i.height;
-        };
-	width:=width+i.width;
+        (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
       };
     };
     (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
+
+	width:=0;
+	height:=0;
   );
 
 //
@@ -112,13 +111,13 @@ Section Public
     + r,result:REAL_32;
 
     compute_size_from_prc 0;
-    (width > w).if {
+    (height > w).if {
       "Priority 0 failed\n".print;
       compute_size_from_prc 25;
-      (width > w).if {
+      (height > w).if {
         "Priority 25 failed\n".print;
         compute_size_from_prc 50;
-        (width > w).if {
+        (height > w).if {
           "Priority 50 failed\n".print;
           r:=0;
           set_width 0;

@@ -103,10 +103,15 @@ Section Public
         (i.operator = '^')
       }
     } && {
-      browse_group { 
+      + nb:INTEGER;
+      list.foreach { 
         i:INODE;
-        MENU_V_OUT.evaluate i width bugw_screen height bugh_screen > 0
-      }
+        	(MENU_V_OUT.evaluate i width bugw_screen height bugh_screen > 0).if {
+			nb := nb + 1;
+		};
+	};
+	nb=list.count
+      
     }
   );
 

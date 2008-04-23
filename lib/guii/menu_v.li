@@ -68,34 +68,15 @@ Section Public
 //
 // Evaluation.
 //
-
   - compute_size_from_prc p:INTEGER <-
-  [? { (!list.is_empty) }; ]
+  [ ? {! list.is_empty}; ]
   (
-    +expr:G_EXPR;
-    height:=0;
-    width:=0;
-
-    list.foreach {
+/*    list.foreach {
       i:INODE;
-      (i.priority > p).if {
-        ((i.parent_guii=MENU_V_OUT) || {i.parent_guii=WINDOW} || {i.parent_guii=DROP_DOWN_MENU}).if {
-          (expr=NULL).if {
-            expr:=(G_BUTTON.create (G_OUT.create (i.name))).fix_width.fix_height;
-          } else {
-            expr:=expr | ((G_BUTTON.create (G_OUT.create (i.name)))).fix_width.fix_height;
-          };
-        } else {
-          (expr=NULL).if {
-            expr:=(G_CHECK.create (G_OUT.create (i.name))).fix_width.fix_height;
-          } else {
-            expr:=expr | ((G_CHECK.create (G_OUT.create (i.name)))).fix_width.fix_height;
-          };
-        };
-      };
-    };
-    height:=expr.height_min;
-    width:=expr.width_min;
+      (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
+    };*/
+	width:=0;
+	height:=0;
   );
 
 
@@ -110,33 +91,41 @@ Section Public
         (i.operator != '&')
       }
     } && {
-
       +nb:INTEGER;
       list.foreach {
         i:INODE;
         +tmp:REAL_32;
         +best_prc:REAL_32;
 
-        tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_V_OUT;
+        (!i.list.is_empty).if {
+          tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation MENU_V_OUT;
+          };
+          tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation WINDOW;
+          };
+          tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation MENU_H_OUT;
+          };
+        } else {
+          tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation CHECK;
+          };
+          tmp:=ACTION.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation ACTION;
+          };
         };
-        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation CHECK;
-        };
-        tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation WINDOW;
-        };
-        tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_H_OUT;
-        };
+
         (best_prc > 0).if {
           nb:=nb+1;
         };
@@ -172,7 +161,7 @@ Section Public
 	r:=list.count;
      };
      result:=(r/list.count)*100;
-     result:=result-(get_area_prc (w,h))/100;
+     result:=result-(get_area_prc (w,h));
     "result := ".print;result.print;"%\n".print;
     result
   )

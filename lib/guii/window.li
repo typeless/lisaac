@@ -69,7 +69,7 @@ Section Public
 
       };
     };
-    (width,height):=G_WIN_OUT.predict_size (height.rounded,width.rounded) with_title TRUE;
+    /*(width,height):=G_WIN_OUT.predict_size (height.rounded,width.rounded) with_title TRUE;*/
   );
 
 - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
