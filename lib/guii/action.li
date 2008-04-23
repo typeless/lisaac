@@ -1,0 +1,91 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := ACTION;
+
+  - copyright := "Jonathan Ponte, Maxime Audrin, Benoit Sonntag";
+
+  - comment   := "Tool bar for GUII.";
+  
+Section Inherit
+  
+  - parent_internal_inode:INTERNAL_INODE := INTERNAL_INODE;
+  
+Section Public
+  
+  - representation:STRING_CONSTANT := "ACTION";
+
+  - print <-
+  (
+    "ACTION".print;
+  );
+
+  - make_representation <-
+  [? {list.is_empty}; ]
+  (
+    content:=(G_BUTTON.create (G_OUT.create name) action action).fix_height.fix_width;
+    width:=content.width_min;
+    height:=content.height_min;
+  );
+
+  - space_evaluation (w,h:REAL_32) :REAL_32<-
+  [ ? {list.is_empty}; ]
+  (
+    + result:REAL_32;
+
+    (width,height):=(G_BUTTON.predict_size (G_OUT.predict_size name));
+
+    result:=(get_area_prc (w,h));
+    result
+  )
+  [ ? {Result.in_range 0 to 100}; ];
+
+  - semantic_evaluation (w,h:REAL_32) :BOOLEAN <-
+  (
+    list.is_empty && {operator='^'}
+  );
+
+  - evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32 <-
+  (
+    + result:REAL_32;
+
+    n.set_representation ACTION;
+
+    "ACTION semantic evaluation of ".print;n.name.print;"\n".print;
+    (n.semantic_evaluation (w,h)).if {
+      /*" OK\n".print;*/
+      "ACTION space evaluation of ".print;n.name.print;"\n".print;
+      result:=100.0-n.space_evaluation (w,h);
+    } else {
+      /*" FAILED\n".print;*/
+       result:=0;
+    };
+
+    "ACTION result for ".print;n.name.print;"= ".print;result.print;"%\n".print;
+    n.set_representation INTERNAL_INODE;
+    (result!=0).if {
+      "w:=".print;n.width.print;"\n".print;
+      "h:=".print;n.height.print;"\n".print;
+    };
+    result
+  )
+  [ ? {Result.in_range 0 to 100}; ];
