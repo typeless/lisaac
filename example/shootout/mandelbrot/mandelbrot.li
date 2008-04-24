@@ -24,6 +24,7 @@ Section Public
     + delta0,delta1:REAL_64;
     + mod_w,wm1:INTEGER;
     + cmd:STRING;
+    + civ:REAL_64;        
     
     iter := 50;
     four := 4.0;
@@ -42,9 +43,11 @@ Section Public
     wm1   := w - 1;
 
     0.to (h - 1) do { y:INTEGER;
+      
+      civ := (y * 2).to_real_64 / h - 1.0;
+      
       0.to wm1 by 2 do { x:INTEGER;
-        + crv0,crv1:REAL_64;
-        + civ0,civ1:REAL_64;        
+        + crv0,crv1:REAL_64;        
         + zrv0,zrv1:REAL_64;
         + ziv0,ziv1:REAL_64;
         + trv0,trv1:REAL_64;
@@ -53,12 +56,9 @@ Section Public
         
         crv0 := (x * 2).to_real_64 / w - 1.5;
         crv1 := ((x + 1) * 2).to_real_64 / w - 1.5;
-        civ0 := (y * 2).to_real_64 / h - 1.0;
-        civ1 := (y * 2).to_real_64 / h - 1.0;
-                
         {
-          ziv0 := (zrv0 * ziv0) + (zrv0 * ziv0) + civ0;
-          ziv1 := (zrv1 * ziv1) + (zrv1 * ziv1) + civ1;
+          ziv0 := (zrv0 * ziv0) + (zrv0 * ziv0) + civ;
+          ziv1 := (zrv1 * ziv1) + (zrv1 * ziv1) + civ;
           
           zrv0 := trv0 - tiv0 + crv0;
           zrv1 := trv1 - tiv1 + crv1;
