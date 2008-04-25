@@ -40,8 +40,8 @@ Section Private
 Section Public
   
   + appli:INODE;
-  + width:REAL_32;
-  + height:REAL_32;
+  + width:INTEGER;
+  + height:INTEGER;
   + menu_bar:G_EXPR;
   + tool_bar:G_EXPR;
   + page:G_EXPR;
@@ -58,12 +58,20 @@ Section Public
   
   - run_interface <-
   (
+    +expr:G_EXPR;
+
+    appli.list.foreach {
+       i:INODE;
+       (expr=NULL).if {
+         expr:=i.content;
+       } else {
+         expr:=expr / i.content;
+       };
+    };
+
     VIDEO.make (width,height);
-    
-    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
-      menu_bar / G_PAGE.create
-    );
-    INTERFACE.run;
+
+    DESK.make VIDEO with expr;
   );
   
 
@@ -95,24 +103,67 @@ Section Public
 
     node.list.foreach {
       i:INODE;
-      MENU_BAR.evaluate i width width height height;"\n\n".print;
-      TOOL_BAR.evaluate i width width height height;"\n\n".print;
-      PAGE.evaluate i width width height height;"\n\n".print;
+      +best_prc:REAL_32;
+      +tmp:REAL_32;
+      +parent:INTERNAL_INODE;
+
+      (!i.list.is_empty).if {
+        tmp:=MENU_BAR.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=MENU_BAR;
+          "=================================================>MENU_BAR\n".print;
+        };
+        tmp:=MENU_V.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=MENU_V;
+          "=================================================>MENU_V\n".print;
+        };
+        tmp:=MENU_H.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=MENU_H;
+          "=================================================>MENU_H\n".print;
+        };
+        tmp:=DROP_DOWN_MENU.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=DROP_DOWN_MENU;
+          "=================================================>DROP_DOWN_MENU\n".print;
+        };
+      } else {
+        tmp:=CHECK.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=CHECK;
+          "=================================================>CHECK\n".print;
+        };
+        tmp:=ACTION.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=ACTION;
+          "=================================================>ACTION\n".print;
+        };
+        tmp:=PAGE.evaluate i width width height height;"\n\n".print;
+        (tmp>best_prc).if {
+          best_prc:=tmp;
+          parent:=PAGE;
+          "=================================================>PAGE\n".print;
+        };
+      };
+      (best_prc=0).if {
+        "No patterns match for ".print;i.name.print;"\n".print;
+      } else {
+        i.set_representation parent;
+        "====================================================================================>".print;i.print;"\n".print;
+        i.evaluate i width width height height;
+        i.make_representation;
+        width:=width-i.min_width;
+        height:=height-i.min_height;
+      };
     };
+
     appli.display;
   );
 
-  - set_tool_bar g:G_EXPR <-
-  (
-    tool_bar:=g;
-  );
-  
-  - set_menu_bar g:G_EXPR <-
-  (
-    menu_bar:=g;
-  );
-  
-  - set_page g:G_EXPR <-
-  (
-    page:=g;
-  );

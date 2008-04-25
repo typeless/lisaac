@@ -51,13 +51,15 @@ Section Public
   - list:LINKED_LIST[INODE] <- ( deferred; NULL);
   - action:BLOCK <- { root:INODE; };
   - content:G_EXPR <- ( deferred; NULL);
+  - win_out:G_WIN_OUT <- (deferred; NULL);
+  - covering:INTEGER <- ( deferred; 0);		//take items whose are over this pourcentage
   - height:REAL_32 <- ( deferred; 0);
   - width:REAL_32 <- ( deferred; 0);
   - min_height:REAL_32 <- deferred;
   - min_width:REAL_32 <- deferred;
   - type:INTEGER <- (deferred; 0);
   - depth:INTEGER <- (deferred; 0);
-  - print <- (deferred);
+
   //bug compilo 0.13
   - bugw_screen:REAL_32 <- (deferred;0);
   - bugh_screen:REAL_32 <- (deferred;0);
@@ -77,11 +79,12 @@ Section Public
   //
   // Method.
   //
-  
+  - print <- deferred;
   - get_menu_parent:INTERNAL_INODE <- ( deferred; NULL);
   - open <- deferred;
   - close <- deferred;
   - make_representation <- deferred;
+  - evaluate n:INODE width w:REAL_32 height h:REAL_32 :REAL_32<- (deferred;0);
   - compute_size_from_prc p:INTEGER <- deferred;
   - semantic_evaluation (w,h:REAL_32) :BOOLEAN <- (deferred; FALSE);
   - space_evaluation (w,h:REAL_32) :REAL_32 <- (deferred; 0);

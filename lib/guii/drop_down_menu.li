@@ -33,48 +33,27 @@ Section Inherit
 Section Public
 
   - representation:STRING_CONSTANT := "DROP_DOWN_MENU";
-//  + content:G_EXPR; 				//objet G_EXPR représentant le menu_h
-//  + width:REAL_32;				//largeur et hauteur du menu_h
-//  + height:REAL_32;
 
-/*
+  - print <-
+  (
+    "DROP_DOWN_MENU".print;
+  );
+
   - make_representation <-
   (
-    +name:STRING;
-    +under:G_WIN_OUT;
-    +under_expr:G_EXPR;
-    +expr:G_EXPR;
+    list.foreach {
+      i:INODE;
 
-    //pour chaque fils
-    (list.lower).to (list.upper) do {
-      i:INTEGER;
-
-      name:=(list.item i).get_name;
-      //(list.item i).evaluation(screen_h,screen_w);
-
-      //on instancie chaque fils
-      (!(list.item i).get_list.is_empty).if {
-        (list.item i).set_representation MENU_V;
-        under_expr:=(list.item i).get_content;
-        under:=G_WIN_OUT.create(under_expr);
-      } else {
-	under:=NULL;
-      };
-
-      //on crée les boutons qui vont composer le menu_h
-      (i=1).if {
-        expr:=G_BUTTON.create (G_OUT.create name) connect under.fix_width;
-      } else {
-        expr:=expr | G_BUTTON.create (G_OUT.create name) connect under.fix_width;
+      (i.priority>covering).if {
+        i.make_representation;
+        (content!=NULL).if {
+          content:=i.content;
+        } else {
+          content:=content / i.content;
+        };
       };
     };
-    content:=(G_RAW.create expr).fix_height.fix_width;
-    width:=content.width_min;
-    height:=content.height_min;
   );
-  
-
-*/
 
   - compute_size_from_prc p:INTEGER <-
   [ ? {! list.is_empty}; ]
@@ -86,9 +65,6 @@ Section Public
       };
     };
     (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
-
-	width:=0;
-	height:=0;
   );
 
 //
@@ -98,12 +74,16 @@ Section Public
 // A drop down menu can be apply only if sons are leafs
   - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
   (
-      browse_group {
-        i:INODE;
-        (i.operator='^') && {
-          i.list.is_empty
-        }
-    }
+    +nb:INTEGER;
+
+    list.foreach {
+      i:INODE;
+
+      ((i.operator='^') && {i.list.is_empty}).if {
+        nb:=nb+1;
+      };
+    };
+    nb=list.count
   );
 
 - space_evaluation (w,h:REAL_32) :REAL_32<-
@@ -123,12 +103,15 @@ Section Public
           set_width 0;
           set_height 0;
         } else {
+          covering:=50;
           r:=get_nitem_from_prc 50;
         };
       } else {
+        covering:=25;
         r:=get_nitem_from_prc 25;
       };
     } else {
+      covering:=0;
       r:=list.count;
     };
      result:=(r/list.count)*100;
@@ -154,7 +137,6 @@ Section Public
        result:=0;
     };
     "DROP_DOWN_MENU result for ".print;n.name.print;"= ".print;result.print;"%\n".print;
-    n.set_representation INTERNAL_INODE;
     result
   )
   [ ? {Result.in_range 0 to 100}; ];

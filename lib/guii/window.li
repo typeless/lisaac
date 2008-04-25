@@ -32,9 +32,35 @@ Section Inherit
   
 Section Public
 
- - representation:STRING_CONSTANT := "WINDOW";
+  - representation:STRING_CONSTANT := "WINDOW";
 
-- depth_node n:INODE of base:INODE from depth:INTEGER :INTEGER <-
+  - win_out:G_WIN_OUT;
+
+  - print <-
+  (
+    "WINDOW".print;
+  );
+
+  - make_representation <-
+  (
+    +expr:G_EXPR;
+
+    list.foreach {
+      i:INODE;
+
+      (i.priority>covering).if {
+        (expr=NULL).if {
+          expr:=i.content;
+        } else {
+          expr:=expr / i.content;
+        };
+      };
+    };
+    win_out:=G_WIN_OUT.create name with expr;
+    content:=(G_BUTTON.create (G_OUT.create name) connect win_out).fix_width.fix_height;
+  );
+
+  - depth_node n:INODE of base:INODE from depth:INTEGER :INTEGER <-
   (
       +result:INTEGER;
       +depth2:INTEGER;
@@ -69,7 +95,7 @@ Section Public
 
       };
     };
-    /*(width,height):=G_WIN_OUT.predict_size (height.rounded,width.rounded) with_title TRUE;*/
+    (width,height):=G_WIN_OUT.predict_size (height.rounded,width.rounded) with_title TRUE;
   );
 
 - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
@@ -147,12 +173,15 @@ Section Public
 		set_height 0;
 		set_width 0;
            } else {
+		covering:=50;
 		r:=get_nitem_from_prc 50;
 	   };
 	} else {
+	   covering:=25;
 	   r:=get_nitem_from_prc 25;
 	};
       } else {
+	covering:=0;
 	r:=list.count;
      };
      result:=(r/list.count)*100;
@@ -173,7 +202,6 @@ Section Public
        result:=n.space_evaluation (w,h);
      };
      "WINDOW result of ".print;n.name.print;"= ".print;result.print;"% \n".print;
-     n.set_representation INTERNAL_INODE;
      result
   );
 

@@ -83,9 +83,13 @@ MENU_H		->	( BUTTON_H | CHECK | DROP-DOWN_MENU )*
 
 BUTTON_H	->	( MENU_V_OUT | WINDOW_OUT | action )*
 
-MENU_V_OUT	->	( BUTTON_V | CHECK )*
+MENU_V_OUT	->	( RAW_V )*
 
-MENU_H_OUT	->	( BUTTON_H | CHECK )*
+MENU_H_OUT	->	( RAW_H )*
+
+RAW_V		->	( BUTTON_V | CHECK )*
+
+RAW_H		->	( BUTTON_H | CHECK )*
 
 TAB		->	( FRAME_TAB )*
 

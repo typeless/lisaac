@@ -51,9 +51,8 @@ Section Public
 		).fix_height.fix_width;
 */
 
-		INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (
+		DESK.make VIDEO with (
 			//menu_h / G_PAGE.create
 			menu_bar / G_PAGE.create;
 		);
-		INTERFACE.run;
 	);

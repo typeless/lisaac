@@ -35,6 +35,11 @@ Section Public
  
   - representation:STRING_CONSTANT := "TOOL_BAR";
 
+  - print <-
+  (
+    "TOOL_BAR".print;
+  );
+
 /*  - get_menu_parent:INTERNAL_INODE <- 
   ( + is_menu_bar:TOOL_BAR;
 
@@ -42,47 +47,6 @@ Section Public
     is_menu_bar.menu_parent
   );*/
 
-  /*- make_representation <-
-  (
-    +name:STRING;
-    +under:G_WIN_OUT;
-    +under_expr:G_EXPR;
-
-    //pour chaque fils
-    (list.lower).to (list.upper) do {
-      i:INTEGER;
-      name:=(list.item i).get_name;
-      //(list.item i).evaluation(screen_h,screen_w);
-
-      //on instancie chaque fils
-      (!(list.item i).get_list.is_empty).if {
-        (list.item i).set_representation MENU_V;
-        under_expr:=(list.item i).get_content;
-        under:=G_WIN_OUT.create(under_expr);
-      } else {
-	under:=NULL;
-      };
-
-      //on crée les boutons qui vont composer le menu_h
-      (i=1).if {
-        content:=G_BUTTON.create (G_OUT.create name) connect under.fix_width;
-      } else {
-        content:=content | G_BUTTON.create (G_OUT.create name) connect under.fix_width;
-      };
-    };
-    content.fix_height.fix_width;
-    width:=content.width_min;
-    height:=content.height_min;
-    screen_h:=screen_h-height;
-    screen_w:=screen_w-width;
-    (screen_w<0).if {
-      "Largeur écran dépassée!\n".print;
-    };
-    (screen_h<0).if {
-      "Hauteur écran dépassée!\n".print;
-    };
-  );*/
-  
   //
   // Evaluation.
   //
@@ -115,21 +79,17 @@ Section Public
 
         is_menu_h ?= get_menu_parent;
         is_menu_v ?= get_menu_parent;*/
-        tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation MENU_V_OUT;
-        };
-        tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation CHECK;
-        };
-        tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
-        (tmp > best_prc).if {
-          best_prc:=tmp;
-          i.set_representation WINDOW;
-        };
+        (!i.list.is_empty).if {
+          tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation MENU_V_OUT;
+          };
+          tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation WINDOW;
+          };
 //        (is_menu_h!=NULL).if {
           tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;
           (tmp > best_prc).if {
@@ -144,6 +104,18 @@ Section Public
             i.set_representation MENU_H_OUT;
           };
         };*/
+        } else {
+          tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation CHECK;
+          };
+          tmp:=ACTION.evaluate i width bugw_screen height bugh_screen;
+          (tmp > best_prc).if {
+            best_prc:=tmp;
+            i.set_representation ACTION;
+          };
+        };
         (best_prc > 0).if {
           nb:=nb+1;
         };
@@ -167,9 +139,7 @@ Section Public
     } else {
        result:=0;
     };
-
     "TOOL_BAR result for ".print;n.name.print;"= ".print;result.print;"%\n".print;
-    n.set_representation INTERNAL_INODE;
     result
   )
   [ ? {Result.in_range 0 to 100}; ];

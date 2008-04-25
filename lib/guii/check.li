@@ -63,10 +63,9 @@ Section Public
   (
     + result:REAL_32;
 
-/*    (width,height):=(G_CHECK.predict_size (G_OUT.predict_size name));
+    (width,height):=(G_CHECK.predict_size (G_OUT.predict_size name));
     result:=100.0-(get_area_prc (w,h));
-    result*/
-    0
+    result
   )
   [ ? {Result.in_range 0 to 100}; ];
 
@@ -81,15 +80,12 @@ Section Public
     // Semantic evaluation && Space evaluation.
     "CHECK semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
-      //" OK\n".print;
       "CHECK space evaluation of ".print;n.name.print;"\n".print;
       result:=100.0-n.space_evaluation (w,h);
     } else {
-      // " FAILED\n".print;
        result:=0;
     };
     "CHECK result for ".print;n.name.print;"= ".print;result.print;"%\n".print;
-    n.set_representation INTERNAL_INODE;
     (result!=0).if {
       "w:=".print;n.width.print;"\n".print;
       "h:=".print;n.height.print;"\n".print;
