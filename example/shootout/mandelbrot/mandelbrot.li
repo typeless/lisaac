@@ -17,14 +17,15 @@ Section Inherit
 Section Public
    
   - main <-
-  ( + w, h, bit_num:INTEGER;
+  ( + w,wbyte, h, bit_num:INTEGER;
     + iter:INTEGER;
     + byte_acc:INTEGER_8;
     + four:REAL_64;
     + delta0,delta1:REAL_64;
-    + mod_w,wm1:INTEGER;
+    + mod_w,wm1,h2,y,ofs:INTEGER;
     + cmd:STRING;
-    + civ:REAL_64;        
+    + civ:REAL_64; 
+    + scr:FAST_ARRAY[INTEGER_8];
     
     iter := 50;
     four := 4.0;
@@ -32,7 +33,10 @@ Section Public
     cmd := COMMAND_LINE.item 1;
             
     h := w := cmd.to_integer;    
-
+    
+    h2 := h / 2;
+    scr := FAST_ARRAY[INTEGER_8].create_with_capacity (h2*w);
+    
     "P4\n".print;
     cmd.print;
     ' '.print;
@@ -41,8 +45,9 @@ Section Public
 
     mod_w := 8 - (w & 7);
     wm1   := w - 1;
-
-    0.to (h - 1) do { y:INTEGER;
+    wbyte := (w + 7) / 8;
+        
+    {y <= h2}.while_do {
       
       civ := (y * 2).to_real_64 / h - 1.0;
       
@@ -88,15 +93,31 @@ Section Public
         };	
 
         bit_num := bit_num + 2;
-        (bit_num = 8).if {
-          byte_acc.to_character.print; 
+        (bit_num = 8).if {          
+          scr.add_last byte_acc;
           byte_acc := bit_num := 0;
         };        
       };
       (bit_num != 0).if {
-        byte_acc := byte_acc << mod_w;
-        byte_acc.to_character.print;         
+        byte_acc := byte_acc << mod_w;        
+        scr.add_last byte_acc;
         byte_acc := bit_num := 0;
-      };
-    };		    
+      };      
+      y := y + 1;
+    };		        
+    (scr.lower).to (scr.upper) do { o:INTEGER;
+      scr.item o.to_character.print;
+    };
+    
+    ((h & 1) = 0).if {      
+      ofs := scr.count - wbyte*2;
+    } else {
+      ofs := scr.count - wbyte;
+    };
+    {      
+      ofs.to (ofs+wbyte-1) do { x:INTEGER;
+        scr.item x.to_character.print;     
+      };      
+      ofs := ofs - wbyte;
+    }.do_while {ofs > 0};
   );

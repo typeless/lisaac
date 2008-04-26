@@ -8,7 +8,7 @@ gcc -pipe -Wall -O3 -fomit-frame-pointer -march=pentium4  -D_ISOC9X_SOURCE -mfpm
 #gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o mandelbrot_c3 mandelbrot_c3.c -lm
 
 echo Lisaac: 
-time ./mandelbrot 2000 > out_li.txt
+time ./mandelbrot 6000 > out_li.txt
 echo C:
-time ./mandelbrot_c2 2000 > out_c.txt
+time ./mandelbrot_c2 6000 > out_c.txt
 diff out_li.txt out_c.txt

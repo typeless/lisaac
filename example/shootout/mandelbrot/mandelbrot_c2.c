@@ -62,7 +62,8 @@ int main (int argc, char **argv)
             bit_num+=2;
 
             if(bit_num == 8) {
-              fputc(byte_acc,stdout);       
+                fputc(byte_acc,stdout);       
+              //  printf("%d ",byte_acc);
                 byte_acc = 0;
                 bit_num = 0;
             }
@@ -71,9 +72,11 @@ int main (int argc, char **argv)
         if(bit_num != 0) {
             byte_acc <<= (8-w%8);
             fputc(byte_acc,stdout);
+            //  printf("%d ",byte_acc);
             byte_acc = 0;
             bit_num = 0;
         }
+        //     printf("\n");
     }
     
 }
