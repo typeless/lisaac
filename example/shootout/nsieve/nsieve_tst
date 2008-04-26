@@ -1,5 +1,6 @@
-lisaac nsieve  -O 
-gcc nsieve_c.c -o nsieve_c -O3  -std=c99
+lisaac nsieve  -O -q
+gcc-4.1 nsieve.c -o nsieve -O3  -std=c99
+gcc-4.1 nsieve_c.c -o nsieve_c -O3  -std=c99
 echo Lisaac: 
 time ./nsieve 11 > out_li.txt
 echo C:

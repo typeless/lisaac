@@ -18,15 +18,13 @@ Section Private
   
   - string_tmp:STRING := STRING.create 64;
   
-  - flags:FAST_ARRAY[BOOLEAN];
+  - flags:NATIVE_ARRAY[BOOLEAN];
 
   - primes m:INTEGER <-
   ( + result,j,i,tmp: INTEGER;    
 
-    flags.fast_resize m;      
-    flags.set_all_with TRUE;    
-
     tmp := m - 1;
+    flags.set_all_with TRUE until tmp;        
     i   := 2;    
     {i <= tmp}.while_do {      
       (flags.item i).if {
@@ -37,7 +35,7 @@ Section Private
         };
         result := result + 1;
       };
-    i := i + 1;      
+      i := i + 1;      
     };
 
     "Primes up to ".print;    
@@ -57,7 +55,7 @@ Section Public
 
     n := COMMAND_LINE.item 1.to_integer;
     m := 10_000 * (1 << n);
-    flags := FAST_ARRAY[BOOLEAN].create_with_capacity m; 
+    flags := NATIVE_ARRAY[BOOLEAN].calloc_intern m; 
     primes m;
     m := m >> 1;
     primes m;
