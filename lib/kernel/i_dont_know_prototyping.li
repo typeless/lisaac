@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := BAD_REFLEX;
+  + name    := I_DONT_KNOW_PROTOTYPING;
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -32,7 +32,7 @@ Section Public
   //
   // Conditional.
   //
-  
+    
   - if cond:BOOLEAN then true_block:BLOCK :BOOLEAN <-
   (
     cond.if true_block
