@@ -161,7 +161,6 @@ Section Public
 	r:=list.count;
      };
      result:=(r/list.count)*100;
-     "area := ".print;(get_area_prc (w,h)).print;"\n".print;
      result:=result-(get_area_prc (w,h));
      result
   )

@@ -33,6 +33,11 @@ Section Inherit
 Section Public
 
   - representation:STRING_CONSTANT := "DROP_DOWN_MENU";
+  + win_out:G_WIN_OUT;
+
+  + width:REAL_32;
+  + height:REAL_32;
+  + content:G_EXPR;
 
   - print <-
   (
@@ -41,18 +46,23 @@ Section Public
 
   - make_representation <-
   (
+    +expr:G_EXPR;
+
     list.foreach {
       i:INODE;
 
       (i.priority>covering).if {
         i.make_representation;
-        (content!=NULL).if {
-          content:=i.content;
+        (expr=NULL).if {
+          expr:=i.content;
+
         } else {
-          content:=content / i.content;
+          expr:=expr / i.content;
         };
       };
     };
+    win_out:=(G_WIN_OUT.create expr).fix_height.fix_width;
+    content:=(G_BUTTON.create (G_OUT.create name) connect win_out).fix_height.fix_width;
   );
 
   - compute_size_from_prc p:INTEGER <-
@@ -76,11 +86,13 @@ Section Public
   (
     +nb:INTEGER;
 
-    list.foreach {
-      i:INODE;
+    (operator = '|').if {
+      list.foreach {
+        i:INODE;
 
-      ((i.operator='^') && {i.list.is_empty}).if {
-        nb:=nb+1;
+        (ACTION.evaluate i width bugw_screen height bugh_screen > 0).if {
+          nb:=nb+1;
+        };
       };
     };
     nb=list.count
@@ -100,8 +112,8 @@ Section Public
         (height > w).if {
           "Priority 50 failed\n".print;
           r:=0;
-          set_width 0;
-          set_height 0;
+          width:=0;
+          height:=0;
         } else {
           covering:=50;
           r:=get_nitem_from_prc 50;
@@ -114,10 +126,8 @@ Section Public
       covering:=0;
       r:=list.count;
     };
-     result:=(r/list.count)*100;
-     "area := ".print;(get_area_prc (w,h)).print;"\n".print;
-     result:=result-(get_area_prc (w,h));
-    "result := ".print;result.print;"%\n".print;
+    result:=(r/list.count)*100;
+    result:=result-(get_area_prc (w,h));
     result
   )
   [ ? {Result.in_range 0 to 100}; ];

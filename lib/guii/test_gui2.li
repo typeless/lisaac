@@ -28,31 +28,19 @@ Section Public
 
 		edit_menu:=G_WIN_OUT.create (
 			G_RAW.create (
-				G_BUTTON.create (G_OUT.create "Prout")  /
-				G_BUTTON.create (G_OUT.create "Prout2") /
-				G_BUTTON.create (G_OUT.create "Prout3") /
-				G_BUTTON.create (G_OUT.create "Prout4")
+				G_BUTTON.create (G_OUT.create "foo1")  /
+				G_BUTTON.create (G_OUT.create "foo2") /
+				G_BUTTON.create (G_OUT.create "foo3") /
+				G_BUTTON.create (G_OUT.create "foo4")
 			)
 		);
 
 		menu_bar:=(
-			G_BUTTON.create (G_OUT.create "Fichier") connect file_menu |
-			G_BUTTON.create (G_OUT.create "Edition") connect edit_menu
+			G_BUTTON.create (G_OUT.create "Fichier")  |
+			G_BUTTON.create (G_OUT.create "Edition") 
 		).fix_height.fix_width;
 
-/*		menu_h:=(
-			G_RAW.create(
-				G_BUTTON.create(G_OUT.create "File") |
-				G_BUTTON.create(G_OUT.create "Edit")
-			) |
-			G_RAW.create(
-				G_BUTTON.create(G_OUT.create "Quit")
-			)
-		).fix_height.fix_width;
-*/
 
-		DESK.make VIDEO with (
-			//menu_h / G_PAGE.create
-			menu_bar / G_PAGE.create;
-		);
+		INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (menu_bar / G_PAGE.create);
+    		INTERFACE.run;
 	);

@@ -53,7 +53,7 @@ Section Public
      "PAGE semantic evaluation of ".print;n.name.print;"\n".print;
      result:=0;
      //Semantic evaluation (if the "base" son doesn't have any sons itself then it is a PAGE at 100%
-     (n.list.is_empty).if {
+     (n.list.is_empty && {n.operator='^'}).if {
 			result:=100;
      };
      "PAGE result of ".print;n.name.print;"= ".print;result.print;"% \n".print;

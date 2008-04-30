@@ -47,7 +47,7 @@ Section Public
 
       (i.priority>covering).if {
         i.make_representation;
-        (content!=NULL).if {
+        (content=NULL).if {
           content:=i.content;
         } else {
           content:=content / i.content;
@@ -74,7 +74,7 @@ Section Public
     bugw_screen:=w;
     bugh_screen:=h;
 
-    !list.is_empty && {
+    !list.is_empty && {operator='^'} && {
       browse_group { 
         i:INODE;
         (i.operator != '&')
@@ -138,8 +138,8 @@ Section Public
 	   (height > h).if {
 		"Priority 50 failed\n".print;
 		r:=0;
-		set_height 0;
-		set_width 0;
+		height:=0;
+		width:=0;
            } else {
 		covering:=50;
 		r:=get_nitem_from_prc 50;

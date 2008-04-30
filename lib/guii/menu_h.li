@@ -46,11 +46,12 @@ Section Public
 
       (i.priority>covering).if {
         i.make_representation;
-        (content!=NULL).if {
+        (content=NULL).if {
           content:=i.content;
         } else {
           content:=content | i.content;
         };
+        "make_representation of ".print;i.name.print;"\n".print;
       };
     };
   );
@@ -75,7 +76,7 @@ Section Public
     bugw_screen:=w;
     bugh_screen:=h;
 
-    !list.is_empty && {
+    !list.is_empty && {operator='^'} && {
       browse_group {
         i:INODE;
         (i.operator!='&')

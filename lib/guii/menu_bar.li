@@ -60,7 +60,7 @@ Section Public
     bugw_screen:=w;
     bugh_screen:=h;
 
-    !list.is_empty && {
+    !list.is_empty && {operator='^'} && {
       browse_group { 
         i:INODE;
         (i.operator = '^')
