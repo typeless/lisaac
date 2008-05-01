@@ -1,7 +1,7 @@
-This is pdfeTeXk, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=latex 2007.5.23)  1 MAY 2008 19:45
+This is pdfeTeXk, Version 3.141592-1.30.5-2.2 (Web2C 7.5.5) (format=latex 2007.5.23)  1 MAY 2008 21:14
 entering extended mode
  %&-line parsing enabled.
-**guii.tex
+**guii
 (./guii.tex
 LaTeX2e <2003/12/01>
 Babel <v3.8g> and hyphenation patterns for english, usenglishmax, dumylang, noh
@@ -240,28 +240,35 @@ Package frenchb.ldf Warning: Degrees would look better in TS1-encoding:
 ]
 LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <10> not available
 (Font)              Font shape `T1/ptm/b/it' tried instead on input line 60.
- [2] [3] [4]
-Overfull \hbox (6.79999pt too wide) in paragraph at lines 156--156
+ [2]
+File: figures/GUII.ps Graphic file (type eps)
+ <figures/GUII.ps>
+Overfull \hbox (104.23195pt too wide) in paragraph at lines 151--152
+ [] 
+ []
+
+[3] [4]
+Overfull \hbox (6.79999pt too wide) in paragraph at lines 165--165
 [][] 
  []
 
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 156.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 165.
 
 (/usr/share/texmf-texlive/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (14.22636pt too wide) in paragraph at lines 156--156
+Overfull \hbox (14.22636pt too wide) in paragraph at lines 165--165
 []$[]$ 
  []
 
 [5] (./guii.aux) ) 
 Here is how much of TeX's memory you used:
- 2570 strings out of 94313
- 29223 string characters out of 1171671
+ 2575 strings out of 94313
+ 29271 string characters out of 1171671
  90225 words of memory out of 1000000
- 5777 multiletter control sequences out of 10000+50000
+ 5779 multiletter control sequences out of 10000+50000
  30721 words of font info for 37 fonts, out of 1200000 for 2000
  647 hyphenation exceptions out of 8191
- 34i,8n,26p,227b,360s stack positions out of 5000i,500n,6000p,200000b,5000s
+ 34i,8n,26p,223b,360s stack positions out of 5000i,500n,6000p,200000b,5000s
 
-Output written on guii.dvi (5 pages, 9600 bytes).
+Output written on guii.dvi (5 pages, 9768 bytes).

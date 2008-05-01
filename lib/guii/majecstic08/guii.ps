@@ -5,13 +5,13 @@
 %%PageOrder: Ascend
 %%BoundingBox: 0 0 595 842
 %%DocumentFonts: Times-Bold Times-Italic Times-Roman Times-BoldItalic
-%%+ SFTT1000
+%%+ Courier-Bold Courier SFTT1000
 %%DocumentPaperSizes: a4
 %%EndComments
 %DVIPSWebPage: (www.radicaleye.com)
 %DVIPSCommandLine: dvips guii.dvi -o
 %DVIPSParameters: dpi=600
-%DVIPSSource:  TeX output 2008.05.01:1945
+%DVIPSSource:  TeX output 2008.05.01:2114
 %%BeginProcSet: tex.pro 0 0
 %!
 /TeXDict 300 dict def TeXDict begin/N{def}def/B{bind def}N/S{exch}N/X{S
@@ -202,6 +202,326 @@ rmoveto}B/y{3 2 roll p a}B/bos{/SS save N}B/eos{SS restore}B end
  /udieresis /yacute /thorn /ydieresis
 ] def
 
+
+%%EndProcSet
+%%BeginProcSet: texnansi.enc 0 0
+% @psencodingfile{
+%   author = "Y&Y, Inc.",
+%   version = "1.1",
+%   date = "1 December 1996",
+%   filename = "texnansi.enc",
+%   email = "help@YandY.com",
+%   address = "45 Walden Street // Concord, MA 01742, USA",
+%   codetable = "ISO/ASCII",
+%   checksum = "xx",
+%   docstring = "Encoding for fonts in Adobe Type 1 format for use with TeX."
+% }
+%
+% The idea is to have all 228 characters normally included in Type 1 text
+% fonts (plus a few more) available for typesetting.  This is effectively
+% the character set in Adobe Standard Encoding, ISO Latin 1, plus a few more.
+%
+% Character code assignments were made as follows:
+%
+% (1) The character layout largely matches `ASCII' in the 32 -- 126 range,
+% except for `circumflex' in 94 and `tilde' in 126, to match `TeX text'
+% (`asciicircumflex' and `asciitilde' appear in 158 and 142 instead).
+%
+% (2) The character layout matches `Windows ANSI' in almost all places,
+% except for `quoteright' in 39 and `quoteleft' in 96 to match ASCII
+% (`quotesingle' and `grave' appear in 129 and 18 instead).
+%
+% (3) The character layout matches `TeX typewriter' used by CM text fonts
+% in most places (except for discordant positions such as hungarumlaut
+% (instead of braceright), dotaccent (instead of underscore) etc.
+%
+% (4) Remaining characters are assigned arbitrarily to the `control character'
+% range (0 -- 31), avoiding 0, 9, 10 and 13 in case we meet dumb software
+% - similarly one should really avoid 127 and 128 if possible.
+% In addition, the 8 open slots in Windows ANSI between 128 and 159 are used.
+%
+% (5) Y&Y Lucida Bright includes some extra ligatures and such; ff, ffi, ffl,
+% and `dotlessj,' these are included 11 -- 15, and 17.
+%
+% (6) Hyphen appears both at 45 and 173 for compatibility with both ASCII
+% and Windows ANSI.
+%
+% (7) It doesn't really matter where ligatures appear (both real, such as ffi,
+% and pseudo such as ---) since these should not be accessed directly, only
+% via ligature information in the TFM file.
+%
+% SAMPLE USAGE (in `psfonts.map' file for DVIPS):
+% 
+% lbr LucidaBright "TeXnANSIEncoding ReEncodeFont" <texnansi.enc <lbr.pfb
+%
+% This tells DVIPS that the font called `lbr' in TeX has PostScript 
+% FontName `LucidaBright.'  It also asks DVIPS to expand the file `lbr.pfb'
+% into PFA form, to include the attached `texnansi.enc' encoding vector,
+% and to then actually reencode the font based on that encoding vector.
+%
+% Revised 1996 June 1 by adding second position for `fl' to avoid Acrobat bug.
+% Revised 1996 June 1 by adding second position for `fraction' for same reason.
+% Revised 1997 Oct 1 by adding cwm  (used in boundary char TFM code)
+% Revised 1998 Mar 1 by adding Unicode for Euro character
+%
+/TeXnANSIEncoding [
+/.notdef % 0
+/Euro % /Uni20AC 1
+/.notdef % 2
+/.notdef % 3
+/fraction %	4
+/dotaccent %	5
+/hungarumlaut %	6
+/ogonek	%	7
+/fl	%	8
+/.notdef % /fraction %	9	not used (see 4), backward compatability only
+/cwm	%	10	not used, except boundary char internally maybe
+/ff    %	11
+/fi    %	12
+/.notdef % /fl    %	13	not used (see 8), backward compatability only
+/ffi   %	14
+/ffl   %	15
+/dotlessi %	16
+/dotlessj %	17
+/grave %	18
+/acute %	19
+/caron %	20
+/breve %	21
+/macron %	22
+/ring  %	23
+/cedilla %	24
+/germandbls %	25
+/ae    %	26
+/oe    %	27
+/oslash %	28
+/AE    %	29
+/OE    %	30
+/Oslash %	31
+/space %	32	% /suppress in TeX text
+/exclam %	33
+/quotedbl %	34	% /quotedblright in TeX text
+/numbersign %	35
+/dollar %	36
+/percent %	37
+/ampersand %	38
+/quoteright %	39	% /quotesingle in ANSI
+/parenleft %	40
+/parenright %	41
+/asterisk %	42
+/plus  %	43
+/comma %	44
+/hyphen %	45
+/period %	46
+/slash %	47
+/zero  %	48
+/one   %	49
+/two   %	50
+/three %	51
+/four  %	52
+/five  %	53
+/six   %	54
+/seven %	55
+/eight %	56
+/nine  %	57
+/colon %	58
+/semicolon %	59
+/less  %	60	% /exclamdown in Tex text
+/equal %	61
+/greater %	62	% /questiondown in TeX text
+/question %	63
+/at %	64
+/A %	65
+/B %	66
+/C %	67
+/D %	68
+/E %	69
+/F %	70
+/G %	71
+/H %	72
+/I %	73
+/J %	74
+/K %	75
+/L %	76
+/M %	77
+/N %	78
+/O %	79
+/P %	80
+/Q %	81
+/R %	82
+/S %	83
+/T %	84
+/U %	85
+/V %	86
+/W %	87
+/X %	88
+/Y %	89
+/Z %	90
+/bracketleft %	91
+/backslash %	92	% /quotedblleft in TeX text
+/bracketright %	93
+/circumflex %	94	% /asciicircum in ASCII
+/underscore %	95	% /dotaccent in TeX text
+/quoteleft %	96	% /grave accent in ANSI
+/a %	97
+/b %	98
+/c %	99
+/d %	100
+/e %	101
+/f %	102
+/g %	103
+/h %	104
+/i %	105
+/j %	106
+/k %	107
+/l %	108
+/m %	109
+/n %	110
+/o %	111
+/p %	112
+/q %	113
+/r %	114
+/s %	115
+/t %	116
+/u %	117
+/v %	118
+/w %	119
+/x %	120
+/y %	121
+/z %	122
+/braceleft %	123	% /endash in TeX text
+/bar   %	124	% /emdash in TeX test
+/braceright %	125	% /hungarumlaut in TeX text
+/tilde %	126	% /asciitilde in ASCII
+/dieresis %	127	not used (see 168), use higher up instead
+/Lslash	%	128	this position is unfortunate, but now too late to fix
+/quotesingle %	129
+/quotesinglbase %	130
+/florin %	131
+/quotedblbase %	132
+/ellipsis %	133
+/dagger %	134
+/daggerdbl %	135
+/circumflex %	136
+/perthousand %	137
+/Scaron %	138
+/guilsinglleft %	139
+/OE    %	140
+/Zcaron %	141
+/asciicircum %	142
+/minus %	143
+/lslash %	144
+/quoteleft %	145
+/quoteright %	146
+/quotedblleft %	147
+/quotedblright %	148
+/bullet %	149
+/endash %	150
+/emdash %	151
+/tilde %	152
+/trademark %	153
+/scaron %	154
+/guilsinglright %	155
+/oe    %	156
+/zcaron %	157
+/asciitilde %	158
+/Ydieresis %	159
+/nbspace %	160	% /space (no break space)
+/exclamdown %	161
+/cent  %	162
+/sterling %	163
+/currency %	164
+/yen   %	165
+/brokenbar %	166
+/section %	167
+/dieresis %	168
+/copyright %	169
+/ordfeminine %	170
+/guillemotleft %	171
+/logicalnot %	172
+/sfthyphen %	173 % /hyphen (hanging hyphen)
+/registered %	174
+/macron %	175
+/degree %	176
+/plusminus %	177
+/twosuperior %	178
+/threesuperior %	179
+/acute %	180
+/mu    %	181
+/paragraph %	182
+/periodcentered %	183
+/cedilla %	184
+/onesuperior %	185
+/ordmasculine %	186
+/guillemotright %	187
+/onequarter %	188
+/onehalf %	189
+/threequarters %	190
+/questiondown %	191
+/Agrave %	192
+/Aacute %	193
+/Acircumflex %	194
+/Atilde %	195
+/Adieresis %	196
+/Aring %	197
+/AE    %	198
+/Ccedilla %	199
+/Egrave %	200
+/Eacute %	201
+/Ecircumflex %	202
+/Edieresis %	203
+/Igrave %	204
+/Iacute %	205
+/Icircumflex %	206
+/Idieresis %	207
+/Eth   %	208
+/Ntilde %	209
+/Ograve %	210
+/Oacute %	211
+/Ocircumflex %	212
+/Otilde %	213
+/Odieresis %	214
+/multiply %	215	% OE in T1
+/Oslash %	216
+/Ugrave %	217
+/Uacute %	218
+/Ucircumflex %	219
+/Udieresis %	220
+/Yacute %	221
+/Thorn %	222
+/germandbls %	223
+/agrave %	224
+/aacute %	225
+/acircumflex %	226
+/atilde %	227
+/adieresis %	228
+/aring %	229
+/ae    %	230
+/ccedilla %	231
+/egrave %	232
+/eacute %	233
+/ecircumflex %	234
+/edieresis %	235
+/igrave %	236
+/iacute %	237
+/icircumflex %	238
+/idieresis %	239
+/eth   %	240
+/ntilde %	241
+/ograve %	242
+/oacute %	243
+/ocircumflex %	244
+/otilde %	245
+/odieresis %	246
+/divide %	247	% oe in T1
+/oslash %	248
+/ugrave %	249
+/uacute %	250
+/ucircumflex %	251
+/udieresis %	252
+/yacute %	253
+/thorn %	254
+/ydieresis %	255	% germandbls in T1
+] def
 
 %%EndProcSet
 %%BeginProcSet: cm-super-t1.enc 0 0
@@ -512,6 +832,65 @@ mul exch}def/ReEncodeFont{CharStrings rcheck{/Encoding false def dup[
 exch{dup CharStrings exch known not{pop/.notdef/Encoding true def}if}
 forall Encoding{]exch pop}{cleartomark}ifelse}if/Encoding exch def}def
 end
+
+%%EndProcSet
+%%BeginProcSet: special.pro 0 0
+%!
+TeXDict begin/SDict 200 dict N SDict begin/@SpecialDefaults{/hs 612 N
+/vs 792 N/ho 0 N/vo 0 N/hsc 1 N/vsc 1 N/ang 0 N/CLIP 0 N/rwiSeen false N
+/rhiSeen false N/letter{}N/note{}N/a4{}N/legal{}N}B/@scaleunit 100 N
+/@hscale{@scaleunit div/hsc X}B/@vscale{@scaleunit div/vsc X}B/@hsize{
+/hs X/CLIP 1 N}B/@vsize{/vs X/CLIP 1 N}B/@clip{/CLIP 2 N}B/@hoffset{/ho
+X}B/@voffset{/vo X}B/@angle{/ang X}B/@rwi{10 div/rwi X/rwiSeen true N}B
+/@rhi{10 div/rhi X/rhiSeen true N}B/@llx{/llx X}B/@lly{/lly X}B/@urx{
+/urx X}B/@ury{/ury X}B/magscale true def end/@MacSetUp{userdict/md known
+{userdict/md get type/dicttype eq{userdict begin md length 10 add md
+maxlength ge{/md md dup length 20 add dict copy def}if end md begin
+/letter{}N/note{}N/legal{}N/od{txpose 1 0 mtx defaultmatrix dtransform S
+atan/pa X newpath clippath mark{transform{itransform moveto}}{transform{
+itransform lineto}}{6 -2 roll transform 6 -2 roll transform 6 -2 roll
+transform{itransform 6 2 roll itransform 6 2 roll itransform 6 2 roll
+curveto}}{{closepath}}pathforall newpath counttomark array astore/gc xdf
+pop ct 39 0 put 10 fz 0 fs 2 F/|______Courier fnt invertflag{PaintBlack}
+if}N/txpose{pxs pys scale ppr aload pop por{noflips{pop S neg S TR pop 1
+-1 scale}if xflip yflip and{pop S neg S TR 180 rotate 1 -1 scale ppr 3
+get ppr 1 get neg sub neg ppr 2 get ppr 0 get neg sub neg TR}if xflip
+yflip not and{pop S neg S TR pop 180 rotate ppr 3 get ppr 1 get neg sub
+neg 0 TR}if yflip xflip not and{ppr 1 get neg ppr 0 get neg TR}if}{
+noflips{TR pop pop 270 rotate 1 -1 scale}if xflip yflip and{TR pop pop
+90 rotate 1 -1 scale ppr 3 get ppr 1 get neg sub neg ppr 2 get ppr 0 get
+neg sub neg TR}if xflip yflip not and{TR pop pop 90 rotate ppr 3 get ppr
+1 get neg sub neg 0 TR}if yflip xflip not and{TR pop pop 270 rotate ppr
+2 get ppr 0 get neg sub neg 0 S TR}if}ifelse scaleby96{ppr aload pop 4
+-1 roll add 2 div 3 1 roll add 2 div 2 copy TR .96 dup scale neg S neg S
+TR}if}N/cp{pop pop showpage pm restore}N end}if}if}N/normalscale{
+Resolution 72 div VResolution 72 div neg scale magscale{DVImag dup scale
+}if 0 setgray}N/psfts{S 65781.76 div N}N/startTexFig{/psf$SavedState
+save N userdict maxlength dict begin/magscale true def normalscale
+currentpoint TR/psf$ury psfts/psf$urx psfts/psf$lly psfts/psf$llx psfts
+/psf$y psfts/psf$x psfts currentpoint/psf$cy X/psf$cx X/psf$sx psf$x
+psf$urx psf$llx sub div N/psf$sy psf$y psf$ury psf$lly sub div N psf$sx
+psf$sy scale psf$cx psf$sx div psf$llx sub psf$cy psf$sy div psf$ury sub
+TR/showpage{}N/erasepage{}N/setpagedevice{pop}N/copypage{}N/p 3 def
+@MacSetUp}N/doclip{psf$llx psf$lly psf$urx psf$ury currentpoint 6 2 roll
+newpath 4 copy 4 2 roll moveto 6 -1 roll S lineto S lineto S lineto
+closepath clip newpath moveto}N/endTexFig{end psf$SavedState restore}N
+/@beginspecial{SDict begin/SpecialSave save N gsave normalscale
+currentpoint TR @SpecialDefaults count/ocount X/dcount countdictstack N}
+N/@setspecial{CLIP 1 eq{newpath 0 0 moveto hs 0 rlineto 0 vs rlineto hs
+neg 0 rlineto closepath clip}if ho vo TR hsc vsc scale ang rotate
+rwiSeen{rwi urx llx sub div rhiSeen{rhi ury lly sub div}{dup}ifelse
+scale llx neg lly neg TR}{rhiSeen{rhi ury lly sub div dup scale llx neg
+lly neg TR}if}ifelse CLIP 2 eq{newpath llx lly moveto urx lly lineto urx
+ury lineto llx ury lineto closepath clip}if/showpage{}N/erasepage{}N
+/setpagedevice{pop}N/copypage{}N newpath}N/@endspecial{count ocount sub{
+pop}repeat countdictstack dcount sub{end}repeat grestore SpecialSave
+restore end}N/@defspecial{SDict begin}N/@fedspecial{end}B/li{lineto}B
+/rl{rlineto}B/rc{rcurveto}B/np{/SaveX currentpoint/SaveY X N 1
+setlinecap newpath}N/st{stroke SaveX SaveY moveto}N/fil{fill SaveX SaveY
+moveto}N/ellipse{/endangle X/startangle X/yrad X/xrad X/savematrix
+matrix currentmatrix N TR xrad yrad scale 0 0 1 startangle endangle arc
+savematrix setmatrix}N end
 
 %%EndProcSet
 %%BeginFont: SFTT1000
@@ -1358,8 +1737,8 @@ rf /Fd 22[37 111[37 42 1[37 46 23 32 32 42 42 42 46 65
 28 21 2[28 28 28 36[46 2[{TeXBase1Encoding ReEncodeFont}77
 83.022 /Times-Roman rf /Ff 22[37 37 110[42 42 1[42 46
 28 32 37 46 46 42 46 69 23 2[23 1[42 28 37 46 37 46 42
-12[55 46 60 4[78 55 2[32 65 2[55 60 60 9[42 42 42 42
-42 42 42 42 42 2[21 6[28 36[46 2[{TeXBase1Encoding ReEncodeFont}45
+12[55 46 60 4[78 55 2[32 65 1[51 55 60 60 9[42 42 42
+42 42 42 42 42 42 2[21 6[28 36[46 2[{TeXBase1Encoding ReEncodeFont}46
 83.022 /Times-Bold rf /Fg 31[33 73[37 32[37 21 29 25
 37 37 37 37 58 21 1[21 21 1[37 25 33 1[33 37 33 10[54
 54 8[46 2[25 7[54 8[37 2[37 37 37 37 37 37 21 19 1[19
@@ -1370,11 +1749,11 @@ rf /Fd 22[37 111[37 42 1[37 46 23 32 32 42 42 42 46 65
 74.7198 /Times-Italic rf /Fi 54[36 86[23 12[26 11[32
 1[48 1[42 32 29 36 2[42 1[48 32 39 5[36 42 39 36 36 6[19
 11[15 19 45[{TeXBase1Encoding ReEncodeFont}21 58.1154
-/Times-Italic rf /Fj 11[42 10[37 37 81[42 28[37 37 1[37
-42 23 32 32 42 42 42 42 60 23 37 23 23 42 42 23 37 42
-37 42 42 8[51 69 51 60 46 42 51 1[51 1[55 69 46 1[37
-28 2[51 51 60 55 51 51 76 7[42 42 42 42 42 42 42 42 42
-23 21 28 21 4[28 29[28 9[{TeXBase1Encoding ReEncodeFont}63
+/Times-Italic rf /Fj 11[42 10[37 37 7[42 73[42 28[37
+37 1[37 42 23 32 32 42 42 42 42 60 23 37 23 23 42 42
+23 37 42 37 42 42 8[51 69 51 60 46 42 51 1[51 1[55 69
+46 1[37 28 2[51 51 60 55 51 51 76 7[42 42 42 42 42 42
+42 42 42 23 21 28 21 4[28 29[28 9[{TeXBase1Encoding ReEncodeFont}64
 83.022 /Times-Italic rf /Fk 22[44 112[50 2[55 33 1[44
 2[50 55 83 3[28 55 50 1[44 55 2[50 8[72 1[72 72 66 55
 72 1[61 78 72 94 66 1[50 39 2[61 66 1[72 66 72 20[25
@@ -1519,15 +1898,1431 @@ b(GIMG,)463 4040 y Ff(4.2.)40 b Fd(Composition)19 b(pour)i(des)f
 %%Page: 4 4
 TeXDict begin 4 3 bop 463 494 a Fg(4)95 b(L)-7 b('objet.)23
 b(V)-10 b(olume)20 b(8)f(\226)g(n)o(\011)n(2/2005)463
-753 y Ff(5.)41 b(Syst\350me)20 b(d'inf\351r)o(ence)463
-952 y(5.1.)40 b Fd(Evaluation)20 b(s\351mantique)463
-1151 y Ff(5.2.)40 b Fd(Evaluation)20 b(spatial)463 1351
-y Ff(6.)41 b(Impl\351mentation)20 b(du)h(mod\350le)463
-1550 y(6.1.)40 b Fd(Introduction)20 b(au)h(langage)e(Lisaac)463
-1749 y Ff(6.2.)40 b Fd(Repr\351sentation)20 b(par)h(h\351ritage)f
-(dynamique)f(de)h(l'arbre)463 1948 y Ff(7.)41 b(R\351sultat)463
-2148 y(8.)g(T)-6 b(ra)n(v)o(aux)19 b(futurs)463 2347
-y(9.)41 b(Conclusion)p eop end
+2895 y @beginspecial 35 @llx 514 @lly 479 @urx 780 @ury
+4440 @rwi @setspecial
+%%BeginDocument: figures/GUII.ps
+%!PS-Adobe-3.0
+%%BoundingBox: 35 514 479 780
+%%Title: GUII
+%%CreationDate: Wed Feb  6 17:08:46 2008
+%%Creator: Tgif-4.1.45-QPL written by William Chia-Wei Cheng (bill.cheng@acm.org)
+%%ProducedBy: (unknown)
+%%Orientation: Portrait
+%%Pages: 1
+%%DocumentFonts: (atend)
+%%EndComments
+%%BeginProlog
+
+/tgifdict 91 dict def
+tgifdict begin
+
+/tgifellipsedict 6 dict def
+tgifellipsedict /mtrx matrix put
+
+/TGEL % tgifellipse
+ { tgifellipsedict begin
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 0 360 arc
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarrowtipdict 8 dict def
+tgifarrowtipdict /mtrx matrix put
+
+/TGAT % tgifarrowtip
+ { tgifarrowtipdict begin
+      /dy exch def
+      /dx exch def
+      /h exch def
+      /w exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      dy dx atan rotate
+      0 0 moveto
+      w neg h lineto
+      w neg h neg lineto
+      savematrix setmatrix
+   end
+ } def
+
+/tgifarcdict 8 dict def
+tgifarcdict /mtrx matrix put
+
+/TGAN % tgifarcn
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arc
+      savematrix setmatrix
+   end
+ } def
+
+/TGAR % tgifarc
+ { tgifarcdict begin
+      /endangle exch def
+      /startangle exch def
+      /yrad exch def
+      /xrad exch def
+      /y exch def
+      /x exch def
+      /savematrix mtrx currentmatrix def
+      x y translate
+      xrad yrad scale
+      0 0 1 startangle endangle arcn
+      savematrix setmatrix
+   end
+ } def
+
+/tgifpatdict 10 dict def
+
+/tgifpatbyte
+ { currentdict /retstr get exch
+   pat i cellsz mod get put
+ } def
+
+/tgifpatproc
+ { 0 1 widthlim {tgifpatbyte} for retstr
+   /i i 1 add def
+ } def
+
+/TGPF % tgifpatfill
+ { tgifpatdict begin
+      /h exch def
+      /w exch def
+      /lty exch def
+      /ltx exch def
+      /cellsz exch def
+      /pat exch def
+
+      /widthlim w cellsz div cvi 1 sub def
+      /retstr widthlim 1 add string def
+      /i 0 def
+
+      tgiforigctm setmatrix
+      ltx lty translate
+      w h true [1 0 0 1 0 0] {tgifpatproc} imagemask
+      ltx neg lty neg translate
+   end
+ } def
+
+/pat3 <8000000008000000> def
+/pat4 <8800000022000000> def
+/pat5 <8800220088002200> def
+/pat6 <8822882288228822> def
+/pat7 <aa55aa55aa55aa55> def
+/pat8 <77dd77dd77dd77dd> def
+/pat9 <77ffddff77ffddff> def
+/pat10 <77ffffff77ffffff> def
+/pat11 <7fffffff7fffffff> def
+/pat12 <8040200002040800> def
+/pat13 <40a00000040a0000> def
+/pat14 <ff888888ff888888> def
+/pat15 <ff808080ff080808> def
+/pat16 <f87422478f172271> def
+/pat17 <038448300c020101> def
+/pat18 <081c22c180010204> def
+/pat19 <8080413e080814e3> def
+/pat20 <8040201008040201> def
+/pat21 <8844221188442211> def
+/pat22 <77bbddee77bbddee> def
+/pat23 <c1e070381c0e0783> def
+/pat24 <7fbfdfeff7fbfdfe> def
+/pat25 <3e1f8fc7e3f1f87c> def
+/pat26 <0102040810204080> def
+/pat27 <1122448811224488> def
+/pat28 <eeddbb77eeddbb77> def
+/pat29 <83070e1c3870e0c1> def
+/pat30 <fefdfbf7efdfbf7f> def
+/pat31 <7cf8f1e3c78f1f3e> def
+
+/TGMAX
+ { exch dup 3 1 roll exch dup 3 1 roll gt { pop } { exch pop } ifelse
+ } def
+/TGMIN
+ { exch dup 3 1 roll exch dup 3 1 roll lt { pop } { exch pop } ifelse
+ } def
+/TGSW { stringwidth pop } def
+
+/bd { bind def } bind def
+
+/GS { gsave } bd
+/GR { grestore } bd
+/NP { newpath } bd
+/CP { closepath } bd
+/CHP { charpath } bd
+/CT { curveto } bd
+/L { lineto } bd
+/RL { rlineto } bd
+/M { moveto } bd
+/RM { rmoveto } bd
+/S { stroke } bd
+/F { fill } bd
+/TR { translate } bd
+/RO { rotate } bd
+/SC { scale } bd
+/MU { mul } bd
+/DI { div } bd
+/DU { dup } bd
+/NE { neg } bd
+/AD { add } bd
+/SU { sub } bd
+/PO { pop } bd
+/EX { exch } bd
+/CO { concat } bd
+/CL { clip } bd
+/EC { eoclip } bd
+/EF { eofill } bd
+/IM { image } bd
+/IMM { imagemask } bd
+/ARY { array } bd
+/SG { setgray } bd
+/RG { setrgbcolor } bd
+/SD { setdash } bd
+/W { setlinewidth } bd
+/SM { setmiterlimit } bd
+/SLC { setlinecap } bd
+/SLJ { setlinejoin } bd
+/SH { show } bd
+/FF { findfont } bd
+/MS { makefont setfont } bd
+/AR { arcto 4 {pop} repeat } bd
+/CURP { currentpoint } bd
+/FLAT { flattenpath strokepath clip newpath } bd
+/TGSM { tgiforigctm setmatrix } def
+/TGRM { savematrix setmatrix } def
+
+end
+
+%%EndProlog
+%%Page: 1 1
+
+%%PageBoundingBox: 35 514 479 780
+tgifdict begin
+/tgifsavedpage save def
+
+1 SM
+1 W
+
+0 SG
+
+72 0 MU 72 11.602 MU TR
+72 128 DI 100.000 MU 100 DI DU NE SC
+
+GS
+
+/tgiforigctm matrix currentmatrix def
+
+% RCBOX
+0 SG
+GS
+   NP
+      835 270 M 835 300 L 755 300 L 755 270 L
+   CP 1 SG F
+   0 SG
+   NP
+      835 270 M 835 300 L 755 300 L 755 270 L
+   CP EC NP
+   pat4 8 752 264 88 40 TGPF
+GR
+GS
+   GS
+      NP
+         835 270 M 835 300 L 755 300 L 755 270 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% RCBOX
+0 SG
+GS
+   NP
+      705 270 M 705 300 L 625 300 L 625 270 L
+   CP 1 SG F
+   0 SG
+   NP
+      705 270 M 705 300 L 625 300 L 625 270 L
+   CP EC NP
+   pat4 8 616 264 96 40 TGPF
+GR
+GS
+   GS
+      NP
+         705 270 M 705 300 L 625 300 L 625 270 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% RCBOX
+0 SG
+GS
+   GS
+      NP
+         770 180 M 770 210 L 690 210 L 690 180 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      705 200 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (GROUP) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      640 290 M
+      GS
+            0 SG
+            /Courier-Bold FF [14 0 0 -14 0 0] MS
+            (MENU) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      770 290 M
+      GS
+            0 SG
+            /Courier-Bold FF [14 0 0 -14 0 0] MS
+            (WINDOW) SH
+      GR
+   GR
+
+% ARC
+0 SG
+GS
+   GS
+      NP
+         729 360 29 25 0 -180 TGAR
+      3 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      715 355 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (XOR) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      730 335 M
+      -125 0 atan DU cos 14.000 MU 730 exch SU
+      exch sin 14.000 MU 210 exch SU L
+   TGSM
+   4 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      730 210 14.000 6.000 0 -125 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      730 210 14.000 6.000 0 -125 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      665 270 M
+      -60 25 atan DU cos 14.000 MU 690 exch SU
+      exch sin 14.000 MU 210 exch SU L
+   TGSM
+   4 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      690 210 14.000 6.000 25 -60 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      690 210 14.000 6.000 25 -60 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      795 270 M
+      -60 -25 atan DU cos 14.000 MU 770 exch SU
+      exch sin 14.000 MU 210 exch SU L
+   TGSM
+   4 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      770 210 14.000 6.000 -25 -60 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      770 210 14.000 6.000 -25 -60 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   [4 4] 0 SD
+   NP
+      705 345 M
+      -45 -40 atan DU cos 14.000 MU 665 exch SU
+      exch sin 14.000 MU 300 exch SU L
+   TGSM
+   4 W
+   S
+   [] 0 SD
+   1 W
+GR
+GS
+   TGSM
+   NP
+      665 300 14.000 6.000 -40 -45 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      665 300 14.000 6.000 -40 -45 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   [4 4] 0 SD
+   NP
+      755 345 M
+      -45 40 atan DU cos 14.000 MU 795 exch SU
+      exch sin 14.000 MU 300 exch SU L
+   TGSM
+   4 W
+   S
+   [] 0 SD
+   1 W
+GR
+GS
+   TGSM
+   NP
+      795 300 14.000 6.000 40 -45 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      795 300 14.000 6.000 40 -45 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   [4 4] 0 SD
+   NP
+      680 270 M
+      -60 25 atan DU cos 14.000 MU 705 exch SU
+      exch sin 14.000 MU 210 exch SU L
+   TGSM
+   4 W
+   S
+   [] 0 SD
+   1 W
+GR
+GS
+   TGSM
+   NP
+      705 210 14.000 6.000 25 -60 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      705 210 14.000 6.000 25 -60 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   [4 4] 0 SD
+   NP
+      780 270 M
+      -60 -25 atan DU cos 14.000 MU 755 exch SU
+      exch sin 14.000 MU 210 exch SU L
+   TGSM
+   4 W
+   S
+   [] 0 SD
+   1 W
+GR
+GS
+   TGSM
+   NP
+      755 210 14.000 6.000 -25 -60 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      755 210 14.000 6.000 -25 -60 TGAT
+   CP F
+GR
+
+% RCBOX
+0 SG
+GS
+   GS
+      NP
+         480 210 M 480 240 L 400 240 L 400 210 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      415 230 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (GROUP) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      400 320 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (GROUP_REF) SH
+      GR
+   GR
+
+% ARC
+0 SG
+GS
+   GS
+      NP
+         439 300 29 25 0 -180 TGAR
+      3 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      425 295 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (XOR) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      430 275 M
+      -35 0 atan DU cos 14.000 MU 430 exch SU
+      exch sin 14.000 MU 240 exch SU L
+   TGSM
+   4 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      430 240 14.000 6.000 0 -35 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      430 240 14.000 6.000 0 -35 TGAT
+   CP F
+GR
+
+% RCBOX
+0 SG
+GS
+   GS
+      NP
+         485 300 M 485 330 L 395 330 L 395 300 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   [4 4] 0 SD
+   NP
+      450 275 M
+      -35 0 atan DU cos 14.000 MU 450 exch SU
+      exch sin 14.000 MU 240 exch SU L
+   TGSM
+   4 W
+   S
+   [] 0 SD
+   1 W
+GR
+GS
+   TGSM
+   NP
+      450 240 14.000 6.000 0 -35 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      450 240 14.000 6.000 0 -35 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      365 355 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Self) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      405 350 M
+      428.33 353.33 440.00 346.67
+      -25 0 atan DU cos 10.000 MU 440 exch SU
+      exch sin 10.000 MU 330 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      440 330 10.000 4.000 0 -25 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      440 330 10.000 4.000 0 -25 TGAT
+   CP F
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 432 287 102 102 TGEL
+      2 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      370 405 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Noeud abstrait) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      550 280 M
+      590 280 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      550 300 M
+      590 300 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      580 270 M
+      600 290 L
+      580 310 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      690 380 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (GROUP_REF) SH
+      GR
+   GR
+
+% RCBOX
+0 SG
+GS
+   GS
+      NP
+         775 360 M 775 390 L 685 390 L 685 360 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 727 300 122 145 TGEL
+      2 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      655 415 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Self) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      695 410 M
+      718.33 413.33 730.00 406.67
+      -25 0 atan DU cos 10.000 MU 730 exch SU
+      exch sin 10.000 MU 390 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      730 390 10.000 4.000 0 -25 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      730 390 10.000 4.000 0 -25 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      615 460 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Noeud avec representation) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   [4 4] 0 SD
+   NP
+      120 500 M
+      0 40 atan DU cos 14.000 MU 160 exch SU
+      exch sin 14.000 MU 500 exch SU L
+   TGSM
+   4 W
+   S
+   [] 0 SD
+   1 W
+GR
+GS
+   TGSM
+   NP
+      160 500 14.000 6.000 40 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      160 500 14.000 6.000 40 0 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      170 500 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Lien d'heritage dynamique) SH
+      GR
+      0 15 RM
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (\(type dynamique du parent\)) SH
+      GR
+   GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      120 550 M
+      0 40 atan DU cos 14.000 MU 160 exch SU
+      exch sin 14.000 MU 550 exch SU L
+   TGSM
+   4 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      160 550 14.000 6.000 40 0 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      160 550 14.000 6.000 40 0 TGAT
+   CP F
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      170 550 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Lien d'heritage statique) SH
+      GR
+      0 15 RM
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (\(type statique du parent\)) SH
+      GR
+   GR
+
+% RCBOX
+0 SG
+GS
+   NP
+      520 485 M 520 515 L 440 515 L 440 485 L
+   CP 1 SG F
+   0 SG
+   NP
+      520 485 M 520 515 L 440 515 L 440 485 L
+   CP EC NP
+   pat4 8 432 480 96 40 TGPF
+GR
+GS
+   GS
+      NP
+         520 485 M 520 515 L 440 515 L 440 485 L
+      CP
+      2 W
+      S
+   GR
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      455 505 M
+      GS
+            0 SG
+            /Courier-Bold FF [14 0 0 -14 0 0] MS
+            (MENU) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      530 490 M
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Ajout dynamique d'un ) SH
+      GR
+      0 15 RM
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (objet dans l'arbre, ) SH
+      GR
+      0 15 RM
+      GS
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (un MENU XOR WINDOW XOR ...) SH
+      GR
+   GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 65 220 M 95 220 L 95 230 L 65 230 L CP
+      2 W
+      S
+   GR
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 65 245 M 95 245 L 95 255 L 65 255 L CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      80 245 M
+      80 230 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 150 135 M 180 135 L 180 145 L 150 145 L CP
+      2 W
+      S
+   GR
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 150 160 M 180 160 L 180 170 L 150 170 L CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      165 160 M
+      165 145 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 150 220 M 180 220 L 180 230 L 150 230 L CP
+      2 W
+      S
+   GR
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 150 245 M 180 245 L 180 255 L 150 255 L CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      165 245 M
+      165 230 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 225 220 M 255 220 L 255 230 L 225 230 L CP
+      2 W
+      S
+   GR
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 225 245 M 255 245 L 255 255 L 225 255 L CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      240 245 M
+      240 230 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      165 140 M
+      145.00 123.33 130.83 126.67 122.50 150.00 CT
+      114.17 173.33 109.17 202.50 107.50 237.50 CT
+      105.83 272.50 96.67 278.33
+      -35 -25 atan DU cos 10.000 MU 80 exch SU
+      exch sin 10.000 MU 255 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      80 255 10.000 4.000 -25 -35 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      80 255 10.000 4.000 -25 -35 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      165 140 M
+      175.00 130.00 181.67 125.00 185.00 125.00 CT
+      188.33 125.00 192.50 126.67 197.50 130.00 CT
+      202.50 133.33 202.50 158.33 197.50 205.00 CT
+      192.50 251.67 186.67 276.67 180.00 280.00 CT
+      173.33 283.33 168.33 275.00
+      -30 -5 atan DU cos 10.000 MU 165 exch SU
+      exch sin 10.000 MU 255 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      165 255 10.000 4.000 -5 -30 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      165 255 10.000 4.000 -5 -30 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      165 140 M
+      175.00 113.33 187.50 104.17 202.50 112.50 CT
+      217.50 120.83 233.33 142.50 250.00 177.50 CT
+      266.67 212.50 272.50 237.50 267.50 252.50 CT
+      262.50 267.50 256.67 274.17 250.00 272.50 CT
+      243.33 270.83 240.00 265.00
+      -15 0 atan DU cos 10.000 MU 240 exch SU
+      exch sin 10.000 MU 255 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      240 255 10.000 4.000 0 -15 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      240 255 10.000 4.000 0 -15 TGAT
+   CP F
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 150 330 M 180 330 L 180 340 L 150 340 L CP
+      2 W
+      S
+   GR
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 150 355 M 180 355 L 180 365 L 150 365 L CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      165 355 M
+      165 340 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 225 330 M 255 330 L 255 340 L 225 340 L CP
+      2 W
+      S
+   GR
+GR
+
+% BOX
+0 SG
+GS
+   10 SM
+   GS
+      NP 225 355 M 255 355 L 255 365 L 225 365 L CP
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      240 355 M
+      240 340 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      240 225 M
+      226.67 208.33 219.17 202.50 217.50 207.50 CT
+      215.83 212.50 213.33 218.33 210.00 225.00 CT
+      206.67 231.67 203.33 257.50 200.00 302.50 CT
+      196.67 347.50 191.67 374.17 185.00 382.50 CT
+      178.33 390.83 171.67 385.00
+      -30 -10 atan DU cos 10.000 MU 165 exch SU
+      exch sin 10.000 MU 365 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      165 365 10.000 4.000 -10 -30 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      165 365 10.000 4.000 -10 -30 TGAT
+   CP F
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      240 225 M
+      226.67 218.33 219.17 224.17 217.50 242.50 CT
+      215.83 260.83 213.33 289.17 210.00 327.50 CT
+      206.67 365.83 209.17 387.50 217.50 392.50 CT
+      225.83 397.50 233.33 388.33
+      -35 10 atan DU cos 10.000 MU 240 exch SU
+      exch sin 10.000 MU 365 exch SU CT
+   TGSM
+   2 W
+   S
+   1 W
+GR
+GS
+   TGSM
+   NP
+      240 365 10.000 4.000 10 -35 TGAT
+   1 SG CP F
+   0 SG
+   NP
+      240 365 10.000 4.000 10 -35 TGAT
+   CP F
+GR
+
+% OVAL
+0 SG
+GS
+   GS
+      NP 245 347 30 32 TGEL
+      2 W
+      S
+   GR
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      230 320 M
+      365 210 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% POLY/OPEN-SPLINE
+0 SG
+GS
+   NP
+      245 380 M
+      440 390 L
+   TGSM
+   2 W
+   S
+   1 W
+GR
+
+% TEXT
+NP
+0 SG
+   GS
+      1 W
+      185 410 M
+      GS
+        GS
+        0
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Arbre abstrait) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (Arbre abstrait) SH
+      GR
+      0 15 RM
+      GS
+        GS
+        0
+            /Courier FF [14 0 0 -14 0 0] MS
+            (de depart) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (de depart) SH
+      GR
+   GR
+
+% TEXT
+NP
+0 SG
+GS
+   305 323 TR
+   [0.960 -0.280 0.280 0.960 -5 -4] CO
+   305 NE 323 NE TR
+GR
+   GS
+      1 W
+      305 323 TR
+      [0.960 -0.280 0.280 0.960 -5 -4] CO
+      0 12 M
+      GS
+        GS
+        0
+            /Courier FF [14 0 0 -14 0 0] MS
+            (ZOOM) TGSW 
+        AD
+        GR
+      2 DI NE 0 RM
+            0 SG
+            /Courier FF [14 0 0 -14 0 0] MS
+            (ZOOM) SH
+      GR
+   GR
+
+GR
+tgifsavedpage restore
+end
+showpage
+
+%%Trailer
+%MatchingCreationDate: Wed Feb  6 17:08:46 2008
+%%DocumentFonts: Courier-Bold
+%%+ Courier
+%%EOF
+
+%%EndDocument
+ @endspecial 199 x Ff(Figur)o(e)g(1.)25 b Fj(Arbr)m(e)20
+b(\340)g(h\351rita)o(g)o(e)g(dynamique)463 3476 y Ff(5.)41
+b(Syst\350me)20 b(d'inf\351r)o(ence)463 3676 y(5.1.)40
+b Fd(Evaluation)20 b(s\351mantique)463 3875 y Ff(5.2.)40
+b Fd(Evaluation)20 b(spatial)463 4074 y Ff(6.)41 b(Impl\351mentation)20
+b(du)h(mod\350le)463 4273 y(6.1.)40 b Fd(Introduction)20
+b(au)h(langage)e(Lisaac)463 4473 y Ff(6.2.)40 b Fd(Repr\351sentation)20
+b(par)h(h\351ritage)f(dynamique)f(de)h(l'arbre)463 4672
+y Ff(7.)41 b(R\351sultat)463 4871 y(8.)g(T)-6 b(ra)n(v)o(aux)19
+b(futurs)463 5070 y(9.)41 b(Conclusion)p eop end
 %%Page: 5 5
 TeXDict begin 5 4 bop 581 673 2892 4 v 581 1257 4 585
 v 995 850 a Fk(ANNEXE)26 b(POUR)e(LE)i(SER)-5 b(VICE)25
