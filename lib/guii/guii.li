@@ -132,7 +132,7 @@ Section Public
 
   - widget_placement <-
   (
-    +width_max:INTEGER;
+    /*+width_max:INTEGER;
     +widget_min_width:INTEGER;	//widget with minimum width
     +widget_max_width:INTEGER;	//widget with maximum width
     +widgets_height:INTEGER;	//sum of the maximum widget height per row
@@ -216,7 +216,7 @@ Section Public
       };
       widgets_height:=get_height rows;
       width_max:=width_max-widget_min_width;
- //   };
+ //   };*/
   );
 
   - evaluation node:INODE <-
