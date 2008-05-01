@@ -78,7 +78,7 @@ Section Public
   
 
   - set_depth base:INODE from j:INTEGER <-
-    (
+  (
 	+dpth:INTEGER;
 	
 	dpth:=j+1;
