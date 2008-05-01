@@ -1,0 +1,87 @@
+Package: article-hermes.cls
+Version: 1.2 du 3 mars 2005
+
+Ce répertoire contient le package article-hermes.cls pour préparer
+des articles de revue ou pour des actes de conférences publiés
+par les éditions Hermes.
+
+1. Contenu
+
+ALIRE                           : ce fichier
+
+article-hermes.cls              : le fichier de style latex
+
+biblio-hermes.bst               : le fichier de style bibtex pour les articles
+
+doc-article-hermes.ltx          : un texte d'explications et d'exemples
+                                  d'utilisation du style article-hermes.cls.
+                                  (ce texte utilise des accents iso-latin1).
+
+doc-article-hermes-ori.ps        : la version postscript du texte doc-article-hermes.ltx
+                                  obtenue avec article-hermes.cls qui sert de référence.
+doc-article-hermes-ori.pdf       : le même texte que précédemment en pdf
+
+exemple-biblio.bib              : la mini base bibtex pour l'exemple donné en annexe.
+
+Makefile                       : un exemple de makefile qui produit automatiquement
+                                 doc-article-hermes.ps à partir des sources
+                                 doc-article-hermes.ltx et exemple-biblio.bib
+                                 ainsi que les fichiers de style article-hermes.cls
+                                 et  biblio-hermes.bst.
+
+2. Test du paquetage
+
+2.1 lancement automatique
+
+  Si vous êtes dans un environnement Unix ou Linux,
+  il vous suffit de lancer make, en adaptant événtuellement le nom
+  de la variable TEXMF comme il convient sur votre ordinateur.
+
+  Si vous êtes sous Windows avec une distribution MikTeX
+  ( ftp://ftp.jussieu.fr/pub/TeX/CTAN/systems/win32/miktex/ ou
+    ftp://ftp.loria.fr/pub/ctan/systems/win32/miktex/ ...
+  ) vous pouvez vous passer de ce makefile et utiliser
+    texify qui fait le travail automatiquement.
+
+  Vous pouvez aussi installer sur Windows quelques outils de base Unix
+  comme un shell bash, make, awk, etc... qui peuvent être très utiles
+  notamment pour produire un index d'ouvrage aux normes Hermes.
+  Ces outls Unix sont gratuits et disponibles dans le logiciel
+  cygwin :  ftp://ftp.jussieu.fr/pub/cygwin/ (par exemple).
+
+2.2 lancemenet manuel
+
+Lancer latex sur doc-article-hermes.ltx,
+Lancer bibtex sur doc-article-hermes
+Relancer latex jusqu'à ce qu'il n'y ait plus  de références non résolues
+   (deux fois sont nécessaires).
+Lancer dvips -ta4 (A4) ou -tletter (USLetter):
+   dvips -ta4 doc-article-hermes.dvi > test.ps
+Imprimer le fichier du postscript obtenu : il doit donner le même résultat
+   que le fichier doc-article-hermes-ori.ps
+
+Remarques:
+ - si votre moteur TeX n'accepte pas des caractères iso-latin1,
+vous pouvez traduire les accents avec les anciennes conventions Latex,
+par exemple \'{e} pour é, etc.
+ - Sur certaines installations, il peut être nécessaire de placer dans
+le préambule de doc-article-hermes.ltx, \usepackage[T1]{fontenc}
+
+3. Installation
+
+Si le test précédent est concluant, placer les fichiers article-hermes.cls
+et biblio-hermes.bst dans les répertoires adhoc pour les styles de latex2e et
+bibtex. Sinon, vous pouvez les placer dans le répertoire qui contient
+votre article.
+
+4. Utilisation
+
+Lire le document doc-article-hermes.ps pour le mode d'emploi et les
+consignes aux auteurs. Le fichier doc-article-hermes.ltx sert
+aussi d'exemple d'utilisation des différentes commandes.
+
+Bonne chance
+
+Roger Rousseau, I3S/UNSA, rr@unice.fr
+
+<>

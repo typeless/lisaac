@@ -1,0 +1,156 @@
+% Documentation du style Latex pour les articles de revues ou de conférences Hermes
+% Les consignes aux auteurs sont en annexe de ce document.
+
+\documentclass[fleqn]{article-hermes}
+
+%%% Commandes spécifiques à l'article
+%\newcommand{\cfsect}[1]{(\textit{cf.} section~\ref{#1})}
+%\newcommand{\cfsectpage}[1]{(\textit{cf.} section~\ref{#1}, page~\pageref{#1})}
+%\providecommand{\figureref}[1]{\figname~\ref{#1}}
+%\providecommand{\cftab}[1]{(\textit{cf.} tableau~\ref{#1})}
+%\newcommand{\cmd}[1]{{\upshape\texttt{\symbol{"5C}#1}}}
+%%% Fin des commandes spécifiques à l'article
+
+
+\journal{\LOBJET. Volume 8 -- n°2/2005}{1}{15}
+
+\publisher{03 88 22 21 67 }{00 00 00 00 00}{sonntag@icps.u-strasbg.fr}
+
+\title[Interface Utilisateur Automatique]%
+      {Système expert d'Interface Utilisateur}
+
+\subtitle{Les prémisses de la construction d'interfaces utilisateurs automatique et adaptatif dynamiquement\\ à un périphérique}
+\author{Maxime Audrin, Jonathan Ponté, Sonntag Benoit}
+
+\address{%
+ICPS/LSIIT - UMR 7005 - ULP Strasbourg \\
+Pôle API \\
+Bd Sébastien Brant - BP 10413\\
+67412 Illkirch CEDEX FRANCE\\[3pt]
+maxaudrin@free.fr, jponte@free.fr, sonntag@icps.u-strasbg.fr}
+
+\resume{Le résumé }
+
+\abstract{The abstract }
+
+\motscles{IHM, Interface graphique, langage objet à prototype, Lisaac}
+
+\keywords{IHM, Graphics User Interface, prototype object language, Lisaac}
+
+
+\begin{document}
+
+%\maketitle % Exemple de 1ere page sans les valeurs de champs
+            % pour afficher les commandes à utiliser
+
+\maketitlepage
+
+\section{Introduction et problèmatique}
+Avec l'évolution des technologies, l'informatique a pris une place de
+plus en plus importante dans tous les domaines du quotidien :
+transports, télécommunications, appareils electroménagers, médecine, etc. 
+La miniaturisation des composants electroniques a permis l'intégration
+de systèmes informatiques puissants dans toutes sortes d'appareils. 
+La diversité des composants materiels permet egalement de
+pouvoir ajouter facilement de nouvelles fonctionnalités que ce soit
+par l'ajout de composant matériel ou composant logiciel. 
+Si cela permet de rendre de nombreux services dans la vie
+courante, la t\^{a}che des concepteurs est loin d'être simplifiée.
+
+\subsection{Adapation des IHMs aux périphériques}
+L'informatique embarqué propose une large gamme de
+matériel ayant des possibilités diverses et variés en terme de
+périphériques d'entrées / sorties.
+Les interfaces hommes-machines sont fortement lié à cette variabilité
+de ces périphériques (taille de l'écran, présence
+ou absence de clavier ou de souris, \ldots)
+Pour l'informatique de bureau, nous voyons l'émergeance
+d'application commune entre diffèrent système d'exploitation et
+diffèrent support matériel, mais ce mouvement échappe encore à
+l'informatique embarqué.
+Les plateformes Java intégré dans nos téléphones portables permettent
+une abstraction du matériel, mais l'interface utilisateur ne s'adapte
+pas au possibilité réel de nos périphériques d'entrée / sortie.
+Par exemple, les applications prévu pour les {\it{}pocket PC}, voulant
+offrir un sous ensemble des possibilité accessible par un ordinateur de
+bureau nécessite une reprogrammation complète de leurs IHMs (Exemple\,: 
+{\it{}Word pocket}, {\it{}Excel pocket}).
+
+\subsection{Modification des IHMs lors d'ajout de composant logiciel}
+Une application devient de plus en plus adaptable via l'insertion
+dynamique de {\it{}plugin}. Ces {\it{}plugin} sont des petits
+programmes ajoutant des fonctionnalité au sein d'une application.
+Ils sont l'équivalent des gestionnaires de périphérique ({\it{}driver})
+au niveau logiciel.
+L'insertion de ces programmes ont un impact sur l'IHM global d'une
+application par l'apparition de nouvelles fonctionnalités.
+Trop souvent, le choix des concepteurs est d'ajouter un {\it{}panel}
+représentant les fonctionnalité de ce {\it{}plugin}. 
+Ici, nous soulignons le manque d'intégrité et de la difficulté
+d'ajouter dynamiquement des fonctionnalités aux sein d'une
+application maîtresse.
+
+\subsection{L'objectifs}
+Dans cette article, nous dénonçons le caractère trop statique des IHMs
+actuelle et la nécessité, de la lourde t\^{a}che, de reprogrammer les
+interfaces utilisateurs pour les adapter à un nouveau matériel.
+
+Notre objectif est de libérer le concepteur d'une application de la
+représentation de son interface homme-machine.
+Ainsi, l'intérêt est que l'IHM d'une application puisse
+automatiquement s'adapté à la taille ou type d'écran, aux événements
+matériels ou au type de périphérique d'entrées (clavier, écran
+tactile, ...). 
+Aussi, l'ajout d'une fonctionnalité doit permette une réadaptation
+automatique et dynamique de IHM envu d'acceuillir de manière le plus
+agréable possible cette nouvelle fonctionnalité.
+
+Nos proposons un premier travail de modélisation de cette interface
+calculé automatiquement en nous concentrant sur l'inférence d'une IHMs
+simplifié dépendant de la taille de l'écran.
+
+Ici nous exposons le plan...
+
+
+\section{Etat de l'art}
+
+\section{Les axiomes de notre modéle pour le programmeur
+  d'application}
+
+\subsection{Un arbre de fonctionnalité}
+
+\subsection{Les ajouts sémantiques}
+- pourcentage
+- operator or and xor
+
+\subsection{Example}
+
+\section{Description de notre IHM final}
+
+\subsection{Axiome de construction}
+- Button, WIN, ...
+- GOUT, GIMG, 
+
+\subsection{Composition pour des éléments plus complexe}
+- Menu déroulant, menu vertical, ...
+
+\section{Système d'inférence}
+
+\subsection{Evaluation sémantique}
+
+\subsection{Evaluation spatial}
+
+\section{Implémentation du modèle}
+
+\subsection{Introduction au langage Lisaac}
+
+\subsection{Représentation par héritage dynamique de l'arbre}
+
+\section{Résultat}
+
+\section{Travaux futurs}
+
+\section{Conclusion}
+
+
+\end{document}
