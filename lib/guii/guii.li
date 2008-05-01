@@ -72,8 +72,8 @@ Section Public
 
     VIDEO.make (screen_width,screen_height);
 
-    INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (expr / G_PAGE.create);
-    INTERFACE.run;
+    DESK.make VIDEO with (expr / G_PAGE.create);
+//    INTERFACE.run;
   );
   
 
