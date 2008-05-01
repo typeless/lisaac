@@ -110,6 +110,7 @@ Section Public
 	i := list.lower;
 	{(i <= list.upper) && {tst.value (list.item i)}}.while_do {
 	  i := i + 1;
+
 	};
 	i > list.upper
     }

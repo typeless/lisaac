@@ -36,8 +36,8 @@ Section Public
 		);
 
 		menu_bar:=(
-			G_BUTTON.create (G_OUT.create "Fichier")  |
-			G_BUTTON.create (G_OUT.create "Edition") 
+			G_BUTTON.create (G_OUT.create "Fichier") connect file_menu |
+			G_BUTTON.create (G_OUT.create "Edition") connect edit_menu
 		).fix_height.fix_width;
 
 

@@ -30,7 +30,7 @@ Section Inherit
   
 Section Private
 
-  - internal_create a:INODE width w:INTEGER height h:INTEGER<-
+  - internal_create a:INODE screen_width w:INTEGER screen_height h:INTEGER<-
   (
     root:=a;
     screen_width:=w;
@@ -68,6 +68,8 @@ Section Public
        };
     };
 
+    widget_placement;
+
     VIDEO.make (screen_width,screen_height);
 
     INTERFACE.make VIDEO size (VIDEO.width,VIDEO.height) with (expr / G_PAGE.create);
@@ -89,41 +91,132 @@ Section Public
 	};
     );		
 
+  - get_height l:LINKED_LIST[LINKED_LIST[G_EXPR]] :INTEGER<-
+  (
+    +result:INTEGER;
+
+    l.foreach {
+      i:LINKED_LIST[G_EXPR];
+      +max_height:INTEGER;
+
+      i.foreach {
+        j:G_EXPR;
+
+        (max_height<j.height_min).if {
+          max_height:=j.height_min;
+        };
+      };
+      result:=result+max_height;
+      max_height:=0;
+    };
+    result
+  );
+
+  - get_row_width l:LINKED_LIST[G_EXPR] :INTEGER<-
+  (
+    +result:INTEGER;
+    l.foreach {
+      g:G_EXPR;
+      result:=result+g.width_min;
+    };
+    result
+  );
+
+  - move_widget row:LINKED_LIST[G_EXPR] to next_row:LINKED_LIST[G_EXPR] <-
+  (
+    +g:G_EXPR;
+     g:=row.last;
+     next_row.add_first g;
+     row.remove_last;
+  );
 
   - widget_placement <-
   (
     +width_max:INTEGER;
-    +widget_min:INTEGER;	//widget minimum width
-    +widget_max:INTEGER;
-    +widgets_height:INTEGER;
-    +raw:LINKED_LIST[LINKED_LIST[G_EXPR]];
-    +raw_width:INTEGER;
-    +j:INTEGER;
-    +i:INODE;
+    +widget_min_width:INTEGER;	//widget with minimum width
+    +widget_max_width:INTEGER;	//widget with maximum width
+    +widgets_height:INTEGER;	//sum of the maximum widget height per row
+    +rows:LINKED_LIST[LINKED_LIST[G_EXPR]];
+    +nb_rows:INTEGER;
 
-    list.foreach {
-       i:INODE;
+    rows:=LINKED_LIST[LINKED_LIST[G_EXPR]].create;
+    widget_min_width:=(root.item (root.lower)).content.width_min;
 
-       (widget_max<i.content.width_min).if {
-         widget_max:=i.content.width_min;
+    root.list.foreach {
+       node:INODE;
+       rows.add_first (LINKED_LIST[G_EXPR].create);
+       rows.first.add_last (node.content);
+       (widget_max_width<node.content.width_min).if {
+         widget_max_width:=node.content.width_min;
+       };
+       (widget_min_width>node.content.width_min).if {
+         widget_min_width:=node.content.width_min;
        };
     };
+    rows.add_last (LINKED_LIST[G_EXPR].create);
+    nb_rows:=2;
 
+    widgets_height:=get_height rows;
     width_max:=screen_width;
-    j:=list.lower;
 
-    ((widget_max<width_max) || {wigets_height<screen_height}).while {
-    ((j<=list.upper) && {raw_width<width_max}).while {
-      i:=list.item j;
-      raw_width:=raw_width+i.content.width_min;
-        (widget_min>i.content.width_min).if {
-          widget_min:=i.content.width_min;
+    {(widget_max_width<width_max) && {widgets_height<screen_height}}.while_do {
+        +row:LINKED_LIST[G_EXPR];
+        +next_row:LINKED_LIST[G_EXPR];
+        +row_width:INTEGER;
+        +i:INTEGER;
+
+        row:=rows.first;
+        next_row:=rows.item (rows.lower+1);
+
+        {i<=rows.count}.while_do {
+	  row_width:=get_row_width row;
+          {(row.count>1) && {row_width>width_max}}.while_do {
+            move_widget row to next_row;
+          };
+          i:=i+1;
+          row:=next_row;
+          (
         };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        "boucle 2\n".print;
+        rows.lower.print;"\n".print;
+        rows.upper.print;"\n".print;
+        nb_rows.print;"\n".print;
+        row:=rows.item nb_rows;
+        (nb_rows=rows.count).if {
+          rows.add_last (LINKED_LIST[G_EXPR].create);
+          nb_rows:=nb_rows+1;
+          next_row:=rows.item nb_rows;
+        }
+        {i<=nb_rows}.while_do {
+          (row
+          move_widget row to next_row;
+        };
+        row_width:=get_row_width row;
+
       };
-    };
-      raw.add_last raw_expr;
-      width_max:=width_max-widget_min
-    };
+      widgets_height:=get_height rows;
+      width_max:=width_max-widget_min_width;
+ //   };
   );
 
   - evaluation node:INODE <-
@@ -144,44 +237,44 @@ Section Public
       +parent:INTERNAL_INODE;
 
       (!i.list.is_empty).if {
-        tmp:=MENU_BAR.evaluate i width width height height;"\n\n".print;
+        tmp:=MENU_BAR.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=MENU_BAR;
           "=================================================>MENU_BAR\n".print;
         };
-        tmp:=MENU_V.evaluate i width width height height;"\n\n".print;
+        tmp:=MENU_V.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=MENU_V;
           "=================================================>MENU_V\n".print;
         };
-        tmp:=MENU_H.evaluate i width width height height;"\n\n".print;
+        tmp:=MENU_H.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=MENU_H;
           "=================================================>MENU_H\n".print;
         };
-        tmp:=DROP_DOWN_MENU.evaluate i width width height height;"\n\n".print;
+        tmp:=DROP_DOWN_MENU.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=DROP_DOWN_MENU;
           "=================================================>DROP_DOWN_MENU\n".print;
         };
       } else {
-        tmp:=CHECK.evaluate i width width height height;"\n\n".print;
+        tmp:=CHECK.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=CHECK;
           "=================================================>CHECK\n".print;
         };
-        tmp:=ACTION.evaluate i width width height height;"\n\n".print;
+        tmp:=ACTION.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=ACTION;
           "=================================================>ACTION\n".print;
         };
-        tmp:=PAGE.evaluate i width width height height;"\n\n".print;
+        tmp:=PAGE.evaluate i width screen_width height screen_height;"\n\n".print;
         (tmp>best_prc).if {
           best_prc:=tmp;
           parent:=PAGE;
@@ -193,7 +286,7 @@ Section Public
       } else {
         i.set_representation parent;
         "====================================================================================>".print;i.print;"\n".print;
-        i.evaluate i width screen_width height height;
+        i.evaluate i width screen_width height screen_height;
         i.make_representation;
         screen_width:=screen_width-i.content.width_min;
         screen_height:=screen_height-i.content.height_min;
