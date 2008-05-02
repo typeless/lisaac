@@ -35,6 +35,7 @@ Section Public
  
   - representation:STRING_CONSTANT := "MENU_H_OUT";
   + win_out:G_WIN_OUT;
+  +parent:INTERNAL_INODE;
 
   - print <-
   (
@@ -74,7 +75,7 @@ Section Public
         (width,height):=G_OR_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
       };
     };
-    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
+    (width,height):=G_WIN_OUT.predict_size (width.rounded,height.rounded);
   );
 
 
@@ -92,40 +93,11 @@ Section Public
       +nb:INTEGER;
       list.foreach {
         i:INODE;
-        +tmp:REAL_32;
-        +best_prc:REAL_32;
 
         (!i.list.is_empty).if {
-          tmp:=MENU_V_OUT.evaluate i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation MENU_V_OUT;
+          (RAW_H.evaluate i width bugw_screen height bugh_screen > 0).if {
+            nb:=nb+1;
           };
-          tmp:=MENU_H_OUT.evaluate i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation MENU_H_OUT;
-          };
-          tmp:=WINDOW.evaluate i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation WINDOW;
-          };
-        } else {
-          tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation CHECK;
-          };
-          tmp:=ACTION.evaluate i width bugw_screen height bugh_screen;
-          (tmp > best_prc).if {
-            best_prc:=tmp;
-            i.set_representation ACTION;
-          };
-        };
-
-        (best_prc > 0).if {
-          nb:=nb+1;
         };
       };
       nb=list.count
@@ -137,13 +109,13 @@ Section Public
       + r,result:REAL_32;
       // Space evaluation
       compute_size_from_prc 0;
-      (height > h).if {
+      ((height > h) || {width > w}).if {
 	"Priority 0 failed\n".print;
 	compute_size_from_prc 25;
-	(height > h).if {
+	((height > h) || {width > w}).if {
 	   "Priority 25 failed\n".print;
 	   compute_size_from_prc 50;
-	   (height > h).if {
+	   ((height > h) || {width > w}).if {
 		"Priority 50 failed\n".print;
 		r:=0;
 		set_height 0;
@@ -160,8 +132,12 @@ Section Public
 	covering:=0;
 	r:=list.count;
      };
+//     "r: ".print;r.print;
      result:=(r/list.count)*100;
+//    "result := ".print;result.print;"%\n".print;
+//    "area : ".print;(get_area_prc (w,h)).print;
      result:=result-(get_area_prc (w,h));
+//     "result: ".print;result.print;
      result
   )
   [ ? {Result.in_range 0 to 100}; ];

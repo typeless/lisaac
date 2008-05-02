@@ -56,24 +56,11 @@ Section Public
   
   - run_interface <-
   (
-    +expr:G_EXPR;
-
-    root.list.foreach {
-       i:INODE;
-       i.print;
-       (expr=NULL).if {
-         expr:=i.content;
-       } else {
-         expr:=expr / i.content;
-       };
-    };
-
-    widget_placement;
+    make_placement;
 
     VIDEO.make (screen_width,screen_height);
 
-    DESK.make VIDEO with (expr / G_PAGE.create);
-//    INTERFACE.run;
+    DESK.make VIDEO with placement;
   );
   
 
@@ -112,7 +99,23 @@ Section Public
     result
   );
 
-  - get_row_width l:LINKED_LIST[G_EXPR] :INTEGER<-
+  - get_width l:LINKED_LIST[LINKED_LIST[G_EXPR]] :INTEGER<-
+  (
+    +result:INTEGER;
+
+    l.foreach {
+      i:LINKED_LIST[G_EXPR];
+      +tmp:INTEGER;
+
+      tmp:=get_width_row i;
+      (tmp > result).if {
+        result:=tmp;
+      };
+    };
+    result
+  );
+
+  - get_width_row l:LINKED_LIST[G_EXPR] :INTEGER<-
   (
     +result:INTEGER;
     l.foreach {
@@ -130,21 +133,22 @@ Section Public
      row.remove_last;
   );
 
-  - widget_placement <-
+  - widget_placement :INTEGER <-
   (
-    /*+width_max:INTEGER;
+    +width_max:INTEGER;
     +widget_min_width:INTEGER;	//widget with minimum width
     +widget_max_width:INTEGER;	//widget with maximum width
     +widgets_height:INTEGER;	//sum of the maximum widget height per row
     +rows:LINKED_LIST[LINKED_LIST[G_EXPR]];
-    +nb_rows:INTEGER;
+    +width_opt:INTEGER;
+    +area:INTEGER;
 
     rows:=LINKED_LIST[LINKED_LIST[G_EXPR]].create;
-    widget_min_width:=(root.item (root.lower)).content.width_min;
+    widget_min_width:=root.list.first.content.width_min;
+    rows.add_first (LINKED_LIST[G_EXPR].create);
 
     root.list.foreach {
        node:INODE;
-       rows.add_first (LINKED_LIST[G_EXPR].create);
        rows.first.add_last (node.content);
        (widget_max_width<node.content.width_min).if {
          widget_max_width:=node.content.width_min;
@@ -154,7 +158,6 @@ Section Public
        };
     };
     rows.add_last (LINKED_LIST[G_EXPR].create);
-    nb_rows:=2;
 
     widgets_height:=get_height rows;
     width_max:=screen_width;
@@ -163,60 +166,99 @@ Section Public
         +row:LINKED_LIST[G_EXPR];
         +next_row:LINKED_LIST[G_EXPR];
         +row_width:INTEGER;
-        +i:INTEGER;
 
-        row:=rows.first;
-        next_row:=rows.item (rows.lower+1);
+        rows.lower.to (rows.upper-1) do {
+          i:INTEGER;
 
-        {i<=rows.count}.while_do {
-	  row_width:=get_row_width row;
-          {(row.count>1) && {row_width>width_max}}.while_do {
+          row:=rows.item i;
+          next_row:=rows.item (i+1);
+          row_width:=get_width_row row;
+          {(row_width>width_max) && {row.count>1}}.while_do {
             move_widget row to next_row;
           };
-          i:=i+1;
-          row:=next_row;
-          (
+          (((get_width_row next_row)>width_max) && {i=rows.count-1}).if {
+            rows.add_last (LINKED_LIST[G_EXPR].create);
+          };
         };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        "boucle 2\n".print;
-        rows.lower.print;"\n".print;
-        rows.upper.print;"\n".print;
-        nb_rows.print;"\n".print;
-        row:=rows.item nb_rows;
-        (nb_rows=rows.count).if {
-          rows.add_last (LINKED_LIST[G_EXPR].create);
-          nb_rows:=nb_rows+1;
-          next_row:=rows.item nb_rows;
-        }
-        {i<=nb_rows}.while_do {
-          (row
-          move_widget row to next_row;
+        (area=0).if {
+          width_opt:=get_width rows;
+          area:=width_opt*(get_height rows);
+        } else {
+          +tmp:INTEGER;
+          +tmp_width:INTEGER;
+          tmp_width:=get_width rows;
+          tmp:=tmp_width*(get_height rows);
+          (tmp<area).if {
+            area:=tmp;
+            width_opt:=tmp_width;
+          };
         };
-        row_width:=get_row_width row;
 
+        width_max:=width_max-widget_min_width;
+        widgets_height:=get_height rows;
       };
-      widgets_height:=get_height rows;
-      width_max:=width_max-widget_min_width;
- //   };*/
+
+      width_opt
+  );
+
+  - make_placement <-
+  (
+    +l:LINKED_LIST[LINKED_LIST[G_EXPR]];
+    l:=widget_placement_from (widget_placement);
+
+    l.foreach {
+      i:LINKED_LIST[G_EXPR];
+      +row:G_EXPR;
+
+      i.foreach {
+        g:G_EXPR;
+        (row=NULL).if {
+          row:=g;
+        } else {
+          row:=row | g;
+        };
+      };
+
+      (placement=NULL).if {
+        placement:=row;
+      } else {
+        placement:=placement / row;
+      };
+    };
+  );
+
+  - widget_placement_from width_opt:INTEGER : LINKED_LIST[LINKED_LIST[G_EXPR]]<-
+  (
+    +cur_width:INTEGER;
+    +rows_opt:LINKED_LIST[LINKED_LIST[G_EXPR]];
+    
+    rows_opt:=LINKED_LIST[LINKED_LIST[G_EXPR]].create;
+    rows_opt.add_first (LINKED_LIST[G_EXPR].create);
+    root.list.foreach {
+       node:INODE;
+       cur_width:=cur_width+(node.content).width_min;
+       (cur_width<width_opt).if {
+         rows_opt.last.add_last (node.content);
+       } else {
+	 rows_opt.add_last (LINKED_LIST[G_EXPR].create);
+         rows_opt.last.add_last (node.content);
+	 cur_width:=(node.content).width_min;
+       };
+    };
+    rows_opt
+   );
+
+  - affiche_list l:LINKED_LIST[LINKED_LIST[G_EXPR]] <-
+  (
+    l.foreach {
+      i:LINKED_LIST[G_EXPR];
+      i.foreach {
+        j:G_EXPR;
+        " | ".print;
+      };
+      "\n".print;
+    };
   );
 
   - evaluation node:INODE <-
@@ -283,9 +325,10 @@ Section Public
       };
       (best_prc=0).if {
         "No patterns match for ".print;i.name.print;"\n".print;
+        OBJECT.die_with_code 1;
       } else {
         i.set_representation parent;
-        "====================================================================================>".print;i.print;"\n".print;
+        i.name.print;"====================================================================================>".print;i.print;"\n".print;
         i.evaluate i width screen_width height screen_height;
         i.make_representation;
         screen_width:=screen_width-i.content.width_min;

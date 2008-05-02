@@ -39,12 +39,22 @@ Section Public
     //+ menu_g_expr, tools_g_expr:G_EXPR;
 
     base := INODE.create_or "Bidon" priority 100 + (
-              INODE.create_or "Drop down menu" priority 100 +
+              INODE.create_or "Drop down menu 1" priority 100 +
                 INODE.create_xor "Choix 1" priority 100 +
                 INODE.create_xor "Choix 2" priority 100 +
                 INODE.create_xor "Choix 3" priority 100 +
                 INODE.create_xor "Choix 4" priority 100 +
-                INODE.create_xor "Choix 5" priority 100);
+                INODE.create_xor "Choix 5" priority 100
+            )+(
+              INODE.create_or "Drop down menu 2" priority 100 +
+                INODE.create_xor "foo 1" priority 100 +
+                INODE.create_xor "foo 2" priority 100 +
+                INODE.create_xor "foo 3" priority 100 +
+                INODE.create_xor "foo 4" priority 100 +
+                INODE.create_xor "foo 5" priority 100
+            )/*+(
+              INODE.create_xor "Page" priority 100
+            )*/;
     
     //
     // Evaluation.

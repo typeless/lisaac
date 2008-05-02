@@ -35,15 +35,23 @@ Section Public
   //
   // Data.
   //
-  
   + name:STRING_CONSTANT;
   + operator:CHARACTER;
   + priority:INTEGER_8;
   + list:LINKED_LIST[INODE];
-  + min_height:INTEGER;
-  + min_width:INTEGER;
+  + content:G_EXPR;
+  //+ win_out:G_WIN_OUT;
+  + covering:INTEGER;		//take items whose are over this pourcentage
+  + height:REAL_32;
+  + width:REAL_32;
+  + min_height:REAL_32;
+  + min_width:REAL_32;
   + depth:INTEGER;
   + action:BLOCK;
+
+  //bug compilo 0.13
+  + bugw_screen:REAL_32;
+  + bugh_screen:REAL_32;
   
   
   //

@@ -36,40 +36,56 @@ Section Public
   ( + base,menu,tools,page:INODE;
     + guii:GUII;
 
-      menu:=INODE.create_xor "Menu" priority 100 + (
-        INODE.create_xor "File" priority 100 +
-	  INODE.create_xor "New" priority 100 +
-	  INODE.create_xor "Open" priority 100 +
-	  INODE.create_xor "Save" priority 100 +
-	  INODE.create_xor "Save as" priority 100 +
-	  INODE.create_xor "Import" priority 25 +
-	  INODE.create_xor "Export" priority 25 +
-	  INODE.create_xor "Print" priority 25 +
-	  INODE.create_xor "Exit" priority 25
+	menu := INODE.create_xor "Menu" priority 100 + (
+	INODE.create_xor "File" priority 100 + (
+	  INODE.create_xor "Clear file" priority 100 + 
+	    INODE.create_xor "New" priority 100
+	) + (
+	  INODE.create_xor "Intern file" priority 100 + 
+	    INODE.create_xor "Open" priority 100 +
+	    INODE.create_xor "Save" priority 100 +
+	    INODE.create_xor "Save as" priority 100
+	) + (
+	  INODE.create_xor "Extern file" priority 100 +
+	    INODE.create_xor "Import" priority 100 +
+	    INODE.create_xor "Export" priority 100
+	) + (
+	  INODE.create_xor "Output file" priority 100 +
+	    INODE.create_xor "Print" priority 100 
+	) + (
+	  INODE.create_xor "Exit manager" priority 100 +
+	    INODE.create_xor "Exit" priority 100 
+	)
       ) + (
-        INODE.create_xor "Edit" priority 100 +
-          INODE.create_xor "History" priority 100 +
-          INODE.create_xor "Undo" priority 100 +
-          INODE.create_xor "Redo" priority 100 +
-	  INODE.create_xor "Delete" priority 100 +
-	  INODE.create_xor "Duplicate" priority 100 +
-	  INODE.create_xor "Select all" priority 100
+	INODE.create_xor "Edit" priority 100 + (
+	  INODE.create_xor "History" priority 100 +
+	    INODE.create_xor "Undo" priority 100 +
+	    INODE.create_xor "Redo" priority 100
+	) + (
+	  INODE.create_xor "Edit object" priority 100 +
+	    INODE.create_xor "Delete" priority 100 +
+	    INODE.create_xor "Duplicate" priority 100 +
+	    INODE.create_xor "Select all" priority 100
+	)
       );
 
-      tools := INODE.create_xor "Tools" priority 100 + 
-	INODE.create_xor "Select" priority 100 + (
-	  INODE.create_xor "Zoom" priority 100 +
-	  INODE.create_xor "Zoom in" priority 100 +
-	  INODE.create_xor "Zoom out" priority 100 +
-	  INODE.create_xor "Zoom select" priority 100 +
-	  INODE.create_xor "Zoom page" priority 100 +
-	  INODE.create_xor "Zoom 1:1" priority 100
-	) + 
-	INODE.create_xor "line" priority 100 +
-	INODE.create_xor "Rectangle" priority 100 +
-	INODE.create_xor "Circle" priority 100 +
-	INODE.create_xor "Text" priority 100 +
-	INODE.create_xor "Color" priority 100;
+	tools := INODE.create_xor "Tools" priority 50 + (
+	    INODE.create_xor "Select" priority 50 + (
+	      INODE.create_xor "Raw" priority 100 + (
+	        INODE.create_xor "Zoom" priority 100 +
+	        INODE.create_xor "Zoom in" priority 100  +
+	        INODE.create_xor "Zoom out" priority 100  +
+	        INODE.create_xor "Zoom select" priority 100  +
+	        INODE.create_xor "Zoom page" priority 100  +
+	        INODE.create_xor "Zoom 1:1" priority 100)
+            ) +
+              INODE.create_xor "Circle" priority 100 +
+              INODE.create_xor "Color" priority 100 + 
+              INODE.create_xor "Jon" priority 100 +
+              INODE.create_xor "Rectangle" priority 100
+         );
+         
+            
 
     page:=INODE.create_xor "Page" priority 100;
 

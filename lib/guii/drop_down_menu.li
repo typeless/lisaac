@@ -33,11 +33,11 @@ Section Inherit
 Section Public
 
   - representation:STRING_CONSTANT := "DROP_DOWN_MENU";
-  + win_out:G_WIN_OUT;
+//  + win_out:G_WIN_OUT;
 
-  + width:REAL_32;
-  + height:REAL_32;
-  + content:G_EXPR;
+//  + width:REAL_32;
+//  + height:REAL_32;
+//  + content:G_EXPR;
 
   - print <-
   (
@@ -103,13 +103,13 @@ Section Public
     + r,result:REAL_32;
 
     compute_size_from_prc 0;
-    (height > w).if {
+    ((height > h) || {width > w}).if {
       "Priority 0 failed\n".print;
       compute_size_from_prc 25;
-      (height > w).if {
+      ((height > h) || {width > w}).if {
         "Priority 25 failed\n".print;
         compute_size_from_prc 50;
-        (height > w).if {
+        ((height > h) || {width > w}).if {
           "Priority 50 failed\n".print;
           r:=0;
           width:=0;
