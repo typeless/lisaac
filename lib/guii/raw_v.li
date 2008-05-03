@@ -51,7 +51,7 @@ Section Public
         };
       };
     };
-    content:=G_RAW.create expr.fix_height.fix_width;
+    content:=G_RAW.create expr;
   );
 
 

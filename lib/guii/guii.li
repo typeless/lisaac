@@ -271,7 +271,6 @@ Section Public
      * et ainsi de suite.
      */
 
-
     node.list.foreach {
       i:INODE;
       +best_prc:REAL_32;
