@@ -33,19 +33,96 @@ Section Inherit
 Section Public
   
   - main <-
-  ( + base, menu,tools:INODE;
+  ( + base,menu,tools,page:INODE;
+    + action_new:BLOCK;
+    + action_open:BLOCK;
+    + action_zoom_in:BLOCK;
+    + action_zoom_out:BLOCK;
+    + action_zoom_page:BLOCK;
+    + action_zoom_select:BLOCK;
+    + action_zoom_100:BLOCK;
+    + action_select:BLOCK;
+    + action_line:BLOCK;
+    + action_rectangle:BLOCK;
+    + action_circle:BLOCK;
+    + action_color:BLOCK;
+    + action_text:BLOCK;
+    + action_zoom:BLOCK;
     + guii:GUII;
-    //+ menu_g_expr, tools_g_expr:G_EXPR;
 
-    base := 
-    INODE.create_or "Paint" priority 100 + (
-      menu := INODE.create_xor "Menu" priority 100 + (
+    action_select:= {
+      bt:G_BUTTON;
+      "Zoom\n".print;
+   };
+
+    action_zoom:= {
+      bt:G_BUTTON;
+      "Zoom\n".print;
+   };
+
+    action_text:= {
+      bt:G_BUTTON;
+      "Text\n".print;
+   };
+
+    action_line:= {
+      bt:G_BUTTON;
+      "Select\n".print;
+   };
+
+    action_rectangle:= {
+      bt:G_BUTTON;
+      "Select\n".print;
+   };
+
+    action_circle:= {
+      bt:G_BUTTON;
+      "Select\n".print;
+   };
+
+    action_rectangle:= {
+      bt:G_BUTTON;
+      "Open\n".print;
+    };
+
+    action_color:= {
+      bt:G_BUTTON;
+      "New\n".print;
+    };
+
+    action_zoom_in:= {
+      bt:G_BUTTON;
+      "Zoom in\n".print;
+    };
+
+    action_zoom_out:= {
+      bt:G_BUTTON;
+      "Zoom out\n".print;
+    };
+
+    action_zoom_select:= {
+      bt:G_BUTTON;
+      "Zoom select\n".print;
+    };
+
+    action_zoom_page:= {
+      bt:G_BUTTON;
+      "Zoom page\n".print;
+    };
+
+    action_zoom_100:= {
+      bt:G_BUTTON;
+      "Zoom 100\n".print;
+    };
+
+
+	menu := INODE.create_xor "Menu" priority 100 + (
 	INODE.create_xor "File" priority 100 + (
 	  INODE.create_xor "Clear file" priority 100 + 
-	  INODE.create_xor "New" priority 100
+	  INODE.create_xor "New" priority 100 action action_new
 	) + (
 	  INODE.create_xor "Intern file" priority 100 + 
-	  INODE.create_xor "Open" priority 100 +
+	  INODE.create_xor "Open" priority 100 action action_open +
 	  INODE.create_xor "Save" priority 100 +
 	  INODE.create_xor "Save as" priority 100
 	) + (
@@ -106,27 +183,36 @@ Section Public
 	  INODE.create_xor "Bugs report" priority 100 +
 	  INODE.create_xor "News" priority 100
 	)
-      )
-    ) + (
-      tools := INODE.create_xor "Tools" priority 50 + 
-	INODE.create_xor "Select" priority 50 + (
-	  INODE.create_xor "Zoom" priority 100 +
-	  INODE.create_xor "Zoom in" priority 100  +
-	  INODE.create_xor "Zoom out" priority 100  +
-	  INODE.create_xor "Zoom select" priority 100  +
-	  INODE.create_xor "Zoom page" priority 100  +
-	  INODE.create_xor "Zoom 1:1" priority 100
-	) +
-	INODE.create_xor "A" priority 50
-    ) + (
-      INODE.create_xor "Page" priority 100
-    );
+      );
+
+
+	tools := INODE.create_xor "Tools" priority 100 +
+	    INODE.create_xor "Select" priority 100 action action_select picture "select.bmp" + (
+            INODE.create_xor "Zoom" priority 50 picture "zoom.bmp" + (
+              INODE.create_xor "Raw" priority 100 +
+                INODE.create_xor "Zoom +" priority 100 action action_zoom_in picture "zoom_in.bmp" +
+                INODE.create_xor "Zoom -" priority 100 action action_zoom_out picture "zoom_out.bmp"+
+                INODE.create_xor "Zoom select" priority 50 action action_zoom_select picture "zoom_select.bmp"+
+                INODE.create_xor "Zoom page" priority 25 action action_zoom_page picture "zoom_page.bmp"+
+                INODE.create_xor "Zoom 1:1" priority 25 action action_zoom_100 picture "zoom_100.bmp"
+              )
+            ) +
+            INODE.create_xor "Line" priority 25 action action_line picture "line.bmp" +
+            INODE.create_xor "Rectangle" priority 25 action action_rectangle picture "rectangle.bmp" +
+            INODE.create_xor "Circle" priority 25 action action_circle picture "ellipse.bmp" +
+            INODE.create_xor "Text" priority 25 action action_text picture "text.bmp" +
+            INODE.create_xor "Color" priority 25 action action_color picture "paint.bmp";
+
+
+    page:=INODE.create_xor "Page" priority 100;
+
+    base := INODE.create_or "Paint" priority 100 + menu + tools + page;
     
     //
     // Evaluation.
     //
 
-    guii:=GUII.create base screen_width 800 screen_height 600;
+    guii:=GUII.create base screen_width 800 screen_height 400;
     guii.set_depth base from 0;
     guii.evaluation base;
     guii.run_interface;
