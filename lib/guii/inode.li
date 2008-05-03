@@ -38,9 +38,9 @@ Section Public
   + name:STRING_CONSTANT;
   + operator:CHARACTER;
   + priority:INTEGER_8;
+  + bitmap:ABSTRACT_STRING;
   + list:LINKED_LIST[INODE];
   + content:G_EXPR;
-  //+ win_out:G_WIN_OUT;
   + covering:INTEGER;		//take items whose are over this pourcentage
   + height:REAL_32;
   + width:REAL_32;
@@ -70,11 +70,6 @@ Section Public
   - create_and n:STRING_CONSTANT priority p:INTEGER_8 :SELF <-
   (
     internal_create n priority p operator '&'
-  );  
-  
-  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 width w:INTEGER height h:INTEGER :SELF <-
-  (
-    internal_create n priority p operator '^' width w height h
   );
   
   - create_or n:STRING_CONSTANT priority p:INTEGER_8 width w:INTEGER height h:INTEGER :SELF <-
@@ -111,6 +106,60 @@ Section Public
 
     result := clone;
     result.make n priority p operator '&' action b;
+    result
+  );
+
+  - create_and n:STRING_CONSTANT priority p:INTEGER_8 action b:BLOCK picture filename:ABSTRACT_STRING :SELF<-
+  (
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '&' action b picture filename;
+    result
+  );
+
+  - create_or n:STRING_CONSTANT priority p:INTEGER_8 action b:BLOCK picture filename:ABSTRACT_STRING :SELF<-
+  (
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '|' action b picture filename;
+    result
+  );
+
+  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 action b:BLOCK picture filename:ABSTRACT_STRING :SELF<-
+  (
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '^' action b picture filename;
+    result
+  );
+
+  - create_and n:STRING_CONSTANT priority p:INTEGER_8 picture filename:ABSTRACT_STRING :SELF<-
+  (
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '&' picture filename;
+    result
+  );
+
+  - create_or n:STRING_CONSTANT priority p:INTEGER_8 picture filename:ABSTRACT_STRING :SELF<-
+  (
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '|' picture filename;
+    result
+  );
+
+  - create_xor n:STRING_CONSTANT priority p:INTEGER_8 picture filename:ABSTRACT_STRING :SELF<-
+  (
+    +result:SELF;
+
+    result := clone;
+    result.make n priority p operator '^' picture filename;
     result
   );
 
@@ -205,6 +254,25 @@ Section Private
     name := n;
     priority := p;
     action := b;
+    list := LINKED_LIST[INODE].create;
+  );
+
+  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER action b:BLOCK picture filename:ABSTRACT_STRING <-
+  (
+    operator := op;
+    name := n;
+    priority := p;
+    action := b;
+    bitmap := filename;
+    list := LINKED_LIST[INODE].create;
+  );
+
+  - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER picture filename:ABSTRACT_STRING <-
+  (
+    operator := op;
+    name := n;
+    priority := p;
+    bitmap := filename;
     list := LINKED_LIST[INODE].create;
   );
 

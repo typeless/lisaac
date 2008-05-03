@@ -42,8 +42,11 @@ Section Public
   - make_representation <-
   [? {list.is_empty}; ]
   (
-    content:=(G_BUTTON.create (G_OUT.create name) action action).fix_height.fix_width;
-
+    (bitmap=NULL).if {
+      content:=(G_BUTTON.create (G_OUT.create name) action action).fix_height.fix_width;
+    } else {
+      content:=(G_BUTTON.create (G_IMG.create bitmap) action action).fix_height.fix_width;
+    };
   );
 
   - space_evaluation (w,h:REAL_32) :REAL_32<-
@@ -51,7 +54,11 @@ Section Public
   (
     + result:REAL_32;
 
-    (width,height):=(G_BUTTON.predict_size (G_OUT.predict_size name));
+    (bitmap=NULL).if {
+      (width,height):=(G_BUTTON.predict_size (G_OUT.predict_size name));
+    } else {
+      (width,height):=(G_BUTTON.predict_size (G_IMG.predict_size bitmap));
+    };
 
     result:=(get_area_prc (w,h));
     result

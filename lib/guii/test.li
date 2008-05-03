@@ -34,10 +34,12 @@ Section Public
 
   - main<-
   (
-    +expr:G_EXPR;
-    (expr=NULL).if {
-      TRUE.print;
+    +bitmap:ABSTRACT_STRING;
+
+    bitmap:="hello";
+    (bitmap=NULL).if {
+      "NULL\n".print;
     } else {
-      FALSE.print;
+      "Pas NULL\n".print;
     };
   );

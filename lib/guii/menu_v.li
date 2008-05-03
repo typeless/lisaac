@@ -65,7 +65,11 @@ Section Public
   (
     list.foreach {
       i:INODE;
-      (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
+//      (i.bitmap=NULL).if {
+        (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
+//      } else {
+//        (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_IMG.predict_size (i.bitmap)));
+ //     };
     };
   );
 

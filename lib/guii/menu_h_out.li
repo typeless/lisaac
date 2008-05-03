@@ -59,7 +59,11 @@ Section Public
       };
     };
     win_out:=(G_WIN_OUT.create expr).fix_height.fix_width;
-    content:=(G_BUTTON.create (G_OUT.create name) connect win_out).fix_height.fix_width;
+    (bitmap=NULL).if {
+      content:=(G_BUTTON.create (G_OUT.create name) connect win_out).fix_height.fix_width;
+    } else {
+      content:=(G_BUTTON.create (G_IMG.create bitmap) connect win_out).fix_height.fix_width;
+    };
   );
 
 //
