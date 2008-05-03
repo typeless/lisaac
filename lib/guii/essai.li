@@ -212,7 +212,7 @@ Section Public
     // Evaluation.
     //
 
-    guii:=GUII.create base screen_width 800 screen_height 400;
+    guii:=GUII.create base screen_width 800 screen_height 600;
     guii.set_depth base from 0;
     guii.evaluation base;
     guii.run_interface;
