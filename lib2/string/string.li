@@ -623,7 +623,7 @@ Section Public
   (
     +  j: INTEGER;
     j := 1;
-    1.to (count - 1) do { i:INTEGER;
+    lower.to upper do { i:INTEGER;
       (item i != ch).if {
 	put (item i) to j;
 	j := j + 1;
