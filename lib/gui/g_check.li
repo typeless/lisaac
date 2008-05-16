@@ -38,6 +38,8 @@ Section Public
   
   + stat:INTEGER_8;
   
+  - is_on:BOOLEAN <- (stat & 100b) != 0;
+  
   - set_stat s:INTEGER_8 <-
   (
     stat := s;

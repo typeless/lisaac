@@ -43,9 +43,9 @@ Section Public
   [? {list.is_empty}; ]
   (
     (bitmap=NULL).if {
-      content:=(G_BUTTON.create (G_OUT.create name) action action).fix_height.fix_width;
+      content:=(G_BUTTON.create (G_OUT.create name) action action); //.fix_height.fix_width;
     } else {
-      content:=(G_BUTTON.create (G_IMG.create bitmap) action action).fix_height.fix_width;
+      content:=(G_BUTTON.create (G_IMG.create bitmap) action action); //.fix_height.fix_width;
     };
   );
 

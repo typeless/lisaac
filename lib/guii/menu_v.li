@@ -55,6 +55,7 @@ Section Public
         };
       };
     };
+    content.fix_width.fix_height;
   );
 
 //

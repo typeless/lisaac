@@ -82,6 +82,14 @@ Section Public
   // Creation.
   //
   
+  - create_with bmp:ABSTRACT_BITMAP :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make bmp;
+    result
+  );    
+  
   - create filename:ABSTRACT_STRING :SELF <-
   ( + result:SELF;
     + entry:ENTRY;

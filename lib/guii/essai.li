@@ -52,7 +52,7 @@ Section Public
 
     action_select:= {
       bt:G_BUTTON;
-      "Zoom\n".print;
+      "Select\n".print;
    };
 
     action_zoom:= {
@@ -67,27 +67,22 @@ Section Public
 
     action_line:= {
       bt:G_BUTTON;
-      "Select\n".print;
+      "Line\n".print;
    };
 
     action_rectangle:= {
       bt:G_BUTTON;
-      "Select\n".print;
+      "Rectangle\n".print;
    };
 
     action_circle:= {
       bt:G_BUTTON;
-      "Select\n".print;
+      "Circle\n".print;
    };
-
-    action_rectangle:= {
-      bt:G_BUTTON;
-      "Open\n".print;
-    };
-
+    
     action_color:= {
       bt:G_BUTTON;
-      "New\n".print;
+      "Color\n".print;
     };
 
     action_zoom_in:= {
@@ -188,14 +183,14 @@ Section Public
 
 	tools := INODE.create_xor "Tools" priority 100 +
 	    INODE.create_xor "Select" priority 100 action action_select picture "select.bmp" + (
-            INODE.create_xor "Zoom" priority 50 picture "zoom.bmp" + (
+            INODE.create_xor "Zoom" priority 50 picture "zoom.bmp" /*+ (
               INODE.create_xor "Raw" priority 100 +
                 INODE.create_xor "Zoom +" priority 100 action action_zoom_in picture "zoom_in.bmp" +
                 INODE.create_xor "Zoom -" priority 100 action action_zoom_out picture "zoom_out.bmp"+
                 INODE.create_xor "Zoom select" priority 50 action action_zoom_select picture "zoom_select.bmp"+
                 INODE.create_xor "Zoom page" priority 25 action action_zoom_page picture "zoom_page.bmp"+
                 INODE.create_xor "Zoom 1:1" priority 25 action action_zoom_100 picture "zoom_100.bmp"
-              )
+              )*/
             ) +
             INODE.create_xor "Line" priority 25 action action_line picture "line.bmp" +
             INODE.create_xor "Rectangle" priority 25 action action_rectangle picture "rectangle.bmp" +
@@ -212,7 +207,9 @@ Section Public
     // Evaluation.
     //
 
-    guii:=GUII.create base screen_width 800 screen_height 600;
+ //   guii:=GUII.create base screen_width 800 screen_height 600;
+   guii:=GUII.create base screen_width 330 screen_height 200;
+  //     guii:=GUII.create base screen_width 520 screen_height 380;
     guii.set_depth base from 0;
     guii.evaluation base;
     guii.run_interface;

@@ -131,13 +131,13 @@ Section Public
       + r,result:REAL_32;
       // Space evaluation
       compute_size_from_prc 0;
-      (height > h).if {
+      ((height > h) && {width > w}).if {
 	"Priority 0 failed\n".print;
 	compute_size_from_prc 25;
-	(height > h).if {
+	((height > h) && {width > w}).if {
 	   "Priority 25 failed\n".print;
 	   compute_size_from_prc 50;
-	   (height > h).if {
+	   ((height > h) && {width > w}).if {
 		"Priority 50 failed\n".print;
 		r:=0;
 		set_height 0;
@@ -152,8 +152,10 @@ Section Public
 	r:=list.count;
      };
      result:=(r/list.count)*100;
+          
      "area := ".print;(get_area_prc (w,h)).print;"\n".print;
      result:=result-(get_area_prc (w,h));
+     w.print;','.print;h.print;
      result
   )
   [ ? {Result.in_range 0 to 100}; ];

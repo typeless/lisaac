@@ -155,10 +155,15 @@ Section Public
 	j
     );
 
-  - get_area_prc (w,h:REAL_32):REAL_32 <-
-  (
-	(width*height)/(w*h)*100
-  );
+    - get_area_prc (w,h:REAL_32):REAL_32 <-
+    [
+      ? {width <= w};
+      ? {height <= h};
+    ]
+    (
+      (width*height)/(w*h)*100
+    )
+    [ ? {Result.in_range 0 to 100}; ];
   
   //
   // Debug routine
