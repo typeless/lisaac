@@ -42,6 +42,17 @@ Section Public
   
   + copy_argument:BOOLEAN;
   
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
+  ( + result:TYPE_FULL;
+    + idx:INTEGER;
+    
+    idx := slot.get_index_argument_type p;
+    (idx != - 1).if {
+      result := argument_list.item idx.static_type;
+    };
+    result
+  );
+
   //
   // Creation.
   //
@@ -59,8 +70,7 @@ Section Public
     position      := p;    
     slot          := sl;
     argument_list := args;
-    self          := self_arg.static_type;
-    result_expr   := slot.get_expr_result;
+    result_expr   := get_expr_result;
   );
   
   //

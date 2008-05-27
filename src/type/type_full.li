@@ -93,9 +93,7 @@ Section Public
   - is_parameter_type:BOOLEAN <- FALSE;
   
   - raw:TYPE <- parent_type;
-  
-  - fix:TYPE_FULL <- Self;
-  
+   
   //
   // Set.
   //

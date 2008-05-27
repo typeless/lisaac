@@ -42,13 +42,13 @@ Section Inherit
   
 Section Private
 
-  - output_name_exe : STRING_CONSTANT;
+  - output_name_exe:STRING_CONSTANT;
   
-  - output_name_c : STRING_CONSTANT;
+  - output_name_c:STRING_CONSTANT;
   
-  - input_name  : STRING_CONSTANT;
+  - input_name:STRING_CONSTANT;
 
-  - target      : STRING_CONSTANT;
+  - target:STRING_CONSTANT;
 
   //
   // Command.
@@ -508,40 +508,41 @@ Section Private
     TYPE_CONTEXT.make_context;
     TYPE_ID.make_type_id; // Pas utile !    
     // Input.
-    type_input   := ITM_TYPE_SIMPLE.get input_name.to_run.raw;
+    type_input   := ITM_TYPE_SIMPLE.get input_name.to_run_for NULL.raw;
     // Other prototype.
     type_true    := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_true)      
-    style (ALIAS_STR.keyword_expanded).to_run.raw;
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_false   := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_false)     
-    style (ALIAS_STR.keyword_expanded).to_run.raw;
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_boolean := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_boolean)   
-    style (ALIAS_STR.keyword_expanded).to_run.raw;
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_integer := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_integer)   
-    style (ALIAS_STR.keyword_expanded).to_run.raw;
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_real    := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_real)   
-    style (ALIAS_STR.keyword_expanded).to_run.raw;
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_integer_32 := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_integer_32)   
-    style (ALIAS_STR.keyword_expanded).to_run.raw;
-    type_string_constant := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_string_constant).to_run.raw;
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
+    type_string_constant := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_string_constant)
+    .to_run_for NULL.raw;
     itm_type_character   := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_character) 
     style (ALIAS_STR.keyword_expanded);
-    type_character := itm_type_character.to_run.raw;
-    type_block     := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_block).to_run.raw;        
+    type_character := itm_type_character.to_run_for NULL.raw;
+    type_block     := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_block).to_run_for NULL.raw;        
     //
-    type_pointer   := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_pointer).to_run.raw;
+    type_pointer   := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_pointer).to_run_for NULL.raw;
     // NATIVE_ARRAY[CHARACTER]
     type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].new;
     type_gen.add_last itm_type_character;
     type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].alias type_gen;
     itm_type_n_a_character := ITM_TYPE_GENERIC.get (ALIAS_STR.prototype_native_array)
     style NULL with type_gen;
-    type_n_a_character := itm_type_n_a_character.to_run.raw;
+    type_n_a_character := itm_type_n_a_character.to_run_for NULL.raw;
     // NATIVE_ARRAY[NATIVE_ARRAY[CHARACTER]]
     type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].new;
     type_gen.add_last itm_type_n_a_character;
     type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].alias type_gen;
     type_n_a_n_a_character := ITM_TYPE_GENERIC.get (ALIAS_STR.prototype_native_array)
-    style NULL with type_gen.to_run.raw;
+    style NULL with type_gen.to_run_for NULL.raw;
     //    
     ? {type_input != NULL};
   );

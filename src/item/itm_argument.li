@@ -50,9 +50,20 @@ Section Public
     NULL
   );
 */  
-  - to_run arg_lst:FAST_ARRAY[ARGUMENT] <-
+  - to_run_in arg_lst:FAST_ARRAY[LOCAL] for p:PARAMETER_TO_TYPE <-
   (
     deferred;
+  );
+  
+  - get_index_type p:ITM_TYPE_PARAMETER :INTEGER <-
+  (
+    deferred;
+  );
+  
+  - check larg:FAST_ARRAY[EXPR] index idx:INTEGER for p:PARAMETER_TO_TYPE :INTEGER <-
+  (
+    deferred;
+    0
   );
   
   //

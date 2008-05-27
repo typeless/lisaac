@@ -31,7 +31,7 @@ Section Header
 Section Inherit
   
   + parent_itm_object:Expanded ITM_OBJECT;
-  
+    
 Section Public
         
   + result_expr:EXPR;
@@ -74,6 +74,9 @@ Section NODE_TYPE, DTA
   );  
 
   - update_branch l:LIST self type_self:TYPE_FULL :BOOLEAN <-
+  [
+    -? {type_self != NULL};
+  ]
   ( + node:NODE;
     + result:BOOLEAN;
      
@@ -122,13 +125,13 @@ Section Private
     (s = NULL).if {
       // Lookup parent.      
       s := typ.get_path_slot name;                  
-      r := s.get_expr_result;
-      node_style := NODE_STYLE.create ((expr.my_copy),s) with Self result r;
+      r := s.result_type.get_expr_for typ;
+      node_style := NODE_STYLE.create (expr.my_copy,s) with Self result r;
       lst.add_last node_style;
       lst.add_last (NODE_TYPE.create r with Self);      
     } else {
       // Direct call.
-      s.base_slot.is_equal_profil (slot.base_slot);
+      s.is_equal_profil slot;
       finalise typ with (expr,s) in lst;
     };
     lst.add_last (PROTOTYPE_CST.create (expr.position) type (TYPE_VOID.default)); // BSBS: Alias.

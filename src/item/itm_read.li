@@ -155,19 +155,12 @@ Section ITM_READ
 	receiver_type.append_name_in string_tmp; 
 	string_tmp.append "'.";
 	semantic_error (position,string_tmp);
-      };
-      // For problem with block profil ! (Not clean...)                  
-      (
-	(slot_msg.slot_data_intern != NULL) && 
-	{slot_msg.slot_data_intern.type.raw == type_block}
-      ).if {
-	slot_msg.slot_data.init; // BSBS: Ne doit plus etre necessaire, c est fait en amont.
-      };
+      };      
       // Verification
       (verify).if {
 	(
-	  ((larg  = NULL) && {slot_msg.base_slot.argument_list.count != 1}) || 
-	  {(larg != NULL) && {larg.count != slot_msg.base_slot.argument_list.count-1}}
+	  ((larg  = NULL) && {slot_msg.argument_list.count != 1}) || 
+	  {(larg != NULL) && {larg.count != slot_msg.argument_list.count-1}}
 	).if {
 	  POSITION.put_error semantic text "Incorrect number argument."; 
 	  slot_msg.position.put_position;
@@ -176,10 +169,10 @@ Section ITM_READ
 	};
 	last_position := slot_msg.position;	
 	( !
-	  slot_msg.id_section.access receiver_type with (ITM_TYPE_SELF.to_run.raw)
+	  slot_msg.id_section.access receiver_type with (profil_slot.type_self.raw)
 	).if {
 	  string_tmp.copy "Type ";
-	  ITM_TYPE_SELF.to_run.append_name_in string_tmp;
+	  profil_slot.type_self.append_name_in string_tmp;
 	  string_tmp.append " does not have access to this slot.";
 	  POSITION.put_error warning text string_tmp;
 	  slot_msg.position.put_position;
@@ -267,9 +260,9 @@ Section Private
     };
     (verify).if {
       (! is_block_value).if {	
-	(slot.base_slot.argument_list.item idx.count != count).if {
+	(slot.argument_list.item idx.count != count).if {
 	  POSITION.put_error semantic text "Incorrect vector size."; 
-	  slot.base_slot.argument_list.item idx.position.put_position;
+	  slot.argument_list.item idx.position.put_position;
 	  e.position.put_position;
 	  POSITION.send_error;
 	};

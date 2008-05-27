@@ -48,27 +48,25 @@ Section Public
     };
     result
   );
-  
-  - result_is_void:BOOLEAN <- type = ITM_TYPE_MONO.type_void;
-  
-Section SLOT, ITM_READ, ITM_WRITE_VALUE, PROFIL
-  
+      
   + argument_list:FAST_ARRAY[ITM_ARGUMENT];
 
-  + type:ITM_TYPE;
+  + result_type:ITM_TYPE;
   
-Section Public  
-  
-  - set_type t:ITM_TYPE <-
+  - set_result_type t:ITM_TYPE <-
   ( + tm:ITM_TYPE_MONO;
     
     (id_section.is_inherit_or_insert).if {
       tm ?= t;
-      ((tm = NULL) || {tm = ITM_TYPE_SELF} || {tm = ITM_TYPE_MONO.type_void}).if {
+      (
+        (tm = NULL) || 
+        {tm = ITM_TYPE_SIMPLE.type_self} || 
+        {tm = ITM_TYPE_SIMPLE.type_void}
+      ).if {
 	semantic_error (position,"Incorrect type for inheritance slot.");
       };
     };
-    type := t;
+    result_type := t;
   );
   
   - set_argument_list p:FAST_ARRAY[ITM_ARGUMENT] <-
@@ -87,7 +85,7 @@ Section Public
   - is_equal_profil other:ITM_SLOT <-
   (         
     (Self != other).if {
-      (type != other.type).if {
+      (result_type != other.result_type).if {
 	string_tmp.copy "Invariance type result invalid."; // (";
 	//type.to_run.append_name_in string_tmp;
 	//string_tmp.append " != ";
@@ -204,7 +202,38 @@ Section Public
     position    := p;    
     id_section  := sec;
   );
-      
+  
+  //
+  // Runnable.
+  //
+  
+  - get_index_argument_type p:ITM_TYPE_PARAMETER :INTEGER <-
+  ( + i,result,max:INTEGER;
+    + arg:ITM_ARGUMENT;
+    
+    i := argument_list.lower;    
+    {(i <= argument_list.upper) && {result = max}}.while_do {
+      arg    := argument_list.item i;
+      max    := max    + arg.count;
+      result := result + arg.get_index_type p;
+      i := i +1;
+    };
+    (result = max).if {
+      result := -1;
+    };
+    result
+  );
+  
+  - check_argument_type larg:FAST_ARRAY[EXPR] for p:PARAMETER_TO_TYPE <-  
+  ( + idx:INTEGER;
+    + a:ITM_ARGUMENT;
+    
+    (argument_list.lower).to (argument_list.upper) do { i:INTEGER;
+      a := argument_list.item i;
+      idx := a.check larg index idx for p;
+    };
+  );    
+  
   //
   // Display.
   //
@@ -218,7 +247,7 @@ Section Public
     }; 
     buffer.add_last ' ';
     buffer.add_last ':';
-    type.display buffer;    
+    result_type.display buffer;    
   );    
   
 

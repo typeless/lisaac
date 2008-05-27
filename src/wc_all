@@ -1,5 +1,5 @@
 cat ./*.li
-cat ./compiler/*.li
+cat ./compiler_any/*.li
 cat ./constant/*.li
 cat ./dispatcher/*.li
 cat ./external/*.li
@@ -10,3 +10,4 @@ cat ./item/*.li
 cat ./tools/*.li
 cat ./type/*.li
 cat ./variable/*.li
+cat ./code_life/*.li

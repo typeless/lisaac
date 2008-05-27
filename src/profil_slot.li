@@ -31,6 +31,8 @@ Section Inherit
   
   + parent_profil:Expanded PROFIL; 
   
+  - parent_parameter_to_type:Expanded PARAMETER_TO_TYPE;
+  
 Section Public
     
   - slot:SLOT <- slot_code;
@@ -53,15 +55,34 @@ Section Public
   // Creation.
   //
   
+  - arg_type_tmp:FAST_ARRAY[EXPR];
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
+  ( + idx:INTEGER;
+    + result:TYPE_FULL;
+    
+    (p.name = ALIAS_STR.prototype_self).if {
+      result := type_self;
+    } else {
+      idx := slot_code.get_index_argument_type p;
+      (idx != - 1).if {
+        result := arg_type_tmp.item idx.static_type;
+      };
+    };
+    result
+  );
+  
   - make s:SLOT_CODE 
   with (typ_self:TYPE_FULL,call_lst:FAST_ARRAY[EXPR]) 
   verify is_first:BOOLEAN :FAST_ARRAY[WRITE] <-
+  [ 
+    -? {typ_self != NULL};
+  ]
   ( + loc:LOCAL;
     + typ:TYPE_FULL;
-    + item_lst:FAST_ARRAY[ARGUMENT];       
-    + idx_result:INTEGER;
-    + types:FAST_ARRAY[TYPE_FULL];    
+    + item_lst:FAST_ARRAY[ITM_ARGUMENT];         
     + result:FAST_ARRAY[WRITE];
+    + tm:ITM_TYPE_MULTI;
+    + ts:ITM_TYPE_SIMPLE;
     
     PROFIL_LIST.add Self;
     
@@ -85,14 +106,13 @@ Section Public
     };
     //
     code := list_current;
+    arg_type_tmp := call_lst;
     //
     // Arguments.    
-    item_lst := s.arguments;    
-    argument_list := FAST_ARRAY[LOCAL].create_with_capacity (item_lst.count); 
+    item_lst := s.argument_list;    
+    argument_list := FAST_ARRAY[LOCAL].create_with_capacity (s.argument_count); 
     (item_lst.lower).to (item_lst.upper) do { j:INTEGER;
-      argument_list.add_last (
-	item_lst.item j.to_local
-      );
+      item_lst.item j.to_run_in argument_list for Self;
     };
     ((s.id_section.is_external) && {argument_list.count > 1}).if {
       (argument_list.lower+1).to (argument_list.upper) do { j:INTEGER;      
@@ -106,20 +126,23 @@ Section Public
     };    
     
     // Results
-    (s.result_type.raw != TYPE_VOID).if {
-      types := s.results_type;      
-      (types != NULL).if {  
-	result_list := FAST_ARRAY[LOCAL].create_with_capacity (types.count);		
-	idx_result := 1;
-	(types.lower).to (types.upper) do { k:INTEGER;	  
-	  typ := types.item k.fix;	
-	  loc := typ.get (s.position) result idx_result;
-	  result_list.add_last loc;
-	  idx_result := idx_result + 1;
-	};
+    tm ?= s.result_type;
+    (tm != NULL).if {    
+      result_list := FAST_ARRAY[LOCAL].create_with_capacity (tm.count-1);      
+      (tm.lower).to (tm.upper-1) do { k:INTEGER;	  
+        typ := tm.item k.to_run_for Self;	
+        loc := typ.get (s.position) result (k+1);
+        result_list.add_last loc;        
       };
-      result_last := s.result_type.fix.get (s.position) result idx_result;
-    };
+      typ := tm.last.to_run_for Self;	
+      result_last := typ.get (s.position) result (tm.count);      
+    } else {      
+      ts ?= s.result_type;      
+      (ts != ITM_TYPE_SIMPLE.type_void).if {
+        typ := ts.to_run_for Self;	
+        result_last := typ.get (s.position) result 1; 
+      };
+    };    
     //
     result := write_argument call_lst;
     //        

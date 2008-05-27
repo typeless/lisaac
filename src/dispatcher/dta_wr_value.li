@@ -57,7 +57,7 @@ Section Public
     position    := p;    
     slot        := sl;
     self_arg    := arg;
-    result_expr := v.my_copy; //slot.get_expr_result;
+    result_expr := v.my_copy; 
     value       := v;
   );
 

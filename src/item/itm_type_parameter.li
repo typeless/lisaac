@@ -42,11 +42,8 @@ Section Public
     parent_itm_type.get (ALIAS_STR.get string_tmp)
   );
   
-  - to_run:TYPE_FULL <- 
-  (
-    not_yet_implemented;
-    NULL
+  - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
+  ( 
+    p.parameter_to_type Self
   );
-        
-
   

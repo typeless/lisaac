@@ -360,7 +360,7 @@ Section Private
     s := first_slot;    
     {  
       ((s.id_section.is_public) && {s.name = ALIAS_STR.slot_main}).if {	
-	(! s.result_is_void).if {
+	(s.result_type != ITM_TYPE_SIMPLE.type_void).if {
 	  semantic_error ((s.position),"Unix mode: Not value return.");
 	};
 	(s.argument_count != 1).if {

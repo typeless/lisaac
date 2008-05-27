@@ -33,7 +33,9 @@ Section Inherit
   - parent_hashable:HASHABLE := HASHABLE;
   
   + parent_any:Expanded ANY;
-      
+  
+  - parent_parameter_to_type:Expanded PARAMETER_TO_TYPE;
+  
 Section TYPE
   
   // BSBS: Vu que les ITM_TYPE sont aliaser, il n'est pas necessary d'aliaser les TYPE !
@@ -50,6 +52,13 @@ Section Public
   + default:TYPE_FULL;
   
   + size:INTEGER;
+  
+  - position:POSITION <- prototype.position;
+  
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
+  ( 
+    NULL
+  );
   
   //
   //
@@ -123,6 +132,7 @@ Section Public
   ( + j:INTEGER;
     + result:ITM_SLOT;
     + typ:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
         
     j := slot_run.lower;
     {
@@ -130,7 +140,8 @@ Section Public
       {slot_run.item j.id_section.is_inherit_or_insert} &&
       {result = NULL}	
     }.while_do {
-      typ    := slot_run.item j.result_type.raw;
+      ts     ?= slot_run.item j.result_type;
+      typ    := ts.to_run_for Self.raw;
       result := typ.prototype.slot_list.fast_reference_at n;
       ((result = NULL) || {result.require = NULL}).if {
 	result := typ.search_require n;
@@ -146,6 +157,7 @@ Section Public
   ( + j:INTEGER;
     + result:ITM_SLOT;
     + typ:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
             
     j := slot_run.lower;
     {
@@ -153,7 +165,8 @@ Section Public
       {slot_run.item j.id_section.is_inherit_or_insert} &&
       {result = NULL}	
     }.while_do {
-      typ    := slot_run.item j.result_type.raw;
+      ts     ?= slot_run.item j.result_type;
+      typ    := ts.to_run_for Self.raw;
       result := typ.prototype.slot_list.fast_reference_at n;
       ((result = NULL) || {result.ensure = NULL}).if {
 	result := typ.search_ensure n;
@@ -171,6 +184,7 @@ Section Public
   
   - add_subtype t:TYPE <-  
   ( + j:INTEGER;
+    + it:ITM_TYPE_MONO;
     
     (! subtype_list.fast_has t).if {    
       subtype_list.fast_add t;
@@ -179,8 +193,9 @@ Section Public
 	(j <= slot_run.upper) && 
 	{slot_run.item j.id_section.is_inherit_or_insert}      
       }.while_do {
-	(slot_run.item j.id_section.is_inherit).if {
-	  slot_run.item j.result_type.raw.add_subtype t;
+        (slot_run.item j.id_section.is_inherit).if {
+          it ?= slot_run.item j.result_type;
+          it.to_run_for Self.raw.add_subtype t;
 	};
 	j := j + 1;
       };
@@ -191,6 +206,7 @@ Section Public
   // Static lookup algorithm.
   ( + result:SLOT;
     + j:INTEGER;
+    + it:ITM_TYPE_MONO;
         
     result := get_local_slot n;
     (result = NULL).if {
@@ -200,7 +216,8 @@ Section Public
 	{slot_run.item j.id_section.is_inherit_or_insert} &&
 	{result = NULL}	
       }.while_do {
-	result := slot_run.item j.result_type.get_slot n;
+        it ?= slot_run.item j.result_type;
+	result := it.to_run_for Self.get_slot n;
 	j := j + 1;
       };
     };
@@ -231,12 +248,14 @@ Section Public
   - get_path_slot n:STRING_CONSTANT :SLOT <-
   ( + result:SLOT;
     + j:INTEGER;
+    + it:ITM_TYPE_MONO;
     
     j := slot_run.lower;
     {result = NULL}.while_do {
       ? {j <= slot_run.upper}; 
       ? {slot_run.item j.id_section.is_inherit_or_insert};
-      result := slot_run.item j.result_type.get_slot n;
+      it ?= slot_run.item j.result_type;
+      result := it.to_run_for Self.get_slot n;
       j := j + 1;
     };
     ? {result != NULL};
@@ -267,7 +286,7 @@ Section Private
             
     (lst != NULL).if {
       j := lst.lower;
-      {(j <= lst.upper) && {lst.item j.to_run != t}}.while_do {
+      {(j <= lst.upper) && {lst.item j.to_run_for profil_slot != t}}.while_do {
 	j := j + 1;
       };	
       (j <= lst.upper).if {
@@ -637,6 +656,7 @@ Section Public
   ( + result:BOOLEAN;
     + idx:INTEGER;
     + type_parent:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
             
     (n = prototype.name).if {
       result := TRUE;
@@ -647,8 +667,9 @@ Section Public
 	{slot_run.item idx.id_section.is_inherit_or_insert}  &&
 	{! result}
       }.while_do {
-	(slot_run.item idx.id_section.is_inherit).if {
-	  type_parent := slot_run.item idx.result_type.raw;	
+        (slot_run.item idx.id_section.is_inherit).if {
+          ts ?= slot_run.item idx.result_type;
+	  type_parent := ts.to_run_for Self.raw;	
 	  result := type_parent.is_sub_type_with_name n;
 	};
 	idx := idx + 1;

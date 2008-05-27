@@ -75,6 +75,9 @@ Section NODE, DTA
   //
   
   - update_link self_type:TYPE_FULL :BOOLEAN <-
+  [
+    -? {self_type != NULL};
+  ]
   ( + typ:TYPE;
     + list:FAST_ARRAY[CASE];
     + case:CASE;
@@ -117,6 +120,9 @@ Section NODE, DTA
 Section Private  
   
   - call_for t:TYPE self type_self:TYPE_FULL :LIST <-
+  [
+    -? {type_self != NULL};
+  ]
   ( + result:LIST;
     + typ:TYPE_ID;
     + call:CALL_SLOT;
@@ -180,6 +186,7 @@ Section Private
 	new_larg := data.get_argument;
       };
       type := new_larg.first.static_type;            
+      ? {type != NULL};
       //      
       (debug_level_option != 0).if {	
         not_yet_implemented;

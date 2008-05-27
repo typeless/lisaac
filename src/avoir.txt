@@ -1,2 +1,5 @@
-type/prototype.li:    context_main := CONTEXT_SLOT.push position slot NULL;
-type/prototype.li:    CONTEXT.pop;
+variable/slot.li:	slot_id.init;
+variable/slot.li:      slot_id.init;
+variable/slot.li:	slot_id.init;
+dispatcher/node_style.li:      slot_dta.init;
+dispatcher/node_style.li:	  slot.slot_data_list.item j.init;

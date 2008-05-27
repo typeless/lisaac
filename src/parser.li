@@ -1007,9 +1007,9 @@ Section Private
 	  affect := last_string.first;
 	};
       } else {
-	t := ITM_TYPE_MONO.type_void;
+	t := ITM_TYPE_SIMPLE.type_void;
       }; 
-      last_slot.set_type t;
+      last_slot.set_result_type t;
       last_slot.set_affect affect;
       
       (affect != ' ').if {
@@ -1077,7 +1077,8 @@ Section Private
       (read_character '\'').if {
 	result := read_slot_operator list_arg;
       } else {
-	arg := ITM_ARG.create current_position name (ALIAS_STR.variable_self) type ITM_TYPE_SELF;
+	arg := ITM_ARG.create current_position 
+        name (ALIAS_STR.variable_self) type (ITM_TYPE_SIMPLE.type_self);
 	list_arg.add_last arg;      
 	result := read_slot_keyword list_arg;
       };
@@ -1232,7 +1233,7 @@ Section Private
                         
 	(
 	  (self_first) && 
-          {t != ITM_TYPE_SELF} && 
+          {t != ITM_TYPE_SIMPLE.type_self} && 
           {
             (object.name != ALIAS_STR.prototype_block) || 
             {tb ?= t; tb = NULL}
@@ -1360,7 +1361,7 @@ Section Private
       } else {
 	(
 	  (s) && {
-	    (type.first != ITM_TYPE_SELF) || {
+	    (type.first != ITM_TYPE_SIMPLE.type_self) || {
 	      (object.name = ALIAS_STR.prototype_block) && 
 	      {tb ?= type.first; tb = NULL}
 	    }
@@ -1563,7 +1564,7 @@ Section Private
 	    string_tmp.append style;
 	    string_tmp.append "' ignored.";
 	    warning_error (current_position,string_tmp);
-	    result := ITM_TYPE_SELF;
+	    result := ITM_TYPE_SIMPLE.type_self;
 	  } else {
 	    result := ITM_TYPE_STYLE.get name style style;
 	  };
@@ -1571,7 +1572,10 @@ Section Private
 	(is_shorter).if {
 	  sav_derive := short_derive;
 	  short_derive := old_derive;
-	  ((result = ITM_TYPE_SELF) || {result = ITM_TYPE_MONO.type_null}).if {
+	  (
+            (result = ITM_TYPE_SIMPLE.type_self) || 
+            {result = ITM_TYPE_SIMPLE.type_null}
+          ).if {
 	    short (ALIAS_STR.short_keyprototype) token 
 	    (old_pos - name.count) to old_pos;
 	  } else {
@@ -1954,7 +1958,7 @@ Section Private
 	result.add_last e;
       };
     } else {
-      void_ := ITM_PROTOTYPE.create current_position type (ITM_TYPE_MONO.type_void);
+      void_ := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
       result.add_last void_;
     };    
     ALIAS_ARRAY[ITM_CODE].copy result
@@ -2022,7 +2026,7 @@ Section Private
       (! read_character ']').if {
 	warning_error (current_position,"Added ']'.");
       };
-      e := ITM_PROTOTYPE.create current_position type (ITM_TYPE_MONO.type_void);
+      e := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
       lst.add_last e;
       //
       result.set_code (ALIAS_ARRAY[ITM_CODE].copy lst);

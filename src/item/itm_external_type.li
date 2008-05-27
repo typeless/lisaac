@@ -89,12 +89,12 @@ Section Public
 
     lst_acc := get_access;
     e := EXTERNAL_C.create position text last_code 
-    access lst_acc persistant is_persistant type (type.to_run);
+    access lst_acc persistant is_persistant type (type.to_run_for profil_slot);
     
     (type_list != NULL).if {
       lt := TYPES_TMP.new;
       (type_list.lower).to (type_list.upper) do { j:INTEGER;
-	typ := type_list.item j.to_run.raw;	
+	typ := type_list.item j.to_run_for profil_slot.raw;	
 	lt.add typ;
       };
       e.set_living_type (lt.to_types);

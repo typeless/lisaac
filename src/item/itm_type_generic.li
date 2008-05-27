@@ -80,18 +80,18 @@ Section Public
     result
   );
   
-  - to_run:TYPE_FULL <-
+  - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + lst:FAST_ARRAY[TYPE_FULL];
     + t:TYPE_FULL;
         
     lst := ALIAS_ARRAY[TYPE_FULL].new;
     (list_type.lower).to (list_type.upper) do { j:INTEGER;
-      t := list_type.item j.to_run;      
+      t := list_type.item j.to_run_for p;      
       ? {t != NULL};
       lst.add_last t;
     };
     lst := ALIAS_ARRAY[TYPE_FULL].alias lst;
-    TYPE_GENERIC.get Self with lst 
+    TYPE_GENERIC.get Self with lst     
   );
   
   - display buffer:STRING <-

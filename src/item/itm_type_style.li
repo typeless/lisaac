@@ -50,9 +50,7 @@ Section Private
     style := s;
   );
   
-Section Public
-    
-  - hash_code:INTEGER <- name.hash_code;
+Section Public  
   
   + style:STRING_CONSTANT;
   
@@ -77,16 +75,5 @@ Section Public
     };
     result
   );
-
-  + to_run:TYPE_FULL <-
-  (
-    to_run := TYPE.get Self 
-  );
-
-  - display buffer:STRING <-
-  (
-    buffer.append style;
-    buffer.add_last ' ';
-    buffer.append name;
-  );
+  
 

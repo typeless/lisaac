@@ -71,16 +71,36 @@ Section Public
   );
   */
   
-  - to_run arg_lst:FAST_ARRAY[ARGUMENT] <-
+  - to_run_in arg_lst:FAST_ARRAY[LOCAL] for p:PARAMETER_TO_TYPE <-
   ( + t:TYPE_FULL;
     
     (name.lower).to (name.upper) do { j:INTEGER;
-      t := type.item j.to_run;      
+      t := type.item j.to_run_for p;      
       arg_lst.add_last (
-	ARGUMENT.create position name (name.item j) type t
+	LOCAL.create position name (name.item j) style ' ' type t
       );
     };
   );
+  
+  - get_index_type p:ITM_TYPE_PARAMETER :INTEGER <-
+  ( + i:INTEGER;
+    
+    i := name.lower;
+    {(i <= name.upper) && {type.item i != p}}.while_do {
+      i := i + 1;
+    };
+    i
+  );
+
+  - check larg:FAST_ARRAY[EXPR] index idx:INTEGER for p:PARAMETER_TO_TYPE :INTEGER <-
+  ( + new_expr:EXPR;
+    
+    (type.lower).to (type.upper) do { i:INTEGER;
+      new_expr := larg.item (idx+i).check_type (type.item i.to_run_for p) with position;
+      larg.put new_expr to (idx+i);
+    };
+    idx + type.count
+  );    
   
   //
   // Display.

@@ -36,8 +36,6 @@ Section Public
   
   - common_slot:SLOT <- parent_slot;
 
-  - position:POSITION <- base_slot.position;
-  
   + index:INTEGER;
   
   //
@@ -53,6 +51,9 @@ Section Public
   + profil:FAST_ARRAY[PROFIL_SLOT];
     
   - get_profil args:FAST_ARRAY[EXPR] self type_self:TYPE_FULL :(PROFIL, FAST_ARRAY[WRITE]) <-
+  [
+    -? {type_self != NULL};
+  ]
   ( + result:PROFIL_SLOT;    
     + res_lst:FAST_ARRAY[WRITE];
     + pro:PROFIL_SLOT;
@@ -200,13 +201,13 @@ Section Public
     
     // Require
     is_require := TRUE;
-    contract := base_slot.require;
+    contract := require;
     last_type_contract := receiver_type;
     (contract = NULL).if {
       slot := receiver_type.search_require name;
       (slot != NULL).if {
 	(verify).if {
-	  base_slot.is_equal_profil slot;
+	  is_equal_profil slot;
 	};
 	contract := slot.require;
 	last_type_contract := receiver_type.last_type_contract;
@@ -221,13 +222,13 @@ Section Public
     
     // Ensure
     is_require := FALSE;
-    contract := base_slot.ensure;
+    contract := ensure;
     last_type_contract := receiver_type;
     (contract = NULL).if {
       slot := receiver_type.search_ensure name;
       (slot != NULL).if {
 	(verify).if {
-	  base_slot.is_equal_profil slot;
+	  is_equal_profil slot;
 	};
 	contract := slot.ensure;
 	last_type_contract := receiver_type.last_type_contract;

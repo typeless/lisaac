@@ -55,6 +55,8 @@ Section Public
   
   - count:INTEGER <- list_type.count;
   
+  - lower:INTEGER <- list_type.lower;
+  
   - upper:INTEGER <- list_type.upper;
   
   - item i:INTEGER :ITM_TYPE_MONO <-
@@ -88,6 +90,26 @@ Section Public
     };
     result
   );
+  
+  //
+  // Runnable.
+  //
+  
+  - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
+  ( + lst:FAST_ARRAY[EXPR];
+    + t:TYPE_FULL;
+    
+    lst := FAST_ARRAY[EXPR].create_with_capacity count;
+    lower.to upper do { i:INTEGER;
+      t := item i.to_run_for p;
+      lst.add_last (t.get_temporary_expr (p.position));
+    };
+    EXPR_MULTIPLE.create lst
+  );
+  
+  //
+  // Display.
+  //  
   
   - display buffer:STRING <-
   (    

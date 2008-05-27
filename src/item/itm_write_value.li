@@ -102,16 +102,16 @@ Section Private
       lst.add_last (affect_local loc with (val.item n));
       result := n + 1;
     } else {
-      slot := ITM_TYPE_SELF.to_run.get_slot idf;
+      slot := profil_slot.type_self.get_slot idf;
       (slot = NULL).if {
 	string_tmp.copy "Slot `";
 	string_tmp.append idf;
 	string_tmp.append "' not found in static type ";
-	ITM_TYPE_SELF.to_run.append_name_in string_tmp;
+	profil_slot.type_self.append_name_in string_tmp;
 	string_tmp.add_last '.';
 	semantic_error (position,string_tmp);
       };
-      typ_multi ?= slot.base_slot.type;
+      typ_multi ?= slot.result_type;
       (typ_multi != NULL).if {
 	result := n + typ_multi.count;
 	(result > val.count).if {

@@ -31,7 +31,7 @@ Section Header
 Section Inherit
   
   + parent_type:Expanded TYPE;
-
+    
 Section Private  
   
   // BSBS: Vu que les ITM_TYPE sont aliaser, il n'est pas necessary d'aliaser les TYPE !
@@ -48,16 +48,19 @@ Section Public
   
   + generic_list:FAST_ARRAY[TYPE_FULL];  
   
-  - generic_to_type char:CHARACTER :TYPE_FULL <-
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + idx:INTEGER;
-    + tab:FAST_ARRAY[CHARACTER];
+    + tab:FAST_ARRAY[ITM_TYPE_PARAMETER];
+    + result:TYPE_FULL;
     
     tab := prototype.idf_generic_list;
-    idx := tab.fast_first_index_of char;
-    ? {idx <= tab.upper};
-    generic_list.item idx
+    idx := tab.fast_first_index_of p;
+    (idx <= tab.upper).if {
+      result := generic_list.item idx;
+    };
+    result
   );
-      
+
   //
   // Import / Export
   //
@@ -232,7 +235,6 @@ Section Public
 
   - make (itm_typ:ITM_TYPE_SIMPLE,n:STRING_CONSTANT) with gen:FAST_ARRAY[TYPE_FULL] <-
   ( + mask_bit:UINTEGER_8;    
-    + old_data:DTA_RD;
     
     index        := index_count;
     index_count  := index_count + 1;
@@ -264,22 +266,18 @@ Section Public
     // BSBS: Size ???
     
     // Import / Export.
-    old_data := data_current;
-    data_current := data_tmp;
-    data_current.set_generic Self;
     (prototype.export_list != NULL).if {
       export_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.export_list.count);
       (prototype.export_list.lower).to (prototype.export_list.upper) do { j:INTEGER;
-        export_list.add_last (prototype.export_list.item j.to_run);
+        export_list.add_last (prototype.export_list.item j.to_run_for Self);
       };
     };
     (prototype.import_list != NULL).if {
       import_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.import_list.count);
       (prototype.import_list.lower).to (prototype.import_list.upper) do { j:INTEGER;
-        import_list.add_last (prototype.import_list.item j.to_run);
+        import_list.add_last (prototype.import_list.item j.to_run_for Self);
       };
     };
-    data_current := old_data;
   );
 
  

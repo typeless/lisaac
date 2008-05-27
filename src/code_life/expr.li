@@ -129,7 +129,7 @@ Section Public
     + slot_msg:SLOT;    
     + node:NODE;
     + args:FAST_ARRAY[EXPR];
-    + typ:TYPE_FULL;
+    + ts:ITM_TYPE_SIMPLE;
     
     ? {static_type != NULL};
     ? {t != NULL};
@@ -163,17 +163,13 @@ Section Public
 	  POSITION.send_error;
 	  //semantic_error p,string_tmp;
 	};	
-	(slot_msg.base_slot.argument_count != 1).if {	  
+	(slot_msg.argument_count != 1).if {	  
 	  semantic_error ((slot_msg.position),"No argument for this slot.");
 	};
-	typ := slot_msg.result_type;
-	((typ = NULL) || {typ.raw != t.raw} || {slot_msg.results_type != NULL}).if {	  	  
-	  string_tmp.copy "Type result ";
-	  (typ != NULL).if {
-	    string_tmp.add_last '`';
-	    typ.append_name_in string_tmp;
-	    string_tmp.add_last '\'';
-	  };
+	ts ?= slot_msg.result_type;
+	((ts = NULL) || {ts != t.raw.itm_type}).if {	  	  
+          string_tmp.copy "Type result `";          
+          slot_msg.result_type.display string_tmp;	            
 	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
 	  t.append_name_in string_tmp; 
 	  string_tmp.append "').";
@@ -211,18 +207,14 @@ Section Public
 	  POSITION.send_error;
 	  //semantic_error p,string_tmp;
 	};		
-	(slot_msg.base_slot.argument_count != 2).if {
+	(slot_msg.argument_count != 2).if {
 	  semantic_error ((slot_msg.position),"Incorrect argument for this slot.");
 	};
-	typ := slot_msg.result_type;
-	((typ = NULL) || {typ.raw != t.raw} || {slot_msg.results_type != NULL}).if {	  	  
-	  string_tmp.copy "Type result ";
-	  (typ != NULL).if {
-	    string_tmp.add_last '`';
-	    typ.append_name_in string_tmp;
-	    string_tmp.add_last '\'';
-	  };	  
-	  string_tmp.append " is incorrect (Used for auto-conversion to `";
+	ts ?= slot_msg.result_type;
+	((ts = NULL) || {ts != t.raw.itm_type}).if {	  	  
+	  string_tmp.copy "Type result `";	  
+          slot_msg.result_type.display string_tmp;
+	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
 	  t.append_name_in string_tmp;
 	  string_tmp.append "').";
 	  POSITION.put_error semantic text string_tmp;

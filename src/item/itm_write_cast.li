@@ -45,6 +45,7 @@ Section Public
     + nm:STRING_CONSTANT;
     + typ_cast:TYPE_FULL;
     + slot:SLOT;
+    + ts:ITM_TYPE_SIMPLE;
     
     // Value -> local.
     val := value.to_run_expr;
@@ -57,16 +58,17 @@ Section Public
     (loc != NULL).if {
       typ_cast := loc.type;
     } else {
-      slot := ITM_TYPE_SELF.to_run.get_slot nm; 
+      slot := profil_slot.type_self.get_slot nm; 
       (slot = NULL).if {
 	string_tmp.copy "Slot `";
 	string_tmp.append nm;
 	string_tmp.append "' not found in static type ";
-	ITM_TYPE_SELF.to_run.append_name_in string_tmp;
+	profil_slot.type_self.append_name_in string_tmp;
 	string_tmp.add_last '.';
 	semantic_error (position,string_tmp);
       };
-      typ_cast := slot.result_type; 
+      ts ?= slot.result_type;
+      typ_cast := ts.to_run_for profil_slot; 
     };
     (verify).if {
       (typ_cast.affect_with (val.static_type)).if {

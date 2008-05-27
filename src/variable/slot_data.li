@@ -48,7 +48,7 @@ Section Public
     };
     result
   );
-  
+
   - receiver_type:TYPE <-
   ( + result:TYPE;
     
@@ -59,7 +59,6 @@ Section Public
     };
     result
   );
-  
   
   //
   
@@ -306,7 +305,7 @@ Section Public
     position    := pos;
     name        := n;
     style       := s;
-    intern_name := ALIAS_STR.get_intern name;
+    intern_name := ALIAS_STR.get_intern name;       
     //    
     type := t;      
     (is_static).if {
@@ -323,27 +322,25 @@ Section Public
   // Context
   //  
   
-  + value:LIST;
+  + value_init:LIST;
   
   - init <-
-  ( + self_var:LOCAL;
-    + val,rec:EXPR;
-    + wrt:WRITE;
-    + old_data:DTA_RD;
+  ( //+ self_var:LOCAL;
+    //+ val,rec:EXPR;
+    //+ wrt:WRITE;
     
-    // BSBS: Dois être differe et linear => mettre a plat!!!
-    // Il faut le rentrer dans le model des NODEs...
-    ((value = NULL) && {(base_slot.affect != '<') || {Self = slot_id}}).if {                  
+    "init : ".print; name.print; '\n'.print;
+            
+    ((value_init = NULL) && {(affect != '<') || {Self = slot_id}}).if {
       // Context.      
-      old_data := data_current;
-      (old_data = data_tmp).if {
-        crash_with_message "SLOT_DATA : Context en cascade !!! (à faire)";
-      };
-      data_current := data_tmp;
-      data_current.set_self (receiver_type.default.to_strict);
-      data_current.set_generic receiver_type;
+      
+      //data_current := data_tmp;
+      //data_current.set_self (receiver_type.default.to_strict);
+      //data_current.set_generic receiver_type;
       //
-      value := list_current;      
+      not_yet_implemented;
+      
+      value_init := list_current;      
       (Self = slot_id).if {
 	val := PROTOTYPE_CST.create position type type;
       } else {
@@ -355,10 +352,10 @@ Section Public
 	wrt := self_var.write position value val;
 	list_current.add_last wrt;      
 	// Code.
-	(base_slot.value = NULL).if {	  	  	  
+	(value = NULL).if {	  	  	  
 	  val := type.default_value position;
 	} else {
-	  val := base_slot.value.to_run_expr;
+	  val := value.to_run_expr;
 	};
 	val := val.check_type type with position;		
       };      
@@ -372,9 +369,7 @@ Section Public
       };
       wrt := write position with rec value val;
       list_current.add_last wrt;    
-      list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS: Alias
-      // Context.
-      data_current := old_data;
+      list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS:Alias
     };
   );
   
@@ -391,8 +386,8 @@ Section Public
     //+ old_profil_current:PROFIL_SLOT;
     + insert_index:INTEGER;
     
-    val := value;
-    value := NULL;    
+    val := value_init;
+    value_init := NULL;    
     insert_index := list_main.index;
     list_main.add val to insert_index;
     

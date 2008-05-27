@@ -35,4 +35,9 @@ Section Inherit
 Section Public
   
   - display buffer:STRING <- deferred;
-
+  
+  - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
+  (
+    deferred;
+    NULL
+  );

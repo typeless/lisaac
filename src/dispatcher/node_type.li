@@ -159,12 +159,12 @@ Section Private
       } else {
 	//count_flat := count_flat + 1;
 	//"Yes\n".print;
-      };
+      };      
     };    
     result
   );
   
-  - update_depth self_type:TYPE_FULL :BOOLEAN <-
+  - update_depth self_type:TYPE_FULL :BOOLEAN <- 
   ( + result:BOOLEAN;
     + list:FAST_ARRAY[CASE];
     + new_type_self:TYPE_FULL;
@@ -180,7 +180,7 @@ Section Private
 	  new_type_self := self_type;
 	};
 	add_stack_type first_type;
-	result := data.update_branch first_code self self_type;
+	result := data.update_branch first_code self new_type_self;
 	stack_type.remove_last;
       };
     } else {
@@ -192,7 +192,7 @@ Section Private
 	  new_type_self := self_type;
 	};
 	add_stack_type (list.item j.id);
-	data.update_branch (list.item j.code) self self_type;
+	data.update_branch (list.item j.code) self new_type_self;
 	stack_type.remove_last;
       };
     };

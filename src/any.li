@@ -152,10 +152,7 @@ Section Public
   
   - profil_slot:PROFIL_SLOT; // Principal slot.
   - profil:PROFIL;           // Sub-profil or (profil = profil_slot)
-  
-  - data_current:DTA_RD;
-  - data_tmp:DTA_RD := DTA_RD.clone;
-  
+     
   - display_stack_local <-
   (
     string_tmp.clear;
