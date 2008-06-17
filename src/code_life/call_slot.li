@@ -214,7 +214,7 @@ Section Private
 	    (result_list.lower).to (result_list.upper) do { j:INTEGER;
 	      source.add (result_list.item j) to (source.upper);
 	    };
-	  };		  	  
+          };		  	            
 	  result := source.execute_link;
 	  profil.remove_inline;	  	  
 	  new_execute_pass;

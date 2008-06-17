@@ -85,24 +85,24 @@ Section Public
   
 Section NODE_TYPE, DTA 
 
-  - product t:TYPE with e:EXPR :LIST <-
+  - product t:TYPE with e:EXPR self type_self:TYPE_FULL :LIST <-
   ( + result:LIST;
     
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {
-      TYPE_NULL.product_error position for NULL in result with context;
+      TYPE_NULL.product_error position in result;
     } else {
       lookup t with e in result;
     };
     result    
   );  
 
-  - update_branch l:LIST :BOOLEAN <-
+  - update_branch l:LIST self type_self:TYPE_FULL :BOOLEAN <-
   ( + result:BOOLEAN;   
     + wrt_slot:WRITE_SLOT;
     + wrt_glob:WRITE_GLOBAL;
     
-    result := parent_dta.update_branch l;
+    result := parent_dta.update_branch l self type_self;
     (l.count < 3).if {
       wrt_slot ?= l.first;	
       wrt_glob ?= l.first;	

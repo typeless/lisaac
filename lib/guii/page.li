@@ -39,25 +39,51 @@ Section Public
     "PAGE".print;
   );
 
- - make_representation <-
- (
- 	content:=G_PAGE.create;
-        "g_page width_min : ".print;content.width_min.print;"\n".print;
-        "g_page width_min : ".print;content.height_min.print;"\n".print;
- );
+  - make_representation <-
+  (
+    content:=G_PAGE.create;
+  );
+  
+  - semantic_evaluation (w,h:INTEGER) :BOOLEAN <-
+  (
+    +result:BOOLEAN;
+    
+    ((list.is_empty) && {operator='^'}).if {
+      result:=TRUE;
+    } else {
+      result:=FALSE;
+    };
+    result
+  );
+   
+  
+  - space_evaluation (w,h:INTEGER) :REAL_32 <-
+  (
+    +result:REAL_32;
+    
+    width:=G_PAGE.width_min;
+    height:=G_PAGE.height_min;
+    ((width > w) || {height > h}).if {
+      result:=0.0;
+    } else {
+      result:=100.0;
+    };
+    result
+  );
 
-
-- evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
+- evaluate n:INODE width w:INTEGER height h:INTEGER : REAL_32<-
   (
      
-     + result:INTEGER;
-
+     +result:REAL_32;
+     
      "PAGE semantic evaluation of ".print;n.name.print;"\n".print;
-     result:=0;
+     n.set_representation PAGE;
      //Semantic evaluation (if the "base" son doesn't have any sons itself then it is a PAGE at 100%
-     (n.list.is_empty && {n.operator='^'}).if {
-       result:=100;
-     };
+     (n.semantic_evaluation (w,h)).if {
+       ((G_PAGE.width_min <= w) || {G_PAGE.height_min <= h}).if {
+         result:=n.space_evaluation (w,h);
+       };
+     }; 
      "PAGE result of ".print;n.name.print;"= ".print;result.print;"% \n".print;
      result
   );

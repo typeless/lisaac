@@ -33,11 +33,6 @@ Section Inherit
 Section Public
 
   - representation:STRING_CONSTANT := "DROP_DOWN_MENU";
-//  + win_out:G_WIN_OUT;
-
-//  + width:REAL_32;
-//  + height:REAL_32;
-//  + content:G_EXPR;
 
   - print <-
   (
@@ -71,10 +66,10 @@ Section Public
     list.foreach {
       i:INODE;
       (i.priority > p).if {
-        (width,height):=G_DIV_EXPR.predict_size (width.rounded,height.rounded) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
+        (width,height):=G_DIV_EXPR.predict_size (width,height) and (G_BUTTON.predict_size (G_OUT.predict_size (i.name)));
       };
     };
-    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width.rounded,height.rounded));
+    (width,height):=G_WIN_OUT.predict_size (G_RAW.predict_size (width,height));
   );
 
 //
@@ -82,7 +77,7 @@ Section Public
 //
 
 // A drop down menu can be apply only if sons are leafs
-  - semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
+  - semantic_evaluation (w,h:INTEGER) :BOOLEAN<-
   (
     +nb:INTEGER;
 
@@ -90,7 +85,7 @@ Section Public
       list.foreach {
         i:INODE;
 
-        (ACTION.evaluate i width bugw_screen height bugh_screen > 0).if {
+        (ACTION.evaluate i width screen_width height screen_height > 0).if {
           nb:=nb+1;
         };
       };
@@ -98,18 +93,18 @@ Section Public
     nb=list.count
   );
 
-- space_evaluation (w,h:REAL_32) :REAL_32<-
+- space_evaluation (w,h:INTEGER) :REAL_32<-
   (
-    + r,result:REAL_32;
+    + area,r,result:REAL_32;
 
     compute_size_from_prc 0;
-    ((height > h) || {width > w}).if {
+    ((height >= h) || {width >= w}).if {
       "Priority 0 failed\n".print;
       compute_size_from_prc 25;
-      ((height > h) || {width > w}).if {
+      ((height >= h) || {width >= w}).if {
         "Priority 25 failed\n".print;
         compute_size_from_prc 50;
-        ((height > h) || {width > w}).if {
+        ((height >= h) || {width >= w}).if {
           "Priority 50 failed\n".print;
           r:=0;
           width:=0;
@@ -126,14 +121,24 @@ Section Public
       covering:=0;
       r:=list.count;
     };
-    result:=(r/list.count)*100;
-    result:=result-(get_area_prc (w,h));
+    r:=(r/list.count)*100;
+    (r>0).if {
+      area:=get_area_prc (w,h);
+      name.print;" area := ".print;(get_area_prc (w,h)).print;"\n".print;
+      (r>area).if {
+        result:=r-area;
+      } else {
+        result:=0;
+      };
+    } else {
+      result:=0;
+    };
     result
   )
   [ ? {Result.in_range 0 to 100}; ];
 
 
-- evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
+- evaluate n:INODE width w:INTEGER height h:INTEGER : REAL_32<-
   (
     + result:REAL_32;
 
@@ -141,7 +146,7 @@ Section Public
     // Semantic evaluation && Space evaluation.
     "DROP_DOWN_MENU semantic evaluation of ".print;n.name.print;"\n".print;
     (n.semantic_evaluation (w,h)).if {
-      "DROP_DOWN_MENU space evaluation of ".print;n.name.print;"\n".print;
+      //"DROP_DOWN_MENU space evaluation of ".print;n.name.print;"\n".print;
       result:=n.space_evaluation (w,h);
     } else {
        result:=0;

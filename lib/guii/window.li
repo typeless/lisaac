@@ -34,7 +34,7 @@ Section Public
 
   - representation:STRING_CONSTANT := "WINDOW";
 
-  - win_out:G_WIN_OUT;
+  + win_out:G_WIN_OUT;
 
   - print <-
   (
@@ -87,18 +87,19 @@ Section Public
   (
     //attention ce calcul n'est pas le bon, c'est les dimensions au max
     //les bonnes dimensions se calculent en fonction du placement des items
+    reset_size;
     list.foreach {
       i:INODE;
       (i.priority > p).if {
         height:=height+i.height;
         width:=width+i.width;
-
       };
     };
-    (width,height):=G_WIN_OUT.predict_size (height.rounded,width.rounded) with_title TRUE;
+    (width,height):=G_WIN_OUT.predict_size (height,width) with_title TRUE;
+    (connector_width,connector_height):=G_BUTTON.predict_size (G_OUT.predict_size name);
   );
 
-- semantic_evaluation (w,h:REAL_32) :BOOLEAN<-
+- semantic_evaluation (w,h:INTEGER) :BOOLEAN<-
   (
     bugw_screen:=w;
     bugh_screen:=h;
@@ -114,33 +115,33 @@ Section Public
         +best_prc:REAL_32;
 
         (!i.list.is_empty).if {
-          tmp:=PAGE.evaluate i width bugw_screen height bugh_screen;
+          tmp:=PAGE.evaluate i width screen_width height screen_height;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation PAGE;
           };
-          tmp:=MENU_V.evaluate i width bugw_screen height bugh_screen;
+          tmp:=MENU_V.evaluate i width screen_width height screen_height;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation MENU_BAR;
           };
-          tmp:=MENU_H.evaluate i width bugw_screen height bugh_screen;
+          tmp:=MENU_H.evaluate i width screen_width height screen_height;
           (tmp > best_prc).if {
             best_prc:=tmp;
-            i.set_representation TOOL_BAR;
+            i.set_representation MENU_H;
           };
-          tmp:=DROP_DOWN_MENU.evaluate i width bugw_screen height bugh_screen;
+          tmp:=DROP_DOWN_MENU.evaluate i width screen_width height screen_height;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation DROP_DOWN_MENU;
           };
         } else {
-          tmp:=CHECK.evaluate i width bugw_screen height bugh_screen;
+          tmp:=CHECK.evaluate i width screen_width height screen_height;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation CHECK;
           };
-          tmp:=ACTION.evaluate i width bugw_screen height bugh_screen;
+          tmp:=ACTION.evaluate i width screen_width height screen_height;
           (tmp > best_prc).if {
             best_prc:=tmp;
             i.set_representation ACTION;
@@ -154,21 +155,21 @@ Section Public
     }
   );
 
-- space_evaluation (w,h:REAL_32) :REAL_32<-
+- space_evaluation (w,h:INTEGER) :REAL_32<-
   [? {!list.is_empty}; ]
   (
-      + r,result:REAL_32;
+      + area,r,result:REAL_32;
 
       // Space evaluation
       compute_size_from_prc 0;
-      ((height > h) || {width > w}).if {
-	"Priority 0 failed\n".print;
-	compute_size_from_prc 25;
-	((height > h) || {width > w}).if {
-	   "Priority 25 failed\n".print;
-	   compute_size_from_prc 50;
-	   ((height > h) || {width > w}).if {
-		"Priority 50 failed\n".print;
+    ((height >= h) || {width >= w}).if {
+      "Priority 0 failed\n".print;
+      compute_size_from_prc 25;
+      ((height >= h) || {width >= w}).if {
+        "Priority 25 failed\n".print;
+        compute_size_from_prc 50;
+        ((height >= h) || {width >= w}).if {
+          "Priority 50 failed\n".print;
 		r:=0;
 		set_height 0;
 		set_width 0;
@@ -184,13 +185,18 @@ Section Public
 	covering:=0;
 	r:=list.count;
      };
-     result:=(r/list.count)*100;
-     "area := ".print;(get_area_prc (w,h)).print;"\n".print;
-     result:=result-(get_area_prc (w,h));
-     result
+     r:=(r/list.count)*100;
+     area:=get_area_prc (w,h);
+     //name.print;" area := ".print;(get_area_prc (w,h)).print;"\n".print;
+     (r>area).if {
+       result:=r-area;
+     } else {
+       result:=0;
+     };
+    result
   );
 
-- evaluate n:INODE width w:REAL_32 height h:REAL_32 : REAL_32<-
+- evaluate n:INODE width w:INTEGER height h:INTEGER : REAL_32<-
   (
      + result:REAL_32;
 
@@ -198,7 +204,7 @@ Section Public
      "WINDOW semantic evaluation of ".print;n.name.print;"\n".print;
      //Semantic evaluation: if the "base" son doesn't have any sons itself then it is a PAGE at 100%
      (n.semantic_evaluation (w,h)).if {
-      "WINDOW space evaluation of ".print;n.name.print;"\n".print;
+      //"WINDOW space evaluation of ".print;n.name.print;"\n".print;
        result:=n.space_evaluation (w,h);
      };
      "WINDOW result of ".print;n.name.print;"= ".print;result.print;"% \n".print;

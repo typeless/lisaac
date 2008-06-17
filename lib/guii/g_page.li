@@ -37,9 +37,9 @@ Section Public
   // Width / Height
   //
   
-  - width_min:INTEGER  := 200;
+  - width_min:INTEGER  := 500; //128;
   
-  - height_min:INTEGER := 200;
+  - height_min:INTEGER := 200; //128;
     
   //
   // Creation.

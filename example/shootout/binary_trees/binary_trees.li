@@ -54,7 +54,7 @@ Section Public
       iterations := 1 << (max_depth - depth  + min_depth);
       check := 0;
       1.to iterations do { i:INTEGER;
-	check := check + short_lived_tree.bottom_up_tree (i,depth) .item_check;
+        check := check + short_lived_tree.bottom_up_tree (i,depth) .item_check;
 	check := check + short_lived_tree.bottom_up_tree (-i,depth).item_check;
       };
       (iterations * 2).print;

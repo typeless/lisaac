@@ -63,7 +63,7 @@ Section Public
     + loc,my_self:LOCAL;    
     + result,val,rec:EXPR;
     + wrt:WRITE;
-    
+            
     t := type.to_run_for profil_slot;
     tb ?= t.raw;
     (tb != NULL).if {

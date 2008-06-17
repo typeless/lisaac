@@ -57,7 +57,27 @@ Section COMPILER, SHORTER
   - source + "context/";
   - source + "code_life/";
   
-Section COMPILER, SHORTER
+Section COMPILER_XAV
+  
+  + source  := lisaac+"../../branches/xavier/lisaac-0.13.1-external-optim/src/";
+  
+  - source + "tools/";
+  - source + "type/";
+  - source + "item/";
+  - source + "constant/";
+  - source + "variable/";
+  - source + "external/";
+  - source + "external/logic/";
+  - source + "external/arithmetic/";
+  - source + "external/comparison/";
+  - source + "dispatcher/";
+  - source + "context/";
+  - source + "code_life/";
+  - source + "optimizer/";
+  - source + "optimizer/lib_oil/";
+  - source + "compiler_any/";
+  
+Section COMPILER, SHORTER, COMPILER_XAV
   
   * "gcc " + input_file + " -o " + output_file;  
   
@@ -139,7 +159,7 @@ Section Common
   - application + "gui/desktop/";
   - application + "gui/mpg2/";
   
-Section UNIX, DOS, COMPILER, SHORTER
+Section UNIX, DOS, COMPILER, SHORTER, COMPILER_XAV
 
   - unix   + "system/";
   - unix   + "file_system/";
@@ -155,7 +175,7 @@ Section UNIX
 //  * "gcc " + input_file + " -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
 //    output_file + " -L" + path_lib_x11 + option_gcc;
 
-  * "gcc " + input_file + " -O3  -fomit-frame-pointer -lpcre -lgmp -lm -lpthread -lX11 -lGL -lGLU -lXxf86vm -o " + 
+  * "gcc " + input_file + " -loil-0.3 -fomit-frame-pointer -lpcre -lgmp -lm -lpthread -lX11 -lGL -lGLU -lXxf86vm -o " + 
     output_file + " -L" + path_lib_x11 + option_gcc;
 
 Section WINDOWS
@@ -236,6 +256,8 @@ Section X86
   
   - machine + "file_system/physical";
   - machine + "file_system/partition";
+	- machine + "file_system_ext2/partition";
+	- machine + "file_system_ext2";
     
   * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
   * isaac+"tool/elf2eof/elf2eof -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";

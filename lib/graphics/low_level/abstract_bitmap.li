@@ -380,7 +380,7 @@ Section Public
   - line_h_until x:INTEGER :BOOLEAN <-
   ( + result:BOOLEAN;
     + x0,x1:INTEGER;
-    ? {x >= 0};
+
     x0 := spot_x;
     x1 := x;
     spot_x := x1;

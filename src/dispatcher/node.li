@@ -169,13 +169,12 @@ Section Public
   
   - new_block p:POSITION receiver e:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
   ( + dta:DTA_BLOCK;
-    + result:NODE_TYPE;
-    + lst_typ:TYPES_TMP;
+    + result:NODE_TYPE;    
     + lst_typ_f:FAST_ARRAY[LOCAL];
     + new_expr:EXPR;
     + block_model:PROFIL_BLOCK;
     + pos:POSITION;
-    
+    /*
     not_yet_implemented;
     
     lst_typ := TYPES_TMP.new;      
@@ -194,6 +193,14 @@ Section Public
       block_model ?= lst_typ.first;        
     };
     lst_typ.free;
+    */
+    block_model ?= e.static_type.raw;
+    (block_model = NULL).if {
+      string_tmp.clear;
+      e.static_type.display string_tmp;
+      string_tmp.print;
+      warning_error (p,string_tmp);
+    };
     // Control argument type.            
     lst_typ_f := block_model.argument_list;
     pos       := block_model.code.position;

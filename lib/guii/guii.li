@@ -50,361 +50,243 @@ Section Public
     +result:SELF;
     
     result:=clone;
+    a.set_screen_width w;
+    a.set_screen_height h;
     result.internal_create a screen_width w screen_height h;
     result
   );
   
+  - make_interface <-
+  (
+    INODE.set_used_width 0;
+    INODE.set_used_height 0;
+    set_depth root from 0;
+    make_dimensions;
+    make_placement;
+    root.display;
+  );
+
   - run_interface <-
   (
-    VIDEO.make (screen_width,screen_height);    
-    VIDEO.width.print; ','.print; VIDEO.height.print; '\n'.print;
-    DESK.make VIDEO with widget_placement;
+    VIDEO.make (screen_width,screen_height);
+    DESK.make VIDEO with placement;
   );
   
   
-  - set_depth base:INODE from j:INTEGER <-
+  - set_depth node:INODE from j:INTEGER <-
   (
     +dpth:INTEGER;
     
     dpth:=j+1;
-    base.list.foreach{
+    node.list.foreach{
       i:INODE;
       i.set_depth dpth;
       (!i.list.is_empty).if {
         set_depth i from dpth;
       };
     };
-  );		
-  
-  - get_height l:LINKED_LIST[LINKED_LIST[G_EXPR]] :INTEGER<-
-  (
-    +result:INTEGER;
-    
-    l.foreach {
-      i:LINKED_LIST[G_EXPR];
-      +max_height:INTEGER;
-      
-      i.foreach {
-        j:G_EXPR;
-        
-        (max_height<j.height_min).if {
-          max_height:=j.height_min;
-        };
-      };
-      result:=result+max_height;
-      max_height:=0;
-    };
-    result
   );
   
-  - get_width l:LINKED_LIST[LINKED_LIST[G_EXPR]] :INTEGER<-
-  (
-    +result:INTEGER;
+  - evaluation i:INODE dimensions k:INTEGER :INTERNAL_INODE<-
+  (         
+    +best_prc:REAL_32;
+    +tmp:REAL_32;
+    +parent:INTERNAL_INODE;
+    +w:INTEGER;
+    +h:INTEGER;
     
-    l.foreach {
-      i:LINKED_LIST[G_EXPR];
-      +tmp:INTEGER;
-      
-      tmp:=get_width_row i;
-      (tmp > result).if {
-        result:=tmp;
+    w:=i.dimensions.item k.width;
+    h:=i.dimensions.item k.height;
+    
+    "Evaluation for dimensions ".print;k.print;" : width ".print;w.print;", height ".print;h.print;'\n'.print;
+    
+    (!i.list.is_empty).if {
+      tmp:=MENU_BAR.evaluate i width w height h;"\n\n".print;
+      (tmp>best_prc).if {
+        best_prc:=tmp;
+        parent:=MENU_BAR;
+        //"=================================================>MENU_BAR\n".print;
+      };
+      tmp:=MENU_H.evaluate i width w height h;"\n\n".print;
+      (tmp>best_prc).if {
+        best_prc:=tmp;
+        parent:=MENU_H;
+        //"=================================================>MENU_H\n".print;
+      };
+      tmp:=DROP_DOWN_MENU.evaluate i width w height h;"\n\n".print;
+      (tmp>best_prc).if {
+        best_prc:=tmp;
+        parent:=DROP_DOWN_MENU;
+        //"=================================================>DROP_DOWN_MENU\n".print;
+      };
+    } else {
+      tmp:=PAGE.evaluate i width w height h;"\n\n".print;
+      (tmp>best_prc).if {
+        best_prc:=tmp;
+        parent:=PAGE;
+        //"=================================================>PAGE\n".print;
       };
     };
-    result
+    (best_prc=0).if {
+      "No patterns match for ".print;i.name.print;" with dimensions ".print;w.print;"x".print;h.print;
+      " try to put it into a G_WIN_IN :)\n".print;
+      //OBJECT.die_with_code 1;
+      best_prc:=WIN_IN.evaluate i width w height h;
+     (best_prc>0).if{
+       i.dimensions.item k.set_pattern WIN_IN;
+       i.dimensions.item k.add_score best_prc;
+     };
+      //i.set_representation INTERNAL_INODE;
+    } else {
+      //"===============================================================================>".print;parent.print;'\n'.print;
+      parent.evaluate i width w height h;
+      '\n'.print;i.name.print;" is a ".print;parent.print;" with dimensions ".print;w.print;"x".print;h.print;"\n".print;
+      i.dimensions.item k.set_pattern parent;
+      i.dimensions.item k.add_score best_prc;
+    };
+    parent
   );
   
-  - get_width_row l:LINKED_LIST[G_EXPR] :INTEGER<-
+  - make_dimensions <-
   (
-    +result:INTEGER;
-    l.foreach {
-      g:G_EXPR;
-      result:=result+g.width_min;
-    };
-    result
-  );
-  
-  - move_widget row:LINKED_LIST[G_EXPR] to next_row:LINKED_LIST[G_EXPR] <-
-  (
-    +g:G_EXPR;
-    g:=row.last;
-    next_row.add_first g;
-    row.remove_last;
-  );
-  
-  - widget_placement :G_EXPR <-
-  ( + i,w_current,w_max:INTEGER;
-    + area_current,area_min:INTEGER;
-    + h_current,h_line,w_line:INTEGER;
-    + w_min,w:INTEGER;
-    + widget_min:INTEGER;
-    + content,content_line:G_EXPR;
-    
-    widget_min := screen_width;
-    root.list.lower.to (root.list.upper) do { j:INTEGER;
-      w := root.list.item j.content.width_min;
-      widget_min := widget_min.min w;
-      w_max := w_max + w;
-    };
-    //    
-    area_min := w_max * screen_height;
-    {
-      h_current := w_line := 0;
-      i := root.list.lower;
-      {i <= root.list.upper}.while_do {
-        w_current := h_line := 0;
-        {(i <= root.list.upper) && {w_current < w_max}}.while_do {
-          w_current := w_current + root.list.item i.content.width_min;
-          
-          i.print; "=".print;
-          root.list.item i.content.width_min.print; 'x'.print;
-          root.list.item i.content.height_min.print;
-          '\n'.print;
-          w_current.print; '/'.print; w_max.print; '\n'.print;
-          
-          h_line := h_line.max (root.list.item i.content.height_min);
-          i := i + 1;
-        };
-        h_current := h_current + h_line;      
-        w_line := w_line.max w_current;
-      };
-      area_current := h_current * w_line;  
-      "area = ".print;
-      area_current.print; '\n'.print; "-------------------------------\n".print;
-      (area_current < area_min).if {
-        w_min := w_max;
-        area_min := area_current;
-      };
-      w_max := w_max - widget_min;
-    }.do_while {w_max > widget_min};
-    //
-    i := root.list.lower;
-    {i <= root.list.upper}.while_do {            
-      content_line := root.list.item i.content;
-      w_current := root.list.item i.content.width_min;      
-      i := i+1;
-      {(i <= root.list.upper) && {w_current < w_min}}.while_do {
-        w_current := w_current + root.list.item i.content.width_min;        
-        content_line := content_line | root.list.item i.content;
-        
-        "OR ".print;
-        i.print; '\n'.print;
-        
-        i := i + 1;
-      };      
-      (content = NULL).if {
-        content := content_line;
-      } else {
-        content := content / content_line;
-      };
-    };
-    content
-  );
-  
-  
-  /*  - widget_placement :INTEGER <-
-  (
-    +width_max:INTEGER;
-    +widget_min_width:INTEGER;	//widget with minimum width
-    +widget_max_width:INTEGER;	//widget with maximum width
-    +widgets_height:INTEGER;	//sum of the maximum widget height per row
-    +rows:LINKED_LIST[LINKED_LIST[G_EXPR]];
-    +width_opt:INTEGER;
-    +area:INTEGER;
-    
-    rows:=LINKED_LIST[LINKED_LIST[G_EXPR]].create;
-    widget_min_width:=root.list.first.content.width_min;
-    rows.add_first (LINKED_LIST[G_EXPR].create);
-    
-    root.list.foreach {
-      node:INODE;
-      rows.first.add_last (node.content);
-      (widget_max_width<node.content.width_min).if {
-        widget_max_width:=node.content.width_min;
-      };
-      (widget_min_width>node.content.width_min).if {
-        widget_min_width:=node.content.width_min;
-      };
-    };
-    rows.add_last (LINKED_LIST[G_EXPR].create);
-    
-    widgets_height:=get_height rows;
-    width_max:=screen_width;
-    
-    {(widget_max_width<width_max) && {widgets_height<screen_height}}.while_do {
-      +row:LINKED_LIST[G_EXPR];
-      +next_row:LINKED_LIST[G_EXPR];
-      +row_width:INTEGER;
-      
-      rows.lower.to (rows.upper-1) do {
-        i:INTEGER;
-        
-        row:=rows.item i;
-        next_row:=rows.item (i+1);
-        row_width:=get_width_row row;
-        {(row_width>width_max) && {row.count>1}}.while_do {
-          move_widget row to next_row;
-        };
-        (((get_width_row next_row)>width_max) && {i=rows.count-1}).if {
-          rows.add_last (LINKED_LIST[G_EXPR].create);
-        };
-      };
-      
-      (area=0).if {
-        width_opt:=get_width rows;
-        area:=width_opt*(get_height rows);
-      } else {
-        +tmp:INTEGER;
-        +tmp_width:INTEGER;
-        tmp_width:=get_width rows;
-        tmp:=tmp_width*(get_height rows);
-        (tmp<area).if {
-          area:=tmp;
-          width_opt:=tmp_width;
-        };
-      };
-      
-      width_max:=width_max-widget_min_width;
-      widgets_height:=get_height rows;
-    };
-    
-    width_opt
-  );*/
-  
-  - make_placement <-
-  (
-    +l:LINKED_LIST[LINKED_LIST[G_EXPR]];
-    l:=widget_placement_from (widget_placement);
-    
-    l.foreach {
-      i:LINKED_LIST[G_EXPR];
-      +row:G_EXPR;
-      
-      i.foreach {
-        g:G_EXPR;
-        (row=NULL).if {
-          row:=g;
-        } else {
-          row:=row | g;
-        };
-      };
-      
-      (placement=NULL).if {
-        placement:=row;
-      } else {
-        placement:=placement / row;
-      };
-    };
-  );
-  
-  - widget_placement_from width_opt:INTEGER : LINKED_LIST[LINKED_LIST[G_EXPR]]<-
-  (
-    +cur_width:INTEGER;
-    +rows_opt:LINKED_LIST[LINKED_LIST[G_EXPR]];
-    
-    rows_opt:=LINKED_LIST[LINKED_LIST[G_EXPR]].create;
-    rows_opt.add_first (LINKED_LIST[G_EXPR].create);
-    root.list.foreach {
-      node:INODE;
-      cur_width:=cur_width+(node.content).width_min;
-      (cur_width<width_opt).if {
-        rows_opt.last.add_last (node.content);
-      } else {
-        rows_opt.add_last (LINKED_LIST[G_EXPR].create);
-        rows_opt.last.add_last (node.content);
-        cur_width:=(node.content).width_min;
-      };
-    };
-    rows_opt
-  );
-  
-  - affiche_list l:LINKED_LIST[LINKED_LIST[G_EXPR]] <-
-  (
-    l.foreach {
-      i:LINKED_LIST[G_EXPR];
-      i.foreach {
-        j:G_EXPR;
-        " | ".print;
-      };
-      "\n".print;
-    };
-  );
-  
-  - evaluation node:INODE <-
-  ( + w,h:INTEGER;
     /*
-    * GUII doit lancer l'évaluation de ses fils avec MENU_BAR, TOOL_BAR, et PAGE.
-    * MENU_BAR lance l'évaluation de ses fils avec les pattern appropriés, idem pour
-    * TOOL_BAR et PAGE. La faisabilité de MENU_BAR est calculée en fonction de la 
-    * faisablité de ses fils qui elle-même est caluclée en fonction de celle des petits-fils,
-    * et ainsi de suite.
+    * i : le noeud courant
+    * k : la position courante du noeud i 
+    * j : la case courante du tableau de dimensions du noeud i+1
     */
     
-    w := screen_width; 
-    h := screen_height;
+    /* initialisation pour le premier noeud */
+    root.list.first.dimensions.add_last (DIMENSION.create (screen_width,screen_height,0) score 0);
     
-    node.list.foreach {
-      i:INODE;
-      +best_prc:REAL_32;
-      +tmp:REAL_32;
-      +parent:INTERNAL_INODE;
+    /* evaluation de chaque noeud et pour chaque position */
+    root.list.lower.to (root.list.upper) do {
+      i:INTEGER;
       
-      (!i.list.is_empty).if {
-        tmp:=MENU_BAR.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=MENU_BAR;
-          "=================================================>MENU_BAR\n".print;
+      "Dimensions for ".print;root.list.item i.name.print;'\n'.print;
+      root.list.item i.display_dimensions;'\n'.print;
+      
+      /* evaluation du noeud i pour chaque position k possible */
+      root.list.item i.dimensions.lower.to (root.list.item i.dimensions.upper) do {
+        k:INTEGER;
+        +pattern:INTERNAL_INODE;
+        +width_item:INTEGER;
+        +height_item:INTEGER;
+        
+        pattern:=evaluation (root.list.item i) dimensions k;
+        
+        width_item:=root.list.item i.width;
+        height_item:=root.list.item i.height;
+        
+        root.list.item i.name.print;" : width ".print;width_item.print;','.print;" height ".print;height_item.print;"\n\n".print;
+        
+        /* pour chaque dimensions de i on cr�e 2 nouvelles dimensions pour i+1 */
+        (i<root.list.upper).if {
+          (2*k-1).to (2*k) do {
+            j:INTEGER;
+            +w:INTEGER;
+            +h:INTEGER;
+            +l:INTEGER;
+            +score:REAL_32;
+            
+            /* pour une position impaire: placement � droite
+            largeur=largeur restante - largeur de l'item courant
+            hauteur=hauteur restante
+            hauteur ligne courante=max(hauteur ligne courante, hauteur item courant)
+            pour une position paire: placement en-dessous
+            largeur=largeur de l'�cran
+            hauteur=hauteur restante - max(hauteur de l'item courant,hauteur de la ligne courante)
+              hauteur ligne courante=hauteur item courant */
+              /* 1er noeud est un cas particulier */
+              (i=1).if {
+                ((j%2=1)).if {
+                  w:=screen_width-width_item;
+                  h:=screen_height;
+                  l:=height_item;
+                } else {
+                  w:=screen_width;
+                  h:=screen_height-height_item;
+                  l:=0;
+                };
+              } else {
+                (j%2=1).if {
+                  w:=root.list.item i.dimensions.item k.width-width_item;
+                  h:=root.list.item i.dimensions.item k.height;
+                  (root.list.item i.dimensions.item k.line_height<height_item).if {
+                    l:=height_item;
+                  };
+                } else {
+                  w:=screen_width;
+                  h:=root.list.item i.dimensions.item k.height - (root.list.item i.dimensions.item k.line_height.max height_item);
+                  l:=0;
+                };
+              };
+              //((w>0) && {h>0}).if {
+                score:=root.list.item i.dimensions.item k.score_sum;
+                root.list.item (i+1).dimensions.add_last (DIMENSION.create (w,h,l) score score);
+              //};
+            };
+          };
         };
-        tmp:=MENU_V.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=MENU_V;
-          "=================================================>MENU_V\n".print;
-        };
-        tmp:=MENU_H.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=MENU_H;
-          "=================================================>MENU_H\n".print;
-        };
-        tmp:=DROP_DOWN_MENU.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=DROP_DOWN_MENU;
-          "=================================================>DROP_DOWN_MENU\n".print;
-        };
-      } else {
-        tmp:=CHECK.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=CHECK;
-          "=================================================>CHECK\n".print;
-        };
-        tmp:=ACTION.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=ACTION;
-          "=================================================>ACTION\n".print;
-        };
-        tmp:=PAGE.evaluate i width w height h;"\n\n".print;
-        (tmp>best_prc).if {
-          best_prc:=tmp;
-          parent:=PAGE;
-          "=================================================>PAGE\n".print;
+        "Number of dimensions: ".print;root.list.item i.dimensions.count.print;'\n'.print;
+        root.list.item i.diplay_patterns;
+      };
+    );
+
+    - find_dimensions <-
+    (
+      (root.list.upper).downto (root.list.lower) do {
+        n:INTEGER;
+        +i:INODE;
+        i:=root.list.item n;
+
+        (n=root.list.upper).if {
+          i.set_dimensions_nb (root.list.last.get_best_disposition);
+          "Best dimensions is number ".print;i.dimensions_nb.print;'\n'.print;
+        } else {
+          +tmp:REAL_32;
+          tmp:=(root.list.item (n+1)).dimensions_nb;
+          i.set_dimensions_nb ((tmp/2.0).rounded);
+          "Next dimensions is number ".print;i.dimensions_nb.print;'\n'.print;
         };
       };
-      (best_prc=0).if {
-        "No patterns match for ".print;i.name.print;"\n".print;
-        OBJECT.die_with_code 1;
-      } else {
-        i.set_representation parent;
-        i.name.print;"====================================================================================>".print;i.print;"\n".print;
-        i.evaluate i width w height h;
-        i.make_representation;
-        w:=w-i.content.width_min;
-        h:=h-i.content.height_min;
+    );
+
+    - make_placement <-
+    (
+      +operator:CHARACTER;
+      +node:INODE;
+      +width:INTEGER;
+      +height:INTEGER;
+      +pattern:INTERNAL_INODE;
+      //+tmp:REAL_32;
+
+      INODE.set_used_width 0;
+      INODE.set_used_height 0;
+
+      find_dimensions;
+
+      (root.list.lower).to (root.list.upper) do {
+        n:INTEGER;
+        +i:INTEGER;
+
+        node:=root.list.item n;
+        i:=node.dimensions_nb;
+        pattern:=root.list.item n.dimensions.item i.pattern;
+        width:=node.dimensions.item i.width;
+        height:=node.dimensions.item i.height;
+        pattern.print;" representation for ".print;node.name.print;" with dimensions width: ".print;width.print;", height: ".print;height.print;'\n'.print;
+        pattern.evaluate node width width height height;
+        node.make_representation;
+        (n=root.list.lower).if {
+          placement:=node.content;
+        } else {
+          ((root.list.item n.dimensions_nb)%2=1).if {
+            placement:=placement | node.content;
+          } else {
+            placement:=placement / node.content;
+          };
+        };
+        operator.print;node.name.print;'\n'.print;
       };
-    };
-    root.display;
-  );
-  
+      "\n".print;
+    );

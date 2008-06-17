@@ -20,10 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := ABSTRACT_ENTRY;
+  + name    := ENTRY;
 
-
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+  - copyright   := "2003-2007 Benoit Sonntag, Jerome Hilbert";
   
   - comment := "Abstract Entry.";
   
@@ -40,192 +39,53 @@ Section Public
   + path:STRING_CONSTANT;
   
   + name:STRING_CONSTANT; 
-  
-  + link_count:INTEGER;
-  
+   
   //
   // Date / Time.
   //
   
-  + access_time:TIME;
-  + access_date:DATE;
+  - access:UINTEGER_16 <- ( deferred; 0);
   
-  + update_time:TIME;
-  + update_date:DATE;
+  - access_time:TIME <- ( deferred; TIME);
+  - access_date:DATE <- ( deferred; DATE);
+  
+  - update_time:TIME <- ( deferred; TIME);
+  - update_date:DATE <- ( deferred; DATE);
+  
+  - create_time:TIME <- ( deferred; TIME);
+  - create_date:DATE <- ( deferred; DATE);
     
   //
   // type.
   //
   
-  + is_directory:BOOLEAN;
-  
+  - is_directory:BOOLEAN <-
+  ( + dir:DIRECTORY;
+    
+    dir ?= Self;
+    dir != NULL
+  );
+      
   - is_file:BOOLEAN <- ! is_directory;
-  
-  - this:ENTRY <- Self;
-  
-  //
-  // Size.
-  //
-  
-  + size:UINTEGER_32;
   
   //
   // Open / Close
   //
   
-  - is_open:BOOLEAN <- (link_count > 0);
-  
-  - open:ENTRY <-
+  - open <-
   // Return FILE or DIRECTORY, NULL:error.
   (    
-    link_count := link_count + 1;
-    (child = NULL).if { 
-      (is_directory).if {
-	child := DIRECTORY.clone; 
-      } else {
-	child := STD_FILE.clone;
-      };
-    };
-    (child.make this).if_false {
-      child := NULL;
-    };
-    child
-  );
+    deferred;
+  );          
   
-  - open_read_only:ENTRY <-
-  // Return FILE or DIRECTORY, NULL:error.
-  ( + f:STD_FILE;
-    link_count := link_count + 1;    
-    (is_directory).if {
-      (child = NULL).if { 
-	child := DIRECTORY.clone; 
-      };
-      (child.make this).if_false {
-	child := NULL;
-      };
-    } else {
-      (child = NULL).if {
-	f := STD_FILE.clone;
-      } else {
-	f ?= child;
-      };
-      (f.make_read_only this).if {
-	child := f;
-      };
-    };
-    child
-  );
-
-  - open_bmp:BMP_FILE <-
-  // Return FILE or DIRECTORY, NULL:error.
-  ( + result:BMP_FILE; 
-    link_count := link_count + 1;
-    (child = NULL).if { 
-      result := BMP_FILE.clone;
-      child := result;
-    } else {
-      result ?= child;
-    };
-    (child.make this).if_false {
-      child := result := NULL;
-    };
-    result
-  );
-
-  - open_ai:AI_FILE <-
-  // Return FILE or DIRECTORY, NULL:error.
-  ( + result:AI_FILE; 
-    link_count := link_count + 1;
-    (child = NULL).if { 
-      result := AI_FILE.clone;
-      child := result;
-    } else {
-      result ?= child;
-    };
-    (child.make this).if_false {
-      child := result := NULL;
-    };
-    result
-  );
-  
-  - close:ENTRY <-
-  (
-    ? {is_open};
-    link_count := link_count - 1;
-    ? {link_count >= 0};
-    this
-  );
-  
-  //
-  // Manager.
-  //
-  
-  - remove:BOOLEAN <-
-  // Remove file or directory (WARNING: delete recursive)
-  ( + dir:DIRECTORY;
-    + i:INTEGER;
-    + result:BOOLEAN;
-    
-    (! is_open).if { 
-      (is_directory).if {
-	result := TRUE;
-	dir ?= open;
-        i := dir.lower;        
-	{(i > dir.upper) || {! result}}.until_do {
-	  result := dir.item i.remove;	  
-	  i := i + 1;
-        };	        
-	result.if {
-	  result := physical_remove_directory;
-	};
-	close;
-      } else {
-	result := physical_remove_file;
-      };
-      (result).if {
-	dir := get_parent_intern path;
-	(dir != NULL).if {
-	  dir.list.remove (dir.index_of this);
-	};
-	// Remove Alias.
-	alias.remove path;
-      };
-    };
-    result
-  );
-  
-  - rename new_name:ABSTRACT_STRING :BOOLEAN <-
-  ( + result:BOOLEAN;
-    //? {new_name.index_of '/' = 0};
-    
-    get_parent_path path in string_tmp;    
-    string_tmp.add_last '/';
-    string_tmp.append new_name;
-    (result := physical_rename path with string_tmp).if {
-      alias.remove path;
-      set_path string_tmp;
-      alias.add this to path;
-    };
-    result
-  );
-  
-Section Public
-  
-  + child:ENTRY;
-    
-  - make_entry p:ABSTRACT_STRING :BOOLEAN <-
-  ( 
-    set_path p; 
-    physical_make
-  );
-  
-  - make e:ENTRY :BOOLEAN <- 
-  // Redefine in DIRECTORY and FILE
+  - is_open:BOOLEAN <- 
   (
     deferred;
     FALSE
   );
-  
+    
+Section ENTRY
+      
   - set_path n:ABSTRACT_STRING <-
   ( + idx:INTEGER;
     path := STRING_CONSTANT.create_copy n;
@@ -241,10 +101,6 @@ Section Public
     + stat:INTEGER;
     + car:CHARACTER;
     
-//        "Reduce:{".print; 
-//        st.print;
-//        "}=>\n       {".print;
-
     st.replace_all '\\' with '/';
     i := st.lower;
 
@@ -335,36 +191,16 @@ Section Public
     (st.is_empty).if {
       st.add_last '/';
     };
-    
-//    st.print; "}\n".print;
   );
-  
-Section Public
-    
+
   //
   // Alias Entry.
   //
-  
-  - alias:HASHED_DICTIONARY[ENTRY,ABSTRACT_STRING] := 
-  HASHED_DICTIONARY[ENTRY,ABSTRACT_STRING].create;
-  
-  - get_entry p:ABSTRACT_STRING :ENTRY <- 
-  ( + new_entry,result:ENTRY;
-    
-    (alias.has p).if {      
-      result := alias.at p;
-    } else {      
-      new_entry := ENTRY.clone;
-      new_entry.make_entry p.if {
-	alias.put new_entry to (new_entry.path);
-	result := new_entry;
-      };
-    };
-    
-    result
-  );
-  
+      
   - get_parent_path p:ABSTRACT_STRING in tmp:STRING <-
+  [ 
+    -? {p.last != '/'};
+  ]
   ( + i:INTEGER;
     
     (tmp != p).if {
@@ -381,51 +217,8 @@ Section Public
     };
   );
   
-  - get_parent_intern p:ABSTRACT_STRING :DIRECTORY <-
-  ( + ent:ENTRY;
-    + result:DIRECTORY;
-    
-    get_parent_path p in string_tmp;
-    (alias.has string_tmp).if {
-      ent := alias.at string_tmp;
-      (ent.child != NULL).if {
-	result ?= ent.child;
-      };
-    };
-    result
-  );
-  
-  //
-  // Physical implementation.
-  //
-
-  - physical_make:BOOLEAN <-
+  - physical_exists p:ABSTRACT_STRING :BOOLEAN <- 
   ( 
     deferred;
     FALSE
   );
-  
-  - physical_remove_directory:BOOLEAN <-
-  ( 
-    deferred;
-    FALSE
-  );
-  
-  - physical_remove_file:BOOLEAN <-
-  ( 
-    deferred;
-    FALSE
-  );
-  
-  - physical_rename old_path:ABSTRACT_STRING with new_path:ABSTRACT_STRING :BOOLEAN <-
-  ( 
-    deferred;
-    FALSE
-  );
-  
-  //
-  // Service routine
-  //
-
-  - string_tmp:STRING  := STRING.create 255;
-  - string_tmp2:STRING := STRING.create 255;

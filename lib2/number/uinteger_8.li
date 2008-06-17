@@ -30,7 +30,7 @@ Section Header
   - comment :="Unsigned 8 bits integer.";
 
   - type    := `unsigned char`;
-  - default := (0.to_raw_uinteger_8);
+  - default := 0;
   
 Section Insert
   

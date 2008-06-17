@@ -245,6 +245,7 @@ Section Public
       
     // Last.    
     old_seq_or_and := seq_or_and;
+        
     new_expr := last_expr.execute_link;
     put new_expr to upper;
     index := 0;

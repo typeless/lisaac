@@ -29,7 +29,7 @@ Section Header
   - comment :="Signed 8 bits integer.";
 
   - type    := `signed char`;
-  - default := (0.to_raw_integer_8);
+  - default := 0;
   
 Section Insert
   

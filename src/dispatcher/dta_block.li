@@ -109,7 +109,7 @@ Section NODE_STYLE, SELF
 
 Section NODE_TYPE, DTA  
   
-  - product t:TYPE with e:EXPR :LIST <-
+  - product t:TYPE with e:EXPR self type_self:TYPE_FULL :LIST <-
   ( + result:LIST;
     + t_block:PROFIL_BLOCK;
     + wrt:WRITE;  
@@ -121,7 +121,7 @@ Section NODE_TYPE, DTA
     
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {                 
-      TYPE_NULL.product_error (e.position) for result_expr in result with context;
+      TYPE_NULL.product_error (e.position) in result;
     } else {
       t_block ?= t;                  
       wrt_larg := t_block.write_argument get_argument;
@@ -152,7 +152,7 @@ Section NODE_TYPE, DTA
     result    
   );  
   
-  - update_branch l:LIST :BOOLEAN <-
+  - update_branch l:LIST self type_self:TYPE_FULL :BOOLEAN <-
   (
     TRUE
   );

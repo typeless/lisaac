@@ -1165,13 +1165,13 @@ Section Private
     };
     
     (list_arg.is_empty).if {
-      // Postfix operator.
+      // Prefix operator.
       arg := read_loc_arg FALSE with_self TRUE;
       (arg = NULL).if {
 	syntax_error (current_position,"Operator declaration invalid.");
       };
       list_arg.add_last arg;
-      name := operator (ALIAS_STR.slot_postfix) name name;
+      name := operator (ALIAS_STR.slot_prefix) name name;
       (associativity != NULL).if {
 	syntax_error (current_position,"Not associativity for postfix operator.");
       };
@@ -1185,8 +1185,8 @@ Section Private
 	  associativity := ALIAS_STR.keyword_left;
 	};      
       } else {
-	// Prefix operator.
-	name := operator (ALIAS_STR.slot_prefix) name name;
+	// Postfix operator.
+	name := operator (ALIAS_STR.slot_postfix) name name;
 	(associativity != NULL).if {
 	  syntax_error (current_position,"Not associativity for prefix operator.");
 	};
@@ -1194,6 +1194,7 @@ Section Private
     };    
     result := ITM_SLOT.create current_position name name feature last_section;
     result.set_associativity associativity priority priority;
+        
     result
   );  // read_slot_operator
   
@@ -1206,7 +1207,7 @@ Section Private
     (expr = NULL).if {
       syntax_error (current_position,"Incorrect expression.");
     };
-    last_slot.set_value expr;
+    last_slot.set_value expr type object;
     read_ensure;
   );
   

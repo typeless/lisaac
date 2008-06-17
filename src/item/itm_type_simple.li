@@ -66,6 +66,9 @@ Section Public
   - style:STRING_CONSTANT; // NULL
   
   - get n:STRING_CONSTANT :ITM_TYPE_SIMPLE <-
+  [
+    -? {n != NULL};
+  ]
   ( + result:ITM_TYPE_SIMPLE;
   
     result := dico.fast_reference_at n;    

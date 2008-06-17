@@ -27,7 +27,7 @@ Section Header
   - comment := "Unsigned 32 bits integer.";
   
   - type    := `unsigned long`;
-  - default := (0.to_raw_uinteger_32);
+  - default := 0;
 
 Section Insert
   

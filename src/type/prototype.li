@@ -159,8 +159,8 @@ Section Public
   + default_value:ITM_CODE;
 
   - set_default_value v:ITM_CODE <-
-  (
-    default_value := v;
+  ( 
+    default_value := default_value v to_slot name in Self;
   );
   
   //

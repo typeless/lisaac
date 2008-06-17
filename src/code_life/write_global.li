@@ -63,17 +63,13 @@ Section Public
 
   - execute_access_unlink:INSTR <- 
   (
-    (global.value != NULL).if {
-      global.execute;
-    };
+    global.execute;
     NULL
   );
 
   - execute_access_link <- 
-  (
-    (global.value != NULL).if {
-      global.execute;
-    };    
+  (    
+    global.execute;
   );
 
   //

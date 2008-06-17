@@ -27,7 +27,9 @@ Section Header
       
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Group elements for GUI.";
-
+  
+  // BSBS: Fusion a faire avec G_CHECK
+  
 Section Inherit  
 
   + parent_g_group:Expanded G_GROUP;

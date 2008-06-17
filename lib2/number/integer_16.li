@@ -29,7 +29,7 @@ Section Header
   - comment := "Signed 16 bits integer.";
 
   - type    := `signed short`;
-  - default := (0.to_raw_integer_16);
+  - default := 0;
   
 Section Insert
   

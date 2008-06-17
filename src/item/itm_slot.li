@@ -169,10 +169,17 @@ Section Public
   
   + value:ITM_CODE;
 
-  - set_value e:ITM_CODE <-
+  - set_value e:ITM_CODE type p:PROTOTYPE <-
   // Static definition.
+  [ 
+    -? {affect != '\0'};
+  ]
   ( 
-    value := e;
+    (affect = '<').if {
+      value := e;
+    } else {
+      value := default_value e to_slot name in p;
+    };
   );    
 
   - set_require e:ITM_LIST <-

@@ -79,7 +79,7 @@ Section Public
     result
   );
   
-  + to_run:TYPE_FULL <-
+  - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   (     
     not_yet_implemented;
     //to_run := TYPE.get Self

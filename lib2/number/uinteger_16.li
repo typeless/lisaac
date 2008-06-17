@@ -30,7 +30,7 @@ Section Header
   - comment :="Unsigned 16 bits integer.";
 
   - type    := `unsigned short`;
-  - default := (0.to_raw_uinteger_16);
+  - default := 0;
   
 Section Insert
   

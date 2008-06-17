@@ -1,0 +1,154 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name    := FILE;
+
+  - copyright   := "2003-2007 Benoit Sonntag, Jerome Hilbert";
+  
+  - comment := "Abstract File Management";
+  
+Section Inherit
+  
+  + parent_entry:ENTRY := Expanded ENTRY;   
+  
+Section Public
+  
+  - cursor:UINTEGER_32 <-
+  [
+    -? {is_open};
+  ]
+  ( 
+    deferred;
+    0
+  );
+  
+  - size:UINTEGER_32 <-
+  [
+    -? {is_open};
+  ]
+  ( 
+    deferred;
+    0
+  );
+  
+  - set_cursor n:UINTEGER_32 <-
+  (
+    deferred;    
+  );
+  
+  //
+  // Update.
+  //
+      
+  - is_empty:BOOLEAN <- size = 0;
+  // Is collection empty ?
+    
+  //
+  // Read.
+  //
+  
+  - read dest:OBJECT :INTEGER <- 
+  // WARNING: It's good for Mapping objects, else serializable is necessary.
+  [
+    -? {is_open};
+  ]
+  ( 
+    array_intern.make_with_map_object dest;
+    physical_read array_intern size (dest.object_size)
+  ); 
+  
+  - read dest:ARRAYED size nb_elt:INTEGER :INTEGER <-
+  [
+    -? {is_open};
+  ]
+  ( + buf:NATIVE_ARRAY[UINTEGER_8];
+    + index,s:INTEGER;
+    + result:INTEGER;
+   
+    dest.set_capacity (dest.count + nb_elt);
+    buf := dest.to_native_array_uinteger_8;
+    index := dest.count * dest.element_sizeof;
+    s := nb_elt * dest.element_sizeof;
+    result := physical_read buf from index size s;
+    ? {result % dest.element_sizeof = 0};
+    result / dest.element_sizeof
+  );
+  
+  //
+  // Write.
+  //
+  
+  - write src:ARRAYED from start:INTEGER size nb_elt:INTEGER :INTEGER <-
+  [
+    -? {is_open};
+  ]
+  ( + buf:NATIVE_ARRAY[UINTEGER_8];
+    + index,s:INTEGER;
+    + result:INTEGER;
+       
+    buf := src.to_native_array_uinteger_8;
+    index := start * src.element_sizeof;
+    s := nb_elt * dest.element_sizeof;
+    result := physical_write buf from index size s;
+    ? {result % dest.element_sizeof = 0};
+    result / dest.element_sizeof
+  );
+  
+  //
+  // Close.
+  //
+  
+  - close <-
+  ( 
+    deferred;
+  )
+  [
+    +? {! is_open};
+  ];
+  
+  - open_read_only <-
+  (
+    deferred;
+  );
+    
+Section Private  
+  
+  - physical_read buf:NATIVE_ARRAY[UINTEGER_8] from low:INTEGER size s:INTEGER :INTEGER <-
+  (
+    deferred;
+    0
+  )
+  [
+    +? {cursor = Old cursor + s};
+  ];
+    
+  - physical_write buf:ARRAYED from low:INTEGER size s:INTEGER :INTEGER <-
+  (     
+    deferred;
+    0
+  );
+      
+  - array_intern:FAST_ARRAY[UINTEGER_8] := FAST_ARRAY[UINTEGER_8].clone;
+      
+  
+    
+  

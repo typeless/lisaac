@@ -186,8 +186,7 @@ Section Public
   (     
     // Init window.
     VIDEO.make (540,350);
-        
-    init;
+            
     // Screen definition.
     DESK.make VIDEO with init;
   );

@@ -68,7 +68,7 @@ Section Public
       ) /
       G_RAW.create (
         G_BUTTON.create (G_IMG.create (path "video.bmp") | G_OUT.create " Video ")
-       // connect (MPEG2DEC.run)
+        connect (MPEG2DEC.run)
       )
     );    
     game := G_WIN_OUT.create (

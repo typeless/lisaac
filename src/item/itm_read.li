@@ -115,7 +115,7 @@ Section ITM_READ
     (first_itm = NULL).if {
       // Implicite Self.
       receiver := lookup (ALIAS_STR.variable_self).read position;    
-    } else {      
+    } else {            
       receiver := first_itm.to_run_expr;      
       // Resend detect.
       itm_list ?= first_itm;

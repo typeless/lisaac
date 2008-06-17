@@ -325,51 +325,43 @@ Section Public
   + value_init:LIST;
   
   - init <-
-  ( //+ self_var:LOCAL;
-    //+ val,rec:EXPR;
-    //+ wrt:WRITE;
-    
-    "init : ".print; name.print; '\n'.print;
-            
+  ( + val,rec:EXPR;
+    + wrt:WRITE;    
+    + old_list:LIST;
+   /* 
+    string_tmp.copy "init : ";
+    string_tmp.append name; 
+    warning_error (position,string_tmp);
+     */       
     ((value_init = NULL) && {(affect != '<') || {Self = slot_id}}).if {
       // Context.      
+      old_list := list_current;
+      value_init := list_current := LIST.create position;      
       
-      //data_current := data_tmp;
-      //data_current.set_self (receiver_type.default.to_strict);
-      //data_current.set_generic receiver_type;
-      //
-      not_yet_implemented;
-      
-      value_init := list_current;      
       (Self = slot_id).if {
 	val := PROTOTYPE_CST.create position type type;
-      } else {
-	// Self argument.
-	self_var := LOCAL.create position name (ALIAS_STR.variable_self) 
-	style '+' type (receiver_type.default);
-	stack_local.add_last self_var;
-	val := PROTOTYPE_CST.create position type (receiver_type.default);
-	wrt := self_var.write position value val;
-	list_current.add_last wrt;      
-	// Code.
-	(value = NULL).if {	  	  	  
-	  val := type.default_value position;
-	} else {
-	  val := value.to_run_expr;
-	};
+      } else {		
+        // Code.	
+        (value != NULL).if {
+          val := value.to_run_expr;
+        } else {
+          val := type.default_value position;
+        };
 	val := val.check_type type with position;		
       };      
       (style = '+').if {
 	rec := PROTOTYPE_CST.create position type (receiver_type.default);
       };      
       (debug_level_option != 0).if {
-	list_current.add_last (
-	  PUSH.create position context context_main first FALSE 
-	);
+        list_current.add_last (
+          PUSH.create position context context_main first FALSE 
+        );
       };
       wrt := write position with rec value val;
       list_current.add_last wrt;    
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS:Alias
+      
+      list_current := old_list;
     };
   );
   
@@ -386,40 +378,42 @@ Section Public
     //+ old_profil_current:PROFIL_SLOT;
     + insert_index:INTEGER;
     
-    val := value_init;
-    value_init := NULL;    
-    insert_index := list_main.index;
-    list_main.add val to insert_index;
-    
-    (type.is_expanded).if {      
-      lst := type.slot_run;
-      (lst != NULL).if {
-	(lst.lower).to (lst.upper) do { j:INTEGER;
-	  s := lst.item j;
-	  (s.style = '+').if {
-	    slot := s.slot_data_intern;	    
-	    ((slot != NULL) &&  {slot.value != NULL}).if {
-	      slot.execute;
-	    };
-	    slot := s.slot_id;
-	    ((slot != NULL) &&  {slot.value != NULL}).if {
-	      slot.execute;
-	    };
-	  };
-	};
-      };     
+    (value_init != NULL).if {
+      val := value_init;
+      value_init := NULL;    
+      insert_index := list_main.index;
+      list_main.add val to insert_index;
+      
+      (type.is_expanded).if {      
+        lst := type.slot_run;
+        (lst != NULL).if {
+          (lst.lower).to (lst.upper) do { j:INTEGER;
+            s := lst.item j;
+            (s.style = '+').if {
+              slot := s.slot_data_intern;	    
+              (slot != NULL).if {
+                slot.execute;
+              };
+              slot := s.slot_id;
+              (slot != NULL).if {
+                slot.execute;
+              };
+            };
+          };
+        };     
+      };
+      
+      old_list_current   := list_current;
+      //old_profil_current := profil_current;
+      list_current   := NULL;
+      //profil_current := NULL;
+      
+      val.execute_link;
+      list_main.inc_index;
+      
+      list_current   := old_list_current;
+      //profil_current := old_profil_current;        
     };
-      
-    old_list_current   := list_current;
-    //old_profil_current := profil_current;
-    list_current   := NULL;
-    //profil_current := NULL;
-        
-    val.execute_link;
-    list_main.inc_index;
-      
-    list_current   := old_list_current;
-    //profil_current := old_profil_current;        
   );  
 
   //

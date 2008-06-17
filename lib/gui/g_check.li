@@ -38,7 +38,8 @@ Section Public
   
   + stat:INTEGER_8;
   
-  - is_on:BOOLEAN <- (stat & 100b) != 0;
+  - is_on:BOOLEAN    <- (stat & 0100b) != 0;
+  - is_check:BOOLEAN <- (stat & 1000b) != 0;
   
   - set_stat s:INTEGER_8 <-
   (
@@ -76,46 +77,78 @@ Section Public
   // Creation
   //
   
+  - create_with_check elt:G_EXPR :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make elt connect NULL action NULL check TRUE;
+    result
+  );
+
+  - create_with_check elt:G_EXPR connect a:G_WIN_OUT :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make elt connect a action NULL check TRUE;
+    result
+  );
+
   - create elt:G_EXPR connect a:G_WIN_OUT :SELF <-
   ( + result:SELF;
     
     result := clone;
-    result.make elt connect a;
+    result.make elt connect a action NULL check FALSE;
     result
   );
   
-  - make elt:G_EXPR connect a:G_WIN_OUT <-
-  (
-    make elt;
-    auto_action := a;
+  - create_with_check elt:G_EXPR action b:BLOCK :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make elt connect NULL action b check TRUE;
+    result
   );
-  
+
   - create elt:G_EXPR action b:BLOCK :SELF <-
   ( + result:SELF;
     
     result := clone;
-    result.make elt action b;
+    result.make elt connect NULL action b check FALSE;
     result
   );
   
-  - make elt:G_EXPR action b:BLOCK <-
+  - make elt:G_EXPR connect a:G_WIN_OUT action b:BLOCK check c:BOOLEAN <-
   (
     make elt;
+    auto_action := a;
     action := b;
+    stat := c.to_integer << 3;
   );
- 
+     
   //
   // Size.
   //
   
   - predict_size (w,h:INTEGER) :(INTEGER,INTEGER) <-
-  (
-    w + 24, h + 4
+  ( + rw:INTEGER;
+    
+    (is_check).if {
+      rw := w + 24;
+    } else {
+      rw := w + 4;
+    };
+    rw , h + 4
   );  
   
   - width_min:INTEGER <-
-  (
-    parent_g_group.width_min + 24
+  ( + result:INTEGER;
+    
+    (is_check).if {
+      result := parent_g_group.width_min + 24;
+    } else {
+      result := parent_g_group.width_min + 4;
+    };
+    result
   );
   
   - height_min:INTEGER <-
@@ -128,14 +161,17 @@ Section Public
   //
   
   - set_position rac:AREA at (x,y:INTEGER) size (w,h:INTEGER) <-
-  ( + px,py,nw,nh:INTEGER;   
+  ( + px,py,nw,nh,p:INTEGER;   
     update rac from (x,y) size (w,h);
-    ((w-24) > root.width_max).if {      
+    (is_check).if {
+      p := 20;
+    };
+    ((w-(p+4)) > root.width_max).if {      
       nw := root.width_max;
-      px := ((w-24 - nw) / 2) + 22;
+      px := ((w-(p+4) - nw) / 2) + (p+2);
     } else {
-      nw := w - 24;
-      px := 22;
+      nw := w - (p+4);
+      px := (p+2);
     };
     ((h-4) > root.height_max).if {      
       nh := root.height_max;
@@ -163,21 +199,37 @@ Section Public
   );
   
   - draw (x0,y0:INTEGER) to (x1,y1:INTEGER) <-
-  ( 
+  ( + style:INTEGER_8;
     clipping (x0,y0) to (x1,y1);
-    ((stat & 11b) = 00b).if {
-      draw_slave Self from (x0,y0) to (x1,y1);
-    } else {
+    ((is_on) && {! is_check}).if {
+      style := 1; // In
+    } else {        
       ((stat & 11b) = 01b).if {
-	draw_border_out (x_min  ,y_min  ) to (x_max  ,y_max  );
-	draw_border_out (x_min+1,y_min+1) to (x_max-1,y_max-1);	
+        style := 2; // Out
       } else {
-	draw_border_in (x_min  ,y_min  ) to (x_max  ,y_max  );
-	draw_border_in (x_min+1,y_min+1) to (x_max-1,y_max-1);
-      };    
+        ((stat & 11b) != 00b).if {
+          style := 1; // In
+        };
+      };
+    };
+    (style)
+    .when 0 then {
+      draw_slave Self from (x0,y0) to (x1,y1);
+    }
+    .when 1 then {
+      draw_border_in (x_min  ,y_min  ) to (x_max  ,y_max  );
+      draw_border_in (x_min+1,y_min+1) to (x_max-1,y_max-1);
+      draw_slave Self from (x_min+2,y_min+2) to (x_max-2,y_max-2);
+    }
+    .when 2 then {
+      draw_border_out (x_min  ,y_min  ) to (x_max  ,y_max  );
+      draw_border_out (x_min+1,y_min+1) to (x_max-1,y_max-1);	
       draw_slave Self from (x_min+2,y_min+2) to (x_max-2,y_max-2);
     };
-    draw_check;
+    
+    (is_check).if {
+      draw_check;
+    };
   );
   
   //
@@ -199,7 +251,7 @@ Section Public
     mouse ?= msg;
     gui ?= msg;
     (mouse != NULL).if {                  
-      new_stat := (stat & 100b) | (mouse.is_in).to_integer | (mouse.left.to_integer << 1);      
+      new_stat := (stat & 1100b) | (mouse.is_in).to_integer | (mouse.left.to_integer << 1);      
       (new_stat != stat).if {	
 	stat := new_stat;
 	((stat & 1) != 0).if {
@@ -214,16 +266,16 @@ Section Public
 	    } else {
 	      action.value Self;
 	    };
-	    stat := stat ^ 100b;
-	    ((stat & 100b) != 0).if {
+	    stat := stat ^ 0100b;
+	    ((stat & 0100b) != 0).if {
 	      cur := next_check;
 	      {cur != NULL}.while_do {
-		cur.set_stat 0;
+		cur.set_stat (cur.stat & 1000b);
 		cur := cur.next_check;
 	      };
 	      cur := previous_check;
 	      {cur != NULL}.while_do {
-		cur.set_stat 0;
+		cur.set_stat (cur.stat & 1000b);
 		cur := cur.previous_check;
 	      };
 	    };
@@ -231,7 +283,7 @@ Section Public
 	} else {
 	  // Out.	  
 	  ((stat & 10b) = 0).if {
-	    stat := stat & 100b;	  
+	    stat := stat & 1100b;	  
 	    DESK.receive msg;
 	  };
 	};

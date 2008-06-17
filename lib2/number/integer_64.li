@@ -27,7 +27,7 @@ Section Header
   - comment := "Signed 64 bits integer.";
 
   - type    := `signed long long`;
-  - default := (0.to_raw_integer_64);
+  - default := 0;
   
 Section Insert
   

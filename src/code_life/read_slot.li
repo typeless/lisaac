@@ -95,17 +95,13 @@ Section Public
   
   - execute_access_unlink:INSTR <- 
   (
-    (slot.value != NULL).if {
-      slot.execute;
-    };
+    slot.execute;
     receiver.execute_unlink
   );
     
   - execute_access_link <- 
   ( 
-    (slot.value != NULL).if {
-      slot.execute;
-    };
+    slot.execute;
     receiver := receiver.execute_link;        
   );
 

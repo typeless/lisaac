@@ -185,11 +185,11 @@ Section Public
     ((stat & 11b) = 2).if {
       text.remove (cursor+1);
     };
-    (py > height).if {
-      text.remove_last (text.upper - idx + 2);
-      cursor := cursor.min (text.upper);
-      stat := stat | 4;
-    };
+    //(py > height).if {
+      //text.remove_last (text.upper - idx + 2);
+      //cursor := cursor.min (text.upper);
+      //stat := stat | 4;
+    //};
     //
   );
   

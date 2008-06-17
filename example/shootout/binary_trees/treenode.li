@@ -38,15 +38,11 @@ Section Public
   - bottom_up_tree (itm, depth:INTEGER) :TREENODE <-
   (     
     item := itm;
-    (depth > 0).if {
-      (left = NULL).if {
-        left  := TREENODE.clone;
-        right := TREENODE.clone;                
-      };
+    (depth > 0).if {      
+      left  := TREENODE.clone;
+      right := TREENODE.clone;                
       left.bottom_up_tree  (2*itm-1, depth-1);
       right.bottom_up_tree (2*itm  , depth-1);
-    } else {
-      left := right := NULL;
     };
     Self
   );
