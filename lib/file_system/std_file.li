@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := FILE;
+  + name    := STD_FILE;
 
   - copyright   := "2003-2007 Benoit Sonntag, Jerome Hilbert";
   
@@ -28,7 +28,7 @@ Section Header
   
 Section Inherit
   
-  + parent_entry:ENTRY := Expanded ENTRY;   
+  - parent_entry:ENTRY := ENTRY;   
   
 Section Public
   
@@ -42,15 +42,16 @@ Section Public
   );
   
   - size:UINTEGER_32 <-
-  [
-    -? {is_open};
-  ]
   ( 
     deferred;
     0
   );
   
   - set_cursor n:UINTEGER_32 <-
+  [
+    -? {is_open};
+    -? {n <= size};
+  ]
   (
     deferred;    
   );
@@ -71,9 +72,9 @@ Section Public
   [
     -? {is_open};
   ]
-  ( 
-    array_intern.make_with_map_object dest;
-    physical_read array_intern size (dest.object_size)
+  ( + buf:NATIVE_ARRAY[UINTEGER_8];
+    buf := CONVERT[OBJECT,NATIVE_ARRAY[UINTEGER_8]].on dest;
+    physical_read buf from 0 size (dest.object_size)
   ); 
   
   - read dest:ARRAYED size nb_elt:INTEGER :INTEGER <-
@@ -83,12 +84,15 @@ Section Public
   ( + buf:NATIVE_ARRAY[UINTEGER_8];
     + index,s:INTEGER;
     + result:INTEGER;
-   
-    dest.set_capacity (dest.count + nb_elt);
+    + new_count:INTEGER;
+    
+    new_count := dest.count + nb_elt;
+    dest.set_capacity new_count;
     buf := dest.to_native_array_uinteger_8;
     index := dest.count * dest.element_sizeof;
-    s := nb_elt * dest.element_sizeof;
-    result := physical_read buf from index size s;
+    s := nb_elt * dest.element_sizeof;    
+    result := physical_read (buf+index) size s;
+    dest.set_count new_count;
     ? {result % dest.element_sizeof = 0};
     result / dest.element_sizeof
   );
@@ -106,11 +110,11 @@ Section Public
     + result:INTEGER;
        
     buf := src.to_native_array_uinteger_8;
-    index := start * src.element_sizeof;
-    s := nb_elt * dest.element_sizeof;
-    result := physical_write buf from index size s;
-    ? {result % dest.element_sizeof = 0};
-    result / dest.element_sizeof
+    index := (start-src.lower) * src.element_sizeof;
+    s := nb_elt * src.element_sizeof;
+    result := physical_write (buf+index) size s;
+    ? {result % src.element_sizeof = 0};
+    result / src.element_sizeof
   );
   
   //
@@ -125,14 +129,17 @@ Section Public
     +? {! is_open};
   ];
   
-  - open_read_only <-
+  - open_read_only:BOOLEAN <-
   (
     deferred;
   );
     
-Section Private  
+Section STD_FILE
   
-  - physical_read buf:NATIVE_ARRAY[UINTEGER_8] from low:INTEGER size s:INTEGER :INTEGER <-
+  - physical_read buf:NATIVE_ARRAY[UINTEGER_8] size s:INTEGER :INTEGER <-
+  [
+    -? {is_open};
+  ]
   (
     deferred;
     0
@@ -141,14 +148,18 @@ Section Private
     +? {cursor = Old cursor + s};
   ];
     
-  - physical_write buf:ARRAYED from low:INTEGER size s:INTEGER :INTEGER <-
+  - physical_write buf:NATIVE_ARRAY[UINTEGER_8] size s:INTEGER :INTEGER <-
+  [
+    -? {is_open};
+  ]
   (     
     deferred;
     0
-  );
-      
-  - array_intern:FAST_ARRAY[UINTEGER_8] := FAST_ARRAY[UINTEGER_8].clone;
-      
+  )
+  [
+    +? {cursor = Old cursor + s};
+  ];
+            
   
     
   

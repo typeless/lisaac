@@ -35,6 +35,7 @@ Section Inherit
   
 Section Public
   
+  - lower:INTEGER <- deferred;
   - upper:INTEGER <- deferred;
   - count:INTEGER <- deferred;
 
@@ -60,5 +61,16 @@ Section Public
   - set_capacity new_capacity:INTEGER <-
   (
     deferred;
+  );
+  
+  - set_count new_count:INTEGER <-
+  (
+    deferred;
+  );
+  
+  - to_native_array_uinteger_8:NATIVE_ARRAY[UINTEGER_8] <- 
+  (
+    deferred;
+    NULL
   );
 

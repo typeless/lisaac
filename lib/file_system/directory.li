@@ -29,9 +29,9 @@ Section Header
   
 Section Inherit
   
-  + parent_entry:ENTRY := Expanded ENTRY;
+  - parent_entry:ENTRY := ENTRY;
   
-Section Private
+Section DIRECTORY
   
   + list:LINKED_LIST[ENTRY];
 
@@ -56,18 +56,20 @@ Section Public
     e := get_entry p;
     (e != NULL).if {
       (e.is_directory).if {
-        result := TRUE;
-        dir ?= e.open;
-        i := dir.lower;        
-        {(i > dir.upper) || {! result}}.until_do {
-          result := remove (dir.item i.path);
-          i := i + 1;
-        };	        
-        result.if {
-          result := physical_remove_directory (e.path);
+        dir ?= e;
+        result := dir.open;
+        (result).if {
+          i := dir.lower;        
+          {(i > dir.upper) || {! result}}.until_do {
+            result := remove (dir.item i.path);
+            i := i + 1;
+          };	        
+          result.if {
+            result := physical_remove (e.path);
+          };
         };
       } else {
-        result := physical_remove_file (e.path);
+        result := physical_remove (e.path);
       };
       (result).if {
         // Remove Alias.
@@ -101,16 +103,17 @@ Section Public
   - get_entry p:ABSTRACT_STRING :ENTRY <- 
   ( + new_entry,result:ENTRY;
     
-    string_tmp.copy path;
-    string_tmp.add_last '/';
-    string_tmp.append p;
-    reduce_path string_tmp;
-    result := alias.reference_at string_tmp;
-    ((result = NULL) && {physical_exists string_tmp}).if {
-      new_entry := ENTRY.clone;
-      new_entry.set_path string_tmp;
-      alias.put new_entry to (new_entry.path);
-      result := new_entry;
+    string_tmp2.copy path;
+    string_tmp2.add_last '/';
+    string_tmp2.append p;
+    reduce_path string_tmp2;
+    result := alias.reference_at string_tmp2;
+    (result = NULL).if {
+      new_entry := physical_get_entry string_tmp2;      
+      (new_entry != NULL).if {
+        alias.put new_entry to (new_entry.path);
+        result := new_entry;
+      };
     };
     
     result
@@ -120,7 +123,7 @@ Section Public
   // Indexing.
   //
   
-  - open <-
+  - open:BOOLEAN <-
   (
     deferred;
   )
@@ -225,8 +228,8 @@ Section Public
     result
   );
   
-  - make_file p:ABSTRACT_STRING :FILE <-
-  ( + result:FILE;    
+  - make_file p:ABSTRACT_STRING :STD_FILE <-
+  ( + result:STD_FILE;    
     string_tmp.copy path;
     string_tmp.add_last '/';
     string_tmp.append p;
@@ -249,31 +252,31 @@ Section Public
     };    
   );
   
-Section Private  
+Section DIRECTORY
   
   //
   // Physical implementation.
   //
+
+  - physical_get_entry new_path:ABSTRACT_STRING :ENTRY <-
+  (
+    deferred;
+    NULL
+  );
               
-  - physical_make_directory new_path:STRING :BOOLEAN <-
+  - physical_make_directory new_path:ABSTRACT_STRING :BOOLEAN <-
   ( 
     deferred;
     FALSE
   );
 
-  - physical_make_file new_path:STRING :BOOLEAN <-
+  - physical_make_file new_path:ABSTRACT_STRING :BOOLEAN <-
   ( 
     deferred;
     FALSE
   );
 
-  - physical_remove_directory:BOOLEAN <-
-  ( 
-    deferred;
-    FALSE
-  );
-  
-  - physical_remove_file:BOOLEAN <-
+  - physical_remove p:ABSTRACT_STRING :BOOLEAN <-
   ( 
     deferred;
     FALSE
@@ -290,4 +293,7 @@ Section Private
   //
 
   - string_tmp:STRING  := STRING.create 255;
+  
+Section Private
+  
   - string_tmp2:STRING  := STRING.create 255;

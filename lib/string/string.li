@@ -664,8 +664,10 @@ Section Public
   );
   
   - set_count new_count:INTEGER <-
-  (
-    ? { new_count <= capacity };
+  [
+    -? { new_count <= capacity };
+  ]
+  (    
     count := new_count;
   );
   
@@ -737,6 +739,11 @@ Section Public
   //
   
   - element_sizeof:INTEGER <- 1;
+  
+  - to_native_array_uinteger_8:NATIVE_ARRAY[UINTEGER_8] <- 
+  (
+    CONVERT[NATIVE_ARRAY[CHARACTER],NATIVE_ARRAY[UINTEGER_8]].on storage
+  );
   
   - add_last_buffer buf:FAST_ARRAY[UINTEGER_8] from beg:INTEGER to end:INTEGER <-
   (

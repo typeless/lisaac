@@ -61,8 +61,10 @@ Section Public
   
   - is_directory:BOOLEAN <-
   ( + dir:DIRECTORY;
+    + e:ENTRY;
     
-    dir ?= Self;
+    e := Self; // Bug Compilo
+    dir ?= e;
     dir != NULL
   );
       
@@ -72,7 +74,7 @@ Section Public
   // Open / Close
   //
   
-  - open <-
+  - open:BOOLEAN <-
   // Return FILE or DIRECTORY, NULL:error.
   (    
     deferred;
@@ -217,8 +219,3 @@ Section ENTRY
     };
   );
   
-  - physical_exists p:ABSTRACT_STRING :BOOLEAN <- 
-  ( 
-    deferred;
-    FALSE
-  );
