@@ -119,22 +119,9 @@ Section MEMORY
   );
   
   - search_capacity <-
-  ( + cap:UINTEGER_32;
-    + mem:POINTER;
-       
-    cap := 32.mb;
-    {
-      cap := cap * 2;
-      mem := `malloc(@cap)`:POINTER;    
-      (mem != NULL).if {
-	`free(@mem)`;
-      };
-    }.do_until {(mem = NULL) || {cap = 2048.mb}};           
-    (mem = NULL).if {
-      cap := cap / 2;
-    };
-    capacity_max := cap;
-    begin_memory := `malloc(@cap)`:POINTER;
+  ( 
+    capacity_max := SYSTEM.get_memory_capacity;
+    begin_memory := SYSTEM.get_begin_memory;
     //
     //(capacity_max >> 20).print; "MB\n".print;
     
