@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        :=DIRECTORY;
+  + name        :=DIRECTORY_UNIX;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
@@ -39,26 +39,30 @@ Section Header
   
 Section Inherit
   
-  + parent_abstract_directory:Expanded ABSTRACT_DIRECTORY;
+  + parent_entry_unix:Expanded ENTRY_UNIX;
   
-Section Private  
+  + parent_directory:Expanded DIRECTORY;
   
-  //
-  // Physical implementation.
-  //
+Section Public
+  
+  - is_open:BOOLEAN <- ( list != NULL);
   
   //
   // Scanning
   //
       
-  - physical_refresh:BOOLEAN <-
+  - open:BOOLEAN <-
   ( + p,n:NATIVE_ARRAY[CHARACTER];
     + dir,dirent:POINTER;
     + new_entry:ENTRY;
     + result:BOOLEAN;
     + i:INTEGER;
     
-    list.clear;
+    (list = NULL).if {
+      list := LINKED_LIST[ENTRY].create;
+    } else {
+      list.clear;
+    };
     p := path.to_external;
     dir := `opendir(@p)`:POINTER; 
     (dir != NULL).if {
@@ -76,15 +80,13 @@ Section Private
 	  };
 	  (string_tmp !== ".".to_string).if {
 	    string_tmp.add_first '/';
-	    string_tmp.prepend path;
-	    reduce_path string_tmp;
+            string_tmp.prepend path;            
+            reduce_path string_tmp;            
 	    new_entry := get_entry string_tmp;
 	    (new_entry = NULL).if {	      	      
 	      result := FALSE;
 	    } else {
-	      (new_entry.path.count < path.count).if {
-		parent := new_entry;
-	      } else {
+	      (new_entry.path.count >= path.count).if {
 		list.add_last new_entry;
 	      };
 	    };
@@ -95,24 +97,56 @@ Section Private
     };
     result
   );
-    
-  - physical_make_directory new_path:STRING :BOOLEAN <-
-  ( + p:NATIVE_ARRAY[CHARACTER];
-    p := new_path.to_external;
-    `mkdir(@p,S_IRWXU)`:(INTEGER) = 0
+  
+Section DIRECTORY
+  
+  - physical_get_entry new_path:ABSTRACT_STRING :ENTRY <-
+  ( + pe:NATIVE_ARRAY[CHARACTER];
+    + result:ENTRY;
+    pe := new_path.to_external;
+    `{ struct stat t`; 
+      (`stat(@pe,&t)`:INTEGER = 0).if {		  
+        (`S_ISDIR(t.st_mode)`:INTEGER = 0).if {
+          // File.
+          result := FILE_UNIX.clone;
+        } else {
+          // Directory.
+          result := DIRECTORY_UNIX.clone;
+        };          
+      };
+    `}`;
+    result.set_path new_path;
+    result
+  );
+  
+  - physical_make_directory new_path:ABSTRACT_STRING :BOOLEAN <-
+  ( + pa:NATIVE_ARRAY[CHARACTER];
+    pa := new_path.to_external;
+    `mkdir(@pa,S_IRWXU)`:(INTEGER) = 0
   );
 
-  - physical_make_file new_path:STRING :BOOLEAN <-
-  ( + p:NATIVE_ARRAY[CHARACTER];
+  - physical_make_file new_path:ABSTRACT_STRING :BOOLEAN <-
+  ( + pa:NATIVE_ARRAY[CHARACTER];
     + stream:POINTER;
     + result:BOOLEAN;
     
-    p := new_path.to_external;
-    stream := `fopen((char*)@p,"w+b")`:POINTER;
+    pa := new_path.to_external;
+    stream := `fopen((char*)@pa,"w+b")`:POINTER;
     (stream != NULL).if {
       result := `fclose((FILE*)@stream)`:INTEGER = 0;
     };
     result
   );
 
-  
+  - physical_remove p:ABSTRACT_STRING :BOOLEAN <-
+  ( + pa:NATIVE_ARRAY[CHARACTER];
+    pa := p.to_external;
+    `remove(@pa)`:(INTEGER) = 0
+  );
+      
+  - physical_move old_path:ABSTRACT_STRING to new_path:ABSTRACT_STRING :BOOLEAN <-
+  ( + old_p,new_p:NATIVE_ARRAY[CHARACTER];
+    old_p := old_path.to_external;
+    new_p := new_path.to_external;
+    `rename(@old_p,@new_p)`:(INTEGER) = 0
+  );
