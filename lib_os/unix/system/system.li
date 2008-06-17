@@ -76,10 +76,27 @@ Section Public
 
   // Memory Management
   
-  - get_begin_memory:UINTEGER_32 := realloc_c (0,get_capacity_memory);
+  - get_begin_memory:POINTER;
   
-  - get_capacity_memory:UINTEGER_32 := 10000000h; 
-                                   //1000000h /*16Mo*/; //10000000h /*256MB*/;
+  - get_capacity_memory:UINTEGER_32 <- 
+  ( + cap:UINTEGER_32;
+    + mem:POINTER;
+       
+    cap := 32.mb;
+    {
+      cap := cap * 2;
+      mem := `malloc(@cap)`:POINTER;    
+      (mem != NULL).if {
+	`free(@mem)`;
+      };
+    }.do_until {(mem = NULL) || {cap = 2048.mb}};           
+    (mem = NULL).if {
+      cap := cap / 2;
+    };
+    get_begin_memory := `malloc(@cap)`:POINTER;
+    //
+    cap
+  );
   
 Section SYSTEM,MEMORY
   
