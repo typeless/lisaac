@@ -44,7 +44,8 @@ Section Public
   
   - predict_size filename:ABSTRACT_STRING :(INTEGER,INTEGER) <-
   ( + entry:ENTRY;
-    + bmp_file:BMP_FILE;
+    + f:STD_FILE;
+    + bmp:FORMAT_BMP;
     //+ ai_file:AI_FILE;
     + w,h:INTEGER;
     
@@ -54,15 +55,15 @@ Section Public
       die_with_code exit_failure_code;
     };    
     (entry.path.has_suffix ".bmp").if {
-      bmp_file := entry.open_bmp;    
-      bmp_file.read_header;
-      (! bmp_file.is_valid_bmp).if {
+      f ?= entry;
+      bmp := FORMAT_BMP.create_with_file f;      
+      (bmp = NULL).if {
         VIDEO.message "Error: BMP format invalid.\n";
         die_with_code exit_failure_code;      
       };
-      w := bmp_file.header.width;
-      h := bmp_file.header.height;      
-      bmp_file.close;
+      w := bmp.width;
+      h := bmp.height;      
+      bmp.close;
     }.elseif {entry.path.has_suffix ".ai"} then {
       not_yet_implemented;
     };

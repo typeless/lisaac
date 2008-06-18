@@ -78,7 +78,7 @@ Section Public
     result
   );
   
-  - is_valid_bmp:BOOLEAN <-
+  - is_valid:BOOLEAN <-
   (
     (file_type1 = 'B') && {file_type2 = 'M'}
   );
