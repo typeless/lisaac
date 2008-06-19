@@ -121,10 +121,10 @@ Section Public
   - reverse <-
   ( + i,j:INTEGER;
     	
-    i := lower
-    j := upper		
+    i := lower;
+    j := upper;		
     {i >= j}.until_do {
-      swap i and j;
+      swap i with j;
       i := i + 1;
       j := j - 1;
     };
