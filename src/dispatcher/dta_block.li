@@ -30,7 +30,7 @@ Section Header
     
 Section Inherit
   
-  - parent_dta:DTA := DTA;
+  + parent_dta_rd_args:Expanded DTA_RD_ARGS;
   
 Section Public
   
@@ -40,17 +40,13 @@ Section Public
     
   // Add.
   
-  + model:PROFIL_BLOCK;
-  
-  + argument_list:FAST_ARRAY[EXPR];
-  
-  + copy_argument:BOOLEAN;
+  + model:TYPE_BLOCK;
   
   //
   // Creation.
   //
   
-  - create mod:PROFIL_BLOCK with larg:FAST_ARRAY[EXPR] :SELF <-
+  - create mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] :SELF <-
   ( + result:SELF;
     context := profil;    
     result := clone;    
@@ -58,27 +54,13 @@ Section Public
     result    
   );
   
-  - make mod:PROFIL_BLOCK with larg:FAST_ARRAY[EXPR] <-
+  - make mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] <-
   (    
     model         := mod;
     argument_list := larg;
-    result_expr   := mod.get_expr_result;    
+    result_expr   := mod.get_expr_for (mod.position);    
   );
-  
-  //
-  // Service
-  //
-  
-  - remove <-
-  (
-    (! copy_argument).if {
-      (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
-	argument_list.item j.remove;
-      };
-      copy_argument := TRUE;
-    };
-  );
-
+    
   //
   // Display.
   //
@@ -122,8 +104,15 @@ Section NODE_TYPE, DTA
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {                 
       TYPE_NULL.product_error (e.position) in result;
-    } else {
+    } else {            
       t_block ?= t;                  
+      
+      (t_block = NULL).if { // BSBS: debug
+        t.print;
+        list_current.debug_display;
+        syntax_error (argument_list.first.position,"Block not found");        
+      };
+      
       wrt_larg := t_block.write_argument get_argument;
       call := CALL_SLOT.create (e.position) profil t_block with wrt_larg;      
       (result_expr.static_type.raw != TYPE_VOID).if {	
@@ -157,3 +146,4 @@ Section NODE_TYPE, DTA
     TRUE
   );
   
+

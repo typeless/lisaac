@@ -62,7 +62,7 @@ Section Public
     slot_code ?= profil_slot.slot;
     contract := slot_code.previous_contract;
     (contract != NULL).if {
-      result := contract.to_run_contract;
+      result := contract.to_run_expr;
     } else {
       result := NOP;
     };

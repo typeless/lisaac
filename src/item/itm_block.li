@@ -42,7 +42,7 @@ Section Private
   
 Section Public
   
-  - hash_code:INTEGER <- 0; // Chépa
+  - hash_code:INTEGER <- 0; // BSBS: Chépa
   
   + list:ITM_LIST;
   

@@ -107,6 +107,15 @@ Section Public
     EXPR_MULTIPLE.create lst
   );
   
+  - to_run_in lst:FAST_ARRAY[TYPE_FULL] for p:PARAMETER_TO_TYPE <-
+  ( + t:TYPE_FULL;
+    
+    lower.to upper do { i:INTEGER;
+      t := item i.to_run_for p;
+      lst.add_last t;
+    };
+  );
+  
   //
   // Display.
   //  

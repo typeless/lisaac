@@ -170,32 +170,14 @@ Section Public
   - new_block p:POSITION receiver e:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
   ( + dta:DTA_BLOCK;
     + result:NODE_TYPE;    
-    + lst_typ_f:FAST_ARRAY[LOCAL];
+    + lst_typ_f:FAST_ARRAY[TYPE_FULL];
     + new_expr:EXPR;
-    + block_model:PROFIL_BLOCK;
+    + block_model:TYPE_BLOCK;
     + pos:POSITION;
-    /*
-    not_yet_implemented;
     
-    lst_typ := TYPES_TMP.new;      
-    e.get_type lst_typ;
-    ((! lst_typ.is_empty) && {lst_typ.first = TYPE_NULL}).if {
-      lst_typ.remove_first;
-    };
-    (lst_typ.is_empty).if {            
-      block_model ?= e.static_type.raw;  // BSBS: ce n'est plus necessaire 
-      (block_model = NULL).if {		 // (il y a tjrs lst_typ.first)
-	semantic_error (p,
-	  "Profil block not found, a first definition must to be before a first evaluation.\n\
-	  \Sorry, it's a limit for this actual compiler.");
-      };
-    } else {          
-      block_model ?= lst_typ.first;        
-    };
-    lst_typ.free;
-    */
     block_model ?= e.static_type.raw;
-    (block_model = NULL).if {
+    
+    (block_model = NULL).if { // BSBS: Debug...
       string_tmp.clear;
       e.static_type.display string_tmp;
       string_tmp.print;
@@ -203,15 +185,21 @@ Section Public
     };
     // Control argument type.            
     lst_typ_f := block_model.argument_list;
-    pos       := block_model.code.position;
-    (lst_typ_f.count != larg.count).if {
-      POSITION.put_error semantic text "Incorrect size of vector argument for this block.";
+    pos       := block_model.position;
+    
+    (lst_typ_f.count+1 != larg.count).if {      
+      string_tmp.copy "Incorrect size of vector argument for this block. (Value:";
+      larg.count.append_in string_tmp;
+      string_tmp.append ", Type:";
+      (lst_typ_f.count+1).append_in string_tmp;
+      string_tmp.add_last ')';
+      POSITION.put_error semantic text string_tmp;
       pos.put_position;
       p  .put_position;
       POSITION.send_error;
     };  
     (larg.lower + 1).to (larg.upper) do { j:INTEGER;            
-      new_expr := larg.item j.check_type (lst_typ_f.item j.type) with pos;
+      new_expr := larg.item j.check_type (lst_typ_f.item (j-1)) with pos;
       larg.put new_expr to j;
     };
     //    

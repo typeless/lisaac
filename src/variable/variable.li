@@ -319,7 +319,8 @@ Section Public
   (
     buffer.append intern_name;
     buffer.add_last ':';
-    buffer.append (type.intern_name);
+    type.append_name_in buffer;
+    //buffer.append (type.intern_name);
   );
   
   - display_type buffer:STRING <-

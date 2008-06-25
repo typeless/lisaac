@@ -1458,7 +1458,8 @@ Section Private
 	}; // if      	
 	(! read_character ';').if {
 	  warning_error (current_position,"Added ';'.");
-	}; // if
+        }; // if
+        lst := read_type_list FALSE;
       } else {
 	lst := read_type_list FALSE;
 	(lst != NULL).if {
@@ -1471,15 +1472,17 @@ Section Private
 	      typ_arg.display string_tmp;
 	      string_tmp.append "'.";
 	      warning_error (current_position,string_tmp);
-	    };
-	  } else {
-	    (lst.count = 1).if {
-	      typ_res := lst.first;
-	    } else {
-	      typ_res := ITM_TYPE_MULTI.get lst;
-	    };
-	  };
+            };
+            lst := read_type_list FALSE;
+          };          
 	};      
+      };
+      (lst != NULL).if {
+        (lst.count = 1).if {
+          typ_res := lst.first;
+        } else {
+          typ_res := ITM_TYPE_MULTI.get lst;
+        };
       };
       (! read_character '}').if {
 	warning_error (current_position,"Added '}'.");
@@ -1928,8 +1931,7 @@ Section Private
 
   //++ GROUP        -> DEF_LOCAL {EXPR ';'} [ EXPR {',' {EXPR ';'} EXPR } ]
   - read_group:FAST_ARRAY[ITM_CODE] <-
-  ( + void_:ITM_PROTOTYPE;
-    + e:ITM_CODE;    
+  ( + e:ITM_CODE;    
     + result:FAST_ARRAY[ITM_CODE];
     
     read_def_local;
@@ -1953,14 +1955,10 @@ Section Private
 	  (e = NULL).if {
 	    syntax_error (current_position,"Incorrect multiple result expression.");
 	  };	  
-	}.do_while {read_character ','};	
-	result.add_last e;
-      } else {
-	result.add_last e;
+        }.do_while {read_character ','};	        
       };
-    } else {
-      void_ := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
-      result.add_last void_;
+      e := ITM_RESULT.create e;
+      result.add_last e;
     };    
     ALIAS_ARRAY[ITM_CODE].copy result
   );

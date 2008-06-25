@@ -1,77 +1,19 @@
-
-input  file : hello.li
-output file : ./hello
-target : DEFAULT
-path directory :
-  ./
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/base/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/base/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/collection/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/collection/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/file_system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/ai/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/bmp/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/graphics/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/graphics/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/clipping/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/event/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/input/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/io/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/kernel/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/memory/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/number/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/number/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/string/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/time/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/math/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/opengl/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/opengl/extensions/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/image_format/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/primitives/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/model_format/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/su_doku/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/tetris/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/fouronline/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/shell/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/calculator/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/viewer/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/about/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/clock/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/desktop/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/mpg2/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/file_system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/video/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/unix/
-BLOCK SEND ({HELLO}) Void(
-  `ext2`VOID<0>
-  Strict VOID<0>
-  __tmp__2[Expanded value__0]<0/R*/E4>->__id[Expanded value__0] :=<0/0> Expanded value__0<0>
-  __tmp__2[Expanded value__0]<0/R*/E4>->self[Strict HELLO] :=<0/1> Self__1[Strict HELLO]<0/R0/E1>
-  __tmp__2[Expanded value__0]<0/R*/E4>(
-    value__0<0>(__tmp__2[Expanded value__0]<0/R*/E4>->self[Strict HELLO]<0/R0/E1>)
-    Strict VOID<0>
-  )<0>
-  Strict VOID<0>
-  `ext3`VOID<0>
-  Strict VOID<0>
-  Strict VOID<0>
-)<0>
----------------------
-main({HELLO}) Void(
-  `ext1`VOID<0>
-)<0>
----------------------
-(
-  `arg_count  = argc;
-  arg_vector = argv`VOID<0>
-  `ext1`VOID<0>
-  (Expanded INTEGER)0<0>
-)<0>
+profil_block.li:      result := EXPR_MULTIPLE.create lst;      
+item/itm_list.li:	result := EXPR_MULTIPLE.create lr;
+item/itm_read.li:    + em:EXPR_MULTIPLE;
+item/itm_read.li:  ( + em:EXPR_MULTIPLE;
+item/itm_type_multi.li:    EXPR_MULTIPLE.create lst
+item/itm_write.li:    + em:EXPR_MULTIPLE;
+item/itm_write_value.li:    + val_multiple:EXPR_MULTIPLE;
+item/itm_write_value.li:      result := EXPR_MULTIPLE.create lst_exp;
+item/itm_write_value.li:  - affect idf:STRING_CONSTANT with val:EXPR_MULTIPLE 
+item/itm_write_value.li:	//BSBS: Recycle les EXPR_MULTIPLE
+item/itm_write_value.li:	lst.add_last (affect_slot idf with (EXPR_MULTIPLE.create lst_expr));
+type/type_block.li:      result := EXPR_MULTIPLE.create lst;
+type/type_null.li:    //+ em:EXPR_MULTIPLE;
+dispatcher/dta_block.li:    + em:EXPR_MULTIPLE;
+dispatcher/dta_wr_value.li:    + em:EXPR_MULTIPLE;
+dispatcher/node_style.li:    + em:EXPR_MULTIPLE;
+code_life/expr_multiple.li:  + name        := EXPR_MULTIPLE;
+code_life/expr_multiple.li:    crash_with_message "EXPR_MULTIPLE.get_type";
+code_life/expr_multiple.li:    crash_with_message "EXPR_MULTIPLE.execute_link";

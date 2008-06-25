@@ -55,6 +55,19 @@ Section Public
   
   + result_list:FAST_ARRAY[LOCAL];
   + result_last:LOCAL;
+  
+  - result_count:INTEGER <-   
+  ( + result:INTEGER;
+    
+    (result_last != NULL).if {
+      (result_list != NULL).if {
+        result := result_list.count + 1;
+      } else {
+        result := 1;
+      };
+    };
+    result
+  );    
     
   + code:LIST;
   + context:LOCAL;

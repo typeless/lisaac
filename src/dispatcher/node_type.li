@@ -110,14 +110,9 @@ Section Private
     + list:FAST_ARRAY[CASE];
     + case:CASE;
     + result:BOOLEAN;
-    + tb:PROFIL_BLOCK;
-            
+                
     typ_f := expr.static_type;
-    tb ?= typ_f.raw;
-    (
-      (typ_f.is_expanded && {typ_f.raw != type_boolean}) || 
-      {tb != NULL}
-    ).if {
+    (typ_f.is_expanded && {typ_f.raw != type_boolean}).if {
       (first_code = NULL).if {
 	first_type := typ_f.raw;
 	first_code := data.product first_type with expr self type_self;
@@ -126,7 +121,7 @@ Section Private
     }.elseif {(typ_f.raw = type_boolean) && {count = 2}} then {
       result := TRUE;
     } else {	
-      ((typ_f.raw = type_block) || {typ_f.raw.subtype_list.count != count}).if {
+      ((typ_f.raw.is_block) || {typ_f.raw.subtype_list.count != count}).if {
 	lst_typ := TYPES_TMP.new;      
 	expr.get_type lst_typ;      
 	(! lst_typ.is_empty).if {

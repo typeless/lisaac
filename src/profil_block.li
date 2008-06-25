@@ -83,6 +83,9 @@ Section Public
     + var:LOCAL;
     + old_list:LIST;
     + old_profil:PROFIL;
+    + result:EXPR;
+    + mul:EXPR_MULTIPLE;
+    + rd:READ_LOCAL;
     
     list := base.list;
         
@@ -106,7 +109,6 @@ Section Public
     // index TYPE
     index       := index_count;
     index_count := index_count + 1;
-    //default := TYPE_FULL.create Self with 0; 
     
     // Name : value
     name := ALIAS_STR.get_intern (ALIAS_STR.slot_value);    
@@ -141,12 +143,23 @@ Section Public
     //
     code := list_current;    
     //
-    list.to_run_base TRUE;    
-    //
-    result_list := list.create_result_list;
-    (list_current.static_type.raw != TYPE_VOID).if {
-      result_last := list_current.static_type.get_temporary (list_current.position);      
+    result := list.to_run_expr;
+    // Result.
+    (result.static_type.raw != TYPE_VOID).if {
+      mul ?= result;
+      (mul != NULL).if {
+        result_list := FAST_ARRAY[LOCAL].create_with_capacity (mul.count - 1);
+        (mul.lower).to (mul.upper-1) do { j:INTEGER;
+          rd ?= mul.item j;
+          result_list.add_last (rd.local);
+        };
+        rd ?= mul.last;
+      } else {
+        rd ?= result;        
+      };
+      result_last := rd.local;
     };
+    //
     context_extern := ITM_OBJECT.context_extern;
     //
     NODE.set_node_list old_node_list;        
@@ -220,21 +233,77 @@ Section Public
     };
     result
   );
-  
-  - '==' Right 60 other:TYPE :BOOLEAN <- 
-  ( + t:PROFIL_BLOCK;
-    + result:BOOLEAN;
+    
+  - is_block:BOOLEAN := FALSE;
 
-    result := (Self = other) || {other = type_block} || {
-      t ?= other;
-      t != NULL
+  - '==' Right 60 other:TYPE :BOOLEAN <- 
+  ( + t:TYPE_BLOCK;
+    + result:BOOLEAN;
+    + j,rc:INTEGER;
+    
+    t ?= other;
+    (t != NULL).if {
+      (argument_list.count-1 = t.argument_list.count).if {
+        j := argument_list.lower + 1;
+        {
+          (j <= argument_list.upper) && 
+          {argument_list.item j.type = t.argument_list.item (j-1)}
+        }.while_do {
+          j := j + 1;
+        };        
+        (j > argument_list.upper).if {
+          rc := result_count;
+          (rc = t.result_list.count).if {
+            (rc > 0).if {
+              result := result_last.type = t.result_list.last;
+              (result && {rc > 1}).if {                
+                j := result_list.lower;
+                {
+                  (j <= result_list.upper) && 
+                  {result_list.item j.type = t.result_list.item j}
+                }.while_do {
+                  j := j + 1;
+                };
+                result := j > result_list.upper;  
+              };
+            } else {
+              result := TRUE;
+            };
+          };
+        };
+      };
     };
     result
   );
-  
+
   - append_name_in buf:STRING <-  
   (
-    buf.append (ALIAS_STR.prototype_block);
+    buf.add_last '{';        
+    (argument_list.count > 1).if {
+      (argument_list.count > 2).if {
+        buf.add_last '(';
+        (argument_list.lower+1).to (argument_list.upper-1) do { j:INTEGER;
+          argument_list.item j.type.display buf;
+          buf.add_last ',';
+        };    
+        argument_list.last.type.display buf;
+        buf.add_last ')';
+      } else {
+        argument_list.last.type.display buf;
+      };
+      buf.add_last ';';
+      buf.add_last ' ';
+    };
+    (result_list != NULL).if {
+      (result_list.lower).to (result_list.upper) do { j:INTEGER;
+        result_list.item j.type.display buf;
+        buf.add_last ',';
+      };          
+    };
+    (result_last != NULL).if {
+      result_last.type.display buf;      
+    };
+    buf.add_last '}';    
   );
 
   - prototype:PROTOTYPE <- type_block.prototype;

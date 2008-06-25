@@ -64,8 +64,22 @@ Section Public
   //
 
   - to_run:INSTR <-
-  (   
-    value.to_run_expr.put_result FALSE
+  ( + mul:EXPR_MULTIPLE;
+    + val:EXPR;
+    + result:INSTR;
+    
+    val := value.to_run_expr;    
+    mul ?= val;
+    (mul != NULL).if {
+      (mul.lower).to (mul.upper) do { j:INTEGER;
+        result := to_run_intern (mul.item j);
+        list_current.add_last result;
+      };
+      result := to_run_intern (mul.last);
+    } else {
+      result := to_run_intern val;
+    };
+    result
   );
   
   - to_run_expr:EXPR <-
@@ -74,3 +88,13 @@ Section Public
     NULL
   );
 
+Section Private
+
+  - to_run_intern val:EXPR :INSTR <-
+  ( + var:LOCAL;  
+            
+    var := val.static_type.get_temporary position;
+    ITM_LIST.stack_result.add_last var;    
+    var.write position value val    
+  );
+  

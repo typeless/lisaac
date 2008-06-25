@@ -81,9 +81,7 @@ Section Public
   
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   (     
-    not_yet_implemented;
-    //to_run := TYPE.get Self
-    NULL
+    TYPE_BLOCK.get Self with p
   );
   
   - display buffer:STRING <-

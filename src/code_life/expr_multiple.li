@@ -28,6 +28,8 @@ Section Header
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Multiple expression manager";
   
+  // BSBS: Utiliser ca une seule fois ! cela doit etre possible! 
+  
 Section Inherit
   
   - parent_expr:EXPR := EXPR;
@@ -85,18 +87,6 @@ Section Public
     (expr_list.lower).to (expr_list.upper) do { j:INTEGER;
       expr_list.item j.remove;
     };
-  );
-  
-  //
-  // Results manager.
-  //
-    
-  - put_result is_last:BOOLEAN :INSTR <-
-  (     
-    (expr_list.lower).to (expr_list.upper-1) do { j:INTEGER;
-      list_current.add_last (expr_list.item j.put_result FALSE);
-    };
-    expr_list.last.put_result is_last
   );
   
   //

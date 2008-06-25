@@ -196,6 +196,9 @@ Section Public
   ( + contract:ITM_LIST;
     + slot:ITM_SLOT;
     + instr:INSTR;
+    + result:EXPR;
+    + mul:EXPR_MULTIPLE;
+    + nb_result_list:INTEGER;
                 
     verify := is_first;
     
@@ -214,11 +217,30 @@ Section Public
       };      
     };
     (contract != NULL).if {      
-      list_current.add_last (contract.to_run_contract);
+      contract.to_run_expr;
     };
     
     // Body.
-    value.to_run_extern;
+    result := value.to_run_expr;
+    (result.static_type.raw != TYPE_VOID).if {      
+      mul ?= result;
+      (mul != NULL).if {
+        nb_result_list := mul.count;
+      } else {
+        nb_result_list := 1;
+      };
+    };
+    (profil_slot.result_count != nb_result_list).if {
+      semantic_error (result.position,"Incorrect value result.");
+    };
+    (nb_result_list = 1).if {
+      put_result result in (profil_slot.result_last);
+    } else {
+      (mul.lower).to (mul.upper-1) do { j:INTEGER;
+        put_result (mul.item j) in (profil_slot.result_list.item j);
+      };
+      put_result (mul.last) in (profil_slot.result_last);
+    };
     
     // Ensure
     is_require := FALSE;
@@ -235,11 +257,16 @@ Section Public
       };      
     };
     (contract != NULL).if {            
-      list_current.add_last (contract.to_run_contract);
+      contract.to_run_expr;
     };
     // Result.
     (profil_slot.result_last != NULL).if {
-      instr := profil_slot.result_last.read position;    
+      mul ?= result;
+      (mul != NULL).if {
+        instr := mul.last;
+      } else {
+        instr := result;    
+      };
     } else {
       (id_section.is_interrupt).if {
 	list_current.add_first (
@@ -294,5 +321,11 @@ Section Public
     string_tmp.print;
   );
   
-
+Section Private
+  
+  - put_result e:EXPR in v:LOCAL <-
+  ( + val:EXPR;
+    val := e.check_type (v.type) with (v.position);
+    list_current.add_last (v.write position value val);
+  );
   

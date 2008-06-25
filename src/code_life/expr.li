@@ -64,59 +64,6 @@ Section Public
   - is_constant:BOOLEAN <- FALSE;
     
   //
-  // Results manager.
-  //
-    
-  - put_result is_last:BOOLEAN :INSTR <-
-  ( + var:LOCAL;
-    + result:INSTR;
-    + idx:INTEGER;
-    + var_result:FAST_ARRAY[LOCAL];
-    + val:EXPR;
-    
-    (is_last).if {
-      result := Self;
-    } else {            
-      ((profil_slot != NULL) && {profil_slot.code = list_current}).if {		
-	idx := (stack_result.count - stack_result_lower);
-	var_result := profil_slot.result_list;
-	(var_result != NULL).if {
-	  (idx <= var_result.upper).if {
-	    var := var_result.item idx;
-	  }.elseif {idx = var_result.count} then {
-	    var := profil_slot.result_last;
-	  } else {
-	    POSITION.put_error semantic text "More result value for this slot";
-	    profil_slot.slot.position.put_position;
-	    position.put_position;
-	    POSITION.send_error;  
-	  };
-	} else {
-	  (idx != 0).if {
-	    POSITION.put_error semantic text "One result value for this slot";
-	    profil_slot.slot.position.put_position;
-	    position.put_position;
-	    POSITION.send_error;
-	  };
-	  var := profil_slot.result_last;
-	  (var = NULL).if {
-	    POSITION.put_error semantic text "No result value for this slot";
-	    profil_slot.slot.position.put_position;
-	    position.put_position;
-	    POSITION.send_error;
-	  };
-	};	
-      } else {
-	var := static_type.get_temporary position;
-      };
-      stack_result.add_last var;
-      val := check_type (var.type) with (var.position);
-      result := var.write position value val;      
-    };
-    result
-  );
-  
-  //
   // Check type.
   //
   

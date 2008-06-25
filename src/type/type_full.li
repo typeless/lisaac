@@ -133,7 +133,8 @@ Section Public
     (is_expanded).if {
       buffer.append "Expanded ";
     };    
-    buffer.append (raw.name);
+    raw.append_name_in buffer;
+  //  buffer.append (raw.name);
   );
   
   //
@@ -231,22 +232,27 @@ Section Public
         
     (other == Self).if {
       result := TRUE;
-    } else {      
-      (other != NULL).if {
-	(is_strict).if {
-	  // A: Strict.
-	  result := other.raw = TYPE_NULL;
-	}.elseif {is_expanded} then {
-	  // A: Expanded.
-	  result := 
-	  ((other.is_strict)    && {raw == other.raw      }) ||
-	  {(raw = type_boolean) && {other.is_sub_type Self}} ||
-	  {(raw = type_pointer) && {other.raw = TYPE_NULL }};	  
-	} else {
-	  // A: Reference.
-	  result := ((! other.is_expanded) || {raw = type_block}) && {other.is_sub_type Self}; 
-	};	
-      };
+    } else {            
+      (is_strict).if {
+        // A: Strict.
+        result := other.raw = TYPE_NULL;
+      }.elseif {is_expanded} then {
+        // A: Expanded.
+        result := 
+        ((other.is_strict)    && {raw == other.raw      }) ||
+        {(raw = type_boolean) && {other.is_sub_type Self}} ||
+        {(raw = type_pointer) && {other.raw = TYPE_NULL }};	  
+      } else {
+        // A: Reference.
+        result := 
+        (
+          (! other.is_expanded) || 
+          { + tb:TYPE_BLOCK;
+            tb ?= raw;            
+            (tb != NULL)
+          }
+        ) && {other.is_sub_type Self}; 
+      };	
     };
     result
   );

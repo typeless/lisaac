@@ -639,6 +639,8 @@ Section Public
   
 Section Public
   
+  - is_block:BOOLEAN := FALSE;
+  
   - '==' Right 60 other:TYPE :BOOLEAN <- (Self = other);
   
   - is_sub_type other:TYPE :BOOLEAN <-
@@ -778,7 +780,7 @@ Section TYPE
     }
     .when (ALIAS_STR.prototype_integer_64) or (ALIAS_STR.prototype_uinteger_64) then {
       size := 3; // 64 bits
-    };        
+    };
   );
   
 Section TYPE, TYPE_FULL
