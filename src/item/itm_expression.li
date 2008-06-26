@@ -130,24 +130,26 @@ Section Public
 	}.do_while {continue};
       };
       val_list.add_last val;
-      typ := val.static_type.raw;            
       idx := idx_post;
-      // Infix.
-      itm_op ?= value_list.item idx;
-      op_name := itm_op.name;      
-      (op_name = ALIAS_STR.symbol_equal).if {
-	instr := EXPR_EQUAL.create (itm_op.position) with NULL and NULL;
-      }.elseif {op_name = ALIAS_STR.symbol_not_equal} then {
-	instr := EXPR_NOT_EQUAL.create (itm_op.position) with NULL and NULL;
-      } else {
-	nam := operator (ALIAS_STR.slot_infix) name op_name;
-	slo := typ.get_slot nam;
-	(slo = NULL).if {
-	  error_slot (itm_op.position) name "infix" operator op_name in typ;
-	};
-	instr := NODE.new_read_partial (itm_op.position) slot slo;
+      (idx < value_list.upper).if {
+        // Infix.
+        typ := val.static_type.raw;                            
+        itm_op ?= value_list.item idx;
+        op_name := itm_op.name;      
+        (op_name = ALIAS_STR.symbol_equal).if {
+          instr := EXPR_EQUAL.create (itm_op.position) with NULL and NULL;
+        }.elseif {op_name = ALIAS_STR.symbol_not_equal} then {
+          instr := EXPR_NOT_EQUAL.create (itm_op.position) with NULL and NULL;
+        } else {
+          nam := operator (ALIAS_STR.slot_infix) name op_name;
+          slo := typ.get_slot nam;
+          (slo = NULL).if {
+            error_slot (itm_op.position) name "infix" operator op_name in typ;
+          };
+          instr := NODE.new_read_partial (itm_op.position) slot slo;
+        };
+        val_list.add_last instr;      
       };
-      val_list.add_last instr;      
     }.do_while {idx < value_list.upper};
                                     
     {val_list.count = 1}.until_do {

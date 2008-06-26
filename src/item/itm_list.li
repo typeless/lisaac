@@ -127,6 +127,7 @@ Section Public
         
     stack_top  := stack_local .upper + 1;
     result_top := stack_result.upper + 1;
+            
     // Push Local.
     (local_list != NULL).if {      
       (local_list.lower).to (local_list.upper) do { j:INTEGER;
@@ -146,15 +147,15 @@ Section Public
       i := code.item j.to_run;      
       list_current.add_last i;
     };    
-    // Compute result expr.        
-    nb_result := stack_result.upper - stack_top + 1;    
+    // Compute result expr.            
+    nb_result := stack_result.upper - result_top + 1;    
     (nb_result = 0).if {            
       result := PROTOTYPE_CST.create position type (TYPE_VOID.default);      
     } else {            
       (nb_result > 1).if {
 	// Creation Vector.
 	lr := FAST_ARRAY[EXPR].create_with_capacity nb_result;
-	(stack_top).to (stack_result.upper) do { j:INTEGER;
+	(result_top).to (stack_result.upper) do { j:INTEGER;
 	  lr.add_last (stack_result.item j.read position);
 	};
 	result := EXPR_MULTIPLE.create lr;

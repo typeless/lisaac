@@ -92,7 +92,7 @@ Section Private
 
   - to_run_intern val:EXPR :INSTR <-
   ( + var:LOCAL;  
-            
+        
     var := val.static_type.get_temporary position;
     ITM_LIST.stack_result.add_last var;    
     var.write position value val    

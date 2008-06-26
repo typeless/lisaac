@@ -235,7 +235,7 @@ Section Public
     };
     (nb_result_list = 1).if {
       put_result result in (profil_slot.result_last);
-    } else {
+    }.elseif {nb_result_list > 1} then {
       (mul.lower).to (mul.upper-1) do { j:INTEGER;
         put_result (mul.item j) in (profil_slot.result_list.item j);
       };

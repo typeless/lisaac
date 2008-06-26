@@ -59,7 +59,14 @@ Section Public
     NULL
   );
   
-
+  //
+  // Display.
+  //
+  
+  - print <-
+  (
+    deferred;
+  );
 
 
 

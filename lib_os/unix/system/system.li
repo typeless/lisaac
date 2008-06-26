@@ -78,7 +78,7 @@ Section Public
   
   - get_begin_memory:POINTER;
   
-  - get_capacity_memory:UINTEGER_32 <- 
+  - get_memory_capacity:UINTEGER_32 <- 
   ( + cap:UINTEGER_32;
     + mem:POINTER;
        

@@ -50,7 +50,7 @@ Section Public
         
     val := value.to_run_expr;
             
-    val_multiple ?= val;
+    val_multiple ?= val;        
     (val_multiple != NULL).if {
       //
       // Assignment Vector.      
@@ -76,7 +76,7 @@ Section Public
       //
       // Assignment simple.
       //      
-      itm_read ?= assign;
+      itm_read ?= assign;      
       ? {itm_read != NULL};      
       result := affect (itm_read.name) with val;
     };

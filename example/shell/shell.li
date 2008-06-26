@@ -54,11 +54,11 @@ Section Private
     }.elseif {cmd == "ls"} then {
       ls;
     }.elseif {cmd == "version"} then {
-      print "Small Lisaac shell Version 0.1\n";
+      print "Small Lisaac shell Version 0.2\n";
     }.elseif {cmd == "rm"} then {
       rm;      
-    }.elseif {cmd == "rename"} then {
-      rename;
+    }.elseif {cmd == "mv"} then {
+      mv;
     //  
     // Directory Manager.  
     //
@@ -92,7 +92,7 @@ Section Private
     \Entry manager:\n\
     \  ls                  : List information about the files.\n\
     \  rm <src>            : Remove file or directory <src>.\n\
-    \  rename <src> <name> : Rename file or directory <src> with new <name>.\n\
+    \  mv <src> <name>     : Move file or directory <src> with new <name>.\n\
     \Directory manager:\n\
     \  cd <dst>            : Change current directory.\n\
     \  mkdir <dir>         : Create the directory.\n\
@@ -107,86 +107,70 @@ Section Private
   
   - ls <-
   ( + e:ENTRY;
+    + f:STD_FILE;
     
-    print "----Access----  ----Update----  ---Size--   ----Name----\n";
-    dir.lower.to (dir.upper) do { i:INTEGER;
-      e := dir.item i;
-      string_tmp.clear;
-      // Access.
-      e.access_date.append_short_in string_tmp;
-      string_tmp.add_last ' ';
-      e.access_time.append_short_in string_tmp;
-      string_tmp.append "  ";
-      // Update.
-      e.update_date.append_short_in string_tmp;
-      string_tmp.add_last ' ';
-      e.update_time.append_short_in string_tmp;
-      string_tmp.append "  ";
-      // Size.
-      e.size.append_in string_tmp format 9;
-      // Name.
-      (e.is_directory).if {
-        string_tmp.append " d ";
-      } else {
-        string_tmp.append " - ";
+    (dir.open).if_false {
+      print "`ls\': Permission denied.\n";
+    } else {
+      print "----Access----  ----Update----  ---Size--   ----Name----\n";    
+      dir.lower.to (dir.upper) do { i:INTEGER;
+        e := dir.item i;
+        string_tmp.clear;
+        // Access.        
+        e.access_date.append_short_in string_tmp;
+        string_tmp.add_last ' ';
+        e.access_time.append_short_in string_tmp;
+        string_tmp.append "  ";
+        // Update.
+        e.update_date.append_short_in string_tmp;
+        string_tmp.add_last ' ';
+        e.update_time.append_short_in string_tmp;
+        string_tmp.append "  ";      
+        // Name.
+        (e.is_directory).if {
+          string_tmp.append "          d ";
+        } else {
+          // Size.
+          f ?= e;
+          f.size.append_in string_tmp format 9;
+          string_tmp.append " - ";
+        };
+        string_tmp.append (e.name);
+        string_tmp.add_last '\n';
+        print string_tmp;
       };
-      string_tmp.append (e.name);
-      string_tmp.add_last '\n';
-      print string_tmp;
     };
   );
     
-  - rename <-
-  ( + e:ENTRY;
-    + src,dst:STRING;
+  - mv <-
+  ( + src,dst:STRING;
     (cmds.count < 3).if {
-      print "`rename\': Too few arguments.\n";
+      print "`mv\': Too few arguments.\n";
     }.elseif {cmds.count != 3} then {
-      print "`rename\': Too many arguments.\n";
+      print "`mv\': Too many arguments.\n";
     } else {
       src := cmds.item 1;
-      dst := cmds.item 2;
-      (dst.index_of '/' since 1 != 0).if {
-        print "`";
+      dst := cmds.item 2;      
+      (dir.move src to dst).if_false {
+        print "`mv\': cannot rename file `";
         print dst;
-        print "\': Invalid name.";
-      } else {
-        e := dir.get src;
-        (e = NULL).if {
-          print "`rename\': cannot stat `";
-          print src;
-          print "\': No such file or directory.\n";
-        } else {
-          (e.rename dst).if_false {
-            print "`rename\': cannot rename file `";
-            print dst;
-            print "\': Permission denied.\n";
-          };
-        };
+        print "\': Permission denied.\n";
       };
     };
   );
 
   - rm <-
-  ( + e:ENTRY;
-    + param:STRING;
+  ( + param:STRING;
     (cmds.count = 1).if {
       print "`rm\': Too few arguments.\n";
     }.elseif {cmds.count != 2} then {
       print "`rm\': Too many arguments.\n";
     } else {
-      param := cmds.item 1;
-      e := dir.get param;
-      (e = NULL).if {
+      param := cmds.item 1;      
+      (dir.remove param).if_false {
         print "`rm\': cannot remove `";
         print param;
-        print "\': No such file or directory.\n";
-      } else {
-        (e.remove).if_false {
-          print "`rm\': cannot remove `";
-          print param;
-          print "\': Permission denied.\n";
-        };
+        print "\': Permission denied.\n";
       };
     };
   );
@@ -201,23 +185,14 @@ Section Private
     
     (cmds.count > 2).if {
       print "`cd\': Too many arguments.\n";
-    }.elseif {cmds.count = 1} then {
-      dir.close;
+    }.elseif {cmds.count = 1} then {      
       dir := FILE_SYSTEM;
     } else {
       param := cmds.item 1;
-      e := dir.get param;
+      e := dir.get_entry param;
       (e != NULL).if {
         (e.is_directory).if {
-          e := e.open;
-          (e != NULL).if {
-            dir.close;
-            dir ?= e;
-          } else {
-            print "`cd ";
-            print param;
-            print "\': Permission denied.\n";
-          };
+          dir ?= e;                    
         } else {
           print "`";
           print param;
@@ -265,21 +240,20 @@ Section Private
       print "`cat\': Too many arguments.\n";
     } else {
       param := cmds.item 1;
-      e := dir.get param;
+      e := dir.get_entry param;
       ((e = NULL) || {! e.is_file}).if {
         print "`";
         print param;
         print "\': No such file.\n";
       } else {
-        e := e.open;
-        (e = NULL).if {
+        file ?= e;
+        (! file.open).if {
           print "`";
           print param;
           print "\': Not open.\n";
-        } else {
-          file ?= e;
+        } else {          
           string_tmp.clear;
-          string_tmp.set_capacity (file.size.to_integer);
+          string_tmp.set_capacity (file.size.to_integer);          
           file.read string_tmp size (file.size);
           print string_tmp;
           print "\n";
@@ -290,21 +264,20 @@ Section Private
   );
     
   - mkfile <-
-  ( + e:ENTRY;
-    + f:STD_FILE;
+  ( + f:STD_FILE;
     + param:STRING;
        
     (cmds.count = 1).if {
       print "`mkfile\': Too few arguments.\n";
     } else {
       param := cmds.item 1;
-      e := dir.make_file param;
-      (e = NULL).if {
+      f := dir.make_file param;
+      (f = NULL).if {
         print "`";
         print param;
         print "\': File exists, cannot create file.\n";
       }.elseif {cmds.count > 2} then {
-        f ?= e.open;
+        f.open;
         2.to (cmds.upper) do { j:INTEGER;
           string_tmp.copy (cmds.item j);
           string_tmp.add_last ' ';
@@ -475,9 +448,10 @@ Section Private
     + f:STD_FILE;
         
     cur_dir := FILE_SYSTEM;          
-    e := cur_dir.get "font.fnt";
+    e := cur_dir.get_entry "font.fnt";
     ((e != NULL) && {e.is_file}).if {
-      f ?= e.open;
+      f ?= e;
+      f.open;
       font := FAST_ARRAY[UINTEGER_8].create_with_capacity 4096;
       f.read font size 4096;
       f.close;      
