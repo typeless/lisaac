@@ -53,7 +53,7 @@ Section Public
   - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
   ( + t:TYPE_FULL;
         
-    t := to_run_for p;    
+    t := to_run_for p;        
     t.get_temporary_expr (p.position)
   );  
   

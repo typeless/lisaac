@@ -102,7 +102,7 @@ Section Public
   // Just for ITM_EXPRESSION.
   //
   
-  - new_read_partial p:POSITION slot s:SLOT :NODE <-
+  - new_read_partial p:POSITION slot s:SLOT :NODE_TYPE <-
   ( + dta:DTA_RD_ARGS;    
         
     dta := DTA_RD_ARGS.create_partial p call s;
@@ -113,13 +113,11 @@ Section Public
   ( + dta:DTA_RD_ARGS;    
     // Control argument type.            
     dta ?= data;
-    data.slot.check_argument_type larg for dta;    
     dta.make (data.position) call (data.slot) with larg;
-    not_yet_implemented;
-    //make rec with data;
-    //    
-    not_yet_implemented;
-    //node_list.add_last Self;
+    data.slot.check_argument_type larg for dta;            
+    make rec with data;
+    //        
+    node_list.add_last Self;
   );
   
   //

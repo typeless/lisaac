@@ -53,6 +53,8 @@ Section Public
     + tab:FAST_ARRAY[ITM_TYPE_PARAMETER];
     + result:TYPE_FULL;
     
+    "HHHHEEERRREEE\n".print;
+    
     tab := prototype.idf_generic_list;
     idx := tab.fast_first_index_of p;
     (idx <= tab.upper).if {

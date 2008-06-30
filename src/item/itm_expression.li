@@ -61,7 +61,7 @@ Section Public
   //
 
   - to_run_expr:EXPR <-
-  ( + max_pos,max_lev,idx,idx_post:INTEGER;
+  ( + max_pos,max_lev,idx,idx_post,idx_pre,low:INTEGER;
     + continue:BOOLEAN;
     + max_pri  :STRING_CONSTANT;
     + left,right:EXPR;
@@ -72,6 +72,7 @@ Section Public
     + slo:SLOT;
     + nam,op_name:STRING_CONSTANT;
     + site:NODE;
+    + n_t:NODE_TYPE;
     + extern:EXPR_BINARY_CMP;
     + loc:VARIABLE;
     + l_arg:FAST_ARRAY[EXPR];
@@ -81,53 +82,58 @@ Section Public
     val_list := ALIAS_ARRAY[INSTR].new;
     // Search unary message.
     idx := -1;    
+    low := value_list.lower;
     {      
       // Search first message.
       {
 	idx := idx + 1;
 	itm_op ?= value_list.item idx;
-      }.do_while {itm_op != NULL};	
+      }.do_while {(itm_op != NULL) && {idx != value_list.upper}};	
+      (itm_op != NULL).if {
+        semantic_error (itm_op.position,"Operator postfix not found.");
+      };
       val := value_list.item idx.to_run_expr;
       typ := val.static_type.raw;      
+      // Post-fix.	
       idx_post := idx + 1;
-      (idx_post < value_list.upper).if {
-	// Post-fix.	
-	{
-	  continue := FALSE;
-	  itm_op ?= value_list.item (idx_post + 1);
-	  (itm_op != NULL).if {
-	    itm_op ?= value_list.item idx_post;
-	    slo := typ.get_slot (operator (ALIAS_STR.slot_postfix) name (itm_op.name));
-	    (slo != NULL).if {	  
-	      site := NODE.new_read (itm_op.position) slot slo receiver val self val;		
-	      list_current.add_last site;
-	      val := site.result_expr;
-	      idx_post := idx_post + 1;
-	      continue := TRUE;
-	    };
-	  };
-	}.do_while {continue};
+      continue := TRUE;
+      {(idx_post <= value_list.upper) && {continue}}.while_do {
+        continue := FALSE;
+        (idx_post != value_list.upper).if {
+          itm_op ?= value_list.item (idx_post + 1);
+        };
+        ((idx_post = value_list.upper) || {itm_op != NULL}).if {
+          itm_op ?= value_list.item idx_post;
+          slo := typ.get_slot (operator (ALIAS_STR.slot_postfix) name (itm_op.name));
+          (slo != NULL).if {	  
+            site := NODE.new_read (itm_op.position) slot slo receiver val self val;
+            list_current.add_last site;
+            val := site.result_expr;
+            idx_post := idx_post + 1;
+            continue := TRUE;
+          };
+        };
       };
       // Pre-fix.      
-      (idx > 0).if {
-	{
-	  idx := idx - 1;
-	  continue := FALSE;
-	  (idx != 0).if {
-	    itm_op ?= value_list.item (idx - 1);
-	  };
-	  ((idx = 0) || {itm_op != NULL}).if {
-	    itm_op ?= value_list.item idx;
-	    slo := typ.get_slot (operator (ALIAS_STR.slot_prefix) name (itm_op.name));
-	    (slo = NULL).if {	  
-	      error_slot (itm_op.position) name "prefix" operator (itm_op.name) in typ;
-	    };
-	    site := NODE.new_read (itm_op.position) slot slo receiver val self val;		
-	    list_current.add_last site;
-	    val := site.result_expr;	    	    
-	    continue := TRUE;
-	  };
-	}.do_while {continue};
+      idx_pre := idx - 1;
+      continue := TRUE;
+      {(idx_pre >= low) && {continue}}.while_do {
+        continue := FALSE;
+        (idx_pre != low).if {
+          itm_op ?= value_list.item (idx_pre - 1);
+        };
+        ((idx_pre = low) || {itm_op != NULL}).if {
+          itm_op ?= value_list.item idx_pre;
+          slo := typ.get_slot (operator (ALIAS_STR.slot_prefix) name (itm_op.name));
+          (slo = NULL).if {	  
+            error_slot (itm_op.position) name "prefix" operator (itm_op.name) in typ;
+          };
+          site := NODE.new_read (itm_op.position) slot slo receiver val self val;
+          list_current.add_last site;
+          val := site.result_expr;	    	    
+          idx_pre := idx_pre - 1;
+          continue := TRUE;
+        };
       };
       val_list.add_last val;
       idx := idx_post;
@@ -150,12 +156,13 @@ Section Public
         };
         val_list.add_last instr;      
       };
-    }.do_while {idx < value_list.upper};
+      low := idx_post + 1;
+    }.do_while {idx <= value_list.upper};
                                     
     {val_list.count = 1}.until_do {
       // Search max level.
       max_lev := -1;
-      (val_list.lower+1).to (val_list.upper) by 2 do { j:INTEGER;
+      (val_list.lower+1).to (val_list.upper-1) by 2 do { j:INTEGER;
 	site ?= val_list.item j;
 	(site = NULL).if {
 	  // '=' or '!='.
@@ -185,10 +192,10 @@ Section Public
 	};
       };
       
-      site ?= val_list.item max_pos;
+      n_t   ?= val_list.item max_pos;
       left  ?= val_list.item (max_pos - 1);
       right ?= val_list.item (max_pos + 1);
-      (site = NULL).if {
+      (n_t = NULL).if {
 	// '=' or '!='.
 	extern ?= val_list.item max_pos;	
 	extern.set_left left and_right right;	
@@ -201,16 +208,16 @@ Section Public
 	l_arg := FAST_ARRAY[EXPR].create_with_capacity 2;
 	l_arg.add_last left;
 	l_arg.add_last right;
-	site.new_read_finalize (left.my_copy) with l_arg;
-	list_current.add_last site;
-	val := site.result_expr;
+	n_t.new_read_finalize (left.my_copy) with l_arg;
+	list_current.add_last n_t;
+	val := n_t.result_expr;
       };
       
       // Delete operator.
       val_list.remove max_pos;
-      val_list.remove (max_pos+1);
+      val_list.remove max_pos;
       //
-      val_list.put val to max_pos;      
+      val_list.put val to (max_pos - 1);      
     };
 
     result ?= val_list.first;

@@ -43,7 +43,9 @@ Section Public
   );
   
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  ( 
-    p.parameter_to_type Self
+  ( + result:TYPE_FULL;
+    
+    result := p.parameter_to_type Self;
+    result
   );
   
