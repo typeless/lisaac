@@ -20,37 +20,20 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := HANOI;
+  + name        := PARAMETER_TO_TYPE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment     := "The classic Tower of Hanoi game.";
+  - comment     := "Type parameter -> type full";
   
-Section Inherit
-  
-  - parent_object:OBJECT := OBJECT;
-
 Section Public
   
-  - t:FAST_ARRAY[INTEGER];
+  - position:POSITION <- deferred;
   
-  - m (l,i:INTEGER) :BOOLEAN <-
-  ( 
-    (l <= i)
-  )
-  [
-    (debug_level >= 15);
-  ];
-  
-  + a:INTEGER;
-  
-  - main <-
-  ( 
-    t := FAST_ARRAY[INTEGER].create 2;             
-    `printf("BUG\n")`;        
-    m (1,0);    
-    `printf("FIN BUG\n")`;
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
+  (
+    deferred;
+    NULL
   );
-  
