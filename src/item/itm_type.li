@@ -36,6 +36,11 @@ Section Public
   
   - display buffer:STRING <- deferred;
   
+  - to_run_in lst:FAST_ARRAY[TYPE_FULL] for p:PARAMETER_TO_TYPE <-
+  (
+    deferred;
+  );
+  
   - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
   (
     deferred;

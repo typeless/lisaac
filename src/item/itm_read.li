@@ -141,6 +141,7 @@ Section ITM_READ
       // Mais que le profil général en a un...
       semantic_error (position,"Call on Void"); 
     };
+        
     (
       (receiver_type.is_block) && 
       {name = ALIAS_STR.slot_value}

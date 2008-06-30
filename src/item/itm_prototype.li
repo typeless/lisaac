@@ -59,42 +59,20 @@ Section Public
 
   - to_run_expr:EXPR <- 
   ( + t:TYPE_FULL;
-    + tb:PROFIL_BLOCK;
-    + loc,my_self:LOCAL;    
-    + result,val,rec:EXPR;
-    + wrt:WRITE;
+    + result:EXPR;
             
-    t := type.to_run_for profil_slot;
-    tb ?= t.raw;
-    (tb != NULL).if {
-      // BLOCK :
-      loc := t.get_temporary position;	
-      // tmp.id := id_block;
-      rec := loc.read position;
-      val := PROTOTYPE_CST.create position type t;      
-      wrt := tb.slot_value.write position with rec value val;
-      list_current.add_last wrt;
-      // tmp.self := Self;
-      rec := loc.read position;
-      my_self := lookup (ALIAS_STR.variable_self);
-      val := my_self.read position;
-      wrt := tb.slot_self.write position with rec value val;
-      list_current.add_last wrt;
-      // tmp
-      result := loc.read position;
-    } else {
-      // TYPE Classic.
-      (
-	(t.is_expanded_c) && 
-	{t.raw != type_boolean} && 
-	{t.raw != type_true} && 
-	{t.raw != type_false}
-      ).if {
-	result := t.default_value position;
-	result := result.check_type t with position;
-      } else {      
-	result := PROTOTYPE_CST.create position type t;
-      };
+    t := type.to_run_for profil_slot;    
+    // TYPE Classic.
+    (
+      (t.is_expanded_c) && 
+      {t.raw != type_boolean} && 
+      {t.raw != type_true} && 
+      {t.raw != type_false}
+    ).if {
+      result := t.default_value position;
+      result := result.check_type t with position;
+    } else {      
+      result := PROTOTYPE_CST.create position type t;
     };
     result
   );

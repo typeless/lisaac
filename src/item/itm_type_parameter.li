@@ -44,16 +44,8 @@ Section Public
   
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + result:TYPE_FULL;
-    
-    "ITM_TYPE_PARAMETER Enter\n".print;
-    
-    result := p.parameter_to_type Self;
-    
-    (result = NULL).if {
-      "ITM_TYPE_PARAMETER\n".print;
-      //warning_error (p.position,"ITM_TYPE_PARAMETER");
-    };
-    
+        
+    result := p.parameter_to_type Self;    
     result
   );
   

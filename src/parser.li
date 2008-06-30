@@ -1825,7 +1825,6 @@ Section Private
     + ltype:FAST_ARRAY[ITM_TYPE_MONO];
     + ext  :ITM_EXTERNAL_TYPE;
     + group_sav:ITM_LIST;
-    + new_block:ITM_BLOCK;
     + arg:ITM_ARGUMENT;
     + result_id:STRING_CONSTANT;    
     
@@ -1890,8 +1889,7 @@ Section Private
 	restore_context; // !! RESTORE CONTEXT !!
 	
       };
-      new_block := ITM_BLOCK.get last_group argument arg;
-      result    := ITM_PROTOTYPE.create current_position type new_block;
+      result := ITM_BLOCK.create last_group argument arg;
       
       last_group.set_code read_group;
       (! read_character '}').if {

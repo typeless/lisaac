@@ -49,7 +49,12 @@ Section Public
     deferred;
     NULL
   );
-    
+  
+  - to_run_in lst:FAST_ARRAY[TYPE_FULL] for p:PARAMETER_TO_TYPE <-
+  (
+    lst.add_last (to_run_for p);
+  );
+  
   - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
   ( + t:TYPE_FULL;
         

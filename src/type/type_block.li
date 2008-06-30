@@ -84,32 +84,27 @@ Section Public
   - get t:ITM_TYPE_BLOCK with p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + a_list:FAST_ARRAY[TYPE_FULL];
     + r_list:FAST_ARRAY[TYPE_FULL];
-    + m:ITM_TYPE_MULTI;
-    + s:ITM_TYPE_MONO;
-    + idx:INTEGER;
-    + result:TYPE_BLOCK;
-    
-    // Argument.
-    m ?= t.type_argument;
-    s ?= t.type_argument;
+        
+    // Argument.    
     a_list := ALIAS_ARRAY[TYPE_FULL].new;
-    (m != NULL).if {      
-      m.to_run_in a_list for p;
-    }.elseif {s != NULL} then {      
-      a_list.add_last (s.to_run_for p);
+    (t.type_argument != NULL).if {
+      t.type_argument.to_run_in a_list for p;
     };
     a_list := ALIAS_ARRAY[TYPE_FULL].alias a_list;
     // Result.
-    m ?= t.type_result;
-    s ?= t.type_result;
     r_list := ALIAS_ARRAY[TYPE_FULL].new;
-    (m != NULL).if {      
-      m.to_run_in r_list for p;
-    }.elseif {s != NULL} then {
-      r_list.add_last (s.to_run_for p);
-    };
+    (t.type_result != NULL).if {      
+      t.type_result.to_run_in r_list for p;
+    };    
     r_list := ALIAS_ARRAY[TYPE_FULL].alias r_list;
     //    
+    get_direct a_list and_result r_list.default
+  );
+    
+  - get_direct a_list:FAST_ARRAY[TYPE_FULL] and_result r_list:FAST_ARRAY[TYPE_FULL] :TYPE_BLOCK <-
+  ( + idx:INTEGER;
+    + result:TYPE_BLOCK;
+    
     idx := dico.lower;
     {
       (idx <= dico.upper) && {
@@ -125,7 +120,7 @@ Section Public
       result := create a_list and_result r_list;
       dico.add_last result;
     };
-    result.default
+    result
   );
   
   - prototype:PROTOTYPE <- type_block.prototype;

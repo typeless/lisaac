@@ -44,6 +44,8 @@ Section Public
   
   - type_c:STRING_CONSTANT <- "__BLOCK";
   
+  + to_type_block:TYPE_BLOCK;
+  
   + slot_self:SLOT_DATA;
   + slot_value:SLOT_DATA;
   
@@ -86,12 +88,16 @@ Section Public
     + result:EXPR;
     + mul:EXPR_MULTIPLE;
     + rd:READ_LOCAL;
+    + a_list:FAST_ARRAY[TYPE_FULL];
+    + r_list:FAST_ARRAY[TYPE_FULL];
     
     list := base.list;
         
     PROFIL_LIST.add Self;
     type_self   := ITM_TYPE_SIMPLE.type_self.to_run_for profil_slot; 
-    default := TYPE_FULL.create Self with (TYPE_FULL.expanded_bit | TYPE_FULL.default_expanded_bit);
+    default := TYPE_FULL.create Self with (
+      TYPE_FULL.expanded_bit | TYPE_FULL.default_expanded_bit
+    );
     //           
     slot_self  := SLOT_DATA.clone;
     slot_self.make (list.position) name (ALIAS_STR.slot_self) style '+' base NULL type type_self;
@@ -128,39 +134,50 @@ Section Public
     };
     
     // Append arguments.    
+    a_list := ALIAS_ARRAY[TYPE_FULL].new;
     (base.argument != NULL).if {      
       argument_list := FAST_ARRAY[LOCAL].create_with_capacity (base.argument.count+1);            
       argument_list.add_last NULL;      
       base.argument.to_run_in argument_list for profil_slot;
+      1.to (argument_list.upper) do { j:INTEGER;
+        a_list.add_last (argument_list.item j.type);
+      };
     } else {
       argument_list := FAST_ARRAY[LOCAL].create 1; 
-    };   
+    };       
     var := LOCAL.create (list.position) name (ALIAS_STR.variable_self) style ' ' type type_self;
     argument_list.put var to 0;
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       stack_local.add_last (argument_list.item j);
     };
+    a_list := ALIAS_ARRAY[TYPE_FULL].alias a_list;
     //
     code := list_current;    
     //
     result := list.to_run_expr;
     // Result.
+    r_list := ALIAS_ARRAY[TYPE_FULL].new;
     (result.static_type.raw != TYPE_VOID).if {
       mul ?= result;
       (mul != NULL).if {
         result_list := FAST_ARRAY[LOCAL].create_with_capacity (mul.count - 1);
         (mul.lower).to (mul.upper-1) do { j:INTEGER;
           rd ?= mul.item j;
-          result_list.add_last (rd.local);
+          var := rd.local;
+          result_list.add_last var;
+          r_list.add_last (var.type);
         };
         rd ?= mul.last;
       } else {
         rd ?= result;        
       };
       result_last := rd.local;
+      r_list.add_last (result_last.type);
     };
+    r_list := ALIAS_ARRAY[TYPE_FULL].alias r_list;
     //
     context_extern := ITM_OBJECT.context_extern;
+    to_type_block  := TYPE_BLOCK.get_direct a_list and_result r_list;
     //
     NODE.set_node_list old_node_list;        
     profil := old_profil;
@@ -237,43 +254,8 @@ Section Public
   - is_block:BOOLEAN := FALSE;
 
   - '==' Right 60 other:TYPE :BOOLEAN <- 
-  ( + t:TYPE_BLOCK;
-    + result:BOOLEAN;
-    + j,rc:INTEGER;
-    
-    t ?= other;
-    (t != NULL).if {
-      (argument_list.count-1 = t.argument_list.count).if {
-        j := argument_list.lower + 1;
-        {
-          (j <= argument_list.upper) && 
-          {argument_list.item j.type = t.argument_list.item (j-1)}
-        }.while_do {
-          j := j + 1;
-        };        
-        (j > argument_list.upper).if {
-          rc := result_count;
-          (rc = t.result_list.count).if {
-            (rc > 0).if {
-              result := result_last.type = t.result_list.last;
-              (result && {rc > 1}).if {                
-                j := result_list.lower;
-                {
-                  (j <= result_list.upper) && 
-                  {result_list.item j.type = t.result_list.item j}
-                }.while_do {
-                  j := j + 1;
-                };
-                result := j > result_list.upper;  
-              };
-            } else {
-              result := TRUE;
-            };
-          };
-        };
-      };
-    };
-    result
+  ( 
+    other = to_type_block
   );
 
   - append_name_in buf:STRING <-  

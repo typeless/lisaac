@@ -60,21 +60,21 @@ Section Public
   ( + idx:INTEGER;
     + result:TYPE_FULL;
     
-    "PROFIL_SLOT\n".print;
-    
-    (p.name = ALIAS_STR.prototype_self).if {
-      result := type_self;
-    } else {
-      idx := slot_code.get_index_argument_type p;
-      (idx != - 1).if {
-        result := arg_type_tmp.item idx.static_type;
+    // For Genericity.
+    result := type_self.raw.parameter_to_type p;
+    (result = NULL).if {
+      (p.name = ALIAS_STR.prototype_self).if {
+        // For Self.
+        result := type_self;
+      } else {
+        // For Type parametric.
+        idx := slot_code.get_index_argument_type p;
+        (idx != - 1).if {
+          result := arg_type_tmp.item idx.static_type;
+        };
       };
     };
-    
-    (result = NULL).if {
-      "PROFIL_SLOT ok\n".print;
-    };
-    
+        
     result
   );
   
@@ -147,6 +147,11 @@ Section Public
       ts ?= s.result_type;      
       (ts != ITM_TYPE_SIMPLE.type_void).if {
         typ := ts.to_run_for Self;	
+        (typ = NULL).if {
+          string_tmp.clear;
+          ts.display string_tmp;
+          string_tmp.print; '\n'.print;
+        };
         result_last := typ.get (s.position) result 1; 
       };
     };    
