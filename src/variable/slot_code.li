@@ -261,12 +261,7 @@ Section Public
     };
     // Result.
     (profil_slot.result_last != NULL).if {
-      mul ?= result;
-      (mul != NULL).if {
-        instr := mul.last;
-      } else {
-        instr := result;    
-      };
+      instr := profil_slot.result_last.read position;
     } else {
       (id_section.is_interrupt).if {
 	list_current.add_first (

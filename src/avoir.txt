@@ -1,19 +1,207 @@
-profil_block.li:      result := EXPR_MULTIPLE.create lst;      
-item/itm_list.li:	result := EXPR_MULTIPLE.create lr;
-item/itm_read.li:    + em:EXPR_MULTIPLE;
-item/itm_read.li:  ( + em:EXPR_MULTIPLE;
-item/itm_type_multi.li:    EXPR_MULTIPLE.create lst
-item/itm_write.li:    + em:EXPR_MULTIPLE;
-item/itm_write_value.li:    + val_multiple:EXPR_MULTIPLE;
-item/itm_write_value.li:      result := EXPR_MULTIPLE.create lst_exp;
-item/itm_write_value.li:  - affect idf:STRING_CONSTANT with val:EXPR_MULTIPLE 
-item/itm_write_value.li:	//BSBS: Recycle les EXPR_MULTIPLE
-item/itm_write_value.li:	lst.add_last (affect_slot idf with (EXPR_MULTIPLE.create lst_expr));
-type/type_block.li:      result := EXPR_MULTIPLE.create lst;
-type/type_null.li:    //+ em:EXPR_MULTIPLE;
-dispatcher/dta_block.li:    + em:EXPR_MULTIPLE;
-dispatcher/dta_wr_value.li:    + em:EXPR_MULTIPLE;
-dispatcher/node_style.li:    + em:EXPR_MULTIPLE;
-code_life/expr_multiple.li:  + name        := EXPR_MULTIPLE;
-code_life/expr_multiple.li:    crash_with_message "EXPR_MULTIPLE.get_type";
-code_life/expr_multiple.li:    crash_with_message "EXPR_MULTIPLE.execute_link";
+
+input  file : hello.li
+output file : ./hello
+target : DEFAULT
+path directory :
+  ./
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/base/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/base/low_level/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/collection/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/collection/low_level/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/file_system/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/ai/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/bmp/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/graphics/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/graphics/low_level/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/clipping/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/event/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/input/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/low_level/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/io/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/kernel/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/memory/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/number/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/number/low_level/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/string/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/system/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib2/time/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/math/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/opengl/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/opengl/extensions/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/image_format/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/primitives/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/model_format/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/low_level/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/su_doku/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/tetris/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/fouronline/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/shell/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/calculator/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/viewer/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/about/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/clock/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/desktop/
+  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/mpg2/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/system/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/file_system/
+  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/video/
+  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/unix/
+LA
+11111
+SELF
+__prefix_sub
+
+============== BOTTOM ==============
+Line #573 Column #9 in LISAAC (./lisaac.li).
+  - main <-
+         ^
+Line #627 Column #31 in LISAAC (./lisaac.li).
+    type_input.prototype.depend;    
+                               ^
+Line #281 Column #5 in PROTOTYPE (/home/sonntag/svn/isaac/trunk/lisaac/src/type/prototype.li).
+    };
+     ^
+Line #75 Column #5 in BLOCK (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/block.li).
+    };
+     ^
+Line #67 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #73 Column #16 in BLOCK (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/block.li).
+      body.value;
+                ^
+Line #280 Column #22 in PROTOTYPE (/home/sonntag/svn/isaac/trunk/lisaac/src/type/prototype.li).
+      NODE.extend_pass;
+                      ^
+Line #62 Column #5 in NODE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node.li).
+    };   
+     ^
+Line #75 Column #5 in BLOCK (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/block.li).
+    };
+     ^
+Line #67 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #73 Column #16 in BLOCK (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/block.li).
+      body.value;
+                ^
+Line #56 Column #38 in NODE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node.li).
+      is_ok := node_list.item j.update;      
+                                      ^
+Line #95 Column #2 in NODE_TYPE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_type.li).
+  );
+  ^
+Line #193 Column #5 in NODE_TYPE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_type.li).
+    };
+     ^
+Line #52 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #180 Column #7 in NODE_TYPE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_type.li).
+      };
+       ^
+Line #67 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #178 Column #59 in NODE_TYPE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_type.li).
+	result := data.update_branch first_code self new_type_self;
+	                                                          ^
+Line #92 Column #5 in DTA (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/dta.li).
+    };
+     ^
+Line #52 Column #21 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+    false_block.value;
+                     ^
+Line #87 Column #32 in DTA (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/dta.li).
+      node.update_link type_self;
+                                ^
+Line #116 Column #5 in NODE_STYLE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_style.li).
+    };
+     ^
+Line #52 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #91 Column #7 in NODE_STYLE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_style.li).
+      };
+       ^
+Line #67 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #90 Column #49 in NODE_STYLE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_style.li).
+	first_code := call_for first_type self self_type;      
+	                                                ^
+Line #236 Column #5 in NODE_STYLE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_style.li).
+    };
+     ^
+Line #52 Column #21 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+    false_block.value;
+                     ^
+Line #212 Column #77 in NODE_STYLE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node_style.li).
+      (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
+                                                                             ^
+Line #146 Column #5 in SLOT_CODE (/home/sonntag/svn/isaac/trunk/lisaac/src/variable/slot_code.li).
+    };
+     ^
+Line #52 Column #20 in TRUE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/true.li).
+    true_block.value;
+                    ^
+Line #143 Column #82 in SLOT_CODE (/home/sonntag/svn/isaac/trunk/lisaac/src/variable/slot_code.li).
+      res_lst := result.make Self with (type_self, args) verify (profil.count = 1);      
+                                                                                  ^
+Line #149 Column #34 in PROFIL_SLOT (./profil_slot.li).
+    slot_code.create_code is_first;   
+                                  ^
+Line #224 Column #31 in SLOT_CODE (/home/sonntag/svn/isaac/trunk/lisaac/src/variable/slot_code.li).
+    result := value.to_run_expr;
+                               ^
+Line #119 Column #5 in ITM_READ_ARG2 (/home/sonntag/svn/isaac/trunk/lisaac/src/item/itm_read_arg2.li).
+    };
+     ^
+Line #52 Column #21 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+    false_block.value;
+                     ^
+Line #118 Column #48 in ITM_READ_ARG2 (/home/sonntag/svn/isaac/trunk/lisaac/src/item/itm_read_arg2.li).
+      result := to_run_with arg_first args l_arg;
+                                                ^
+Line #236 Column #5 in ITM_READ (/home/sonntag/svn/isaac/trunk/lisaac/src/item/itm_read.li).
+    };
+     ^
+Line #83 Column #5 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+    };
+     ^
+Line #52 Column #21 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+    false_block.value;
+                     ^
+Line #82 Column #22 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+      block_else.value;
+                      ^
+Line #235 Column #78 in ITM_READ (/home/sonntag/svn/isaac/trunk/lisaac/src/item/itm_read.li).
+      base := NODE.new_read position slot slot_msg receiver receiver with args;
+                                                                              ^
+Line #93 Column #48 in NODE (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/node.li).
+    dta := DTA_RD_ARGS.create p call s with larg;
+                                                ^
+Line #64 Column #35 in DTA_RD_ARGS (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/dta_rd_args.li).
+    result.make p call sl with args;
+                                   ^
+Line #73 Column #36 in DTA_RD_ARGS (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/dta_rd_args.li).
+    result_expr   := get_expr_result;
+                                    ^
+Line #94 Column #5 in DTA_RD (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/dta_rd.li).
+    };
+     ^
+Line #52 Column #21 in FALSE (/home/sonntag/svn/isaac/trunk/lisaac/lib/base/false.li).
+    false_block.value;
+                     ^
+Line #93 Column #50 in DTA_RD (/home/sonntag/svn/isaac/trunk/lisaac/src/dispatcher/dta_rd.li).
+      result := slot.result_type.get_expr_for Self;
+                                                  ^
+Line #58 Column #2 in ITM_TYPE_MONO (/home/sonntag/svn/isaac/trunk/lisaac/src/item/itm_type_mono.li).
+  );  
+  ^
+================ TOP ===============
+Call on NULL
