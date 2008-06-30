@@ -38,16 +38,12 @@ Section Public
   
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + result:TYPE_FULL;
-    "LA\n".print;
+        
     (p.name = ALIAS_STR.prototype_self).if {
-      "11111\n".print;
-      
-      p.name.print; '\n'.print;
-      slot.name.print; '\n'.print;
-      
-      result := self_arg.static_type;
+      // For Self.
+      result := self_arg.static_type;            
     } else {
-      "2222222\n".print;
+      // For genericity.
       result := self_arg.static_type.raw.parameter_to_type p;
     };
     result

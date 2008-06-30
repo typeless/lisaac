@@ -45,10 +45,15 @@ Section Public
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + result:TYPE_FULL;
     + idx:INTEGER;
-            
-    idx := slot.get_index_argument_type p;
-    (idx != - 1).if {      
-      result := argument_list.item idx.static_type;
+        
+    // For Genericity.
+    result := self_arg.static_type.raw.parameter_to_type p;
+    (result = NULL).if {
+      // For Self + type parametric.
+      idx := slot.get_index_argument_type p;
+      (idx != - 1).if {      
+        result := argument_list.item idx.static_type;
+      };
     };
     result
   );

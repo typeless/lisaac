@@ -57,6 +57,8 @@ Section Public
   
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( 
+    "TYPE\n".print;
+    
     NULL
   );
   

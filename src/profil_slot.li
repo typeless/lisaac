@@ -60,6 +60,8 @@ Section Public
   ( + idx:INTEGER;
     + result:TYPE_FULL;
     
+    "PROFIL_SLOT\n".print;
+    
     (p.name = ALIAS_STR.prototype_self).if {
       result := type_self;
     } else {
@@ -68,6 +70,11 @@ Section Public
         result := arg_type_tmp.item idx.static_type;
       };
     };
+    
+    (result = NULL).if {
+      "PROFIL_SLOT ok\n".print;
+    };
+    
     result
   );
   
