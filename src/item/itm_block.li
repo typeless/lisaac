@@ -72,7 +72,7 @@ Section Public
     + wrt:WRITE;
     
     tb := PROFIL_BLOCK.create Self;
-    t := tb.to_type_block.default;
+    t := tb.default;
     //
     loc := t.get_temporary position;	
     // tmp.id := id_block;

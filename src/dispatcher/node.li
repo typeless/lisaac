@@ -171,15 +171,14 @@ Section Public
     + lst_typ_f:FAST_ARRAY[TYPE_FULL];
     + new_expr:EXPR;
     + block_model:TYPE_BLOCK;
+    + pb:PROFIL_BLOCK;
     + pos:POSITION;
     
-    block_model ?= e.static_type.raw;
-    
-    (block_model = NULL).if { // BSBS: Debug...
-      string_tmp.clear;
-      e.static_type.display string_tmp;
-      string_tmp.print;
-      warning_error (p,string_tmp);
+    pb ?= e.static_type.raw;
+    (pb = NULL).if {
+      block_model ?= e.static_type.raw;
+    } else {
+      block_model := pb.to_type_block;      
     };
     // Control argument type.            
     lst_typ_f := block_model.argument_list;

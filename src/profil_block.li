@@ -251,7 +251,7 @@ Section Public
     result
   );
     
-  - is_block:BOOLEAN := FALSE;
+  - is_block:BOOLEAN := TRUE;
 
   - '==' Right 60 other:TYPE :BOOLEAN <- 
   ( 
