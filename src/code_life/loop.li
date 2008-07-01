@@ -127,7 +127,7 @@ Section Public
     + cur_seq_call_and_loop:INTEGER;
     
     (link_count = 0).if {
-      result := body.execute_unlink;
+      result := body.execute;
       new_execute_pass;
     } else {      
       cur_seq_call_local_and_loop := 

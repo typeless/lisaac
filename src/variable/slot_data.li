@@ -408,7 +408,7 @@ Section Public
       list_current   := NULL;
       //profil_current := NULL;
       
-      val.execute_link;
+      val.execute;
       list_main.inc_index;
       
       list_current   := old_list_current;

@@ -131,7 +131,7 @@ Section Public
     PROFIL.set_mode_recursive TRUE;
     profil := profil_slot := NULL;
     list_current   := NULL;          
-    list_main.execute_link;    
+    list_main.execute;    
     PROFIL.set_mode_recursive FALSE;
     clean;
     reduce_profil := TRUE;
@@ -145,7 +145,7 @@ Section Public
     life_limit := 0;
     profil := profil_slot := NULL;
     list_current   := NULL; 
-    list_main.execute_link;      
+    list_main.execute;      
     current := profil_list.lower;
     {current < life_limit}.while_do {			            
       profil_list.item current.execute inline_level_current;

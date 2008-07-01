@@ -243,78 +243,29 @@ Section Public
     buffer.append "{\n";
     indent.append "  ";
     
-    lower.to (upper-1) do { j:INTEGER;
-      buffer.append indent;          
-      item j.genere buffer;
-      buffer.append ";\n";
-
-//      buffer.append "if (BUG) printf(\"";
-//      n_bug.append_in buffer;
-//      buffer.append "\\n\");";
-//      n_bug := n_bug + 1;
-    };
-        
+    genere_body buffer;
+    
     indent.remove_last 2;    
     buffer.append indent;
     buffer.add_last '}';
   );
-  
-  - n_bug:INTEGER;
-  
-  
+    
   - genere_extern buffer:STRING <-
   ( + pos_local:INTEGER;   
-    + last_expr:EXPR;
-    + t:TYPE_FULL;
-      
-    buffer.append "{\n";
-    indent.append "  ";
+              
     // Local.    
     pos_local := buffer.count+1;
     stack_local.clear;
-  
-    (lower).to (upper-1) do { j:INTEGER;
-      buffer.append indent;      
-      
-      //item j.debug_display;
-      
-      item j.genere buffer;
-      buffer.append ";\n";      
-
-//      buffer.append "if (BUG) printf(\"";
-//      n_bug.append_in buffer;
-//      buffer.append "\\n\");";
-//      n_bug := n_bug + 1;
-    };
-    (static_type.raw != TYPE_VOID).if {
-      buffer.append indent;      
-      buffer.append "return(";          
-      //
-      last_expr ?= last;      
-      t := last_expr.static_type;
-      (
-	(t.is_expanded) && 
-	{! t.is_expanded_ref} && 
-	{! t.is_expanded_c}
-      ).if {
-	buffer.add_last '&';
-      };	
-      last_expr.genere buffer;
-      buffer.add_last ')';
-      buffer.append ";\n";    
-    };
-
+    
+    genere_body buffer;
+    
     // Local.    
     string_tmp.clear;        
     add_local (var_size.item 3) in string_tmp; // 64 bits
     add_local (var_size.item 2) in string_tmp; // 32 bits
     add_local (var_size.item 1) in string_tmp; // 16 bits
     add_local (var_size.item 0) in string_tmp; //  8 bits
-    buffer.insert_string string_tmp to pos_local;      
-    // End.
-    indent.remove_last 2;    
-    buffer.append indent;
-    buffer.add_last '}';
+    buffer.insert_string string_tmp to pos_local;          
   );
   
   //
@@ -344,6 +295,15 @@ Section Public
   );
   
 Section Private  
+  
+  - genere_body buffer:STRING <-
+  (
+    lower.to upper do { j:INTEGER;
+      buffer.append indent;          
+      item j.genere buffer;
+      buffer.append ";\n";
+    };        
+  );
   
   - add_local tab:FAST_ARRAY[LOCAL] in buf:STRING <-
   ( + loc:LOCAL;

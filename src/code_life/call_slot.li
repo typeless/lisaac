@@ -82,11 +82,15 @@ Section Public
   );
 
   - get_type t:TYPES_TMP <-
-  (
+  ( + loc:LOCAL;
+    
     is_interrupt.if {
       t.add type_pointer;
     } else {
-      source.get_type t;
+      loc := profil.result_last;
+      (loc != NULL).if { // BSBS: Ne doit jamais se produire
+        loc.get_type t;
+      };
     };
   );
 
@@ -195,6 +199,7 @@ Section Private
     + old_val:EXPR;
     + loc:LOCAL;
     + prof_block:PROFIL_BLOCK;
+    + instr:INSTR;
         
     (source = list_current).if {
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
@@ -214,8 +219,15 @@ Section Private
 	    (result_list.lower).to (result_list.upper) do { j:INTEGER;
 	      source.add (result_list.item j) to (source.upper);
 	    };
-          };		  	                                
-	  result := source.execute_link;
+          };	  	                                
+          instr := source.execute;
+          list_current.insert_before instr;
+          loc := profil.result_last;
+          (loc != NULL).if {
+            result := loc.read position;
+          } else {
+            result := PROTOTYPE_CST.create position type (TYPE_VOID.default); // BSBS a revoir
+          };
 	  profil.remove_inline;	  	  
 	  new_execute_pass;
 	};
@@ -258,10 +270,17 @@ Section Private
 	    };
 	  } else {
 	    LOCAL.alias_off;
-	  };
-	  
-	  result := new_src.execute_link;	  
-	  
+          };
+          //
+	  instr := new_src.execute;
+          list_current.insert_before instr;
+          loc := profil.result_last;
+          (loc != NULL).if {
+            result := loc.read position;
+          } else {
+            result := PROTOTYPE_CST.create position type (TYPE_VOID.default); // BSBS a revoir
+          };
+	  	  
 	  ? {result != NULL};
 	  new_execute_pass;	  	  
 	};

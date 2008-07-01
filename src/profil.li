@@ -324,12 +324,10 @@ Section Public
     CALL_SLOT.reset_count_context_sensitive;  
     
     seq_call_and_loop := seq_call_and_loop + 1;
-      
-    (result_last = NULL).if {
-      code ?= code.execute_unlink;      
-    } else {
-      code ?= code.execute_link;
-    };      
+          
+    code ?= code.execute; 
+    
+    // BSBS: Netoyer les result pas utile
     
     LOCAL_SEQ.clear;
     
@@ -405,7 +403,9 @@ Section Public
   );
   
   - genere buffer:STRING <-
-  (         
+  ( + loc:LOCAL;
+    + t:TYPE_FULL;
+    
     buffer.add_last '\n';
     genere_handler buffer;
     buffer.append "\n// ";
@@ -420,9 +420,30 @@ Section Public
     } else {
       buffer.append "Inlinable.";
     };
-    buffer.add_last '\n';
-    code.genere_extern buffer;
-    buffer.add_last '\n';
+    //
+    buffer.append "\n{\n";
+    indent.append "  ";
+    code.genere_extern buffer;    
+    loc := result_last;
+    (loc != NULL).if {
+      buffer.append indent;      
+      buffer.append "return(";          
+      //      
+      t := loc.type;
+      (
+	(t.is_expanded) && 
+	{! t.is_expanded_ref} && 
+	{! t.is_expanded_c}
+      ).if {
+	buffer.add_last '&';
+      };	
+      buffer.append (loc.intern_name);
+      buffer.append ");\n";    
+    };
+    // End.
+    indent.remove_last 2;    
+    buffer.append indent;
+    buffer.append "}\n";    
   );
   
   //

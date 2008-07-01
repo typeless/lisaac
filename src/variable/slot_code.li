@@ -194,8 +194,7 @@ Section Public
   
   - create_code is_first:BOOLEAN <-
   ( + contract:ITM_LIST;
-    + slot:ITM_SLOT;
-    + instr:INSTR;
+    + slot:ITM_SLOT; 
     + result:EXPR;
     + mul:EXPR_MULTIPLE;
     + nb_result_list:INTEGER;
