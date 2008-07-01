@@ -30,7 +30,7 @@ Section Header
   
 Section Inherit
   
-  + parent_expr:Expanded EXPR;
+  + parent_instr:Expanded INSTR;
   
 Section Private  
   
@@ -90,13 +90,6 @@ Section Public
     expr_list.put e to (idx-1);
   );  
 
-  - last_expr:EXPR <-
-  ( + result:EXPR;
-       
-    result ?= last;
-    result
-  );
-  
   - remove_last <-
   (
     expr_list.remove_last;
@@ -138,18 +131,7 @@ Section Public
   // Flags.
   //
   
-  - is_empty:BOOLEAN <-
-  ( + void_:PROTOTYPE_CST;
-    + result:BOOLEAN;
-
-    (count = 0).if {
-      result := TRUE;
-    }.elseif {count = 1} then {
-      void_ ?= first;
-      result := (void_ != NULL) && {void_.static_type.raw = TYPE_VOID};
-    };
-    result
-  );
+  - is_empty:BOOLEAN <- count = 0;
   
   //
   // Creation.
@@ -189,32 +171,28 @@ Section Public
       item j.remove;
     };    
   );
-  
-  //
-  // Type.
-  //
-  
-  - static_type:TYPE_FULL <- last_expr.static_type;
-  
-  - get_type t:TYPES_TMP <- last_expr.get_type t;
-
+    
   //
   // Execute.
   //
-    
-  - execute_unlink:INSTR <-  
-  ( 
-    // Result not used : Add last `Void'. (BSBS: OPTIM: Create un Void shared!)
-    (static_type.raw != TYPE_VOID).if {	
-      add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default));
-    };
-    
-    execute_list
-  );
+      
+  - execute:INSTR <-
+  ( + result:INSTR;    
+        
+    execute_case;    
 
-  - execute_link:EXPR <-
-  (
-    execute_list
+    (list_current != NULL).if {
+      // Fusion list.      
+      lower.to (upper-1) do { j:INTEGER;
+	list_current.insert_before (item j);
+      };
+      result := last; 
+      ? {result != NULL};
+      new_execute_pass;
+    } else {              
+      result := Self;
+    };    
+    result    
   );  
     
   - execute_case <-  
@@ -232,7 +210,7 @@ Section Public
     // Execute expression list.
     ? {index = 0};
     index := lower;
-    {index != upper}.while_do {            
+    {index <= upper}.while_do {            
       old_seq_or_and := seq_or_and;                  
       new_expr := item index.execute;      
       (new_expr != NULL).if {	
@@ -244,11 +222,8 @@ Section Public
     };
       
     // Last.    
-    old_seq_or_and := seq_or_and;
-        
-    new_expr := last_expr.execute_link;
-    put new_expr to upper;
-    index := 0;
+    old_seq_or_and := seq_or_and;            
+    index := 0; // Debug necessity
         
     // Restore Context.
     list_current := old_list_current;    
@@ -257,35 +232,12 @@ Section Public
     seq_inline := seq_inline + 1;
   );
   
-Section Private  
-  
-  - execute_list:EXPR <-  
-  ( + result:EXPR;    
-        
-    execute_case;    
-
-    (list_current != NULL).if {
-      // Fusion list.      
-      (lower).to (upper-1) do { j:INTEGER;
-	list_current.insert_before (item j);
-      };
-      result := last_expr; 
-      ? {result != NULL};
-      new_execute_pass;
-    } else {              
-      result := Self;
-    };    
-    result
-  );
-    
 Section Public
   
   //
   // Generation.
   //
   
-  //- n_bug:INTEGER;
-    
   - genere buffer:STRING <-
   (         
     buffer.append "{\n";

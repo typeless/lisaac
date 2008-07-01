@@ -260,22 +260,16 @@ Section Public
       contract.to_run_expr;
     };
     // Result.
-    (profil_slot.result_last != NULL).if {
-      instr := profil_slot.result_last.read position;
-    } else {
-      (id_section.is_interrupt).if {
-	list_current.add_first (
-	  EXTERNAL_C.create position text "__BEGIN_INTERRUPT__" access NULL
-	  persistant TRUE type (TYPE_VOID.default)
-	);
-	list_current.add_last (
-	  EXTERNAL_C.create position text "__END_INTERRUPT__" access NULL
-	  persistant TRUE type (TYPE_VOID.default)
-	);
-      };
-      instr := PROTOTYPE_CST.create position type (TYPE_VOID.default);
-    };    
-    list_current.add_last instr;    
+    (id_section.is_interrupt).if {
+      list_current.add_first (
+        EXTERNAL_C.create position text "__BEGIN_INTERRUPT__" access NULL
+        persistant TRUE type (TYPE_VOID.default)
+      );
+      list_current.add_last (
+        EXTERNAL_C.create position text "__END_INTERRUPT__" access NULL
+        persistant TRUE type (TYPE_VOID.default)
+      );
+    };      
   );
   
   - remove_profil prof:PROFIL_SLOT <-
