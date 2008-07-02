@@ -21,7 +21,10 @@
 Section Header
   
   + name      := REFERENCE[E];
-
+  
+  - import    := E;
+  - export    := E;
+  
   - copyright := "2003-2008 Sonntag Benoit";
 
   - author    := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
@@ -32,7 +35,7 @@ Section Inherit
   - parent_object:OBJECT := OBJECT;
 
 Section Public
-  
+    
   + value:E;
   
   //
@@ -50,4 +53,11 @@ Section Public
   ( 
     value := v;
   );
-
+  
+  //
+  // Cast.
+  //
+  
+  - to_e:E <- value;
+  
+  - from_e v:E :SELF <- create v;
