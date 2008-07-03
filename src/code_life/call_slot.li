@@ -30,7 +30,7 @@ Section Header
   
 Section Inherit
   
-  + parent_expr:Expanded EXPR;
+  + parent_instr:Expanded INSTR;
   
 Section Public
   
@@ -61,51 +61,16 @@ Section Public
   - is_external:BOOLEAN  <- profil.is_external;
   
   //
-  // Type
-  //
-    
-  - static_type:TYPE_FULL <-
-  ( + result:TYPE_FULL;
-    + loc:LOCAL;
-    
-    is_interrupt.if {
-      result := type_pointer.default;     
-    } else {
-      loc := profil.result_last;
-      (loc != NULL).if {
-	result := loc.type;	
-      } else {
-	result := TYPE_VOID.default;
-      };
-    };
-    result
-  );
-
-  - get_type t:TYPES_TMP <-
-  ( + loc:LOCAL;
-    
-    is_interrupt.if {
-      t.add type_pointer;
-    } else {
-      loc := profil.result_last;
-      (loc != NULL).if { // BSBS: Ne doit jamais se produire
-        loc.get_type t;
-      };
-    };
-  );
-
-  //
   // Argument.
   //
   
   + argument_list:FAST_ARRAY[WRITE];
   
-  + result_list:FAST_ARRAY[WRITE];
+  + result_list:SLIM_ARRAY[WRITE];
   
-  - set_args args:FAST_ARRAY[WRITE] and_results res:FAST_ARRAY[WRITE] <-
+  - set_args args:FAST_ARRAY[WRITE] <-
   (
     argument_list := args;
-    result_list   := res;
   );
     
   //
@@ -127,17 +92,14 @@ Section Public
     profil := prof;    
     argument_list := l_arg;
     profil.link;            
-    (profil.result_list != NULL).if {
-      result_list := FAST_ARRAY[WRITE].create_with_capacity (profil.result_list.count);
-    };
+    result_list.make_with_capacity (profil.result_list.count);    
   );
   
   - my_copy:SELF <-
   ( + result:SELF;
     + wrt:WRITE;
     + new_arg:FAST_ARRAY[WRITE];
-    + new_res:FAST_ARRAY[WRITE];
-    
+        
     result := clone;
     
     new_arg := FAST_ARRAY[WRITE].create_with_capacity (argument_list.count);
@@ -151,20 +113,18 @@ Section Public
       };
       new_arg.add_last wrt;
     };
-    (result_list != NULL).if {
-      new_res := FAST_ARRAY[WRITE].create_with_capacity (result_list.count);
-      (result_list.lower).to (result_list.upper) do { j:INTEGER;
-	(result_list.item j = NULL).if {
-	  wrt := NULL;
-	} else {
-	  wrt := result_list.item j.my_copy;
-	};
-	new_res.add_last wrt;
+    result.set_args new_arg;
+    //
+    result.result_list.make_with_capacity (result_list.count);
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;      
+      (result_list.item j = NULL).if {
+        wrt := NULL;
+      } else {
+        wrt := result_list.item j.my_copy;
       };
+      result.result_list.add_last wrt;
     };
-    result.set_args new_arg and_results new_res;
     result.profil.link;
-
     result
   );
 
@@ -191,7 +151,7 @@ Section Public
   
 Section Private  
   
-  - execute_inline:EXPR <- 
+  - execute_inline:INSTR <- 
   // Simple inlining
   ( + result:EXPR;
     + new_src:LIST;
@@ -214,20 +174,11 @@ Section Private
 	// Inlining simple.
 	//	  	  	  	  
 	(list_current.old_seq_or_and = seq_or_and).if {
-	  argument_to_assignment source index 1 alias FALSE;
-	  (result_list != NULL).if {
-	    (result_list.lower).to (result_list.upper) do { j:INTEGER;
-	      source.add (result_list.item j) to (source.upper);
-	    };
-          };	  	                                
-          instr := source.execute;
-          list_current.insert_before instr;
-          loc := profil.result_last;
-          (loc != NULL).if {
-            result := loc.read position;
-          } else {
-            result := PROTOTYPE_CST.create position type (TYPE_VOID.default); // BSBS a revoir
+	  argument_to_assignment source index 1 alias FALSE;	  
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;
+            source.add (result_list.item j) to (source.upper);
           };
+          result := source.execute;          
 	  profil.remove_inline;	  	  
 	  new_execute_pass;
 	};
@@ -251,14 +202,12 @@ Section Private
 	  
 	  new_src := source.my_copy;	  
 	  argument_to_assignment new_src index 1 alias TRUE;	  
-	  (result_list != NULL).if {
-	    (result_list.lower).to (result_list.upper) do { j:INTEGER;
-	      wrt := result_list.item j;
-	      old_val := wrt.value;
-	      wrt.set_value (old_val.my_copy);	      	      
-	      old_val.remove;
-	      new_src.add wrt to (new_src.upper);
-	    };
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;
+            wrt := result_list.item j;
+            old_val := wrt.value;
+            wrt.set_value (old_val.my_copy);	      	      
+            old_val.remove;
+            new_src.add wrt to (new_src.upper);
 	  };		  	  
 	  
 	  (prof_block != NULL).if {
@@ -272,16 +221,8 @@ Section Private
 	    LOCAL.alias_off;
           };
           //
-	  instr := new_src.execute;
-          list_current.insert_before instr;
-          loc := profil.result_last;
-          (loc != NULL).if {
-            result := loc.read position;
-          } else {
-            result := PROTOTYPE_CST.create position type (TYPE_VOID.default); // BSBS a revoir
-          };
-	  	  
-	  ? {result != NULL};
+	  result := new_src.execute;
+          ? {result != NULL};
 	  new_execute_pass;	  	  
 	};
       };
@@ -329,7 +270,7 @@ Section Private
       
 Section Public
   
-  - execute_unlink:INSTR <-
+  - execute:INSTR <-
   ( + result:INSTR;
     
     (profil.search_tail_recursive).if {
@@ -358,19 +299,6 @@ Section Public
     result
   );
 
-  - execute_link:EXPR <-
-  ( + result:EXPR;
-        
-    result := execute_inline;
-    (result = NULL).if {
-      execute_normal;    
-      profil.set_life;
-      result := Self;
-    };
-           
-    result
-  );
-  
   //
   // Display.
   //
@@ -443,9 +371,13 @@ Section Public
   - genere buffer:STRING <-
   ( + val:WRITE;
     + arg:LOCAL;
-        
+    
+    (result_list.is_empty).if_false {
+      buffer.append (result_list.first.local.intern_name);
+      buffer.add_last '=';
+    };
     buffer.append (profil.name);
-    (is_interrupt ||{is_external}).if {
+    (is_interrupt || {is_external}).if {
       (argument_list.first != NULL).if {
 	semantic_error (argument_list.first.position,
 	"Impossible `Self' argument for External or Interrupt slot.");
@@ -466,13 +398,13 @@ Section Public
 	  buffer.add_last ',';
 	};
       };
-      (result_list != NULL).if {
-	(result_list.lower).to (result_list.upper) do { j:INTEGER;
+      (result_list.count > 1).if {
+	(result_list.lower+1).to (result_list.upper-1) do { j:INTEGER;
 	  result_list.item j.genere_argument_result buffer;
 	  buffer.add_last ',';
-	};
-      };
-      (buffer.last = ',').if {
+        };
+        result_list.last.genere_argument_result buffer;
+      } else {      
 	buffer.remove_last 1;
       };
       buffer.add_last ')';

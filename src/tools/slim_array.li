@@ -63,6 +63,8 @@ Section Public
   
   - count:INTEGER <- upper + 1;
   
+  - is_empty:BOOLEAN <- first = NULL;
+  
   - item i:INTEGER :E <-
   ( + result:E;
     
@@ -94,11 +96,12 @@ Section Public
       list.add_last e;
     };
   );
-  
+    
   - make_with_capacity n:INTEGER <-
   (
+    first := NULL;
     (n > 1).if {
       list := FAST_ARRAY[E].create_with_capacity (n-1);
     };
   );
-
+  
