@@ -313,7 +313,17 @@ Section Public
   //
   // Convertion
   //
-    
+  
+  // *French, Slot, Description : Renvoi une chaîne représentant le nombre en base 10
+  // *English, Slot, Description : String of the number in base 10
+
+  - to_string : STRING <-
+  ( + result : STRING;
+    result := STRING.create 0;
+    append_in result;
+    result
+  );
+
   - append_in buffer:STRING <- to_integer_32.append_in buffer;
   // Append in the `buffer' the equivalent of `to_string'. No new STRING
   // creation during the process.

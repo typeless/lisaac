@@ -116,7 +116,18 @@ Section Public
   (
     append_in buffer decimal 4;
   );
-  
+
+
+   // *French, Slot, Description : Renvoi une chaîne représentant le nombre en base 10
+   // *English, Slot, Description : String of the number in base 10
+   - to_string : STRING <-
+   ( + result : STRING;
+     result := STRING.create 0;
+     append_in result;
+     result
+   );
+ 
+
   - append_in buffer:STRING format n:INTEGER decimal d:INTEGER <-
   (
     append_in buffer format n with ' ' decimal d;
