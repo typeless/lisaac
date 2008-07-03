@@ -135,24 +135,17 @@ Section Public
     // Results
     tm ?= s.result_type;
     (tm != NULL).if {    
-      result_list := FAST_ARRAY[LOCAL].create_with_capacity (tm.count-1);      
-      (tm.lower).to (tm.upper-1) do { k:INTEGER;	  
+      result_list.make_with_capacity (tm.count);      
+      (tm.lower).to (tm.upper) do { k:INTEGER;	  
         typ := tm.item k.to_run_for Self;	
         loc := typ.get (s.position) result (k+1);
         result_list.add_last loc;        
-      };
-      typ := tm.last.to_run_for Self;	
-      result_last := typ.get (s.position) result (tm.count);      
+      };      
     } else {      
       ts ?= s.result_type;      
       (ts != ITM_TYPE_SIMPLE.type_void).if {
-        typ := ts.to_run_for Self;	
-        (typ = NULL).if {
-          string_tmp.clear;
-          ts.display string_tmp;
-          string_tmp.print; '\n'.print;
-        };
-        result_last := typ.get (s.position) result 1; 
+        typ := ts.to_run_for Self;	        
+        result_list.add_last (typ.get (s.position) result 1); 
       };
     };    
     //
