@@ -153,13 +153,12 @@ Section Private
   
   - execute_inline:INSTR <- 
   // Simple inlining
-  ( + result:EXPR;
+  ( + result:INSTR;
     + new_src:LIST;
     + wrt:WRITE;
     + old_val:EXPR;
     + loc:LOCAL;
     + prof_block:PROFIL_BLOCK;
-    + instr:INSTR;
         
     (source = list_current).if {
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
@@ -373,7 +372,7 @@ Section Public
     + arg:LOCAL;
     
     (result_list.is_empty).if_false {
-      buffer.append (result_list.first.local.intern_name);
+      buffer.append (result_list.first.variable.intern_name);
       buffer.add_last '=';
     };
     buffer.append (profil.name);

@@ -229,16 +229,15 @@ Section Public
         nb_result_list := 1;
       };
     };
-    (profil_slot.result_count != nb_result_list).if {
+    (profil_slot.result_list.count != nb_result_list).if {
       semantic_error (result.position,"Incorrect value result.");
     };
     (nb_result_list = 1).if {
-      put_result result in (profil_slot.result_last);
+      put_result result in (profil_slot.result_list.first);
     }.elseif {nb_result_list > 1} then {
-      (mul.lower).to (mul.upper-1) do { j:INTEGER;
+      (mul.lower).to (mul.upper) do { j:INTEGER;
         put_result (mul.item j) in (profil_slot.result_list.item j);
-      };
-      put_result (mul.last) in (profil_slot.result_last);
+      };      
     };
     
     // Ensure

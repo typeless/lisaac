@@ -118,26 +118,24 @@ Section NODE_TYPE, DTA
       (result_expr.static_type.raw != TYPE_VOID).if {	
 	em ?= result_expr;
 	(em != NULL).if {
-	  (em.lower).to (em.upper - 1) do { j:INTEGER;
+	  (em.lower).to (em.upper) do { j:INTEGER;
 	    rd ?= em.item j;
 	    ? {rd != NULL};
 	    result_var := rd.variable;	    
 	    rd  := call.profil.result_list.item j.read (e.position);
 	    wrt := result_var.write (e.position) value rd;
 	    call.result_list.add_last wrt;	    
-	  };
-	  rd ?= em.last;
+	  };	  
 	} else {
-	  rd ?= result_expr;
-	};
-	? {rd != NULL};
-	result_var := rd.variable;	
-	result.add_last (result_var.write (e.position) value call);
-      } else {
-	result.add_last call;
+          rd ?= result_expr;
+          result_var := rd.variable;	    
+          rd  := call.profil.result_list.first.read (e.position);
+          wrt := result_var.write (e.position) value rd;
+          call.result_list.add_last wrt;	    
+	};	
       };
+      result.add_last call;
     };
-    result.add_last (PROTOTYPE_CST.create (e.position) type (TYPE_VOID.default)); // BSBS : Alias
     result    
   );  
   
