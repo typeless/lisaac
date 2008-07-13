@@ -66,7 +66,7 @@ Section Public
   
   + argument_list:FAST_ARRAY[WRITE];
   
-  + result_list:SLIM_ARRAY[WRITE];
+  + result_list:Expanded SLIM_ARRAY[WRITE];
   
   - set_args args:FAST_ARRAY[WRITE] <-
   (
@@ -87,12 +87,13 @@ Section Public
   - make p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY[WRITE] <-
   (     
     position := p;    
-    
+        
     // Choice profil.
     profil := prof;    
     argument_list := l_arg;
-    profil.link;            
-    result_list.make_with_capacity (profil.result_list.count);    
+    profil.link;                
+    //
+    result_list.make_with_capacity (profil.result_list.count);        
   );
   
   - my_copy:SELF <-
@@ -174,7 +175,7 @@ Section Private
 	//	  	  	  	  
 	(list_current.old_seq_or_and = seq_or_and).if {
 	  argument_to_assignment source index 1 alias FALSE;	  
-          (result_list.lower).to (result_list.upper) do { j:INTEGER;
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;                        
             source.add (result_list.item j) to (source.upper);
           };
           result := source.execute;          
@@ -270,7 +271,7 @@ Section Private
 Section Public
   
   - execute:INSTR <-
-  ( + result:INSTR;
+  ( + result:INSTR;        
     
     (profil.search_tail_recursive).if {
       //

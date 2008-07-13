@@ -108,7 +108,9 @@ Section NODE_TYPE, DTA
       t_block ?= t;                  
       
       (t_block = NULL).if { // BSBS: debug
+        "<<<".print;
         t.print;
+        ">>>".print; '\n'.print;
         list_current.debug_display;
         syntax_error (argument_list.first.position,"Block not found");        
       };

@@ -70,7 +70,7 @@ Section Public
     + loc,my_self:LOCAL;    
     + val,rec:EXPR;
     + wrt:WRITE;
-    
+        
     tb := PROFIL_BLOCK.create Self;
     t := tb.default;
     //

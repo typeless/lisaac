@@ -50,29 +50,39 @@ path directory :
   /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/file_system/
   /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/video/
   /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/unix/
-BLOCK SEND ({HELLO},{CHARACTER}) With result(
-  __tmp__4[Expanded CHARACTER] :=<0/1> y__2[Expanded CHARACTER]<0/R*/E1>
+CALL_SLOT : main__W
+CALL_SLOT : toto__2
+__tmp__0[Expanded INTEGER] :=<0/1> Result_1__4[Expanded INTEGER]<0/R0/E1>
+
+__tmp__1[Expanded INTEGER] :=<0/1> Result_2__5[Expanded INTEGER]<0/R0/E1>
+
+toto({HELLO}) Void(
+  __tmp__AB[Expanded INTEGER] :=<0/1> (Expanded INTEGER)3<0>
+  __tmp__BB[Expanded INTEGER] :=<0/1> (Expanded INTEGER)4<0>
+  Result_1__4[Expanded INTEGER] :=<0/1> __tmp__AB[Expanded INTEGER]<0/R0/E1>
+  Result_2__5[Expanded INTEGER] :=<0/1> __tmp__BB[Expanded INTEGER]<0/R0/E1>
 )<0>
 ---------------------
-main({HELLO}) Void(
-  a__Y[{Expanded CHARACTER; Expanded CHARACTER}] :=<0/1> Strict NULL<0>
-  __tmp__5[{Expanded CHARACTER; Expanded CHARACTER}]<0/R*/E3>->__id[Expanded {Expanded CHARACTER; Expanded CHARACTER}] :=<0/0> Strict {Expanded CHARACTER; Expanded CHARACTER}<0>
-  __tmp__5[{Expanded CHARACTER; Expanded CHARACTER}]<0/R*/E3>->self[Strict HELLO] :=<0/0> Self__3[Strict HELLO]<0/R*/E1>
-  a__Y[{Expanded CHARACTER; Expanded CHARACTER}] :=<0/1> __tmp__5[{Expanded CHARACTER; Expanded CHARACTER}]<0/R*/E3>
-  a__Y[{Expanded CHARACTER; Expanded CHARACTER}]<0/R0,0/E1>
-  Strict VOID<0>
+main({HELLO}) With result(
+  a__Y[Expanded INTEGER] :=<0/2> (Expanded INTEGER)0<0>
+  b__Z[Expanded INTEGER] :=<0/2> (Expanded INTEGER)0<0>
+  Self__X[Strict HELLO]<0/R0/E3>(
+    Self__X[Strict HELLO]<0/R0/E3>(
+      toto__2<0>(Self__X[Strict HELLO]<0/R0/E3>)
+    )<0>
+    Strict VOID<0>
+  )<0>
+  a__Y[Expanded INTEGER] :=<0/2> __tmp__0[Expanded INTEGER]<0/R0/E1>
+  b__Z[Expanded INTEGER] :=<0/2> __tmp__1[Expanded INTEGER]<0/R0/E1>
+  (a__Y[Expanded INTEGER]<0/R0,0/E2>,b__Z[Expanded INTEGER]<0/R0,0/E2>)
+  `(@) + (@)(a__Y[Expanded INTEGER]<0/R0,0/E2>,b__Z[Expanded INTEGER]<0/R0,0/E2>)`VOID<0>
 )<0>
 ---------------------
-__tmp__5
-style [+]
---WARNING----------
-READ : Compiler BUG! (require_first = NULL) 
-Line 15 column 10 in HELLO(./hello.li):
-    a := { y:CHARACTER; // (y:CHARACTER,e:INTEGER);
-          ^
+CALL_SLOT : __tmp__1[Expanded INTEGER] :=<0/1> Result_2__5[Expanded INTEGER]<0/R0/E1>
+
 (
-  a__Y[{Expanded CHARACTER; Expanded CHARACTER}] :=<0/1> Strict NULL<0>
-  a__Y[{Expanded CHARACTER; Expanded CHARACTER}] :=<0/1> __tmp__5[{Expanded CHARACTER; Expanded CHARACTER}]<0/R*/E1>
-  a__Y[{Expanded CHARACTER; Expanded CHARACTER}]<0/R0,0/E1>
-  Strict VOID<0>
+  `arg_count  = argc;
+  arg_vector = argv`VOID<0>
+  Result_1__4[Expanded INTEGER] :=<0/1> (Expanded INTEGER)3<0>
+  `(@) + (@)(__tmp__0[Expanded INTEGER]<0/R0/E1>,(Expanded INTEGER)4<0>)`VOID<0>
 )<0>

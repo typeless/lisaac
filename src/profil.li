@@ -53,7 +53,7 @@ Section Public
     
   + argument_list:FAST_ARRAY[LOCAL];  
   
-  + result_list:SLIM_ARRAY[LOCAL];
+  + result_list:Expanded SLIM_ARRAY[LOCAL];
   
   + code:LIST;
   + context:LOCAL;

@@ -149,6 +149,7 @@ Section Public
     };    
     // Compute result expr.            
     nb_result := stack_result.upper - result_top + 1;    
+        
     (nb_result = 0).if {            
       result := PROTOTYPE_CST.create position type (TYPE_VOID.default);      
     } else {            

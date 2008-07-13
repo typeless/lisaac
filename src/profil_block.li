@@ -170,10 +170,15 @@ Section Public
       } else {
         rd ?= result;        
         var := rd.local;
+        
+        "PROFIL_BLOCK : result : ".print;
+        var.intern_name.print;
+        '\n'.print;
+        
         result_list.add_last var;
         r_list.add_last (var.type);
       };      
-    };
+    };    
     r_list := ALIAS_ARRAY[TYPE_FULL].alias r_list;
     //
     context_extern := ITM_OBJECT.context_extern;
@@ -282,6 +287,8 @@ Section Public
       result_list.last.type.display buf;      
     };
     buf.add_last '}';    
+    // Debug
+    buf.append "(PROFIL_BLOCK)";
   );
 
   - prototype:PROTOTYPE <- type_block.prototype;

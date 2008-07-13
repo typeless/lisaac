@@ -200,7 +200,6 @@ Section Public
     + nb_result_list:INTEGER;
                 
     verify := is_first;
-    
     // Require
     is_require := TRUE;
     contract := require;
@@ -230,7 +229,12 @@ Section Public
       };
     };
     (profil_slot.result_list.count != nb_result_list).if {
-      semantic_error (result.position,"Incorrect value result.");
+      string_tmp.copy "Incorrect value result (slot:";
+      profil_slot.result_list.count.append_in string_tmp;
+      string_tmp.append ", list:";
+      nb_result_list.append_in string_tmp;
+      string_tmp.append ").";
+      semantic_error (result.position,string_tmp);
     };
     (nb_result_list = 1).if {
       put_result result in (profil_slot.result_list.first);
@@ -312,7 +316,9 @@ Section Private
   
   - put_result e:EXPR in v:LOCAL <-
   ( + val:EXPR;
+    + wrt:WRITE;
     val := e.check_type (v.type) with (v.position);
-    list_current.add_last (v.write position value val);
+    wrt := v.write position value val;
+    list_current.add_last wrt;    
   );
   

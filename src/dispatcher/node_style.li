@@ -221,7 +221,7 @@ Section Private
 	    result_var := rd.variable;	    
 	    rd  := call.profil.result_list.item j.read position;
 	    wrt := result_var.write position value rd;
-	    call.result_list.add_last wrt;	    
+            call.result_list.add_last wrt;	                
 	  };	  
 	} else {
           rd ?= result_expr;

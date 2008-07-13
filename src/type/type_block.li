@@ -175,7 +175,7 @@ Section Public
   
   - append_name_in buf:STRING <-
   (
-    buf.add_last '{';    
+    buf.add_last '{';        
     (argument_list.is_empty).if_false {
       (argument_list.count > 1).if {
         buf.add_last '(';
@@ -199,4 +199,6 @@ Section Public
       result_list.last.display buf;      
     };
     buf.add_last '}';    
+    // Debug
+    buf.append "(TYPE_BLOCK)";
   );

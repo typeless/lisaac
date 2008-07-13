@@ -183,12 +183,14 @@ Section Public
 
     (list_current != NULL).if {
       // Fusion list.      
-      lower.to (upper-1) do { j:INTEGER;
-	list_current.insert_before (item j);
+      (expr_list.is_empty).if_false {
+        lower.to (upper-1) do { j:INTEGER;
+          list_current.insert_before (item j);
+        };        
+        result := last; 
+        ? {result != NULL};      
+        new_execute_pass;
       };
-      result := last; 
-      ? {result != NULL};
-      new_execute_pass;
     } else {              
       result := Self;
     };    

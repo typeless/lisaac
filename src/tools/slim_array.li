@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := Expanded SLIM_ARRAY[E];
+  + name      := SLIM_ARRAY[E]; // BSBS: A mettre en Expanded.
 
   - copyright := "2003-2008 Sonntag Benoit";
 
@@ -49,7 +49,7 @@ Section Public
     result
   );
   
-  - lower:INTEGER <- 1;
+  - lower:INTEGER <- 0;
   
   - upper:INTEGER <- 
   ( + result:INTEGER;

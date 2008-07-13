@@ -112,6 +112,7 @@ Section Private
     + result:BOOLEAN;
                 
     typ_f := expr.static_type;
+    
     (typ_f.is_expanded && {typ_f.raw != type_boolean}).if {
       (first_code = NULL).if {
 	first_type := typ_f.raw;
@@ -123,7 +124,17 @@ Section Private
     } else {	
       ((typ_f.raw.is_block) || {typ_f.raw.subtype_list.count != count}).if {
 	lst_typ := TYPES_TMP.new;      
-	expr.get_type lst_typ;      
+        expr.get_type lst_typ;      
+        
+        
+        (expr.static_type.is_block).if {
+          + rd:READ_LOCAL;
+          
+          rd ?= expr;
+          ////////////////////////// ICI ///////////////
+        };
+    
+        
 	(! lst_typ.is_empty).if {
 	  (lst_typ.count = 1).if {
 	    (first_code = NULL).if {

@@ -662,8 +662,13 @@ Section Public
     title "SOURCE CODE" in output_code;        
     
     output_code.append "int main(int argc,char **argv)\n";
-    list_main.genere_extern output_code;
-    output_code.add_last '\n';
+    output_code.append "{\n";
+    indent.append "  ";
+    list_main.genere_extern output_code;    
+    output_code.append "  return(0);\n";
+    indent.remove_last 2;    
+    output_code.append indent;
+    output_code.append "}\n\n"; 
     
     PROFIL_LIST.genere output_code;
     
