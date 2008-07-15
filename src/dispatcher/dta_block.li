@@ -107,10 +107,10 @@ Section NODE_TYPE, DTA
     } else {            
       t_block ?= t;                  
       
-      (t_block = NULL).if { // BSBS: debug
-        "<<<".print;
-        t.print;
-        ">>>".print; '\n'.print;
+      "<<<".print;
+      t.print;
+      ">>>".print; '\n'.print;
+      (t_block = NULL).if { // BSBS: debug        
         list_current.debug_display;
         syntax_error (argument_list.first.position,"Block not found");        
       };

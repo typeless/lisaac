@@ -278,7 +278,7 @@ Section Public
     } else {
       type := t;
     };
-    style       := c;
+    style := c;
     
     (is_static).if {      
       tmp := TYPES_TMP.new;      
@@ -287,6 +287,19 @@ Section Public
     } else {
       type_list := TYPES_TMP.types_empty;
     };
+    
+    (
+      + tb:TYPE_BLOCK;
+      
+      tb ?= type.raw;
+      ((tb != NULL) && {name = ALIAS_STR.variable_self}).if {
+        "************ ERROR : ".print;
+        intern_name.print;
+        " ************\n".print;
+        crash_with_message "ERROR TYPE BLOCK!!!!";
+      };
+    );    
+    
   );
   
   - my_copy:LOCAL <-

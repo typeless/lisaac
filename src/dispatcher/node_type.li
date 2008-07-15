@@ -127,11 +127,17 @@ Section Private
         expr.get_type lst_typ;      
         
         
-        (expr.static_type.is_block).if {
+        (expr.static_type.raw.is_block).if {
           + rd:READ_LOCAL;
           
           rd ?= expr;
-          ////////////////////////// ICI ///////////////
+          "NODE_TYPE : ".print;
+          (rd != NULL).if {            
+            rd.debug_display;
+          } else {
+            "Other : ".print;
+            expr.debug_display;            
+          };
         };
     
         
@@ -184,7 +190,14 @@ Section Private
 	  };	  
 	} else {
 	  new_type_self := self_type;
-	};
+        };
+        
+        (new_type_self.raw.is_block).if {
+          "NODE TYPE : TYPE SELF ".print;
+          new_type_self.raw.print;
+          '\n'.print;
+        };
+        
 	add_stack_type first_type;
 	result := data.update_branch first_code self new_type_self;
 	stack_type.remove_last;
