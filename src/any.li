@@ -182,7 +182,8 @@ Section Public
     ? {v.style = '+'};
     
     (v.style != '+').if {
-      v.intern_name.print; " style [".print; v.style.print; "]\n".print;
+      v.intern_name.print; " style [".print; v.style.print; "] ".print;
+      '\n'.print;
       warning_error (v.position,"BUG ANY.add_var_size Error");
     };
     // BSBS: C'est pas top, avec des HASHED_SET ce serait mieux...

@@ -469,12 +469,11 @@ Section Private
     };
     
     // Extract Switch/body:
-    switch ?= source.item (source.upper-1);    
+    switch ?= source.last;
     (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
       body := switch.list.item k.code;
-      (body.count > 1).if {
-	idx := body.upper-1;
-	msg_slot ?= body.item idx;
+      (body.is_empty).if_false {	
+	msg_slot ?= body.last;
 	(msg_slot != NULL).if {	  
 	  // DEBUG
 	  (msg_slot = Self).if {
@@ -484,8 +483,8 @@ Section Private
 	    semantic_error (position,"CALL_SLOT : BUG2!!!!");
 	  };
 	  // FIN DEBUG
-	  msg_slot.argument_to_assignment body index idx alias FALSE;
-	  body.put (LOOP_END.create (msg_slot.position) loop result) to (body.upper - 1);
+	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE;
+	  body.put (LOOP_END.create (msg_slot.position) loop result) to (body.upper);
 	};	
       };
     };

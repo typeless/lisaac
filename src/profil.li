@@ -211,36 +211,30 @@ Section Public
   
   - search_tail_recursive:BOOLEAN <-
   ( + switch:SWITCH;
-    + void_:PROTOTYPE_CST;
     + msg:CALL_SLOT;
     + lst:LIST;
     + count_recur:INTEGER;
     + result:BOOLEAN;
         
     (
-      (! mode_recursive)       &&
-      {is_not_tail_recursive } &&       
-      {code.count     >= 2   }
+      (! mode_recursive)      &&
+      {is_not_tail_recursive} &&       
+      {! code.is_empty}
     ).if {          
-      switch ?= code.item (code.upper-1);
-      void_  ?= code.last;
-      (
-	(switch != NULL) &&	
-	{void_ != NULL}  &&
-	{void_.static_type.raw = TYPE_VOID}
-      ).if {	
+      switch ?= code.last;            
+      (switch != NULL).if {	
 	// Verification des cases :		
 	(switch.list.lower).to (switch.list.upper) do { j:INTEGER;
 	  lst := switch.list.item j.code;
-	  (lst.count > 1).if {
-	    msg ?= lst.item (lst.upper - 1);
+	  (lst.is_empty).if_false {
+	    msg ?= lst.last;
 	    ((msg != NULL) && {msg.profil = Self}).if {	      	      
 	      count_recur := count_recur + 1;
 	    };
 	  };
 	};
 	(count_recur = switch.list.count).if {
-	  semantic_error ((slot.position),"Recursivity without end.");
+	  semantic_error (slot.position,"Recursivity without end.");
 	};
 	(count_recur = switch.list.count - 1).if {	  	  
 	  ((count_intern_call - 1) = count_recur).if {
@@ -439,9 +433,9 @@ Section Private
     };
     buffer.add_last ')';
     (result_list.is_empty).if {
-      buffer.append " With result";
+      buffer.append " Void ";
     } else {
-      buffer.append " Void";
+      buffer.append " With result ";      
     };
   );
   

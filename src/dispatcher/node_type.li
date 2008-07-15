@@ -125,22 +125,6 @@ Section Private
       ((typ_f.raw.is_block) || {typ_f.raw.subtype_list.count != count}).if {
 	lst_typ := TYPES_TMP.new;      
         expr.get_type lst_typ;      
-        
-        
-        (expr.static_type.raw.is_block).if {
-          + rd:READ_LOCAL;
-          
-          rd ?= expr;
-          "NODE_TYPE : ".print;
-          (rd != NULL).if {            
-            rd.debug_display;
-          } else {
-            "Other : ".print;
-            expr.debug_display;            
-          };
-        };
-    
-        
 	(! lst_typ.is_empty).if {
 	  (lst_typ.count = 1).if {
 	    (first_code = NULL).if {
@@ -190,12 +174,6 @@ Section Private
 	  };	  
 	} else {
 	  new_type_self := self_type;
-        };
-        
-        (new_type_self.raw.is_block).if {
-          "NODE TYPE : TYPE SELF ".print;
-          new_type_self.raw.print;
-          '\n'.print;
         };
         
 	add_stack_type first_type;

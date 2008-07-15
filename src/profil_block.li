@@ -149,7 +149,7 @@ Section Public
     argument_list.put var to 0;
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       stack_local.add_last (argument_list.item j);
-    };
+    };        
     a_list := ALIAS_ARRAY[TYPE_FULL].alias a_list;
     //
     code := list_current;    
@@ -169,12 +169,7 @@ Section Public
         };
       } else {
         rd ?= result;        
-        var := rd.local;
-        
-        "PROFIL_BLOCK : result : ".print;
-        var.intern_name.print;
-        '\n'.print;
-        
+        var := rd.local;                
         result_list.add_last var;
         r_list.add_last (var.type);
       };      

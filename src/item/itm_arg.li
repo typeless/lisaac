@@ -70,10 +70,16 @@ Section Public
   */
 
   - to_run_in arg_lst:FAST_ARRAY[LOCAL] for p:PARAMETER_TO_TYPE <-
-  ( 
+  ( + t:ITM_TYPE_MONO;
+            
+    (name = ALIAS_STR.variable_self).if {
+      t := ITM_TYPE_SIMPLE.type_self;
+    } else {
+      t := type;
+    };    
     arg_lst.add_last (
-      LOCAL.create position name name style ' ' type (type.to_run_for p)
-    );
+      LOCAL.create position name name style ' ' type (t.to_run_for p)
+    );    
   );
 
   - get_index_type p:ITM_TYPE_PARAMETER :INTEGER <-

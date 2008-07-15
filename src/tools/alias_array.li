@@ -40,6 +40,8 @@ Section Private
   - free_list:FAST_ARRAY[FAST_ARRAY[E]] := 
   FAST_ARRAY[FAST_ARRAY[E]].create_with_capacity 5;
   
+  - empty_list:FAST_ARRAY[E] := FAST_ARRAY[E].create_with_capacity 0;
+  
 Section Public
     
   //
@@ -62,11 +64,15 @@ Section Public
   - alias tmp:FAST_ARRAY[E] :FAST_ARRAY[E] <-
   ( + result:FAST_ARRAY[E];
     
-    result := bucket.reference_at tmp;
-    (result = NULL).if {
-      result := FAST_ARRAY[E].create_with_capacity (tmp.count);
-      result.copy tmp;
-      bucket.fast_add result;
+    (tmp.is_empty).if {
+      result := empty_list;
+    } else {
+      result := bucket.reference_at tmp;
+      (result = NULL).if {
+        result := FAST_ARRAY[E].create_with_capacity (tmp.count);
+        result.copy tmp;
+        bucket.fast_add result;
+      };
     };
     free tmp;    
     result
