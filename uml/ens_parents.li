@@ -1,0 +1,36 @@
+/*******	Prototype qui permet de stocker les diff�rents parents instanci�s d'un fichier 		*******/
+
+
+
+Section Header
+	+ name := ENS_PARENTS;
+	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+
+Section Inherit
+  + parent_linked_list:Expanded LINKED_LIST[STRING];
+
+Section Public
+
+	+ ajouter s:STRING <-
+	(
+ 		add_last s ;
+	);
+	
+	+ ajouter_tous ep:ENS_PARENTS <-
+	(
+		append_collection ep;	
+	);
+	//cherche si l'ensemble contient d�j� le parent (fr)
+	+ has fr:STRING :BOOLEAN <-
+	(
+		+result:BOOLEAN;
+		result:=FALSE;
+		(lower).to (upper) do{ i:INTEGER;
+			+ g:STRING;
+			g:=item i;
+			(g==fr).if{
+				result:=TRUE;
+			};
+		};
+		result
+	);

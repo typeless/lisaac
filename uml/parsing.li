@@ -1,0 +1,409 @@
+/*******	Prototype qui permet de r�cup�rer toutes les informations relative � un fichier.li	*******/
+
+
+
+Section Header
+	+ name := PARSING;
+	- author:="HILBERT Jerome (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gregoire(greg-jacquemin@hotmail.fr)";
+
+Section Inherit
+  + parent_object:OBJECT := OBJECT;
+
+Section Private
+ 	+ buffer1:STRING;
+ 	+ simple:BOOLEAN :=FALSE;
+	+ uniquement_public:BOOLEAN:=FALSE;
+
+Section Public
+
+	//recupere le contenu du fichier et renvoit une instance de FICHIER contenant ses informations
+	+ parcours_fichier e:ENTRY option simple1:BOOLEAN ou uniquement_public1:BOOLEAN :FICHIER <-
+	(
+		+ lee:LIREETECRIRE;
+		+ f:FICHIER;
+		+ nom:STRING;
+		
+		simple:=simple1;
+		uniquement_public:=uniquement_public1;
+		f:=FICHIER.clone;
+		lee:=LIREETECRIRE.clone;
+		e.path.print;
+		"\n".print;
+		buffer1:=lee.lire e;
+		buffer1.append "\n";
+ 		buffer1.to_lower;
+   		le_nettoyeur3;
+		nom:=get_element "name" in "Header";
+		f.make (nom,(get_methodes nom),(get_attributs nom),get_parents);
+		f
+	);
+
+Section Private
+
+	//nettoie le fichier en enlevant tous les commentaires, ce qui se trouve entre "" et entre ()
+	//->il ne restera que ce qu'il faut analyser!
+	- le_nettoyeur3 <-
+	(
+		+ index,index2,index_g,index_c,index_po,index_pf,index_p:INTEGER;
+		+ nb_p:INTEGER;
+		+ calcul_index:BLOCK;
+		index:=1;
+		nb_p:=0;
+		//calcul des index
+		calcul_index:={index_g:=buffer1.index_of '"' since index;
+			index_c:=buffer1.index_of '/' since index;
+			index_pf:=buffer1.index_of ')' since index;
+			index_po:=buffer1.index_of '(' since index;
+			index:=(index_g.min index_c).min (index_po.min index_pf);
+		};
+		
+		calcul_index.value;
+		{index<(buffer1.count+1)}.while_do{
+			({index_g=index}&&{buffer1.item (index_g-1) != '\\'}&&{!({buffer1.item (index_g-1) = '\''}&&{buffer1.item (index_g+1) = '\''})}).if{
+				//on enl�ve ce qui est entre ""
+				index2:=index+1;
+				{{(index2:=buffer1.index_of '"' since (index2))!=(buffer1.count+1)}&&
+				{{buffer1.item (index2-1) = '\\'}||
+				{{buffer1.item (index2-1) = '\''}&&{buffer1.item (index2+1) = '\''}}}}.while_do{
+					index2:=index2+1;};
+					(index2=(buffer1.count+1)).if_false{
+						buffer1.remove_between index to index2;
+					};
+			}else{
+				//suppression des commentaires //
+				({index_c=index}&&{buffer1.item (index_c+1) = '/'}).if{
+					index2:=buffer1.index_of '\n' since (index_c+2);
+					buffer1.remove_between index to (index2-1);
+				}else{
+					//suppression des commentaires /* */
+					({index_c=index}&&{buffer1.item (index_c+1) = '*'}).if{
+						((index2:=buffer1.substring_index ("*/",(index_c+2)))!=0).if{
+							buffer1.remove_between index to (index2+1);
+						};
+					}else{
+			//comptage des (
+						({index_po=index}&&{!({buffer1.item (index_po-1)='\''}&&{buffer1.item (index_po+1)='\''})}).if{
+							(nb_p=0).if{index_p:=index;};
+							nb_p:=nb_p+1;
+							index:=index+1;
+						}else{
+			//d�comptage des ) et suppression des zones entre parenth�ses
+							({index_pf=index}&&{!({buffer1.item (index_pf-1)='\''}&&{buffer1.item (index_pf+1)='\''})}).if{
+								nb_p:=nb_p-1;
+                (nb_p=0).if{
+									buffer1.remove_between index_p to (index_pf+1);
+									index:=index_p;
+								}else{
+                index:=index+1;
+              };
+							}else{index:=index+1;};
+						};
+					};
+				};
+			};
+			//calcul des nouveaux index
+			/*index_g:=buffer1.index_of '"' since index;
+						index_c:=buffer1.index_of '/' since index;
+						index_pf:=buffer1.index_of ')' since index;
+						index_po:=buffer1.index_of '(' since index;
+						index:=(index_g.min index_c).min (index_po.min index_pf);*/
+						calcul_index.value;
+		};
+	);
+	
+	//renvoit la section s, par exemple si s vaut HEADER, renvoit l'ensemble de la section HEADER. S'il y a plusieurs section du m�me nom,
+	//renvoit les sections concat�n�es
+	- get_section s:ABSTRACT_STRING :STRING <-
+ 	(
+ 		+ section1:STRING;
+ 		+ index,index0:INTEGER;
+ 		+ index2:INTEGER;
+ 		+ texto:STRING;
+				
+		index0:=0;
+ 		index:=0;
+ 		index2:=0;
+		texto:=STRING.create (s.count);
+		section1:=STRING.create 256;
+		section1.copy "";
+ 		texto.copy s;
+		texto.to_lower;
+		
+		{(index0:=buffer1.substring_index ("section",index2))!=0}.while_do{
+			index:=index0+7;
+			{{buffer1.item index ==' '}||{buffer1.item index =='\n'}}.while_do{index:=index+1;};
+			(buffer1.substring index to (index+s.count-1) ==texto).if{
+				index0:=index+s.count;
+				index2:=index0-7;
+				{
+					index:=index2+7;
+					index2:=buffer1.substring_index ("section",(index));
+				}.do_while{{index2!=0}&&{{{(buffer1.item (index2-1))!='\n'}&&{(buffer1.item (index2-1))!=' '}}||{{(buffer1.item (index2+7))!=' '}&&{(buffer1.item (index2+7))!='\n'}}}};
+				
+				(index2==0).if{ 
+				index2:=buffer1.count;
+				};
+				section1.append (buffer1.substring index0 to (index2-1));
+			}else{index2:=index2+8;};
+			"index2 ".print;index2.print;'\n'.print;
+			"buffer1 ".print;buffer1.count.print;'\n'.print;
+		};		
+		section1
+	);
+	// renvoit un �l�ment d'une section, pour l'instant cette m�thode ne sert qu'� r�cup�rer le 'name' dans la section HEADER
+	// mais elle pourrait servir �galement � r�cup�rer les auteur, les commentaires, etc..
+	- get_element nom:STRING_CONSTANT in s:STRING_CONSTANT :STRING <-
+	(
+		+ index,index2,index3:INTEGER;
+		+ section1:STRING;
+		+ element:STRING;
+		
+		section1:=get_section s;
+		index:=section1.substring_index (nom,1);
+		index:=section1.substring_index (":=",(index+nom.count));
+		index2:=section1.substring_index (";",(index+nom.count));
+		index3:=section1.substring_index ("->",(index+nom.count));
+		(index3>0).if{index2:=index2.min(index3-1)};
+		
+		element:=STRING.create (index2-index+2);
+		element.copy (section1.substring (index+2) to (index2-1));
+ 		element.remove_all_occurrences ' ';
+ 		element.remove_all_occurrences '\n';
+		element
+	);
+	//renvoit l'ensemble des parents d'un prototype
+	- get_parents :ENS_PARENTS <-
+	(
+		+ section1:STRING;
+		+ index:INTEGER;
+		+ index2:INTEGER;
+		+ parents:ENS_PARENTS;
+		+ parent:STRING;
+		
+		parents:=ENS_PARENTS.create;
+		section1:=get_section "INHERIT";
+		index:=1;
+		index2:=1;
+		
+		{(index:=section1.substring_index (":",(index2+1)))!=0}.while_do{
+			((section1.item (index+1))=='=').if_false{
+			 ((index2:=section1.substring_index ("expanded",(index+1)))!=0).if{
+			     index:=index2+7;
+        };
+				((index2:=section1.substring_index (":=",(index+1)))==0).if{
+					((index2:=section1.substring_index (";",index))==0).if{
+						index2:=section1.substring_index ("<" ,index);
+					};
+				};
+       
+				
+				parent:=STRING.create (index2-index-2);
+				parent.copy (section1.substring (index+1) to (index2-1));
+				parent.remove_all_occurrences ' ';
+				parent.remove_all_occurrences '\n';
+				parent.to_upper;
+				(parents.has parent).if_false{
+					parents.ajouter parent;
+				};
+			}else{
+				index2:=index+1;
+			};
+		};
+		parents
+	);
+	
+	//recherche des attributs
+	- get_attributs nom:STRING :ENS_ATTRIBUTS <-
+	(
+		+ ea:ENS_ATTRIBUTS;
+		+ pro:PROTECTED;
+		
+		pro:=PROTECTED.clone;
+		pro.set_nom nom;
+		
+		ea:=ENS_ATTRIBUTS.create;
+		(simple).if_false{
+			ea.append_collection (get_attributs2 PUBLIC);
+			(uniquement_public).if_false{
+			ea.append_collection (get_attributs2 PRIVATE);
+			ea.append_collection (get_attributs2 pro);
+			};
+		};
+		ea
+	);
+	//recherche des attributs selon un acc�s (public,private,..)
+	- get_attributs2 acces:ACCES :ENS_ATTRIBUTS <-
+	(
+		+ index,index2,index3:INTEGER;
+		+ ea:ENS_ATTRIBUTS;
+		+ section1:STRING;
+		+ tmp_string:STRING;
+		ea:=ENS_ATTRIBUTS.create;
+		
+		section1:=get_section (acces.get_type);
+
+		index:=0;
+		{index!=(section1.count+1)}.while_do{
+		index2:=index3:=index;
+			{
+				index:=index+1;
+				index:=section1.index_of '+' since index;
+			}.do_while{{(section1.item (index-1))=='\''}&&{(section1.item (index+1))=='\''}&&{index!=(section1.count+1)}};
+			{
+				index2:=index2+1;
+				index2:=section1.index_of '-' since index2;
+			}.do_while{{((section1.item (index2-1))=='<')||{{(section1.item (index2-1))=='\''}&&{(section1.item (index2+1))=='\''}}}&&{index2!=(section1.count+1)}};
+			{
+				index3:=index3+1;
+				index3:=section1.index_of '*' since index3;
+			}.do_while{{(section1.item (index3-1))=='\''}&&{(section1.item (index3+1))=='\''}&&{index3!=(section1.count+1)}};
+			index:=index.min(index2.min(index3));			
+			
+				(index!=(section1.count+1)).if{
+				
+// 				index2:=section1.index_of ';' since (index+1);
+				index2:=section1.substring_index (":=",(index+1));
+				index3:=section1.index_of ';' since (index+1);
+				({index2>index3}||{index2==0}).if{index2:=index3;};
+				
+				index3:=section1.substring_index ("<-",(index+1));
+				({index2<index3}||{index3==0}).if{
+					index2:=index2.min((section1.index_of '=' since (index+1))-1);
+					tmp_string:=section1.substring (index+1) to (index2-1);
+					((tmp_string.index_of ':' since 1)!=(tmp_string.count+1)).if{
+						ea.append_collection (get_attribut tmp_string with acces);
+					};
+				};
+			};
+		};
+		ea
+	);
+	//analyse une chaine correspondant a un ('i:INTEGER') ou plusieurs ('i,j:INTEGER') attribut(s) et renvoit un ensemble d'attributs
+	- get_attribut a:STRING with acces:ACCES :ENS_ATTRIBUTS <-
+	(
+		+ attribut:ATTRIBUT;
+		+ index,index2,index3:INTEGER;
+		+ nom,type_retour:STRING;
+		+ ea:ENS_ATTRIBUTS;
+		
+		ea:=ENS_ATTRIBUTS.create;
+		a.remove_all_occurrences ' ';
+		a.remove_all_occurrences '\n';
+		
+		index:=a.index_of ':' since 1;
+		type_retour:=a.substring (index+1) to (a.count);
+		type_retour.to_upper;
+		
+		index2:=1;
+		{{(index3:=a.index_of ',' since (index2))!=(a.count+1)}&&{index3<index}}.while_do{
+			attribut:=ATTRIBUT.clone;
+			nom:=a.substring index2 to (index3-1);
+			attribut.make (nom,type_retour,acces);
+			ea.add_last attribut;
+			index2:=index3+1;
+		};
+		attribut:=ATTRIBUT.clone;
+		nom:=a.substring index2 to (index-1);
+		attribut.make (nom,type_retour,acces);	
+		ea.add_last attribut;
+		ea
+	);
+
+	//recherche des attributs
+	- get_methodes nom:STRING :ENS_METHODES <-
+	(
+		+ em:ENS_METHODES;
+		+ pro:PROTECTED;
+		
+		pro:=PROTECTED.clone;
+		pro.set_nom nom;
+		
+		em:=ENS_METHODES.create;
+		(simple).if_false{
+			em.append_collection (get_methodes2 PUBLIC);
+			(uniquement_public).if_false{
+			em.append_collection (get_methodes2 PRIVATE);
+			em.append_collection (get_methodes2 pro);
+			};
+		};
+		em
+	);
+	//recherche des attributs selon un acces(public,private,..)
+	- get_methodes2 acces:ACCES:ENS_METHODES <-
+	(
+		+ index,index2,index3:INTEGER;
+		+ em:ENS_METHODES;
+		+ section1:STRING;
+		+ tmp_string:STRING;
+		em:=ENS_METHODES.create;
+		section1:=get_section (acces.get_type);
+		index:=0;
+		{index!=(section1.count+1)}.while_do{
+			index2:=index3:=index;
+			{
+				index:=index+1;
+				index:=section1.index_of '+' since index;
+			}.do_while{{(section1.item (index-1))=='\''}&&{(section1.item (index+1))=='\''}&&{index!=(section1.count+1)}};
+			{
+				index2:=index2+1;
+				index2:=section1.index_of '-' since index2;
+			}.do_while{{((section1.item (index2-1))=='<')||{{(section1.item (index2-1))=='\''}&&{(section1.item (index2+1))=='\''}}}&&{index2!=(section1.count+1)}};
+			{
+				index3:=index3+1;
+				index3:=section1.index_of '*' since index3;
+			}.do_while{{(section1.item (index3-1))=='\''}&&{(section1.item (index3+1))=='\''}&&{index3!=(section1.count+1)}};
+			
+
+			index:=index.min(index2.min(index3));			
+			(index!=(section1.count+1)).if{
+// 				index2:=section1.index_of ';' since (index+1);
+				index2:=section1.substring_index (":=",(index+1));
+				index3:=section1.index_of ';' since (index+1);
+				({index2>index3}||{index2==0}).if{index2:=index3;};
+				index3:=section1.substring_index ("<-",(index+1));
+				({{index2>index3}||{index2==(section1.count+1)}}&&{index3!=0}).if{
+					tmp_string:=section1.substring (index+1) to (index3-1);
+					em.add_last (get_methode (tmp_string,acces));
+				};
+			};
+		};
+		em
+	);
+        
+	- get_methode (m:STRING,acces:ACCES) :METHODE <-
+	(
+		+ index,index2,index3:INTEGER;
+		+ nom,type_retour,tmp_string2:STRING;
+		+ methode:METHODE;
+		+ ea:ENS_ATTRIBUTS;
+		ea:=ENS_ATTRIBUTS.create;
+		methode:=METHODE.clone;
+		m.right_adjust; m.left_adjust;
+		type_retour:=STRING.create 4;
+		type_retour.copy "void";
+		m.replace_all '\t' with ' ';
+		m.append " ";
+		index:=(m.index_of ' ' since 1).min(m.index_of ':' since 1);
+		nom:= m.substring 1 to (index-1);
+		nom.replace_all '<' with 'c';
+		nom.replace_all '&' with 'e';
+		{(index2:=m.index_of ':' since (index))!=(m.count+1)}.while_do{
+			((index2-index)<2).if{
+				type_retour:=m.substring (index2+1) to (m.count-1);
+				index:=m.count;
+			}else{
+				index3:=(m.index_of ' ' since (index2+1)).min(m.index_of ',' since (index2+1));
+				tmp_string2:=m.substring (index+1) to (index3-1);
+				((tmp_string2.occurrences ':')>1).if{
+					index3:=m.index_of ':' since (index2+1);
+					tmp_string2:=m.substring (index+1) to (index3-1);
+				};
+				ea.append_collection(get_attribut tmp_string2 with acces);
+				index:=index3;
+			};
+		};
+		type_retour.to_upper;
+		methode.make (nom,type_retour,ea,acces);
+		methode
+	);
+	

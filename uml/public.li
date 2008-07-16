@@ -1,0 +1,20 @@
+/*******	Prototype qui herite de "acces" et qui instancie un acces "public"	*******/
+Section Header
+	+ name :=PUBLIC;
+	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+	
+Section Inherit
+
+	- parent_acces:ACCES:=ACCES;
+
+Section Public
+	//renvoit une chaine de caract�rs d�crivant le type d'acc�s
+	- get_type :ABSTRACT_STRING<-
+	(
+		"public"
+	);
+	//renvoit le type d'acc�s au format UML (+)
+	- get_uml_type :STRING_CONSTANT<-
+	(
+		"+"	
+	);

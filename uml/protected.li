@@ -1,0 +1,28 @@
+/*******	Prototype qui herite de "acces" et qui instancie un acces "protected"	*******/
+Section Header
+	+ name :=PROTECTED;
+	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+
+Section Inherit
+	+ parent_acces:ACCES:=ACCES;
+
+Section Private
+	- nom:STRING;
+
+Section Public
+
+	//renvoit une chaine de caract�rs d�crivant le type d'acc�s. Ici on renvoit le nom du prototype
+	- get_type :ABSTRACT_STRING<-
+	(
+		nom
+	);
+	//renvoit le type d'acc�s au format UML (*)
+	- get_uml_type :STRING_CONSTANT<-
+	(
+		"*"
+	);
+	
+	- set_nom nom1:STRING <-
+	(
+		nom:=nom1;
+	);

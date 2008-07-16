@@ -1,0 +1,21 @@
+Section Header
+	+ name := ACCES;
+	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+	
+Section Inherit
+	- parent_object:OBJECT:=OBJECT;
+	
+Section Public
+
+	//renvoit une chaine de caract�rs d�crivant le type d'acc�s
+	+ get_type :ABSTRACT_STRING<-
+	(
+		deferred;
+		"FALSE"
+	);
+	//renvoit le type d'acc�s au format UML (+,-,*)
+	+ get_uml_type :STRING_CONSTANT<-
+	(
+		deferred;
+		"FALSE"
+	);

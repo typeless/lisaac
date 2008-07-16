@@ -117,7 +117,7 @@ Section MEMORY
     };
     TRUE;
   );
-  
+
   - search_capacity <-
   ( 
     capacity_max := SYSTEM.get_memory_capacity;

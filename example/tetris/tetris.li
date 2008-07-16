@@ -213,7 +213,7 @@ Section Public
     VIDEO.make (640,400);
     DESK.make VIDEO with (
       G_OUT.create "Tetris" justify (G_OUT.center) / init      
-    );    
+    );        
   );
   
   //

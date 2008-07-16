@@ -1,0 +1,72 @@
+Section Header
+	+ name :=LAUNCHER;
+	- author:="HILBERT Jerome (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gregoire(greg-jacquemin@hotmail.fr)";
+Section Inherit
+
+	-parent_object:OBJECT := OBJECT;
+	
+Section Public
+
+	- main <-
+	(
+		+ p:PARSE;
+		+ reper:ENTRY;
+		+ string_tmp:STRING;
+		+ ensfichiers:ENS_FICHIERS;
+		+ f:FICHIER;
+		+ svg:SVG_CREATOR;
+		+ simple:BOOLEAN;
+		+ uniquement_public:BOOLEAN;
+		
+		({COMMAND_LINE.count < 3}||{(COMMAND_LINE.item 1)=="-help"}).if{
+			affichage_aide;
+		}else{
+			svg:=SVG_CREATOR.clone;
+			f:=FICHIER.clone;
+			string_tmp := STRING.create 255;
+			string_tmp.copy (COMMAND_LINE.item 1);
+			"Parsing du dossier: ".print;
+			string_tmp.print;
+			"\n".print;
+			"\n\n\t!!!!ATTENTION A LA MODIFICATION DE STRING.LI !!!!!!!!!!!!!!!!!!!!!!!\n\n\n".print;
+			
+			ABSTRACT_ENTRY.reduce_path string_tmp;
+			reper := ENTRY.get_entry string_tmp;
+			(reper=NULL).if{			
+				"Dossier ".print;
+				string_tmp.print;
+				" inexistant!\n'".print;
+				die_with_code exit_failure_code;
+			};
+			string_tmp.copy (COMMAND_LINE.item 2);
+			p:=PARSE.clone;
+			
+			simple:=FALSE;
+			uniquement_public:=FALSE;
+			({COMMAND_LINE.count >=4}&&{(COMMAND_LINE.item 3)=="-simple"}).if{
+				simple:=TRUE;
+			};
+			(simple).if_false{
+				({COMMAND_LINE.count >=4}&&{(COMMAND_LINE.item 3)=="-public"}).if{
+					uniquement_public:=TRUE;
+				};
+			};
+			
+			ensfichiers:=p.parcours_dossier reper option simple ou uniquement_public;
+			
+      (ensfichiers.lower).to (ensfichiers.upper) do{ i:INTEGER;
+        //ensfichiers.item i .print;
+      };
+      '\n'.print;
+
+      svg.make ensfichiers to string_tmp;
+      svg.parcours_fichiers;
+		};
+	);
+	
+Section Private
+	- affichage_aide <-
+	(
+		" \n\nUTILISATION :\n\t1er argument :\trepertoire a parser\n\n\t2ieme argument :destination source SVG\n\n\t[-simple|-public] :\tdiagramme sans methodes/attributs|avec uniquement les methodes/attributs public\n\n\n\n".print;
+	);
+	

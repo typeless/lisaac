@@ -1,0 +1,286 @@
+Section Header
+	+ name := SVG_FORMES;
+	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+	
+Section Inherit
+	+ parent_object:OBJECT:=OBJECT;
+
+Section Public
+	//CREATION DU CODE SVG POUR UN RECTANGLE
+	- rectangle f:FORME_RECTANGLE :STRING <-
+	(
+		+ esp_ligne:INTEGER;
+		+ chaine,tmp_string:STRING;
+		+ x,y,posx1,posx2,posy1,posy2:INTEGER;
+		esp_ligne:=12;
+		x:=f.get_x +10;
+		y:=f.get_y +20;
+		posx1:=x+10;
+		posy1:=y+10;
+		posx2:=f.get_largeur;
+		posy2:=y+esp_ligne;
+		chaine:=STRING.create 256;
+		chaine.copy "<rect width=\"";
+		posx2.append_in chaine;
+		chaine.append "\" height=\"";
+		f.get_hauteur.append_in chaine;
+		chaine.append "\" x=\"";
+		f.get_x.append_in chaine;
+		chaine.append "\" y=\"";
+		f.get_y.append_in chaine;
+		chaine.append "\" fill=\"white\" stroke=\"black\" stroke-width=\"2\"/>\n";
+		chaine.append "<line x1=\"";
+		f.get_x.append_in chaine;
+		chaine.append "\" y1=\"";
+		posy1.append_in chaine;
+		chaine.append "\" x2=\"";
+		(f.get_x+f.get_largeur).append_in chaine;
+		chaine.append "\" y2=\"";
+		posy1.append_in chaine;
+		chaine.append "\" stroke=\"black\"/>\n";
+		tmp_string:=STRING.create (f.get_nom.count+1);
+		tmp_string.copy (f.get_nom);
+		tmp_string.append "\n";
+		chaine.append (get_text tmp_string at x and y with_size 12);
+		posy1:=posy1+20;
+ 		chaine.append (get_text (f.get_text_attributs) at x and posy1 with_size 10);
+		posy1:=posy1+(esp_ligne*(f.get_attributs.get_nb_lignes)+5);
+		chaine.append "<line x1=\"";
+		f.get_x.append_in chaine;
+		chaine.append "\" y1=\"";
+		posy1.append_in chaine;
+		chaine.append "\" x2=\"";
+		(f.get_x+f.get_largeur).append_in chaine;
+		chaine.append "\" y2=\"";
+		posy1.append_in chaine;
+		chaine.append "\" stroke=\"black\"/>\n";
+		posy1:=posy1+20;
+    chaine.append (get_text (f.get_text_methodes) at x and posy1 with_size 10);
+		chaine
+	);
+	//CREATION DU CODE SVG POUR UN TRAIT
+	- trait pere:FORME_RECTANGLE between fils:FORME_RECTANGLE with er:ENS_RECTANGLES :STRING <-
+	(
+		+ c:STRING;
+		+ posx1,posy1,posx2,posy2:UREAL_16_16;
+		+ angle:REAL;
+		+ points:LINKED_LIST[FAST_ARRAY[INTEGER]];
+		+ point:FAST_ARRAY[INTEGER];
+		+ rectangles:ENS_RECTANGLES;
+		+ chaine:STRING;
+		+ i:INTEGER;
+				
+		rectangles:=ENS_RECTANGLES.clone;
+		rectangles.copy er;
+		
+		point:=FAST_ARRAY[INTEGER].create 2;
+
+		c:=STRING.create 1024;
+		chaine:=STRING.create 1024;
+		
+		rectangles.remove_parent pere;
+
+		points:=collision rectangles with ((fils.get_x+((fils.get_largeur)/2)),(fils.get_y)) between ((pere.get_x+(pere.get_largeur)/2),(pere.get_y+pere.get_hauteur));
+		
+		((pere.get_y+pere.get_hauteur)>=(points.last.item 1)).if{
+			point.put (pere.get_x+(pere.get_largeur)/2) to 0;
+			point.put ((pere.get_y+pere.get_hauteur)+30) to 1;
+ 			points.add_last point;
+		};
+		i:=points.lower;
+		chaine.copy "";
+		{i<(points.upper)}.while_do{
+			+ x1,y1,x2,y2:INTEGER;
+			
+			x1:=points.item i .item 0;
+			y1:=points.item i .item 1;
+			x2:=points.item (i+1) .item 0;
+			y2:=points.item (i+1) .item 1;
+			chaine.append "<line x1=\"";
+			x1.append_in chaine;
+			chaine.append "\" y1=\"";
+			y1.append_in chaine;
+			chaine.append "\" x2=\"";
+			x2.append_in chaine;
+			chaine.append "\" y2=\"";
+			y2.append_in chaine;
+			chaine.append "\" stroke=\"black\"/>\n";
+			i:=i+1;
+		};
+		c.copy "";
+		c.append chaine;
+		posx1:=(pere.get_x.to_ureal_16_16) +(pere.get_largeur.to_ureal_16_16)/2;
+		posy1:=(pere.get_y+pere.get_hauteur).to_ureal_16_16;
+		posx2:=(points.last.item 0).to_ureal_16_16;
+ 		posy2:=(points.last.item 1).to_ureal_16_16;
+	
+		angle:=(((posx1-posx2).abs)/(posy2-posy1)).to_real.atan;
+		(posx1>posx2).if{posx1:=posx1-((angle.sin))*20;}else{posx1:=posx1+((angle.sin))*20;};
+		posy1:=posy1+((angle.cos))*15;
+		c.append "<defs> <marker id=\"Triangle\" viewBox=\"0 0 10 10\" refX=\"0\" refY=\"5\" markerUnits=\"strokeWidth\" markerWidth=\"15\" markerHeight=\"20\" ";
+		c.append "orient=\"auto\"> <path d=\"M 0 0 L 10 5 L 0 10 z\" /> </marker> </defs> <path d=\"M ";
+		posx2.append_in c;
+		c.append " ";
+		posy2.append_in c;
+		c.append " L ";
+		posx1.append_in c;
+		c.append " ";
+		posy1.append_in c;
+		c.append " \" fill=\"none\" stroke=\"black\" stroke-width=\"1\" marker-end=\"url(#Triangle)\"  />\n";
+		c
+	);
+	
+Section Private
+
+	//CREATION DU CODE SVG POUR L'AFFICHAGE DE TEXTE
+	- get_text text:STRING at x:INTEGER and y:INTEGER with_size size:INTEGER :STRING <-
+	(
+		+ svg:STRING;
+		+ index1:INTEGER;
+		+ index2,y_tmp:INTEGER;
+		svg:=STRING.create 256;
+		index1:=1;
+		index2:=1;
+		y_tmp:=y;
+		svg.copy "";
+		text.right_adjust;
+		text.left_adjust;
+//  		text.append "\n";
+		{(index2:=text.substring_index ("\n",(index2+1)))!=0}.while_do{
+			svg.append "<text x=\"";
+			x.append_in svg;
+			svg.append "\" y=\"";
+			y_tmp.append_in svg;
+			svg.append "\" fill=\"black\" font-size=\"";
+			size.append_in svg;
+			svg.append "\">";
+ 			svg.append (text.substring index1 to (index2-1));
+			svg.append "</text>\n";
+			y_tmp:=y_tmp+12;
+			index1:=index2+1;
+		};
+		svg
+	);
+	//METHODE RECURSIVE POUR TRAITER LES COLLISIONS DES TRAITS AVEC LES RECTANGLES
+	- collision rectangles:ENS_RECTANGLES with (x1,y1:INTEGER) between (x2,y2:INTEGER) :LINKED_LIST[FAST_ARRAY[INTEGER]] <-
+	(
+		+ points:LINKED_LIST[FAST_ARRAY[INTEGER]];
+		+ tmp,point:FAST_ARRAY[INTEGER];
+		+ i:INTEGER;
+		+ rectxy:ENS_RECTANGLES;
+		
+		
+		points:=LINKED_LIST[FAST_ARRAY[INTEGER]].create;
+		tmp:=FAST_ARRAY[INTEGER].create 2;
+		tmp.put x1 to 0;
+		tmp.put y1 to 1;
+		points.add_last tmp;
+   		
+		rectxy:=ENS_RECTANGLES.clone;
+		rectxy.copy rectangles;
+		
+		rectxy.remove_not_influent_parents (x1,y1) with (x2,y2);
+		rectxy.bofferding (x1,y1);
+		
+		i:=rectxy.lower;
+		{i<=rectxy.upper}.while_do{
+			point:=intersection (x1,y1) and (x2,y2) with (rectxy.item i);
+			((point.item 0)!=0).if{
+				points.append_collection (collision rectangles with (x1,y1) between ((point.item 0),(point.item 1)));
+				points.append_collection (collision rectangles with ((point.item 0),(point.item 1)) between (x2,y2));
+				i:=rectangles.upper;
+			};
+			i:=i+1;
+		};
+		points
+	);
+	//RENVOIE A ET B DE L' EQUATION AX + B PASSANT PAR LES POINTS X1,Y1 ET X2,Y2
+	- get_function x1:INTEGER and y1:INTEGER with x2:INTEGER and y2:INTEGER :FAST_ARRAY[UREAL_16_16] <-
+	(
+		+ xy :FAST_ARRAY[UREAL_16_16];
+		+ a,b:UREAL_16_16;
+	
+		xy:=FAST_ARRAY[UREAL_16_16].create 2;
+		xy.put 0 to 0;
+		xy.put 0 to 1;
+		(x1!=x2).if{
+			a:=((y1-y2).to_ureal_16_16)/((x1-x2).to_ureal_16_16);
+			b:=(y1.to_ureal_16_16) -(a*(x1.to_ureal_16_16));
+			xy.put a to 0;
+			xy.put b to 1;
+		}else{
+			xy.put 0 to 0;
+			xy.put x1 to 1;
+		};
+		xy
+	);
+	//TROUVE LE POINT D'INTERSECTION DU TRAIT AVEC LE RECTANGLE ET CALCUL UN POINT POUR LA DEVIATION DU TRAIT
+	- intersection (x1,y1:INTEGER) and (x2,y2:INTEGER) with rect:FORME_RECTANGLE :FAST_ARRAY[INTEGER] <-
+	(
+		+ point:FAST_ARRAY[INTEGER];
+		+ abs,abs2,ord:INTEGER;
+		+ xy:FAST_ARRAY[UREAL_16_16];
+		
+		xy:=get_function x1 and y1 with x2 and y2;
+		point:=FAST_ARRAY[INTEGER].create 2;
+		point.put 0 to 0;
+		point.put 0 to 1;
+		((xy.item 0) == 0).if{
+			abs:=(xy.item 1).to_integer;
+		}else{
+			abs:=(((((rect.get_y + rect.get_hauteur).to_ureal_16_16)-(xy.item 1))/(xy.item 0)).to_integer);
+// 			abs2:=((((rect.get_y.to_ureal_16_16)-(xy.item 1))/(xy.item 0)).to_integer);
+		};
+		({(rect.get_x)<=abs2}&&{((rect.get_x+rect.get_largeur))>=abs2}).if{
+			(abs2>=((rect.get_x)+((rect.get_largeur)/2))).if{
+				point.put ((rect.get_x+rect.get_largeur+rect.get_right)) to 0;
+				rect.update_right;
+			}else{
+				point.put ((rect.get_x-rect.get_left)) to 0;
+				rect.update_left;
+			};
+			point.put ((rect.get_y+rect.get_hauteur)) to 1;
+		};
+		({(rect.get_x)<=abs}&&{((rect.get_x+rect.get_largeur))>=abs}).if{
+			(abs>=((rect.get_x)+((rect.get_largeur)/2))).if{
+				point.put ((rect.get_x+rect.get_largeur+rect.get_right)) to 0;
+				rect.update_right;
+			}else{
+				point.put ((rect.get_x-rect.get_left)) to 0;
+				rect.update_left;
+			};
+			point.put ((rect.get_y+rect.get_hauteur)) to 1;
+		}else{
+ 			((xy.item 0) == 0).if_false{
+				((xy.item 0)>=0).if{
+					ord:=((xy.item 0) * (((rect.get_x)+(rect.get_largeur)).to_ureal_16_16) + (xy.item 1)).to_integer;
+					({ord>=(rect.get_y)}&&{ord<=((rect.get_y+rect.get_hauteur))}).if{
+						({(xy.item 0)> 1}||{y1<(rect.get_y+rect.get_hauteur)}).if{
+							point.put ((rect.get_x+rect.get_largeur+rect.get_right)) to 0;	
+							point.put ((rect.get_y-rect.get_right)) to 1;
+							rect.update_right;
+						}else{
+							point.put ((rect.get_x-rect.get_left)) to 0;
+							point.put ((rect.get_y+rect.get_hauteur)) to 1;
+							rect.update_left;
+						};
+						
+					};
+				}else{
+					ord:=((xy.item 0) * ((rect.get_x).to_ureal_16_16) + (xy.item 1)).to_integer;
+					({ord>=(rect.get_y)}&&{ord<=((rect.get_y+rect.get_hauteur))}).if{
+						({(xy.item 0)< -1}||{y1<(rect.get_y+rect.get_hauteur)}).if{
+							point.put ((rect.get_x-rect.get_left)) to 0;
+							point.put ((rect.get_y-rect.get_left)) to 1;
+							rect.update_left;
+						}else{
+							point.put (rect.get_x+rect.get_largeur+rect.get_right) to 0;
+							point.put (rect.get_y+rect.get_hauteur) to 1;
+							rect.update_right;
+						};
+					};
+				};
+ 			};
+		};
+		point
+	);
