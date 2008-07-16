@@ -416,7 +416,7 @@ Section Public
     type_retour.copy "void";
     m.replace_all '\t' with ' ';
     m.append " ";
-    index:=(m.index_of ' ' since 1).min(m.index_of ':' since 1);
+    index:=(m.index_of ' ' since 1).min(m.index_of ':' since 1).min(m.index_of '(' since 1);
     nom:= m.substring 1 to (index-1);
     nom.replace_all '<' with 'c';
     nom.replace_all '&' with 'e';
@@ -425,13 +425,28 @@ Section Public
         type_retour:=m.substring (index2+1) to (m.count-1);
         index:=m.count;
       }else{
-        index3:=(m.index_of ' ' since (index2+1)).min(m.index_of ',' since (index2+1));
+        + idx_end_type,last_idx:INTEGER;
+        + tmp_string3:STRING;
+        
+        index3:=(m.index_of ' ' since (index2+1)).min(m.index_of ')' since (index2+1));
         tmp_string2:=m.substring (index+1) to (index3-1);
+        last_idx := tmp_string2.lower;
+        {
+          (
+            idx_end_type := tmp_string2.index_of ':' since last_idx;
+            idx_end_type := tmp_string2.index_of ',' since (idx_end_type+1)
+          ) != tmp_string2.count+1
+      }.while_do {
+        tmp_string3 := tmp_string2.substring last_idx to (idx_end_type);
+        last_idx := idx_end_type + 1;
+        ea.append_collection(get_attribut tmp_string3 with acces);
+      };
+   /*     
         ((tmp_string2.occurrences ':')>1).if{
           index3:=m.index_of ':' since (index2+1);
           tmp_string2:=m.substring (index+1) to (index3-1);
         };
-        ea.append_collection(get_attribut tmp_string2 with acces);
+   */     
         index:=index3;
       };
     };
