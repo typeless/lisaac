@@ -420,8 +420,7 @@ Section Private
   - to_tail_recursive:LOOP <-
   ( + switch:SWITCH;
     + msg_slot:CALL_SLOT;    
-    + body:LIST;    
-    + idx:INTEGER;
+    + body:LIST;     
     + wrt:WRITE;
     + new_val:EXPR;
     + new_wrt:INSTR;

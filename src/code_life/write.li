@@ -117,10 +117,11 @@ Section Public
     ? { value    != NULL };
     
     slot ?= variable;
-    (
-      // No link.
-      ((ensure_count = 0) && {(slot = NULL) || {! slot.id_section.is_mapping}}) || 
-      {
+    (      
+      ( // First case : No link.
+        (ensure_count = 0) && {(slot = NULL) || {! slot.id_section.is_mapping}}
+      ) || 
+      { // Second case : a := a;
 	read ?= value;
 	(read != NULL) && 
 	{variable = read.variable} &&
