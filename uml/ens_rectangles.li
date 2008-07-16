@@ -3,136 +3,139 @@
 
 
 Section Header
-	+ name := ENS_RECTANGLES;
-	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
-	
+  + name := ENS_RECTANGLES;
+  - author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+  
 Section Inherit
-  	+ parent_linked_list:Expanded LINKED_LIST[FORME_RECTANGLE];
-  	
-
+  + parent_linked_list:Expanded LINKED_LIST[FORME_RECTANGLE];
+  
+  
 Section Public
-	//AJOUTE UNE FORME_RECTANGLE A ENS_RECTANGLES
-	+ ajouter f:FORME_RECTANGLE <-
-	(
- 		add_last f ;
-	);
-	//AJOUTE UN ENS_RECTANGLE A UN ENS_RECTANGLES
-	+ ajouter_tous er:SELF <-
-	(
-		append_collection er;	
-	);
-	//RENVOIE LA TAILLE DE LA FEN�TRE SVG � CR�ER
-	+ get_xy_max :FAST_ARRAY[INTEGER]<-
-	(
-		+ xy_max:FAST_ARRAY[INTEGER];
-		+ fr:FORME_RECTANGLE;
-				
-		xy_max:=FAST_ARRAY[INTEGER].create 2;
-		xy_max.put 0 to 0;
-		xy_max.put 0 to 1;
-		(lower).to (upper) do{ i:INTEGER;
-			fr:=item i;
-			xy_max.put (((fr.get_x)+(fr.get_largeur)).max (xy_max.item 0)) to 0;
-			xy_max.put (((fr.get_y)+(fr.get_hauteur)).max (xy_max.item 1)) to 1;
-		};
-		xy_max.put ((xy_max.item 0)+20) to 0;
-		xy_max.put ((xy_max.item 1)+20) to 1;
-		xy_max
-	);
-	//RENVOI VRAI SI LA FORME_RECTANGLE DE NOM "fr" EST DANS ENS_RECTANGLES, FAUX SINON	
-	+ has fr:STRING :BOOLEAN <-
-	(
-		+result:BOOLEAN;
-		result:=FALSE;
-		(lower).to (upper) do{ i:INTEGER;
-			+ g:FORME_RECTANGLE;
-			
-			g:=item i;
-			((g.get_nom) == fr).if{
-				result:=TRUE;
-			};
-		};
-		result
-	);
-	//RENVOI VRAI SI LES PARENTS DU FICHIER DE NOM "f" SONT TOUS DANS ENS_RECTANGLES, FAUX SINON	
-	+ has_all_parents f:FICHIER and ef:ENS_FICHIERS :INTEGER<-
-	(
-		+result:INTEGER;
-		//+ep,morts_vivants,tmp,parents:ENS_PARENTS;
-		+ep,tmp:ENS_PARENTS;
-		result:=1;
-		ep:=f.get_parents;
-		
-		tmp:=ENS_PARENTS.create;
-	//	parents:=ENS_PARENTS.create;
-		tmp.copy ep;
-		
-		/*morts_vivants:=ef.get_morts_vivants (f,f) in parents;
-		(parents.has (f.get_nom)).if{
-			tmp.remove (tmp.index_of (parents.first) start 0);
-			result:=2;
-		};*/
-		
-		(tmp.lower).to (tmp.upper) do{i:INTEGER;
-			(has (tmp.item i)).if_false{result:=0;};
-		};
-		result
-	);
-	//ENLEVE UN PARENT DE ENS_RECTANGLES
-	+ remove_parent f:FORME_RECTANGLE <-
-	(
-		remove (fast_index_of f start 0);
-	);
-	//ENLEVE TOUS LES PARENTS QUI N' ONT PAS D' INFLUENCES POUR LES COLLISIONS ENTRE TRAITS ET RECTANGLES
-	+ remove_not_influent_parents (x1,y1:INTEGER) with (x2,y2:INTEGER)<-
-	(
-		+ i,x_pere,x_fils,y_fils,y_pere:INTEGER;
-		x_pere:=x2;
-		x_fils:=x1;
-		y_fils:=y1;
-		y_pere:=y2;
-	
-		i:=lower;
-		{i<=upper}.while_do {
-			( {y_pere >= ((item i .get_y)+(item i .get_hauteur))}||{y_fils <= (item i .get_y)}||{(x_pere.max (x_fils)) <= (item i .get_x)}||{(x_pere.min (x_fils)) >= ((item i .get_x) +(item i .get_largeur))}).if{
-				remove i;
-			}else{
-				i:=i+1;
-			};
-		};
-	);
-	//TRIE ENS_RECTANGLES PAR RAPPORT � LA DISTANCE ENTRE LE POINT "x,y" ET TOUS LES RECTANGLES
-	+ bofferding (x,y:INTEGER) <-
-	(
-		+ dist,i,j:INTEGER;
-
-		(count==0).if_false{
-			
-			i:=lower;
-			dist:=item i .distance (x,y);
-
-			{i<upper}.while_do{
-				
-				j:=i+1;
-				{j<=upper}.while_do{
-					+ r2:FORME_RECTANGLE;
-					+ d:INTEGER;
-					r2:=item j;
-					d:=r2.distance (x,y);
-						(d<dist).if{
-						dist:=d;
-						put (item i) to j;
-						put r2 to i;
-
- 					};
-					j:=j+1;
-				};
-				i:=i+1;
-			};
-		};
-	);
-	
-	- print <-
+  //AJOUTE UNE FORME_RECTANGLE A ENS_RECTANGLES
+  + ajouter f:FORME_RECTANGLE <-
+  (
+    add_last f ;
+  );
+  //AJOUTE UN ENS_RECTANGLE A UN ENS_RECTANGLES
+  + ajouter_tous er:SELF <-
+  (
+    append_collection er;	
+  );
+  //RENVOIE LA TAILLE DE LA FEN�TRE SVG � CR�ER
+  + get_xy_max :FAST_ARRAY[INTEGER]<-
+  (
+    + xy_max:FAST_ARRAY[INTEGER];
+    + fr:FORME_RECTANGLE;
+    
+    xy_max:=FAST_ARRAY[INTEGER].create 2;
+    xy_max.put 0 to 0;
+    xy_max.put 0 to 1;
+    (lower).to (upper) do{ i:INTEGER;
+      fr:=item i;
+      xy_max.put (((fr.get_x)+(fr.get_largeur)).max (xy_max.item 0)) to 0;
+      xy_max.put (((fr.get_y)+(fr.get_hauteur)).max (xy_max.item 1)) to 1;
+    };
+    xy_max.put ((xy_max.item 0)+20) to 0;
+    xy_max.put ((xy_max.item 1)+20) to 1;
+    xy_max
+  );
+  //RENVOI VRAI SI LA FORME_RECTANGLE DE NOM "fr" EST DANS ENS_RECTANGLES, FAUX SINON	
+  + has fr:STRING :BOOLEAN <-
+  (
+    +result:BOOLEAN;
+    result:=FALSE;
+    (lower).to (upper) do{ i:INTEGER;
+      + g:FORME_RECTANGLE;
+      
+      g:=item i;
+      ((g.get_nom) == fr).if{
+        result:=TRUE;
+      };
+    };
+    result
+  );
+  //RENVOI VRAI SI LES PARENTS DU FICHIER DE NOM "f" SONT TOUS DANS ENS_RECTANGLES, FAUX SINON	
+  + has_all_parents f:FICHIER and ef:ENS_FICHIERS :INTEGER<-
+  (
+    +result:INTEGER;
+    //+ep,morts_vivants,tmp,parents:ENS_PARENTS;
+    +ep,tmp:ENS_PARENTS;
+    result:=1;
+    ep:=f.get_parents;
+    
+    tmp:=ENS_PARENTS.create;
+    //	parents:=ENS_PARENTS.create;
+    tmp.copy ep;
+    
+    /*morts_vivants:=ef.get_morts_vivants (f,f) in parents;
+    (parents.has (f.get_nom)).if{
+      tmp.remove (tmp.index_of (parents.first) start 0);
+      result:=2;
+    };*/
+    
+    (tmp.lower).to (tmp.upper) do{i:INTEGER;
+      (has (tmp.item i)).if_false{result:=0;};
+    };
+    result
+  );
+  //ENLEVE UN PARENT DE ENS_RECTANGLES
+  + remove_parent f:FORME_RECTANGLE <-
+  ( + idx:INTEGER;
+    idx := fast_index_of f start lower;
+    (valid_index idx).if {
+      remove idx;
+    };
+  );
+  //ENLEVE TOUS LES PARENTS QUI N' ONT PAS D' INFLUENCES POUR LES COLLISIONS ENTRE TRAITS ET RECTANGLES
+  + remove_not_influent_parents (x1,y1:INTEGER) with (x2,y2:INTEGER)<-
+  (
+    + i,x_pere,x_fils,y_fils,y_pere:INTEGER;
+    x_pere:=x2;
+    x_fils:=x1;
+    y_fils:=y1;
+    y_pere:=y2;
+    
+    i:=lower;
+    {i<=upper}.while_do {
+      ( {y_pere >= ((item i .get_y)+(item i .get_hauteur))}||{y_fils <= (item i .get_y)}||{(x_pere.max (x_fils)) <= (item i .get_x)}||{(x_pere.min (x_fils)) >= ((item i .get_x) +(item i .get_largeur))}).if{
+        remove i;
+      }else{
+        i:=i+1;
+      };
+    };
+  );
+  //TRIE ENS_RECTANGLES PAR RAPPORT � LA DISTANCE ENTRE LE POINT "x,y" ET TOUS LES RECTANGLES
+  + bofferding (x,y:INTEGER) <-
+  (
+    + dist,i,j:INTEGER;
+    
+    (count==0).if_false{
+      
+      i:=lower;
+      dist:=item i .distance (x,y);
+      
+      {i<upper}.while_do{
+        
+        j:=i+1;
+        {j<=upper}.while_do{
+          + r2:FORME_RECTANGLE;
+          + d:INTEGER;
+          r2:=item j;
+          d:=r2.distance (x,y);
+          (d<dist).if{
+            dist:=d;
+            put (item i) to j;
+            put r2 to i;
+            
+          };
+          j:=j+1;
+        };
+        i:=i+1;
+      };
+    };
+  );
+  
+  - print <-
   (
     lower.to upper do{ i:INTEGER;
       item i .print;

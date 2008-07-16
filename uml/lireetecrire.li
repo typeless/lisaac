@@ -15,45 +15,46 @@ Section Private
   
 Section Public
 
-	//lit un fichier et renvoit son contenu dans une chaine de caract�res
-	+ lire e:ENTRY :STRING <-
-	( 
- 		+ fichier:STD_FILE;
-		+ text:STRING;
-		
-		fichier ?= e.open;
-		(fichier = NULL).if {
-		"File ".print;
-		e.name.print;
-		" not open!\n'".print;
-		die_with_code exit_failure_code;	
-		};
-		text := STRING.create (fichier.size);
-		fichier.read text size (fichier.size);
-		fichier.close;
-		text
-	);
-	//ouvre le fichier SVG, s'il n'�xiste pas il sera cr��, sinon il sera vid�
-	+ ouvrir_svg dest:STRING <-
-	(
-		+ e:ENTRY;
-		e:=ENTRY.clone;
-		e.set_path dest;
-		file ?= e.open;
-		(file = NULL).if {
-			"File ".print;
-			e.name.print;
-			" didn't open!\n'".print;
-			die_with_code exit_failure_code;	
-		};
-	);
-	//�crit la chaine dans le fichier SVG
-	+ ecrire_svg chaine:STRING<-
-	(
-		file.write chaine from 1 size (chaine.count);
-	);
-	//ferme le fichier SVG
-	+fermer_svg <-
-	(
-		file.close;	
-	);
+  //lit un fichier et renvoit son contenu dans une chaine de caract�res
+  + lire e:ENTRY :STRING <-
+  ( 
+    + fichier:STD_FILE;
+    + text:STRING;
+    
+    fichier ?= e;
+    ((fichier = NULL) || {! fichier.open}).if {
+      "File ".print;
+      e.name.print;
+      " not open!\n'".print;
+      die_with_code exit_failure_code;	
+    };
+    
+    text := STRING.create (fichier.size);
+    fichier.read text size (fichier.size);
+    fichier.close;
+    text
+  );
+  //ouvre le fichier SVG, s'il n'�xiste pas il sera cr��, sinon il sera vid�
+  + ouvrir_svg dest:STRING <-
+  (
+    + e:ENTRY;
+    
+    e := FILE_SYSTEM.make_file dest;
+    file ?= e;
+    ((file = NULL) || {! file.open}).if {
+      "File ".print;
+      e.name.print;
+      " didn't open!\n'".print;
+      die_with_code exit_failure_code;	
+    };
+  );
+  //�crit la chaine dans le fichier SVG
+  + ecrire_svg chaine:STRING<-
+  (
+    file.write chaine from 1 size (chaine.count);
+  );
+  //ferme le fichier SVG
+  + fermer_svg <-
+  (
+    file.close;	
+  );

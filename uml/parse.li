@@ -22,8 +22,12 @@ Section Public
   	ensfichiers:=ENS_FICHIERS.create;
   	
   	parsing:=PARSING.clone;
-
-	((direc ?= dir.open)=NULL).if{ "NULL".print; };
+        
+        direc ?= dir;
+	((direc = NULL) || {! direc.open}).if { 
+          "Directory not found.\n".print; 
+          die_with_code 0;
+        };
 	(direc.lower).to (direc.upper) do { j:INTEGER;
       	courant := direc.item j;
       	
