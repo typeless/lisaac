@@ -1,0 +1,1989 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Compiler                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := PARSER_BEN;
+
+  - copyright := "2003-2007 Benoit Sonntag";
+  
+  - author    := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment   := "Parser for Lisaac language.";
+  
+  // You can to get current grammar with `grep "//++" parser.li'
+  
+Section Inherit
+  
+  - parent_any:ANY := ANY;
+  
+Section Public
+  
+  // add_method sec:STRING_CONSTANT style s:CHARACTER 
+  // name l:FAST_ARRAY[ABSTRACT_STRING] argument a:FAST_ARRAY[ITM_ARGUMENT] result r:ITM_TYPE 
+    
+Section Private  
+  
+  
+  //
+  // Source information.
+  //
+    
+  - source   : STRING;
+  
+  - position : INTEGER;
+  
+  - pos_cur  : INTEGER;
+  - pos_line : INTEGER;
+  - pos_col  : INTEGER;
+  
+  - begin_position:INTEGER; // begin item position
+  
+  - current_position:POSITION <-
+  ( + result:POSITION;
+    ? {pos_cur <= position};
+    
+    {pos_cur = position}.until_do {
+      (source.item pos_cur = '\n').if {
+	pos_col := 0;
+	pos_line := pos_line + 1;
+      } else {
+	pos_col := pos_col + 1;
+      };
+      pos_cur := pos_cur + 1;
+    };    
+    POSITION.create NULL line pos_line column pos_col
+  );
+  
+  //
+  // AMBIGU Manager.
+  //
+  
+  - old_position:INTEGER;
+  - old_pos_cur :INTEGER;
+  - old_pos_line:INTEGER;
+  - old_pos_col :INTEGER;
+  //
+  - old_short_derive:INTEGER;
+  
+  - save_context <-
+  (
+    old_position := position;
+    old_pos_cur  := pos_cur;
+    old_pos_line := pos_line;
+    old_pos_col  := pos_col;
+    //
+    old_short_derive := short_derive;
+  );
+  
+  - restore_context <-
+  (         
+    position := old_position;
+    pos_cur  := old_pos_cur;
+    pos_line := old_pos_line;
+    pos_col  := old_pos_col;
+  );
+  
+  //
+  // Syntax parser.
+  //
+
+  - last_character:CHARACTER <-
+  ( + result:CHARACTER;
+    (position > source.upper).if {
+      result := 0.to_character;
+      } else {
+      result := source.item position;
+    };
+    result
+  );
+
+  - last_integer : INTEGER_64;
+  - last_real    : STRING_CONSTANT;
+  - last_string  : STRING_CONSTANT;
+  - last_len_string : INTEGER;
+  
+  - read_space:BOOLEAN <-
+  ( + posold,pos,pos2:INTEGER;    
+    + key:STRING_CONSTANT;    
+    + short_line:INTEGER;
+    + level_comment:INTEGER;
+    
+    pos := position;
+    posold := -1;    
+    {posold = position}.until_do {
+      posold := position;
+      
+      // Skip spaces :            
+      {(last_character = 0.to_character) || {last_character > ' '}}.until_do {	
+	position := position + 1;	
+      };
+      
+      (position < source.upper).if {
+	// Skip C++ comment style :
+	((last_character = '/') & (source.item (position + 1) = '/')).if {	  
+	  position := position + 2;
+	  pos2 := position;	  
+	  { 
+	    (last_character = 0.to_character) || 
+	    {last_character = '\n'}
+	  }.until_do {
+	    position := position + 1;
+	  };
+	  (key = NULL).if {
+	    short key_comment_default token pos2 to position;
+	  } else {
+	    short key token pos2 to position;
+	  };
+	};
+      };
+      (position < source.upper).if {
+	// Skip C comment style :
+	pos2 := position;
+	((last_character = '/') && {source.item (position+1) = '*'}).if {
+	  position := position + 2; 	  
+	  level_comment := 1;
+	  {
+	    (last_character = 0.to_character) || {level_comment = 0}
+	  }.until_do {
+	    ((last_character = '/') && {source.item (position+1) = '*'}).if {
+	      level_comment := level_comment + 1;
+	      position := position + 2;
+	    }.elseif {
+	      (last_character = '*') && {source.item (position+1) = '/'}
+	    } then {
+	      level_comment := level_comment - 1;
+	      position := position + 2;
+	    } else {
+	      position := position+1;
+	    };
+	  };
+	  (level_comment != 0).if {
+	    position := pos2;
+	    syntax_error (current_position,"End of comment not found !");
+	  };
+	  //position := position+2;
+	  short (ALIAS_STR.short_comment) token pos2 to position;
+	};
+      };
+    };
+    // FALSE : Last character.
+    begin_position := position;
+    ((position != pos) | (last_character != 0.to_character))
+  );
+  
+  - read_symbol st:ABSTRACT_STRING :BOOLEAN <-
+  ( + posold,j:INTEGER;
+    + result:BOOLEAN;
+    // On passe les espaces :
+    (! read_space).if {
+      result := FALSE;
+    } else {
+      posold := position;    
+      j := st.lower;
+      {(last_character = 0.to_character) ||
+      {(j > st.upper) || {last_character != st.item j}}}.until_do {
+	j := j+1;
+	position := position+1;
+      };
+      (j > st.upper).if {
+	result := TRUE;
+      } else {
+	position := posold;
+	result := FALSE;
+      };
+    };
+    result
+  );
+
+  - read_character ch:CHARACTER :BOOLEAN <-
+  ( + result:BOOLEAN;
+    // On passe les espaces :
+    (! read_space).if {
+      result := FALSE;
+    } else {
+      (last_character = ch).if {
+	position := position + 1;
+	result := TRUE;
+      };
+    };
+    result
+  );
+  
+  //-- affect -> ":=" | "<-" | "?="
+  - read_affect:BOOLEAN <-
+  ( + result:BOOLEAN;
+    (read_symbol (ALIAS_STR.symbol_affect_immediate)).if {
+      last_string := ALIAS_STR.symbol_affect_immediate;
+      result      := TRUE;
+    }.elseif {read_symbol (ALIAS_STR.symbol_affect_cast)} then {
+      last_string := ALIAS_STR.symbol_affect_cast;
+      result      := TRUE;
+    }.elseif {read_symbol (ALIAS_STR.symbol_affect_code)} then {
+      last_string := ALIAS_STR.symbol_affect_code;
+      result      := TRUE;
+    };
+    result
+  );
+  
+  //-- style         -> '-' | '+'
+  - read_style:CHARACTER <-
+  ( + result:CHARACTER;
+    read_character '-'.if {
+      result := '-';
+      short (ALIAS_STR.short_slot_style) token (position-1) to position;
+    }.elseif {read_character '+'} then {
+      result := '+';
+      short (ALIAS_STR.short_slot_style) token (position-1) to position;
+    } else {
+      result := ' ';
+    };
+    result
+  );
+  
+  //-- identifier    -> 'a'-'z' {'a'-'z' | '0'-'9' | '_'}
+  - read_identifier:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + posold,idx:INTEGER;
+
+    // On passe les espaces :
+    ((! read_space) || {! last_character.is_lower}).if {
+      result := FALSE;
+    } else {
+      posold := position;              
+      string_tmp.clear;
+      {
+	(last_character = 0.to_character) || 
+	{
+	  (! last_character.is_lower) &&
+	  {! last_character.is_digit} && 
+	  {last_character != '_'}
+	}
+      }.until_do {
+	string_tmp.add_last last_character;
+	position := position+1;          
+      };
+      (! string_tmp.is_empty).if {
+	idx := string_tmp.first_substring_index "__";
+	(idx != 0).if { 
+	  position := posold+idx;
+	  syntax_error (current_position,"Identifier is incorrect.");
+	};
+	last_string := ALIAS_STR.get string_tmp;
+	result := TRUE;
+      };
+    };
+    result
+  );
+  
+  - read_word st:STRING_CONSTANT :BOOLEAN <-
+  ( + posold,idx:INTEGER;   
+    + result:BOOLEAN;
+    // On passe les espaces :
+    (! read_space).if {
+      result := FALSE;
+    } else {
+      posold := position;
+      idx := st.lower;
+      {(idx > st.upper) || {last_character != st.item idx}}.until_do {
+	position := position+1;
+	idx := idx+1;
+      };
+      (idx>st.upper).if {
+	last_string := st;
+	result := TRUE;
+      } else {
+	position := posold;
+      };
+    };
+    result
+  );
+
+  - read_this_keyword st:STRING_CONSTANT :BOOLEAN <-
+  ( + result:BOOLEAN;
+    
+    result := read_word st;
+    result
+  );
+  
+  //-- keyword -> 'A'-'Z' 'a'-'z' {'a'-'z' | '0'-'9' | '_'}
+  - read_keyword:BOOLEAN <-
+  ( + result:BOOLEAN;
+    // On passe les espaces :
+    ((! read_space) || {! last_character.is_upper}).if {
+      result := FALSE;
+    } else {
+      string_tmp.clear;
+      string_tmp.add_last last_character;
+      position := position + 1;
+      (last_character.is_lower).if {
+	string_tmp.add_last last_character;
+	position := position + 1;
+	{(last_character != 0.to_character) &&
+	  {(last_character.is_lower) || 
+	    {last_character.is_digit} ||
+	{last_character = '_'}}}.while_do {
+	  string_tmp.add_last last_character;
+	  position := position+1;          
+	};
+	last_string := ALIAS_STR.get string_tmp;
+	result := TRUE;
+	short (ALIAS_STR.short_keyword) token 
+	(position-last_string.count) to position;
+      } else {
+	position := position - 1;
+	result := FALSE;
+      };    
+    };
+    result
+  );  
+    
+  //-- cap_identifier -> 'A'-'Z' {'A'-'Z' | '0'-'9' | '_'}
+  - read_cap_identifier:BOOLEAN <-
+  ( + posold,idx:INTEGER;
+    + result:BOOLEAN;
+    // On passe les espaces :
+    ((! read_space) || {! last_character.is_upper}).if {
+      result := FALSE;
+    } else {
+      posold := position;
+      string_tmp.clear;
+      {
+	(last_character = 0.to_character) ||
+	{
+	  (! last_character.is_upper) && 
+	  {! last_character.is_digit} &&
+	  {last_character != '_'}
+	}
+      }.until_do {
+	string_tmp.add_last last_character;
+	position := position+1;          
+      };
+      (! string_tmp.is_empty).if {
+	idx := string_tmp.first_substring_index "__";
+	(idx != 0).if { 
+	  position := posold + idx;
+	  syntax_error (current_position,"Identifier is incorrect.");
+	};
+	last_string := ALIAS_STR.get string_tmp;
+	result := TRUE;          
+      };
+    };
+    result
+  );
+  
+  //-- integer -> number 
+  //-- number  -> {'0'-'9'} ['d'] 
+  //--          | '0'-'9' {'0'-'9' | 'A'-'F' | 'a'-'f'} 'h'
+  //--          | {'0'-'7'} 'o'
+  //--          | {'0' | '1'} 'b'
+  - read_integer:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + pos_old:INTEGER;
+
+    // On passe les espaces :
+    ((read_space) && {last_character.is_digit}).if {
+      result := TRUE;
+      string_tmp.clear;
+      string_tmp.add_last last_character;      
+      pos_old := position;
+      position := position + 1;
+      {(last_character.is_hexadecimal_digit) || {last_character = '_'}}.while_do {
+	(last_character != '_').if {
+	  string_tmp.add_last last_character;
+	};
+	position := position + 1;
+      };
+      (last_character = 'h').if {
+	last_integer := string_tmp.to_hexadecimal;
+	position := position+1;
+      } else {
+	(string_tmp.last > '9').if {
+	  string_tmp.remove_last 1;
+	  position := position - 1;
+	};
+	(last_character='o').if {
+	  (! string_tmp.is_octal).if {
+	    syntax_error (current_position,"Incorrect octal number.");
+	  };
+	  last_integer := string_tmp.to_octal;
+	  position := position+1;
+	}.elseif {last_character='b'} then {
+	  (! string_tmp.is_bit).if {
+	    syntax_error (current_position,"Incorrect binary number.");
+	  };
+	  last_integer := string_tmp.to_binary;
+	  position := position+1;
+	} else {
+	  (last_character='d').if {	    
+	    position := position+1;
+	  };
+	  (! string_tmp.is_integer).if {
+	    syntax_error (current_position,"Incorrect decimal number.");
+	  };
+	  last_integer := string_tmp.to_integer;          
+	};
+      };
+    };
+    (result).if {
+      short (ALIAS_STR.short_integer) token pos_old to position;
+    };
+    result
+  );
+
+  - read_real:BOOLEAN <-
+  //-- real -> '0'-'9' {'0'-'9'_} [ '.' {'0'-'9'} ] [ 'E' ['+'|'-'] '0'-'9' {'0'-'9'}
+  ( + result:BOOLEAN;
+    + pos_old:INTEGER;
+
+    // On passe les espaces :
+    ((read_space) && {last_character.is_digit}).if {      
+      string_tmp.clear;
+      string_tmp.add_last last_character;      
+      pos_old := position;      
+      position := position + 1;
+      {(last_character.is_digit) || {last_character = '_'}}.while_do {
+	(last_character != '_').if {
+	  string_tmp.add_last last_character;
+	};
+	position := position + 1;
+      };      
+      (last_character = '.').if {	
+	string_tmp.add_last '.';
+	position := position + 1;		
+	(last_character.is_digit).if {
+	  result := TRUE;
+	  string_tmp.add_last last_character;
+	  position := position + 1;
+	  {last_character.is_digit}.while_do {
+	    string_tmp.add_last last_character;
+	    position := position + 1;
+	  };
+	};
+	(last_character = 'E').if {
+	  result := TRUE;
+	  string_tmp.add_last 'E';
+	  position := position + 1;  
+	  ((last_character = '+') || {last_character = '-'}).if {
+	    string_tmp.add_last last_character;
+	    position := position + 1;
+	  };
+	  (last_character.is_digit).if {
+	    string_tmp.add_last last_character;
+	    position := position + 1;
+	    {last_character.is_digit}.while_do {
+	      string_tmp.add_last last_character;
+	      position := position + 1;
+	    };	    
+	  } else {
+	    syntax_error (current_position,"Incorrect real number.");
+	  };
+	};
+      };
+      (result).if {
+	last_real := ALIAS_STR.get string_tmp;
+      } else {
+	position := pos_old;
+      };
+    };
+    (result).if {      
+      short (ALIAS_STR.short_integer) token pos_old to position;
+    }; 
+    result    
+  );
+  
+  - read_escape_character <-
+  ( + nothing:BOOLEAN;
+    + val:INTEGER;
+    last_character.is_separator.if {        
+      position := position+1;
+      {
+	(last_character = 0.to_character) || 
+	{! last_character.is_separator}
+      }.until_do {
+	position := position+1;
+      };
+      (last_character='\\').if {
+	string_tmp.remove_last 1;
+	position := position+1;
+      }.elseif {last_character != 0.to_character} then {
+	syntax_error (current_position,"Unknown escape sequence.");
+      };
+    }.elseif {last_character != 0.to_character} then {
+      ( (last_character = 'a')  || 
+	{last_character = 'b'}  ||
+	{last_character = 'f'}  ||
+	{last_character = 'n'}  ||
+	{last_character = 'r'}  ||
+	{last_character = 't'}  ||
+	{last_character = 'v'}  ||
+	{last_character = '\\'} ||
+	{last_character = '?'}  ||
+	{last_character = '\''} ||
+	{last_character = '\"'}
+      ).if {
+	string_tmp.add_last last_character;
+	position := position+1;
+      }.elseif {last_character.in_range '0' to '9'} then {
+	((last_character='0') && 
+	  {position<source.upper} && 
+	{! source.item(position+1).is_hexadecimal_digit}).if {
+	  string_tmp.add_last last_character;
+	  position := position+1;
+	} else {
+	  string_tmp2.copy string_tmp;
+	  nothing := read_integer; // result is Always TRUE.
+	  string_tmp.copy string_tmp2;
+	  (last_integer > 255).if {
+	    syntax_error (current_position,
+	    "Invalid range character number [0,255].");
+	  };
+	  val := last_integer.to_integer;
+	  string_tmp.add_last ((val / 64).decimal_digit);
+	  string_tmp.add_last (((val % 64) / 8).decimal_digit);
+	  string_tmp.add_last ((val % 8).decimal_digit);
+	  (last_character='\\').if {
+	    position := position + 1;
+	  } else {
+	    syntax_error (current_position,"Character '\' is needed."); 
+	  };
+	};
+      } else {
+	syntax_error (current_position,"Unknown escape sequence.");
+      };
+      last_len_string := last_len_string + 1;
+    };
+  );
+  
+  //-- character  -> '\'' ascii '\''
+  - read_characters:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + old_pos:INTEGER;
+    // On passe les espaces :
+    ((read_space) && {last_character='\''}).if { 
+      old_pos := position;
+      last_len_string := 0;
+      position := position+1;
+      string_tmp.clear;
+      {(last_character=0.to_character) ||
+	{last_character='\n'} ||
+      {last_character='\''}}.until_do {
+	string_tmp.add_last last_character;
+	(last_character='\\').if {
+	  position := position+1;
+	  read_escape_character;            
+	} else {
+	  position := position+1;
+	  last_len_string := last_len_string+1;
+	};
+      };
+      (last_character='\'').if {
+	position := position+1;
+	last_string := ALIAS_STR.get string_tmp;
+	(last_len_string != 1).if {
+	  position := begin_position;
+	  syntax_error (current_position,"Character constant too long.");
+	};
+	result := TRUE;
+	short (ALIAS_STR.short_character) token old_pos to position;
+      } else {
+	position := begin_position;
+	syntax_error (current_position,"Unterminated character constant.");
+      };
+    };
+    result
+  );
+  
+  //-- string -> '\"' ascii_string '\"'
+  - read_string:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + old_pos:INTEGER;
+    // On passe les espaces :
+    ((read_space) && {last_character='"'}).if { // "
+      last_len_string := 0;
+      old_pos := position;
+      position := position+1;
+      string_tmp.clear;
+      {(last_character=0.to_character) ||
+	{last_character='\n'} || 
+      {last_character='"'}}.until_do { // "
+	string_tmp.add_last last_character;
+	(last_character='\\').if {
+	  position := position+1;
+	  read_escape_character;
+	} else {
+	  position := position+1;
+	  last_len_string := last_len_string+1;
+	};
+      };
+      (last_character='"').if { // "         
+	position := position+1;
+	last_string := ALIAS_STR.get string_tmp;
+	result := TRUE;
+	short (ALIAS_STR.short_string) token old_pos to position;
+      } else {
+	position := begin_position;
+	syntax_error (current_position,"Unterminated string constant.");
+      };
+    };
+    result
+  );
+  
+  //-- external -> '`' ascii_c_code '`'
+  - read_external:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + pos_old:INTEGER;
+    // On passe les espaces :
+    ((! read_space) || {last_character != '`'}).if {
+      result := FALSE;
+    } else {      
+      pos_old:=position;
+      position := position+1;
+      string_tmp.clear;
+      {(last_character = 0.to_character) | (last_character='`')}.until_do {
+	string_tmp.add_last last_character;
+	(last_character='\\').if {
+	  position := position+1;
+	  string_tmp.add_last last_character;
+	  (last_character != 0.to_character).if {
+	    position := position+1;
+	  };
+	} else {
+	  position := position+1;
+	};
+      };
+      (last_character != 0.to_character).if {
+	position := position+1;
+	last_string := ALIAS_STR.get string_tmp;
+	result := TRUE;
+	short (ALIAS_STR.short_external) token pos_old to position;
+      } else {
+	result := FALSE;
+      };
+    };
+    result
+  );
+  
+  //-- operator -> '!' | '@' | '#' | '$' | '%' | '^' | '&' | '<' | '|'  
+  //--           | '*' | '-' | '+' | '=' | '~' | '/' | '?' | '\' | '>'
+  - read_operator:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + old_pos:INTEGER;
+    // On passe les espaces :
+    (read_space).if {
+    };    
+    old_pos:=position;
+    string_tmp.clear;
+    {(last_character = 0.to_character) ||
+    {! "!@#$%^&<|*-+=~/?\\>".has last_character}}.until_do {
+      string_tmp.add_last last_character;
+      position := position+1;
+    };
+    (! string_tmp.is_empty).if {
+      last_string := ALIAS_STR.get string_tmp;
+      (
+	(last_string = ALIAS_STR.symbol_affect_immediate) ||
+	{last_string = ALIAS_STR.symbol_affect_code} ||
+	{last_string = ALIAS_STR.symbol_affect_cast}
+      ).if {
+	syntax_error (current_position,"Incorrect operator.");
+      };
+      short (ALIAS_STR.short_operator) token old_pos to position; 
+      result := TRUE;
+    };
+    result
+  );
+
+  //
+  // Variable & function Global.
+  //
+  
+  - last_slot:ITM_SLOT;
+
+  - last_group:ITM_LIST;
+
+  - last_section:STRING_CONSTANT;
+  
+  //
+  // PARSER
+  //
+  
+  //++ PROGRAM      -> { "Section" (section|TYPE_LIST) { SLOT } } [CONTRACT ';'] 
+  - read_program:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + pos_sec,old_derive:INTEGER;
+    + t:FAST_ARRAY[STRING_CONSTANT];
+    
+    result := TRUE;
+    
+    read_space;
+    pos_sec := position;
+        
+    //
+    // Read Section Header.
+    //    
+    (read_this_keyword (ALIAS_STR.keyword_section)).if_false {
+      syntax_error (current_position,"`Section' is needed.");
+    };
+            
+    (read_this_keyword (ALIAS_STR.section_header)).if_false {
+      syntax_error (current_position,"Section `Header' is needed.");
+    };    
+    (read_slot_header TRUE).if_false {
+      syntax_error (current_position,"Slot `name' not found."); 
+    };
+    {read_slot_header FALSE}.while_do {
+    }; // loop
+    
+    //
+    // Read Section Other. 
+    //
+    {read_this_keyword (ALIAS_STR.keyword_section)}.while_do {
+      (read_keyword).if {
+	// Public, Private, ...
+	(ALIAS_STR.is_section last_string).if_false {
+	  syntax_error (current_position,"Incorrect type section.");
+	};	
+        last_section := last_string;		                
+      } else {
+	// TYPE_LIST.
+	t := read_type_list TRUE; 
+	(t = NULL).if {
+	  syntax_error (current_position,"Incorrect type section.");
+        };
+        string_tmp.clear;
+        (t.lower).to (t.upper-1) do { j:INTEGER;
+          string_tmp.append (t.item j);
+          string_tmp.add_last ',';
+        };
+        string_tmp.append (t.last);
+        last_section := ALIAS_STR.get string_tmp;        
+      };
+      "SECTION : ".print; 
+      last_section.print;
+      '\n'.print;
+      {read_slot}.while_do {
+      }; // loop      
+    }; // loop
+    (read_invariant).if {      
+      warning_error (current_position,"Invariant: Sorry, Not yet implemented.");
+    };
+    
+    // End of file :
+    result := result | read_space;
+    (last_character != 0.to_character).if {
+      syntax_error (current_position,"Incorrect symbol.");
+    };
+    result
+  );  // read_program
+
+  //++ SLOT         -> style TYPE_SLOT [':' (TYPE|'('TYPE_LIST')') ][ affect DEF_SLOT ]';'
+  - read_slot:BOOLEAN <-
+  ( + result:BOOLEAN;
+    + t:STRING_CONSTANT;
+    + lt:FAST_ARRAY[STRING_CONSTANT];
+    + style:CHARACTER;
+    + affect:CHARACTER;
+    + old_pos,old_derive:INTEGER;
+    + s:ITM_SLOT;
+        
+    style  := read_style;
+    (style != ' ').if {      
+      //
+      // Classic slot.
+      //
+      key_comment_default := ALIAS_STR.short_comment_slot_line;
+      
+      result := TRUE;
+      //
+      last_slot := read_type_slot;
+      (last_slot = NULL).if {
+	syntax_error (current_position,"Incorrect slot declaration.");
+      };       
+            
+      last_slot.set_style style;
+            
+      (read_affect).if {
+	affect := last_string.first;
+      } else {
+	affect := ' ';
+      };
+	
+      // ':' (TYPE|'('TYPE_LIST')'
+      ((affect = ' ') && {read_character ':'}).if {
+	(read_character '(').if {
+	  lt := read_type_list FALSE;
+	  (lt = NULL).if {
+	    syntax_error (current_position,"Incorrect result type.");
+	  };
+	  (read_character ')').if_false {
+	    warning_error (current_position,"Added ')' is needed.");
+          };
+          string_tmp.clear;
+          (lt.lower).to (lt.upper-1) do { j:INTEGER;
+            string_tmp.append (lt.item j);
+            string_tmp.add_last ',';
+          };
+          string_tmp.append (lt.last);          
+	  t := ALIAS_STR.get string_tmp;
+	} else {
+	  t := read_type FALSE; 
+	  (t = NULL).if {
+	    syntax_error (current_position,"Incorrect result type.");
+	  };
+	};	  
+	
+	(read_affect).if {
+	  affect := last_string.first;
+	};
+      } else {
+	t := ALIAS_STR.prototype_void; 
+      }; 
+      "RESULT : ".print;
+      t.print;
+      '\n'.print;
+      
+      (affect != ' ').if {
+	read_space;
+	old_pos    := position;
+	old_derive := short_derive;
+	read_def_slot;
+      };
+
+      (read_character ';').if_false {
+	warning_error (current_position,"Added ';'.");
+      };
+	
+      // Added slot in prototype :      
+      //BSBS: ICI!!!! add_slot last_slot;
+    };
+    result
+  );  // read_slot
+  
+  //++ TYPE_SLOT    -> [ LOC_ARG '.' ] identifier [ LOC_ARG { identifier LOC_ARG } ]
+  //++               | [ LOC_ARG ] '\'' operator '\'' [("Left"|"Right") [integer]] [LOC_ARG]
+  - read_type_slot:STRING_CONSTANT <-
+  ( + arg:ITM_ARGUMENT;
+    + result:ITM_SLOT;
+    + list_arg:FAST_ARRAY[ITM_ARGUMENT];
+    
+    list_arg := ALIAS_ARRAY[ITM_ARGUMENT].new;
+    arg := read_loc_arg FALSE with_self TRUE;
+    (arg = NULL).if {
+      (read_character '\'').if {
+	result := read_slot_operator list_arg;
+      } else {
+	arg := ITM_ARG.create current_position 
+        name (ALIAS_STR.variable_self) type (ITM_TYPE_SIMPLE.type_self);
+	list_arg.add_last arg;      
+	result := read_slot_keyword list_arg;
+      };
+    } else {
+      list_arg.add_last arg;
+      (read_character '.').if {
+	result := read_slot_keyword list_arg;
+      }.elseif {read_character '\''} then { 
+	result := read_slot_operator list_arg;
+      };
+    };
+    (result != NULL).if {
+      list_arg := ALIAS_ARRAY[ITM_ARGUMENT].copy list_arg;
+      result.set_argument_list list_arg; 
+    };
+    result
+  );
+  
+  - read_slot_keyword list_arg:FAST_ARRAY[STRING_CONSTANT] :STRING_CONSTANT <-
+  ( + n:STRING;
+    + arg:STRING_CONSTANT;
+    + result:ITM_SLOT;
+    
+    read_identifier.if {            
+      n := ALIAS_STR.new;
+      n.copy last_string;
+      arg := read_loc_arg FALSE with_self FALSE;
+      (arg != NULL).if {
+	list_arg.add_last arg;	
+	(read_identifier).if {
+	  (last_section.is_external).if {
+	    syntax_error (current_position,"Incorrect in `Section External'.");
+	  };	  
+	  {	    	    	    
+	    n.append (ALIAS_STR.separate);
+	    n.append last_string;
+	    arg := read_loc_arg FALSE with_self FALSE;
+	    (arg = NULL).if {
+	      syntax_error (current_position,"Incorrect symbol.");
+	    }; // if
+	    list_arg.add_last arg;
+	  }.do_while {read_identifier}; // loop
+	};
+      }; // if
+      result := ALIAS_STR.alias n;
+    };
+    result
+  );
+  
+  - read_slot_operator list_arg:FAST_ARRAY[STRING_CONSTANT] :STRING_CONSTANT <-
+  ( + name:STRING_CONSTANT;    
+    + associativity:STRING_CONSTANT;
+    + priority:INTEGER;
+    + arg:STRING_CONSTANT;
+    + result:STRING_CONSTANT;
+    
+    (! read_operator).if {
+      syntax_error (current_position,"Operator is needed.");
+    };
+    (
+      (last_string = ALIAS_STR.symbol_equal) ||
+      {last_string = ALIAS_STR.symbol_not_equal}
+    ).if {
+      syntax_error (current_position,"Incorrect operator.");
+    };
+    name := last_string;
+    (! read_character '\'').if {
+      warning_error (current_position,"Added `''.");
+    };
+    (
+      (read_this_keyword (ALIAS_STR.keyword_left)) ||
+      {read_this_keyword (ALIAS_STR.keyword_right)}
+    ).if {
+      associativity := last_string;
+      (read_integer).if {
+	priority := last_integer.to_integer;
+      };      
+    };
+    
+    (list_arg.is_empty).if {
+      // Prefix operator.
+      arg := read_loc_arg FALSE with_self TRUE;
+      (arg = NULL).if {
+	syntax_error (current_position,"Operator declaration invalid.");
+      };
+      list_arg.add_last arg;
+      name := operator (ALIAS_STR.slot_prefix) name name;
+      (associativity != NULL).if {
+	syntax_error (current_position,"Not associativity for postfix operator.");
+      };
+    } else {
+      arg := read_loc_arg FALSE with_self FALSE;
+      (arg != NULL).if {
+	// Infix operator.
+	list_arg.add_last arg;
+	name := operator (ALIAS_STR.slot_infix) name name;	
+	(associativity = NULL).if {
+	  associativity := ALIAS_STR.keyword_left;
+	};      
+      } else {
+	// Postfix operator.
+	name := operator (ALIAS_STR.slot_postfix) name name;
+	(associativity != NULL).if {
+	  syntax_error (current_position,"Not associativity for prefix operator.");
+	};
+      };
+    };    
+    result := name;
+            
+    result
+  );  // read_slot_operator
+  
+  //++ DEF_SLOT     -> [CONTRACT] EXPR [CONTRACT]
+  - read_def_slot <-
+  ( + expr:STRING_CONSTANT;
+    
+    read_require;
+    expr := read_expr;
+    (expr = NULL).if {
+      syntax_error (current_position,"Incorrect expression.");
+    };    
+    read_ensure;
+  );
+  
+  //++ LOC_ARG      -> identifier ':' TYPE
+  //++               | '(' LOCAL ')'
+  - read_loc_arg mute:BOOLEAN with_self self_first:BOOLEAN :STRING_CONSTANT <-
+  ( + result:STRING_CONSTANT;
+    + t:STRING_CONSTANT;
+    + pos:POSITION;
+    + n:STRING_CONSTANT;
+    + tb:STRING_CONSTANT;
+    
+    (
+      ((  self_first) && {read_this_keyword (ALIAS_STR.variable_self)}) || 
+      {(! self_first) && {read_identifier}}
+    ).if {      
+      pos := current_position;
+      n   := last_string;
+      ((read_character ':') && {last_character != '='}).if {
+	t := read_type TRUE;
+	(t = NULL).if {
+	  syntax_error (current_position,"Incorrect type.");
+        };
+        string_tmp.copy n;                	
+        string_tmp.add_last ':';
+        string_tmp.append t;
+	result := ALIAS_STR.get string_tmp;
+      } else {
+	mute.if_false {
+	  warning_error (current_position,"Added ':' is needed.");
+	};
+      };      
+    }.elseif {read_character '('} then {      
+      result := read_local_arg mute with_self self_first;
+      (result = NULL).if {
+	mute.if_false {
+	  syntax_error (current_position,"Incorrect argument definition.");
+	};
+      } else {      
+	(read_character ')').if_false {
+	  warning_error (current_position,"Added ')'.");
+	};
+      };
+    };
+    result
+  );
+	
+  //++ LOCAL        -> { identifier [ ':' TYPE ] ',' } identifier ':' TYPE
+  - read_local m:BOOLEAN :FAST_ARRAY[ITM_LOCAL] <-
+  ( + t:ITM_TYPE_MONO;
+    + loc:ITM_LOCAL;
+    + result:FAST_ARRAY[ITM_LOCAL]; 
+    + beg:INTEGER;
+    + mute:BOOLEAN;
+    
+    mute := m;
+    (read_identifier).if {
+      result := ALIAS_ARRAY[ITM_LOCAL].new;      
+      beg := result.lower;
+      {
+	((result.count != 0) && {! read_identifier} && {! mute}).if {
+	  syntax_error (current_position,"Incorrect identifier.");
+	};
+	loc := ITM_LOCAL.create current_position name last_string;
+	result.add_last loc;
+	((read_character ':') && {last_character != '='}).if {
+	  mute := FALSE;
+	  t := read_type TRUE;
+	  (t = NULL).if {
+	    syntax_error (current_position,"Incorrect local type.");
+	  };
+	  beg.to (result.upper) do { j:INTEGER;
+	    result.item j.set_type t;
+	  };
+	  beg := result.upper + 1;
+	};  
+      }.do_while {read_character ','};
+      (beg != result.upper + 1).if {
+	(mute).if {
+	  ALIAS_ARRAY[ITM_LOCAL].free result;
+	  result := NULL;
+	} else {
+	  syntax_error (current_position,"Incorrect local type.");
+	};	
+      } else {
+	result := ALIAS_ARRAY[ITM_LOCAL].copy result;
+      };
+    };
+    
+    result
+  );  // read_local
+  
+  - read_local_arg m:BOOLEAN with_self s:BOOLEAN :ITM_ARGUMENT <-
+  ( + t:ITM_TYPE_MONO;
+    + tm:ITM_TYPE_MULTI;
+    + type:FAST_ARRAY[ITM_TYPE_MONO];
+    + name:FAST_ARRAY[STRING_CONSTANT]; 
+    + beg:INTEGER;
+    + mute:BOOLEAN;
+    + result:ITM_ARGUMENT;
+    + tb:ITM_TYPE_BLOCK;
+    
+    mute := m;
+    (
+      ((s) && {read_this_keyword (ALIAS_STR.variable_self)}) ||
+      {read_identifier}
+    ).if {      
+      name := ALIAS_ARRAY[STRING_CONSTANT].new;
+      type := ALIAS_ARRAY[ITM_TYPE_MONO].new;      
+      beg  := name.lower;
+      {
+	((name.count != 0) && {! read_identifier} && {! mute}).if {
+	  syntax_error (current_position,"Incorrect argument identifier.");
+	};
+	name.add_last last_string;
+	((read_character ':') && {last_character != '='}).if {
+	  mute := FALSE;
+	  t := read_type TRUE;
+	  (t = NULL).if {
+	    syntax_error (current_position,"Incorrect argument type.");
+	  };
+	  beg.to (name.upper) do { j:INTEGER;
+	    type.add_last t;
+	  };
+	  beg := name.upper + 1;
+	};  
+      }.do_while {read_character ','};
+      (beg != name.upper + 1).if {
+	(mute).if_false {
+	  syntax_error (current_position,"Incorrect argument type.");
+	};	
+	ALIAS_ARRAY[STRING_CONSTANT].free name;
+	ALIAS_ARRAY[ITM_TYPE_MONO].free type;
+      } else {	
+	(name.count = 1).if {
+	  // Single Argument.
+	  result := ITM_ARG.create current_position 
+	  name (name.first)
+	  type (type.first);
+	  ALIAS_ARRAY[STRING_CONSTANT].free name;
+	  ALIAS_ARRAY[ITM_TYPE_MONO].free type;
+	} else {
+	  // Vector Arguments.
+	  name := ALIAS_ARRAY[STRING_CONSTANT].alias name;
+	  type := ALIAS_ARRAY[ITM_TYPE_MONO].alias type;
+	  tm := ITM_TYPE_MULTI.get type;
+	  result := ITM_ARGS.create current_position name name type tm;
+	};
+      };
+    };
+    
+    result
+  );  // read_local  
+  
+  //++ TYPE_LIST    -> TYPE { ',' TYPE }
+  - read_type_list is_section:BOOLEAN :FAST_ARRAY[STRING_CONSTANT] <-
+  ( + lst:FAST_ARRAY[STRING_CONSTANT];
+    + t:STRING_CONSTANT;
+    + ts:STRING_CONSTANT;
+    
+    t := read_type FALSE;    
+    (t != NULL).if {            
+      lst := ALIAS_ARRAY[STRING_CONSTANT].new;
+      lst.add_last t;      
+      {read_character ','}.while_do {
+	t := read_type FALSE;
+	(t = NULL).if {
+	  syntax_error (current_position,"Incorrect type list.");
+	};	
+	lst.add_last t;
+      };
+      lst := ALIAS_ARRAY[ITM_TYPE_MONO].alias lst;
+    };
+    lst
+  );
+    
+  //++ TYPE         -> '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'
+  //++               | [type] PROTOTYPE
+  - read_type is_local:BOOLEAN :STRING_CONSTANT <-
+  ( + style:STRING_CONSTANT;
+    + result:ITM_TYPE_MONO;
+    + lst:FAST_ARRAY[STRING_CONSTANT];
+    + typ_arg,typ_res:ITM_TYPE;
+    
+    (read_character '{').if {
+      // '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'      
+      (read_character '(').if {
+	// Read vector argument.
+	lst := read_type_list FALSE;
+	(lst = NULL).if {
+	  syntax_error (current_position,"Incorrect type list.");
+	};
+	(lst.count = 1).if {
+	  typ_arg := lst.first;	  
+	} else {
+	  typ_arg := ITM_TYPE_MULTI.get lst;
+	};
+	(! read_character ')').if {
+	  warning_error (current_position,"Added ')'.");
+	}; // if      	
+	(! read_character ';').if {
+	  warning_error (current_position,"Added ';'.");
+        }; // if
+        lst := read_type_list FALSE;
+      } else {
+	lst := read_type_list FALSE;
+	(lst != NULL).if {
+	  (read_character ';').if {	    
+	    (lst.count = 1).if {
+	      typ_arg := lst.first;
+	    } else {
+	      typ_arg := ITM_TYPE_MULTI.get lst;
+	      string_tmp.copy "Added '";
+	      typ_arg.display string_tmp;
+	      string_tmp.append "'.";
+	      warning_error (current_position,string_tmp);
+            };
+            lst := read_type_list FALSE;
+          };          
+	};      
+      };
+      (lst != NULL).if {
+        (lst.count = 1).if {
+          typ_res := lst.first;
+        } else {
+          typ_res := ITM_TYPE_MULTI.get lst;
+        };
+      };
+      (! read_character '}').if {
+	warning_error (current_position,"Added '}'.");
+      }; // if      	
+      result := ITM_TYPE_BLOCK.get typ_arg and typ_res;      
+    } else {    
+      // Expanded | Strict 
+      (
+	(read_this_keyword (ALIAS_STR.keyword_expanded)) || 
+	{read_this_keyword (ALIAS_STR.keyword_strict)} 
+      ).if {      
+	style := last_string;
+	((is_local) && {last_string = ALIAS_STR.keyword_expanded}).if {
+	  syntax_error (current_position,"`Expanded' is not possible.");
+	};
+      };    
+      // PROTOTYPE
+      result := read_prototype style;
+    };
+    result
+  );  // read_type
+    
+  //++ PROTOTYPE    -> cap_identifier ['['TYPE_LIST {identifier TYPE_LIST} ']']
+  //++               | '[' cap_identifier ']'
+  - read_prototype style:STRING_CONSTANT :STRING_CONSTANT <-
+  ( + name:STRING_CONSTANT;    
+    + genericity:FAST_ARRAY[STRING_CONSTANT];
+    + continue:BOOLEAN;
+    + t,result:STRING_CONSTANT;    
+    + old_pos,old_derive,sav_derive:INTEGER;
+    
+    (read_character '[').if {
+      // '[' cap_identifier ']'
+      (! read_cap_identifier).if {
+        syntax_error (current_position,"Incorrect parameter type.");
+      };            
+      string_tmp.copy "[";
+      string_tmp.append last_string;
+      string_tmp.add_last ']';
+      result := ALIAS_STR.get string_tmp;
+      (! read_character ']').if {
+        warning_error (current_position,"Added ']'.");
+      }; // if      	
+    }.elseif {read_cap_identifier} then {            
+      old_pos    := position;
+      old_derive := short_derive;
+      
+      name := last_string;
+      
+      (read_character '[').if {	
+	//
+	// Genericity.
+	//		
+		
+	genericity := ALIAS_ARRAY[STRING_CONSTANT].new;
+	{
+	  t := read_type FALSE;
+	  (t = NULL).if {
+	    syntax_error (current_position,"Incorrect generic type.");
+	  };
+	  genericity.add_last t;
+	  
+	  (read_identifier).if {
+	    continue := TRUE;
+	    warning_error (current_position,
+	    "Sorry, not yet implemented (ignored).");
+	  } else {
+	    continue := read_character ',';
+	  };
+	}.do_while {continue};
+	
+	genericity := ALIAS_ARRAY[ITM_TYPE_MONO].alias genericity; 
+	result     := ITM_TYPE_GENERIC.get name style style with genericity;
+	(! read_character ']').if {
+	  warning_error (current_position,"Added ']'.");
+	}; // if
+      } else {	
+	// Simple type.	  
+	(style = NULL).if {
+	  result := name;
+	} else {
+	  (name = ALIAS_STR.prototype_self).if {
+	    string_tmp.copy "Style `";
+	    string_tmp.append style;
+	    string_tmp.append "' ignored.";
+	    warning_error (current_position,string_tmp);
+	    result := name;
+          } else {
+            string_tmp.copy style;
+            string_tmp.add_last ' ';
+            string_tmp.append name;            
+	    result := ALIAS_STR.get string_tmp;
+	  };
+	};
+      }; // if
+    }; // if
+    result
+  );  // read_prototype
+  
+  //----------------------------------------------------------------------------------------------- 
+  
+  
+  //++ EXPR         -> { ASSIGN !!AMBIGU!! affect } EXPR_OPERATOR
+  //++ ASSIGN       -> '(' IDF_ASSIGN { ',' IDF_ASSIGN } ')'
+  //++               | IDF_ASSIGN
+  //++ IDF_ASSIGN   -> identifier { identifier }
+  - read_expr:STRING_CONSTANT <-
+  ( + result,value:STRING_CONSTANT;    
+    + affect:CHARACTER;   
+    + again:BOOLEAN;
+    + l_assignment:FAST_ARRAY[STRING_CONSTANT];
+    + p:INTEGER;
+    + name:STRING_CONSTANT;
+    
+    // !! AMBIGU resolution !!    
+    save_context;
+    (read_character '(').if {      
+      {
+	again := FALSE;
+	(read_identifier).if {	  
+	  string_tmp2.copy last_string;
+	  {read_identifier}.while_do {
+	    string_tmp2.append (ALIAS_STR.separate);
+	    string_tmp2.append last_string;
+	  };
+	  name := ALIAS_STR.get string_tmp2;	  
+	  	  
+	  (read_character ',').if {
+	    again := TRUE;
+	  };
+	};
+      }.do_while {again};
+      ((name != NULL) && {read_character ')'} && {read_affect}).if {		
+	result := name; 	
+	value  := read_expr;
+	(value = NULL).if {
+	  syntax_error (current_position,"Incorrect expression.");
+	};	
+      };
+    }.elseif {read_identifier} then {      
+      string_tmp2.copy last_string;
+      {read_identifier}.while_do {
+	string_tmp2.append (ALIAS_STR.separate);
+	string_tmp2.append last_string;
+      };
+      name := ALIAS_STR.get string_tmp2;
+            
+      (read_affect).if {
+	result := name; 
+	value  := read_expr;
+	(value = NULL).if {
+	  syntax_error (current_position,"Incorrect expression.");
+	};	
+      };
+    };
+    (result = NULL).if {
+      restore_context;
+      result := read_expr_operator;
+    };
+    result
+  );  
+     
+  //++ EXPR_OPERATOR-> { operator } EXPR_MESSAGE { operator {operator} EXPR_MESSAGE } {operator}
+  - read_expr_operator:STRING_CONSTANT <-
+  ( + result,expr:STRING_CONSTANT;
+            
+    {read_operator}.while_do {      
+      //
+    };
+    result := read_expr_message;
+    (result != NULL).if {      
+      // { operator {operator} EXPR_MESSAGE } {operator}      
+      {	
+	(read_operator).if {
+	  {	    
+	  }.do_while {read_operator};	  
+	  expr := read_expr_message;
+	} else {	
+	  expr := NULL;
+	};
+      }.do_while {expr != NULL};            
+    };
+    result
+  );  // read_expr_operator
+
+  //++ EXPR_MESSAGE -> EXPR_BASE { '.' SEND_MSG }
+  - read_expr_message:STRING_CONSTANT <-
+  ( + result:STRING_CONSTANT;
+    
+    result := read_expr_base;
+    (result != NULL).if {        
+      {read_character '.'}.while_do {
+	result := read_send_msg result;
+	(result=NULL).if {
+	  syntax_error (current_position,"Incorrect message.");
+	}; // if
+      }; // loop
+    }; //if
+    result
+  );  // read_expr_message
+
+  //++ EXPR_BASE    -> "Old" EXPR
+  //++               | EXPR_PRIMARY
+  //++               | SEND_MSG
+  - read_expr_base:STRING_CONSTANT <-
+  ( + result,old_value:STRING_CONSTANT;    
+    
+    (read_this_keyword (ALIAS_STR.keyword_old)).if {
+      old_value := read_expr;
+      (old_value = NULL).if {	  
+	syntax_error (current_position,"Incorrect `Old' expression."); 
+      };      
+      result := ALIAS_STR.keyword_old;
+    } else {    
+      result := read_expr_primary;
+      (result = NULL).if {
+	result := read_send_msg NULL;
+      };
+    };
+    result
+  );  // read_expr_base
+
+  //++ EXPR_PRIMARY -> "Self"
+  //++               | result
+  //++               | PROTOTYPE
+  //++               | integer
+  //++               | characters
+  //++               | string
+  //++               | '(' GROUP ')'
+  //++               | '{' [ LOC_ARG ';' !! AMBIGU!! ] GROUP '}'
+  //++               | external [ ':' ['('] TYPE ['(' TYPE_LIST ')'] [')'] ]
+  - read_expr_primary:ITM_CODE <-
+  ( + result:ITM_CODE;
+    + type :ITM_TYPE_MONO;
+    + ltype:FAST_ARRAY[ITM_TYPE_MONO];
+    + ext  :ITM_EXTERNAL_TYPE;
+    + group_sav:ITM_LIST;
+    + arg:ITM_ARGUMENT;
+    + result_id:STRING_CONSTANT;    
+    
+    (read_this_keyword (ALIAS_STR.variable_self)).if {
+      result := last_string;
+    }.elseif {read_this_keyword (ALIAS_STR.keyword_result)} then {
+      (last_character = '_').if {
+	position := position + 1;
+	string_tmp.copy (ALIAS_STR.keyword_result);
+	string_tmp.add_last '_';
+	{last_character.is_digit}.while_do {
+	  string_tmp.add_last last_character;
+	  position := position + 1;
+	};
+	(string_tmp.is_empty).if {
+	  syntax_error (current_position,"Incorrect Result number.");
+	};
+	result := ALIAS_STR.get string_tmp;
+      } else {
+	result := ALIAS_STR.keyword_result;
+      };
+    }.elseif {
+      type := read_prototype NULL;
+      type != NULL
+    } then {
+      result := "PROTOTYPE";
+    }.elseif {read_real} then {
+      result := "REAL";
+    }.elseif {read_integer} then {
+      result := "INTEGER";
+    }.elseif {read_characters} then {
+      result := "CHARACTER";
+    }.elseif {read_string} then {
+      result := "STRING";
+    }.elseif {read_character '(' } then { 
+      group_sav := last_group;
+      last_group := ITM_LIST.create current_position;
+      result := last_group;
+      last_group.set_code read_group;
+      (read_character ')').if_false {  
+	warning_error (current_position,"Added ')'.");
+      }; // if
+      last_group := group_sav;
+    }.elseif {read_character '{' } then {
+      short (ALIAS_STR.short_block) token (position-1) to position;
+      group_sav := last_group;      
+      last_group := ITM_LIST.create current_position;
+      
+      save_context; // !! SAVE CONTEXT !!
+            
+      //
+      arg := read_loc_arg TRUE with_self FALSE;
+      //      
+      (arg != NULL).if {	
+	(read_character ';').if_false {  
+	  warning_error (current_position,"Added ';'.");
+	}; // if
+      } else {
+	
+	restore_context; // !! RESTORE CONTEXT !!
+	
+      };
+      result := ITM_BLOCK.create last_group argument arg;
+      
+      last_group.set_code read_group;
+      (! read_character '}').if {
+	warning_error (current_position,"Added '}'.");
+      }; // if      
+      last_group := group_sav;      
+    }.elseif {read_external} then {
+      (! read_character ':').if {
+	result := ITM_EXTERNAL.create current_position text last_string;
+      } else {
+	ext := ITM_EXTERNAL_TYPE.create current_position text 
+	last_string persistant (read_character '(');
+	type := read_type FALSE;
+	(type = NULL).if {
+	  syntax_error (current_position,"Incorrect type.");
+	};
+	ext.set_type type;
+	(read_character '(').if {
+	  ltype := read_type_list FALSE;
+	  (ltype = NULL).if {
+	    syntax_error (current_position,"Incorrect live type list.");
+	  };
+	  (! read_character ')').if {
+	    warning_error (current_position,"Added ')'.");
+	  };
+	  ext.set_type_list ltype;
+	};
+	((ext.is_persistant) && {! read_character ')'}).if { 
+	  warning_error (current_position,"Added ')'.");
+	};
+	result := ext;
+      };
+    };
+    result
+  );  // read_expr_primaire
+
+  //++ GROUP        -> DEF_LOCAL {EXPR ';'} [ EXPR {',' {EXPR ';'} EXPR } ]
+  - read_group:FAST_ARRAY[ITM_CODE] <-
+  ( + e:ITM_CODE;    
+    + result:FAST_ARRAY[ITM_CODE];
+    
+    read_def_local;
+    
+    result := ALIAS_ARRAY[ITM_CODE].new;
+    e := read_expr;
+    {(e != NULL) && {read_character ';'}}.while_do {
+      result.add_last e;
+      e := read_expr;
+    };
+    (e != NULL).if {
+      (read_character ',').if {	
+	{
+	  e := ITM_RESULT.create e;
+	  result.add_last e;
+	  e := read_expr;
+	  {(e != NULL) && {read_character ';'}}.while_do {
+	    result.add_last e;
+	    e := read_expr;
+	  };
+	  (e = NULL).if {
+	    syntax_error (current_position,"Incorrect multiple result expression.");
+	  };	  
+        }.do_while {read_character ','};	        
+      };
+      e := ITM_RESULT.create e;
+      result.add_last e;
+    };    
+    ALIAS_ARRAY[ITM_CODE].copy result
+  );
+  
+  - read_invariant:BOOLEAN <-
+  ( + lst:ITM_LIST;
+    
+    lst := read_contract;
+    lst != NULL    
+  );
+  
+  - read_require:BOOLEAN <-
+  ( + lst:ITM_LIST;
+    + result:BOOLEAN;
+    
+    lst := read_contract;
+    (lst != NULL).if {
+      last_slot.set_require lst;
+      result := TRUE;
+    };
+    result
+  );
+
+  - read_ensure:BOOLEAN <-
+  ( + lst:ITM_LIST;
+    + result:BOOLEAN;
+    
+    lst := read_contract;
+    (lst != NULL).if {
+      last_slot.set_ensure lst;
+      result := TRUE;
+    };
+    result
+  );
+  
+  //++ CONTRACT     -> '[' DEF_LOCAL { ( EXPR ';' | "..." ) } ']'
+  - read_contract:ITM_LIST <-
+  ( + continue:BOOLEAN;
+    + e:ITM_CODE;
+    + result:ITM_LIST;
+    + lst:FAST_ARRAY[ITM_CODE];
+    
+    (read_character '[').if {
+      result := last_group := ITM_LIST.create current_position;
+      read_def_local;
+      
+      lst := ALIAS_ARRAY[ITM_CODE].new;
+      {
+	e := read_expr;
+	(e = NULL).if {
+	  continue := read_word (ALIAS_STR.keyword_ldots);
+	  (continue).if {
+	    lst.add_last (ITM_LDOTS.create current_position);
+	  };
+	} else {
+	  lst.add_last e;
+	  (! read_character ';').if {
+	    warning_error (current_position,"Added ';'.");
+	  };
+	  continue := TRUE;
+	};
+      }.do_while {continue};
+      
+      (! read_character ']').if {
+	warning_error (current_position,"Added ']'.");
+      };
+      e := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
+      lst.add_last e;
+      //
+      result.set_code (ALIAS_ARRAY[ITM_CODE].copy lst);
+    };
+    result
+  );
+  
+  //++ DEF_LOCAL    -> { style LOCAL ';' } !! AMBIGU !!
+  - read_def_local <-
+  ( + loc_lst:FAST_ARRAY[ITM_LOCAL];
+    + local_list,static_list:FAST_ARRAY[ITM_LOCAL];    
+    + styl:CHARACTER;
+    
+    save_context; // !! SAVE CONTEXT !!
+    
+    styl    := read_style;
+    local_list  := ALIAS_ARRAY[ITM_LOCAL].new;
+    static_list := ALIAS_ARRAY[ITM_LOCAL].new;
+    {styl != ' '}.while_do {
+      loc_lst := read_local TRUE;
+      (loc_lst != NULL).if {
+	(styl = '+').if {
+	  local_list.append_collection loc_lst;
+	} else {
+	  static_list.append_collection loc_lst;
+	};
+	(read_character ';').if_false {
+	  warning_error (current_position,"Added ';'.");
+	};
+	
+	save_context; // !! SAVE CONTEXT !!
+	
+	styl := read_style;
+      } else {
+	
+	restore_context; // !! RESTORE CONTEXT !!
+	
+	styl := ' ';
+      };      
+    };
+    (local_list.is_empty).if {
+      ALIAS_ARRAY[ITM_LOCAL].free local_list;
+    } else {
+      last_group.set_local_list  (ALIAS_ARRAY[ITM_LOCAL].copy local_list);
+    };
+    (static_list.is_empty).if {
+      ALIAS_ARRAY[ITM_LOCAL].free static_list;
+    } else {
+      last_group.set_static_list (ALIAS_ARRAY[ITM_LOCAL].copy static_list); 
+    };
+  );
+  
+  //++ SEND_MSG     -> identifier [ ARGUMENT { identifier ARGUMENT } ]
+  - read_send_msg first_arg:ITM_CODE :ITM_CODE <-
+  ( + result:ITM_CODE;
+    + name :STRING_CONSTANT;
+    + n:STRING;
+    + l_arg:FAST_ARRAY[ITM_CODE];
+    + arg:ITM_CODE;
+    + p1,p2,old_derive,sav_derive:INTEGER;
+    
+    read_identifier.if {
+      //
+      // Classic Message.
+      //
+      p1 := position - last_string.count;
+      p2 := position;
+      old_derive := short_derive;
+      
+      n := ALIAS_STR.new;
+      n.copy last_string;
+      // Argument list.
+      l_arg := ALIAS_ARRAY[ITM_CODE].new;
+      arg := read_argument;
+      (arg != NULL).if {          
+	l_arg.add_last arg;	
+	{read_identifier}.while_do {
+	  	  	  
+	  n.append (ALIAS_STR.separate);
+	  n.append last_string;
+	  arg := read_argument;
+	  (arg = NULL).if {
+	    syntax_error (current_position,"Incorrect argument.");
+	  }; // if
+	  l_arg.add_last arg;
+	}; // loop
+      }; // if
+      name := ALIAS_STR.alias n;
+      
+      l_arg.is_empty.if {
+	(first_arg=NULL).if {
+	  // Local ou Implicite Slot without argument.
+	  result := ITM_READ.create current_position name name; 
+	} else {  
+	  result := ITM_READ_ARG1.create current_position name name arg first_arg; 
+	};
+	ALIAS_ARRAY[ITM_CODE].free l_arg;
+      }.elseif {l_arg.count=1} then {
+	result := ITM_READ_ARG2.create current_position name 
+	name args (first_arg,(l_arg.first)); 
+	ALIAS_ARRAY[ITM_CODE].free l_arg;
+      } else {
+	l_arg.add_first first_arg;
+	l_arg := ALIAS_ARRAY[ITM_CODE].copy l_arg;	
+	result := ITM_READ_ARGS.create current_position name name args l_arg; 
+      };
+    }; // if
+    result
+  );  // read_send_msg
+
+  //++ ARGUMENT     -> EXPR_PRIMARY
+  //++               | identifier
+  - read_argument:ITM_CODE <-
+  ( + result:ITM_CODE;
+    result := read_expr_primary;
+    ((result = NULL) && {read_identifier}).if {
+      result := ITM_READ.create current_position name last_string;
+    };
+    result
+  );  // read_argument
+  
+  // name, export, import, type, default, external, version, date, comment, author,
+  // bibliography, language, bug_report, copyright.
+  - read_slot_header first:BOOLEAN :BOOLEAN <-
+  ( + result:BOOLEAN;    
+    + v:ITM_CODE;
+    + cast:FAST_ARRAY[ITM_TYPE_MONO];
+    + style:CHARACTER;
+    + is_export:BOOLEAN;
+    + parameter_type:ITM_TYPE_PARAMETER;
+    
+    style := read_style;
+    (style != ' ').if {
+      result := TRUE;
+      ((! first) && {style = '+'}).if {
+	warning_error (current_position,"Incorrect style slot ('-').");
+      };
+      (first).if {
+	(read_word (ALIAS_STR.slot_name)).if {
+	  //
+	  // Read `name' slot.
+	  //
+	  
+	  (style = '-').if {
+	    warning_error (current_position,
+	    "`- name' is reserved for Concurrent Object Prototype.\n\
+	    \Sorry, COP is not yet implemented.");
+	  };
+	  
+	  // style "name" ':=' [type] cap_identifier 
+	  // ['['cap_identifier {',' cap_identifier}{identifier cap_identifier {',' cap_identifier}}']']	  	  	  
+	  (read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	    warning_error (current_position,"Added ':='.");
+	  };
+	  
+	  (
+	    (read_this_keyword (ALIAS_STR.keyword_expanded)) ||
+	    {read_this_keyword (ALIAS_STR.keyword_strict)}	    
+          ).if {	    
+            //
+	  };
+	  
+	  (! read_cap_identifier).if {
+	    syntax_error (current_position,"Prototype identifier is needed.");
+	  };	  
+          "NAME : ".print;
+          last_string.print; 
+          '\n'.print;
+          
+	  (read_character '[').if {
+	    //
+	    // Generic loader.
+	    //
+	    (! read_cap_identifier).if {
+	      syntax_error (current_position,"Identifier parameter type is needed.");
+	    };
+	    last_string := NULL;
+	    {(read_character ',') || {read_identifier}}.while_do {
+	      (! read_cap_identifier).if {
+		syntax_error (current_position,"Identifier parameter type is needed.");
+	      };	      	      
+	    }; // loop
+	    	    
+	    (! read_character ']').if {
+	      warning_error (current_position,"Added ']'.");
+	    };	    
+	  };	  
+	} else {
+	  syntax_error (current_position,"Slot `name' must to be first slot.");
+	};
+      }.elseif {
+	(is_export := read_word (ALIAS_STR.slot_export)) || 
+	{read_word (ALIAS_STR.slot_import)}
+      } then {
+	// - ("export"|"import") ':=' TYPE_LIST 
+	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	  warning_error (current_position,"Added ':='.");
+	};
+	cast := read_type_list FALSE;
+	(cast = NULL).if {
+	  syntax_error (current_position,"Incorrect type list.");
+	};
+	(is_export).if {
+	  object.set_export_list cast;
+	} else {
+	  object.set_import_list cast;
+	};
+      }.elseif {read_word (ALIAS_STR.slot_external)} then {
+	//
+	// Read `external' slot.
+	//
+	
+	// - "external" ':=' `<code_c>`
+	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	  warning_error (current_position,"Added ':='.");
+	};
+	(read_external).if_false {
+	  syntax_error (current_position,"Incorrect external.");
+	};	
+      }.elseif {read_word(ALIAS_STR.slot_default)} then {
+	//
+	// Read `default' slot.
+	//
+	
+	// '-' "default" ':=' EXPR_PRIMARY
+	
+	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	  warning_error (current_position,"Added ':='.");
+	};
+	v := read_expr_primary;
+	(v = NULL).if {
+	  syntax_error (current_position,"Incorrect expr.");
+	};	
+      }.elseif {read_word (ALIAS_STR.slot_type)} then {
+	//
+	// Read `type' slot.
+	//
+	
+	// '-' "type" ':=' `<type C>`
+	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	  warning_error (current_position,"Added ':='.");
+	};
+	(read_external).if_false {
+	  syntax_error (current_position,"Incorrect external.");
+	};
+	(object.type_c != NULL).if {
+	  semantic_error (current_position,"Double `type' slot definition.");
+	};
+	object.set_c_type last_string;
+      }.elseif {read_word (ALIAS_STR.slot_version)} then {
+	//
+	// Read `version' slot.
+	//
+	
+	// '-' "version" ':=' integer
+		
+	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	  warning_error (current_position,"Added ':='.");
+	};
+	(read_integer).if_false {
+	  syntax_error (current_position,"Incorrect number.");
+	};
+      }.elseif {
+	(read_word (ALIAS_STR.slot_date)) ||
+	{read_word (ALIAS_STR.slot_comment)} ||
+	{read_word (ALIAS_STR.slot_author)} ||
+	{read_word (ALIAS_STR.slot_bibliography)} ||
+	{read_word (ALIAS_STR.slot_language)} ||
+	{read_word (ALIAS_STR.slot_copyright)} ||
+	{read_word (ALIAS_STR.slot_bug_report)}
+      } then {
+	//	  
+	// Read `date', `comment', `author', `bibliography', 
+	// `language', `copyright' or `bug_report' slots.
+	//
+	
+	// '-' ("date"|"comment"|"author"|"bibliography"|"language"|"copyright"|"bug_report") ':=' string
+	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
+	  warning_error (current_position,"Added ':='.");
+	};	
+	(read_string).if_false {
+	  syntax_error (current_position,"Incorrect string.");
+	};	
+      } else {
+	warning_error (current_position,"Incorrect slot.");
+      };
+      (read_character ';').if_false {
+	warning_error (current_position,"Added ';'.");
+      };
+    };
+    result
+  );
+    
+Section Public  
+  
+  //
+  // Parser Entry.
+  //
+    
+  - go_on src:STRING <-
+  (
+    // Source information.
+    source   := src;
+    position := source.lower;
+    pos_cur  := source.lower;
+    pos_line := 1;
+    pos_col  := 0;
+        
+    // Parse.
+    (! read_program).if {
+      syntax_error (current_position,"Incorrect symbol.");
+    };
+  );
+
+

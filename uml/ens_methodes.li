@@ -1,59 +1,59 @@
 /*******	Prototype qui permet de stocker les diff�rentes m�thodes instanci�s d'un fichier	*******/
 Section Header
-	+ name:=ENS_METHODES;
-	- author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
-
+  + name:=ENS_METHODES;
+  - author:="HILBERT J�r�me (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gr�goire(greg-jacquemin@hotmail.fr)";
+  
 Section Inherit
-	
-	+ parent_linked_list:Expanded LINKED_LIST[METHODE];
-
+  
+  + parent_linked_list:Expanded LINKED_LIST[METHODE];
+  
 Section Private
-	//longueur maximale d'une methode, permet de savoir avec quelle largeur construire le rectangle dans le diagramme
-        + taille_max:INTEGER;
-        //nombre de lignes, c'est � dire le nombre de m�thodes de l'ensemble, utile �galement pour la construction du rectangle
-        + nb_lignes:INTEGER;
-        //contient la descrition de toutes les m�thodes au format UML
-        + buffer:STRING;
-
+  //longueur maximale d'une methode, permet de savoir avec quelle largeur construire le rectangle dans le diagramme
+  + taille_max:INTEGER;
+  //nombre de lignes, c'est � dire le nombre de m�thodes de l'ensemble, utile �galement pour la construction du rectangle
+  + nb_lignes:INTEGER;
+  //contient la descrition de toutes les m�thodes au format UML
+  + buffer:STRING;
+  
 Section Public
-
-	- make <-
-	(
-		taille_max:=0;
-		nb_lignes:=0;
-		buffer:=STRING.create 256;
-	);
-	- ajouter m:METHODE <-
-	(
-		add_last m;
-	);
-	//construit l'ensemble, en cherchant la taille maximal et le nombre de lignes
-	+ build <-
-	(
- 		taille_max:=0;
- 		nb_lignes:=0;
- 		buffer:=STRING.create 256;
-		buffer.copy "";
-		(lower).to (upper) do{ i:INTEGER;
-		+ buffer1:STRING;
-		+ m:METHODE;
-		m:=item i;
-		buffer1:=m.get_uml_string;
-		taille_max:= taille_max.max(buffer1.count);
-		buffer1.append_character '\n';
-		buffer.append buffer1;
-		nb_lignes:=nb_lignes+1;
-		}
-	);
-	- get_uml_string :STRING <-
-	(
-		buffer
-	);
-	- get_taille_max :INTEGER <-
-	(
-		taille_max
-	);
-	- get_nb_lignes :INTEGER <-
-	(
-		nb_lignes
-	);
+  
+  - make <-
+  (
+    taille_max:=0;
+    nb_lignes:=0;
+    buffer:=STRING.create 256;
+  );
+  - ajouter m:METHODE <-
+  (
+    add_last m;
+  );
+  //construit l'ensemble, en cherchant la taille maximal et le nombre de lignes
+  + build <-
+  (
+    taille_max:=0;
+    nb_lignes:=0;
+    buffer:=STRING.create 256;
+    buffer.copy "";
+    (lower).to (upper) do{ i:INTEGER;
+      + buffer1:STRING;
+      + m:METHODE;
+      m:=item i;
+      buffer1:=m.get_uml_string;
+      taille_max:= taille_max.max(buffer1.count);
+      buffer1.append_character '\n';
+      buffer.append buffer1;
+      nb_lignes:=nb_lignes+1;
+    }
+  );
+  - get_uml_string :STRING <-
+  (
+    buffer
+  );
+  - get_taille_max :INTEGER <-
+  (
+    taille_max
+  );
+  - get_nb_lignes :INTEGER <-
+  (
+    nb_lignes
+  );
