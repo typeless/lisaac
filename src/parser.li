@@ -1505,8 +1505,7 @@ Section Private
     result
   );  // read_type
     
-  //++ PROTOTYPE    -> cap_identifier ['['TYPE_LIST {identifier TYPE_LIST} ']']
-  //++               | '[' cap_identifier ']'
+  //++ PROTOTYPE    -> cap_identifier ['['TYPE_LIST {identifier TYPE_LIST} ']']  
   - read_prototype style:STRING_CONSTANT :ITM_TYPE_MONO <-
   ( + name:STRING_CONSTANT;    
     + genericity:FAST_ARRAY[ITM_TYPE_MONO];
@@ -1514,16 +1513,7 @@ Section Private
     + t,result:ITM_TYPE_MONO;    
     + old_pos,old_derive,sav_derive:INTEGER;
     
-    (read_character '[').if {
-      // '[' cap_identifier ']'
-      (! read_cap_identifier).if {
-        syntax_error (current_position,"Incorrect parameter type.");
-      };            
-      result := ITM_TYPE_PARAMETER.get last_string;
-      (! read_character ']').if {
-        warning_error (current_position,"Added ']'.");
-      }; // if      	
-    }.elseif {read_cap_identifier} then {            
+    (read_cap_identifier).if {            
       old_pos    := position;
       old_derive := short_derive;
       
@@ -1535,7 +1525,11 @@ Section Private
 	//		
 	short (ALIAS_STR.short_prototype) token 
 	(old_pos-name.count) to old_pos;
-	
+        
+        (name.count = 1).if {
+          syntax_error (current_position,"Parameter type with genericity is absurd.");
+        };
+        
 	genericity := ALIAS_ARRAY[ITM_TYPE_MONO].new;
 	{
 	  t := read_type FALSE;
@@ -1559,8 +1553,16 @@ Section Private
 	  warning_error (current_position,"Added ']'.");
 	}; // if
       } else {	
-	// Simple type.	  
-	(style = NULL).if {
+        // Simple type.	  
+        (name.count = 1).if {
+          (style != NULL).if {
+            string_tmp.copy "Style `";
+            string_tmp.append style;
+            string_tmp.append "' for parameter type is ignored.";
+            warning_error (current_position,string_tmp);
+          };
+          result := ITM_TYPE_PARAMETER.get name;
+        }.elseif {style = NULL} then {
 	  result := ITM_TYPE_SIMPLE.get name;
 	} else {
 	  (name = ALIAS_STR.prototype_self).if {
