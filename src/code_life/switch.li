@@ -277,7 +277,7 @@ Section Public
     ((list.count = 2) || {typ_first = TYPE_NULL}).if {
       buffer.append "if (";
       //                  
-      ((expr.static_type.raw = type_block) && {typ_first = TYPE_NULL}).if {
+      ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {
 	expr.genere buffer;	
 	buffer.append ".__id==0";
       } else {
@@ -390,8 +390,8 @@ Section Private
     (
       (expr.static_type.raw = type_boolean) && 
       {list.count = 2} && 
-      {list.first.code.count  = 2} && 
-      {list.second.code.count = 2}
+      {list.first.code.count  = 1} && 
+      {list.second.code.count = 1}
     ).if {
       ? {list.first.id  = type_true };
       ? {list.second.id = type_false};
