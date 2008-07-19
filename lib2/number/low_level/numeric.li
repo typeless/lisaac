@@ -125,19 +125,19 @@ Section Public
   // Switch case :
   //
     
-  - when value:SELF then block:BLOCK :SELF <-
+  - when value:SELF then block:{} :SELF <-
   (
     (Self = value).if block;
     Self
   );
   
-  - when value1:SELF or value2:SELF then block:BLOCK :SELF <-
+  - when value1:SELF or value2:SELF then block:{} :SELF <-
   (
     ((Self = value1) || {Self = value2}).if block;
     Self
   );
   
-  - when first_value:SELF to last_value:SELF then block:BLOCK :SELF <-
+  - when first_value:SELF to last_value:SELF then block:{} :SELF <-
   ( ? {first_value <= last_value};
     
     ((Self >= first_value) && {Self <= last_value}).if block;
@@ -148,7 +148,7 @@ Section Public
   // Looping.
   //
   
-  - to limit_up:SELF do blc:BLOCK <-
+  - to limit_up:SELF do blc:{SELF;} <-
   (
     (Self <= limit_up).if {
       blc.value Self;
@@ -156,7 +156,7 @@ Section Public
     };
   );
   
-  - downto limit_down:SELF do blc:BLOCK <-
+  - downto limit_down:SELF do blc:{SELF;} <-
   (
     (Self >= limit_down).if {
       blc.value Self;
@@ -164,7 +164,7 @@ Section Public
     };
   );
   
-  - to limit_up:SELF by step:SELF do blc:BLOCK <-
+  - to limit_up:SELF by step:SELF do blc:{SELF;} <-
   (
     (Self <= limit_up).if {
       blc.value Self;
@@ -172,7 +172,7 @@ Section Public
     };
   );
   
-  - downto limit_down:SELF by step:SELF do blc:BLOCK <-
+  - downto limit_down:SELF by step:SELF do blc:{SELF;} <-
   (
     (Self >= limit_down).if {
       blc.value Self;

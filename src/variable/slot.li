@@ -168,7 +168,7 @@ Section Public
     (tm != NULL).if {            
       slot_data_list := FAST_ARRAY[SLOT_DATA].create_with_capacity (tm.count-1);
       (tm.lower).to (tm.upper-1) do { k:INTEGER;	
-	typ := tm.item k.to_run_for NULL;
+	typ := tm.item k.to_run_for receiver_type;
 	slot_data_list.add_last (
 	  SLOT_DATA.create common_slot type typ
 	);
@@ -176,7 +176,7 @@ Section Public
       typ := tm.last.to_run_for NULL;
     } else {
       ts ?= result_type;
-      typ := ts.to_run_for NULL;
+      typ := ts.to_run_for receiver_type;
     };
     slot_data_intern := SLOT_DATA.create common_slot type typ;    
   );
