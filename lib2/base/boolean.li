@@ -49,27 +49,27 @@ Section Public
   // Conditional :
   //
   
-  - if_true block:BLOCK  <- deferred;
+  - if_true block:{}  <- deferred;
   
-  - if_false block:BLOCK <- deferred;
+  - if_false block:{} <- deferred;
   
-  - if true_block:BLOCK else false_block:BLOCK <- `ERROR`; //deferred;
+  - if true_block:{} else false_block:{} <- `ERROR`; //deferred;
   
-  - if_true true_block:BLOCK else false_block:BLOCK <- deferred;
+  - if_true true_block:{} else false_block:{} <- deferred;
   
-  - if_false true_block:BLOCK else false_block:BLOCK <- deferred;
+  - if_false true_block:{} else false_block:{} <- deferred;
   
-  - if true_block:BLOCK :BOOLEAN <- deferred_boolean;
+  - if true_block:{} :BOOLEAN <- deferred_boolean;
   
-  - elseif cond:BLOCK then block:BLOCK :BOOLEAN <- deferred_boolean;
+  - elseif cond:{BOOLEAN} then block:{} :BOOLEAN <- deferred_boolean;
   
-  - elseif cond:BLOCK then block:BLOCK else block_else:BLOCK <- deferred;
+  - elseif cond:{BOOLEAN} then block:{} else block_else:{} <- deferred;
     
-  - else_if cond:BLOCK then block:BLOCK :BOOLEAN <- 
+  - else_if cond:{BOOLEAN} then block:{} :BOOLEAN <- 
   // Alias.
   elseif cond then block;
   
-  - else_if cond:BLOCK then block:BLOCK else block_else:BLOCK <- 
+  - else_if cond:{BOOLEAN} then block:{} else block_else:{} <- 
   // Alias.
   elseif cond then block else block_else;
   
@@ -77,27 +77,27 @@ Section Public
   // Binary operator :
   //
   
-  - '||' Left 10  other:BLOCK   :BOOLEAN <- deferred_boolean;
+  - Self:SELF '||' Left 10  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean;
   
-  - '&&' Left 20  other:BLOCK   :BOOLEAN <- deferred_boolean; 
+  - Self:SELF '&&' Left 20  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean; 
   
-  - '|'  Left 10  other:BOOLEAN :BOOLEAN <- deferred_boolean;
+  - Self:SELF '|'  Left 10  other:BOOLEAN :BOOLEAN <- deferred_boolean;
   
-  - '&'  Left 20  other:BOOLEAN :BOOLEAN <- deferred_boolean;
+  - Self:SELF '&'  Left 20  other:BOOLEAN :BOOLEAN <- deferred_boolean;
   
-  - '^' Left 10  other:BOOLEAN :BOOLEAN  <- deferred_boolean;
+  - Self:SELF '^' Left 10  other:BOOLEAN :BOOLEAN  <- deferred_boolean;
   
-  - '->' Right 25 other:BOOLEAN :BOOLEAN <- deferred_boolean;
+  - Self:SELF '->' Right 25 other:BOOLEAN :BOOLEAN <- deferred_boolean;
 
-  - '->>' Right 25 other:BLOCK  :BOOLEAN <- deferred_boolean;
+  - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- deferred_boolean;
   
-  - '=>' s:ABSTRACT_STRING <- deferred;
+  - Self:SELF '=>' s:ABSTRACT_STRING <- deferred;
   
   //
   // Prefix operator
   //
   
-  - '!' :BOOLEAN <- deferred;
+  - '!' Self:SELF :BOOLEAN <- deferred;
   
   //
   // Convertion

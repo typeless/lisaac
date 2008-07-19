@@ -150,7 +150,7 @@ Section Public
   // Displacement
   //
   
-  - '+' Left 80 other:INTEGER :NATIVE_ARRAY[V] <- 
+  - Self:SELF '+' Left 80 other:INTEGER :NATIVE_ARRAY[V] <- 
   // other is in element index
   ( + ptr:POINTER;
     

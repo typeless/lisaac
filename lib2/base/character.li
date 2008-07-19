@@ -145,30 +145,30 @@ Section Public
   // Binary operator :
   //
   
-  - '+' other:CHARACTER :CHARACTER <- (code+other.code).to_character;
+  - Self:SELF '+' other:CHARACTER :CHARACTER <- (code+other.code).to_character;
   
-  - '-' other:CHARACTER :CHARACTER <- (code-other.code).to_character;
+  - Self:SELF '-' other:CHARACTER :CHARACTER <- (code-other.code).to_character;
 
-  - '-!' other:CHARACTER :INTEGER   <- code - other.code;
+  - Self:SELF '-!' other:CHARACTER :INTEGER   <- code - other.code;
   
-  - '+#' other:INTEGER :CHARACTER <- (code + other).to_character;
+  - Self:SELF '+#' other:INTEGER :CHARACTER <- (code + other).to_character;
   
-  - '!==' other:CHARACTER :BOOLEAN <- (code !== other.code);
+  - Self:SELF '!==' other:CHARACTER :BOOLEAN <- (code !== other.code);
   // Comparison using `code'.
   
-  - '==' Right 60 other:CHARACTER :BOOLEAN <- (code == other.code);
+  - Self:SELF '==' Right 60 other:CHARACTER :BOOLEAN <- (code == other.code);
   // Comparison using `code'.
   
-  - '<' other:CHARACTER :BOOLEAN <- ( code < other.code );
+  - Self:SELF '<' other:CHARACTER :BOOLEAN <- ( code < other.code );
   // Comparison using `code'.
   
-  - '<=' other:CHARACTER :BOOLEAN <- ( code <= other.code );
+  - Self:SELF '<=' other:CHARACTER :BOOLEAN <- ( code <= other.code );
   // Comparison using `code'.
   
-  - '>' other:CHARACTER :BOOLEAN <- ( code > other.code );
+  - Self:SELF '>' other:CHARACTER :BOOLEAN <- ( code > other.code );
   // Comparison using `code'.
   
-  - '>=' other:CHARACTER :BOOLEAN <- ( code >= other.code );
+  - Self:SELF '>=' other:CHARACTER :BOOLEAN <- ( code >= other.code );
   // Comparison using `code'.
   
   - decimal_value:INTEGER <-

@@ -67,59 +67,59 @@ Section Public
   // binary operator :
   //
   
-  - '-'  Left 80  other:SELF :SELF <- `3`;
+  - Self:SELF '-'  Left 80  other:SELF :SELF <- `3`;
   
-  - '*'  Left 100 other:SELF :SELF <- `4`;
+  - Self:SELF '*'  Left 100 other:SELF :SELF <- `4`;
   
-  - '/'  Left 100 other:SELF :SELF <- `5`; // ? {other/=0}
+  - Self:SELF '/'  Left 100 other:SELF :SELF <- `5`; // ? {other/=0}
     
-  - '+'  Left 80  other:SELF :SELF <- Self - -other;
+  - Self:SELF '+'  Left 80  other:SELF :SELF <- Self - -other;
   
   //
   // Unary operator
   //
   
-  - '+' :SELF <- Self;
+  - '+' Self:SELF :SELF <- Self;
   
-  - '-' :SELF <- SELF.zero - Self;
+  - '-' Self:SELF :SELF <- SELF.zero - Self;
 
   //
   // Compatibility Binary operator
   //
   
-  - '-#'  Left 80  other:INTEGER :SELF    <- Self - other;
+  - Self:SELF '-#'  Left 80  other:INTEGER :SELF    <- Self - other;
   
-  - '*#'  Left 100 other:INTEGER :SELF    <- Self * other;
+  - Self:SELF '*#'  Left 100 other:INTEGER :SELF    <- Self * other;
   
-  - '/#'  Left 100 other:INTEGER :SELF    <- Self / other;
+  - Self:SELF '/#'  Left 100 other:INTEGER :SELF    <- Self / other;
     
-  - '+#'  Left 80  other:INTEGER :SELF    <- Self + other;
+  - Self:SELF '+#'  Left 80  other:INTEGER :SELF    <- Self + other;
   
-  - '>#'  Right 60 other:INTEGER :BOOLEAN <- Self > other;
+  - Self:SELF '>#'  Right 60 other:INTEGER :BOOLEAN <- Self > other;
   
-  - '<#'  Right 60 other:INTEGER :BOOLEAN <- ! (Self >=# other);
+  - Self:SELF '<#'  Right 60 other:INTEGER :BOOLEAN <- ! (Self >=# other);
   
-  - '<=#' Right 60 other:INTEGER :BOOLEAN <- ! (Self ># other);
+  - Self:SELF '<=#' Right 60 other:INTEGER :BOOLEAN <- ! (Self ># other);
   
-  - '>=#' Right 60 other:INTEGER :BOOLEAN <- (Self ># other) | (Self ==# other);
+  - Self:SELF '>=#' Right 60 other:INTEGER :BOOLEAN <- (Self ># other) | (Self ==# other);
   
-  - '==#' Right 60 other:INTEGER :BOOLEAN <- (Self = other);
+  - Self:SELF '==#' Right 60 other:INTEGER :BOOLEAN <- (Self = other);
 
   //
   // Test binary operator :
   //
   
-  - '=='  Right 60 other:SELF :BOOLEAN <- (Self = other);
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <- (Self = other);
   
-  - '!==' Right 60 other:SELF :BOOLEAN <- ! (Self == other);
+  - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- ! (Self == other);
   
-  - '>'   Right 60 other:SELF :BOOLEAN <- `2`;
+  - Self:SELF '>'   Right 60 other:SELF :BOOLEAN <- `2`;
   
-  - '<'   Right 60 other:SELF :BOOLEAN <- ! (Self >= other);
+  - Self:SELF '<'   Right 60 other:SELF :BOOLEAN <- ! (Self >= other);
   
-  - '<='  Right 60 other:SELF :BOOLEAN <- ! (Self > other);
+  - Self:SELF '<='  Right 60 other:SELF :BOOLEAN <- ! (Self > other);
   
-  - '>='  Right 60 other:SELF :BOOLEAN <- (Self > other) | (Self == other);
+  - Self:SELF '>='  Right 60 other:SELF :BOOLEAN <- (Self > other) | (Self == other);
   
   //
   // Switch case :

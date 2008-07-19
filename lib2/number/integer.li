@@ -58,11 +58,11 @@ Section Public
   // Binary Operator.
   //
   
-  - '%'  Left 100 other:SELF    :SELF <- Self - ((Self / other) * other);
+  - Self:SELF '%'  Left 100 other:SELF    :SELF <- Self - ((Self / other) * other);
   
-  - '%#' Left 100 other:INTEGER :SELF <- Self % other;
+  - Self:SELF '%#' Left 100 other:INTEGER :SELF <- Self % other;
   
-  - '**' Right 120 exp:SELF :SELF <-
+  - Self:SELF '**' Right 120 exp:SELF :SELF <-
   ( + result:SELF;
     
     (exp = 0).if {
@@ -149,21 +149,21 @@ Section Public
   // Logic Operator
   //
       
-  - '&'  Left 100 other:SELF :SELF <- `6`;
+  - Self:SELF '&'  Left 100 other:SELF :SELF <- `6`;
   
-  - '|'  Left 80  other:SELF :SELF <- ~(~Self & ~other);
+  - Self:SELF '|'  Left 80  other:SELF :SELF <- ~(~Self & ~other);
   
-  - '^'  Left 80  other:SELF :SELF <- (~Self & other) | (Self & ~other);
+  - Self:SELF '^'  Left 80  other:SELF :SELF <- (~Self & other) | (Self & ~other);
 
-  - '>>' Left 100 other:INTEGER :SELF <- `7`;
+  - Self:SELF '>>' Left 100 other:INTEGER :SELF <- `7`;
 
-  - '<<' Left 100 other:INTEGER :SELF <- `8`;
+  - Self:SELF '<<' Left 100 other:INTEGER :SELF <- `8`;
   
   //
   // Unary operator
   //
     
-  - '~' :SELF <- -Self - SELF.one; //(-SELF.one) - Self;
+  - '~' Self:SELF :SELF <- -Self - SELF.one; //(-SELF.one) - Self;
   
   //
   // Test. 
@@ -526,7 +526,7 @@ Section Public
   // Debug manager facility.
   //
   
-  - '?' blc:BLOCK <-  blc ?# Self;
+  - Self:SELF '?' blc:BLOCK <-  blc ?# Self;
   
 Section INTEGER  
   

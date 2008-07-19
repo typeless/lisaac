@@ -42,7 +42,7 @@ Section Public
     item := value;
   );
 
-  - '<' other:SELF : BOOLEAN <-
+  - Self:SELF '<' other:SELF : BOOLEAN <-
   (
     item < other.item
   );
