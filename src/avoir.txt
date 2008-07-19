@@ -55,190 +55,167 @@ Create function last_string
 Line 47 column 3 in INPUT_STREAM(/home/sonntag/svn/isaac/trunk/lisaac/lib2/io/input_stream.li):
   (
    ^
+Creat :Self__GB[Strict HELLO] :=<0/4> true_block__NB[{}(TYPE_BLOCK)]<1/R2/E2>->self[Strict HELLO]<3/R4/E1>
+--WARNING----------
+LA
+Line 30 column 36 in HELLO(./hello.li):
+    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
+                                    ^
 print_char({SYSTEM_IO},{CHARACTER}) Void (
-  `fputc((int)(@),stdout)(byte__XC[Expanded CHARACTER]<0/R1/E1>)`VOID<2>
-)<3>
+  `fputc((int)(@),stdout)(byte__IC[Expanded CHARACTER]<5/R6/E1>)`VOID<7>
+)<8>
 ---------------------
 basic_io_putc({IO},{CHARACTER}) Void (
-  Strict SYSTEM_IO<4>(
-    Strict SYSTEM_IO<5>(
-      print_char__VC<6>(Strict SYSTEM_IO<7>,c__TC[Expanded CHARACTER]<8/R9/E1>)
-    )<10>
-    Strict VOID<11>
-  )<12>
-)<13>
+  Strict SYSTEM_IO<9>(
+    Strict SYSTEM_IO<10>(
+      print_char__GC<11>(Strict SYSTEM_IO<12>,c__EC[Expanded CHARACTER]<13/R14/E1>)
+    )<15>
+    Strict VOID<16>
+  )<17>
+)<18>
 ---------------------
 put_character({IO},{CHARACTER}) Void (
-  Self__NC[Strict IO]<14/R15/E3>(
-    Self__NC[Strict IO]<16/R15/E3>(
-      __tmp__PC[STD_OUTPUT] :=<17/2> parent_std_output__FC[STD_OUTPUT]<18/R19/E2>
-    )<20>
-    __tmp__PC[STD_OUTPUT]<21/R17/E2>(
-      __tmp__PC[STD_OUTPUT]<22/R17/E2>(
-        __tmp__QC[OUTPUT_STREAM] :=<23/2> parent_output_stream__EC[OUTPUT_STREAM]<24/R25/E1>
-      )<26>
-      __tmp__QC[OUTPUT_STREAM]<27/R23/E2>(
-        __tmp__QC[OUTPUT_STREAM]<28/R23/E2>(
-          basic_io_putc__RC<29>(Self__NC[Strict IO]<30/R15/E3>,c__OC[Expanded CHARACTER]<31/R32/E1>)
-        )<33>
-        Strict VOID<34>
-      )<35>
-      Strict VOID<36>
-    )<37>
-    Strict VOID<38>
-  )<39>
-)<40>
----------------------
-__infix_sub({INTEGER},{INTEGER}) With result (
-  Result_1__KC[Expanded INTEGER] :=<41/1> (Self__IC[Expanded INTEGER]<42/R43/E1>-other__JC[Expanded INTEGER]<44/R45/E1>)
-)<46>
+  Self__4B[Strict IO]<19/R20/E3>(
+    Self__4B[Strict IO]<21/R20/E3>(
+      __tmp__AC[STD_OUTPUT] :=<22/2> parent_std_output__1B[STD_OUTPUT]<23/R24/E2>
+    )<25>
+    __tmp__AC[STD_OUTPUT]<26/R22/E2>(
+      __tmp__AC[STD_OUTPUT]<27/R22/E2>(
+        __tmp__BC[OUTPUT_STREAM] :=<28/2> parent_output_stream__0B[OUTPUT_STREAM]<29/R30/E1>
+      )<31>
+      __tmp__BC[OUTPUT_STREAM]<32/R28/E2>(
+        __tmp__BC[OUTPUT_STREAM]<33/R28/E2>(
+          basic_io_putc__CC<34>(Self__4B[Strict IO]<35/R20/E3>,c__5B[Expanded CHARACTER]<36/R37/E1>)
+        )<38>
+        Strict VOID<39>
+      )<40>
+      Strict VOID<41>
+    )<42>
+    Strict VOID<43>
+  )<44>
+)<45>
 ---------------------
 print({CHARACTER}) Void (
-  Strict IO<47>(
-    Strict IO<48>(
-      __tmp__LC[STD_OUTPUT] :=<49/2> parent_std_output__FC[STD_OUTPUT]<50/R19/E2>
-    )<51>
-    __tmp__LC[STD_OUTPUT]<52/R49/E2>(
-      __tmp__LC[STD_OUTPUT]<53/R49/E2>(
-        put_character__MC<54>(Strict IO<55>,Self__5B[Expanded CHARACTER]<56/R57/E1>)
-      )<58>
-      Strict VOID<59>
-    )<60>
-    Strict VOID<61>
-  )<62>
-)<63>
+  Strict IO<46>(
+    Strict IO<47>(
+      __tmp__2B[STD_OUTPUT] :=<48/2> parent_std_output__1B[STD_OUTPUT]<49/R24/E2>
+    )<50>
+    __tmp__2B[STD_OUTPUT]<51/R48/E2>(
+      __tmp__2B[STD_OUTPUT]<52/R48/E2>(
+        put_character__3B<53>(Strict IO<54>,Self__VB[Expanded CHARACTER]<55/R56/E1>)
+      )<57>
+      Strict VOID<58>
+    )<59>
+    Strict VOID<60>
+  )<61>
+)<62>
 ---------------------
-if({FALSE},{value__MB}) With result (
-  Result_1__3B[Expanded BOOLEAN] :=<64/1> Expanded FALSE<65>
-)<66>
+if({FALSE},{value__FB}) With result (
+  Result_1__TB[Expanded BOOLEAN] :=<63/1> Expanded FALSE<64>
+)<65>
 ---------------------
-if({TRUE},{value__MB}) With result (
-  true_block__XB[{}(TYPE_BLOCK)]<67/R68/E2>(
-    value__MB<69>(true_block__XB[{}(TYPE_BLOCK)]<70/R68/E2>->self[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<71/R72/E1>)
-  )<73>
-  Strict VOID<74>
-  __tmp__ZB[Expanded TRUE] :=<75/1> Expanded TRUE<76>
-  Result_1__YB[Expanded BOOLEAN] :=<77/1> __tmp__ZB[Expanded TRUE]<78/R75/E1>
-)<79>
----------------------
-__infix_greater({INTEGER},{INTEGER}) With result (
-  Result_1__UB[Expanded BOOLEAN] :=<80/1> (Expanded INTEGER Self__SB[Expanded INTEGER]<81/R82/E1>>other__TB[Expanded INTEGER]<83/R84/E1>)
-)<85>
----------------------
-BLOCK SEND ({value__1}) Void (
-  body__IB[{}(TYPE_BLOCK)]<86/R87,88/E3>(
-    value__CB<89>(body__IB[{}(TYPE_BLOCK)]<90/R87,88/E3>->self[Strict HELLO]<91/R92/E1>)
-  )<93>
-  Strict VOID<94>
-  Self__NB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<95/R96/E4>(
-    Self__NB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<97/R96/E4>(
-      while_do__GB<98>(Self__NB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<99/R96/E4>,body__IB[{}(TYPE_BLOCK)]<100/R87,88/E3>)
-    )<101>
-    Strict VOID<102>
-  )<103>
-  Strict VOID<104>
-)<105>
----------------------
-while_do({value__1},{value__CB}) Void (
-  Self__HB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<106/R107,108/E2>(
-    value__1<109>(Self__HB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<110/R107,108/E2>->self[Strict HELLO]<111/R112/E1>)
-  )<113>
-  __tmp__OB[Expanded {}(PROFIL_BLOCK)]<114/R*/E4>->__id[Expanded {}(PROFIL_BLOCK)] :=<115/0> Expanded {}(PROFIL_BLOCK)<116>
-  __tmp__OB[Expanded {}(PROFIL_BLOCK)]<117/R*/E4>->self[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)] :=<72/1> Self__NB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<118/R96/E4>
-  Switch __tmp__JB[Expanded BOOLEAN]<119/R120/E5>
-  +-TRUE:
-  | (
-  |   __tmp__JB[Expanded BOOLEAN]<121/R120/E5>(
-  |     if__VB<122>(__tmp__JB[Expanded BOOLEAN]<123/R120/E5>,__tmp__OB[Expanded {}(PROFIL_BLOCK)]<124/R*/E4>)
-  |   )<125>
-  |   Strict VOID<126>
-  | )<127>
-  +-FALSE:
-    (
-      __tmp__JB[Expanded BOOLEAN]<128/R120/E5>(
-        if__0B<129>(__tmp__JB[Expanded BOOLEAN]<130/R120/E5>,__tmp__OB[Expanded {}(PROFIL_BLOCK)]<131/R*/E4>)
-      )<132>
-      Strict VOID<133>
-    )<134>
-  __tmp__PB[Expanded BOOLEAN]<135/R136,137/E1>
-)<138>
+if({TRUE},{value__FB}) With result (
+  true_block__NB[{}(TYPE_BLOCK)]<66/R2/E2>(
+    value__FB<67>(true_block__NB[{}(TYPE_BLOCK)]<1/R2/E2>->self[Strict HELLO]<3/R4/E1>)
+  )<68>
+  Strict VOID<69>
+  __tmp__PB[Expanded TRUE] :=<70/1> Expanded TRUE<71>
+  Result_1__OB[Expanded BOOLEAN] :=<72/1> __tmp__PB[Expanded TRUE]<73/R70/E1>
+)<74>
 ---------------------
 BLOCK SEND ({HELLO}) Void (
-  'I'<139>(
-    'I'<140>(
-      print__4B<141>('I'<142>)
-    )<143>
-    Strict VOID<144>
-  )<145>
-  Strict VOID<146>
-  j__Y[Expanded INTEGER]<147/R148,149,150/E8>(
-    j__Y[Expanded INTEGER]<151/R148,149,150/E8>(
-      __tmp__GC[NUMERIC] :=<152/2> parent_numeric__H[NUMERIC]<153/R154/E2>
-    )<155>
-    __tmp__GC[NUMERIC]<156/R152/E2>(
-      __tmp__GC[NUMERIC]<157/R152/E2>(
-        __infix_sub__HC<158>(j__Y[Expanded INTEGER]<159/R148,149,150/E8>,(Expanded INTEGER)1<160>)
-      )<161>
-      Strict VOID<162>
-    )<163>
-    Strict VOID<164>
-  )<165>
-  j__Y[Expanded INTEGER] :=<150/8> __tmp__EB[Expanded INTEGER]<166/R167/E1>
-  j__Y[Expanded INTEGER]<168/R148,149,150/E8>
-)<169>
+)<75>
 ---------------------
 BLOCK SEND ({HELLO}) With result (
-  j__Y[Expanded INTEGER]<170/R148,149,150/E8>(
-    j__Y[Expanded INTEGER]<171/R148,149,150/E8>(
-      __tmp__QB[NUMERIC] :=<172/2> parent_numeric__H[NUMERIC]<173/R154/E2>
-    )<174>
-    __tmp__QB[NUMERIC]<175/R172/E2>(
-      __tmp__QB[NUMERIC]<176/R172/E2>(
-        __infix_greater__RB<177>(j__Y[Expanded INTEGER]<178/R148,149,150/E8>,(Expanded INTEGER)0<179>)
-      )<180>
-      Strict VOID<181>
-    )<182>
-    Strict VOID<183>
-  )<184>
-  __tmp__4[Expanded BOOLEAN] :=<185/1> __tmp__3[Expanded BOOLEAN]<186/R187/E1>
-)<188>
+  __tmp__4[Expanded CHARACTER] :=<76/1> j__Y[Expanded CHARACTER]<77/R78,79/E2>
+)<80>
 ---------------------
 main({HELLO}) Void (
-  j__Y[Expanded INTEGER] :=<148/8> (Expanded INTEGER)0<189>
-  j__Y[Expanded INTEGER] :=<149/8> (Expanded INTEGER)10<190>
-  j__Y[Expanded INTEGER]<191/R148,149,150/E8>
-  __tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<192/R*/E5>->__id[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)] :=<193/0> Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)<194>
-  __tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<195/R*/E5>->self[Strict HELLO] :=<112/1> Self__2[Strict HELLO]<196/R197/E1>
-  __tmp__FB[Expanded {}(PROFIL_BLOCK)]<198/R*/E3>->__id[Expanded {}(PROFIL_BLOCK)] :=<199/0> Expanded {}(PROFIL_BLOCK)<200>
-  __tmp__FB[Expanded {}(PROFIL_BLOCK)]<201/R*/E3>->self[Strict HELLO] :=<92/1> Self__DB[Strict HELLO]<202/R203/E1>
-  __tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<204/R*/E5>(
-    __tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<205/R*/E5>(
-      while_do__GB<206>(__tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<207/R*/E5>,__tmp__FB[Expanded {}(PROFIL_BLOCK)]<208/R*/E3>)
-    )<209>
-    Strict VOID<210>
-  )<211>
-  Strict VOID<212>
-)<213>
+  j__Y[Expanded CHARACTER] :=<78/2> '\0'<81>
+  __tmp__Z[Expanded CHARACTER] :=<82/1> `64`Expanded CHARACTER<83>
+  j__Y[Expanded CHARACTER] :=<79/2> __tmp__Z[Expanded CHARACTER]<84/R82/E1>
+  j__Y[Expanded CHARACTER]<85/R78,79/E2>
+  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<86/R*/E4>->__id[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)] :=<87/1> Expanded {Expanded CHARACTER}(PROFIL_BLOCK)<88>
+  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<89/R*/E4>->self[Strict HELLO] :=<90/1> Self__3[Strict HELLO]<91/R92/E3>
+  Self__3[Strict HELLO]<93/R92/E3>(
+    Self__3[Strict HELLO]<94/R92/E3>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<95/1> __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<96/R*/E4>
+    Strict VOID<97>
+  )<98>
+  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<99/R*/E4>
+  __tmp__BB[Expanded BOOLEAN] :=<100/1> `(1)`Expanded BOOLEAN(TRUE,FALSE)<101>
+  __tmp__CB[Expanded BOOLEAN] :=<102/5> __tmp__BB[Expanded BOOLEAN]<103/R100/E1>
+  __tmp__HB[Expanded {}(PROFIL_BLOCK)]<104/R*/E4>->__id[Expanded {}(PROFIL_BLOCK)] :=<105/0> Expanded {}(PROFIL_BLOCK)<106>
+  __tmp__HB[Expanded {}(PROFIL_BLOCK)]<107/R*/E4>->self[Strict HELLO] :=<4/1> Self__GB[Strict HELLO]<108/R0/E4>
+  Switch __tmp__CB[Expanded BOOLEAN]<109/R102/E5>
+  +-TRUE:
+  | (
+  |   __tmp__CB[Expanded BOOLEAN]<110/R102/E5>(
+  |     if__LB<111>(__tmp__CB[Expanded BOOLEAN]<112/R102/E5>,__tmp__HB[Expanded {}(PROFIL_BLOCK)]<113/R*/E4>)
+  |   )<114>
+  |   Strict VOID<115>
+  | )<116>
+  +-FALSE:
+    (
+      __tmp__CB[Expanded BOOLEAN]<117/R102/E5>(
+        if__QB<118>(__tmp__CB[Expanded BOOLEAN]<119/R102/E5>,__tmp__HB[Expanded {}(PROFIL_BLOCK)]<120/R*/E4>)
+      )<121>
+      Strict VOID<122>
+    )<123>
+  __tmp__IB[Expanded BOOLEAN]<124/R125,126/E1>
+  Self__GB[Strict HELLO]<127/R0/E4>(
+    Self__GB[Strict HELLO]<128/R0/E4>(
+      __tmp__JB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<129/2> Self__GB[Strict HELLO]<130/R0/E4>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)]<131/R95,132/E1>
+    )<133>
+    Strict VOID<134>
+  )<135>
+  Switch __tmp__JB[{Expanded CHARACTER}(TYPE_BLOCK)]<136/R129/E2>
+  +-NULL:
+  | (
+  |   `print_string("Call on NULL\n(Use `-D' option)\n"); die_with_code(1)`VOID<137>
+  |   Strict VOID<138>
+  | )<139>
+  +-value__2:
+    (
+      value__2<140>(__tmp__JB[{Expanded CHARACTER}(TYPE_BLOCK)]<141/R129/E2>->self[Strict HELLO]<142/R90/E1>)
+    )<143>
+  __tmp__KB[Expanded CHARACTER]<144/R145/E3>(
+    __tmp__KB[Expanded CHARACTER]<146/R145/E3>(
+      print__UB<147>(__tmp__KB[Expanded CHARACTER]<148/R145/E3>)
+    )<149>
+    Strict VOID<150>
+  )<151>
+  Strict VOID<152>
+)<153>
 ---------------------
+Self__GB[Strict HELLO] :=<0/2> Self__GB[Strict HELLO]<154/R0/E2>
+--WARNING----------
+LA
+Line 30 column 36 in HELLO(./hello.li):
+    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
+                                    ^
+Self__GB
+style [+]
+--WARNING----------
+READ : Compiler BUG! (require_first = NULL) 
+Line 30 column 36 in HELLO(./hello.li):
+    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
+                                    ^
 (
   `arg_count  = argc;
-  arg_vector = argv`VOID<214>
-  j__Y[Expanded INTEGER] :=<149/2> (Expanded INTEGER)10<190>
-  __tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<195/R*/E2>->self[Strict HELLO] :=<112/1> Self__2[Strict HELLO]<196/R197/E1>
-  Self__HB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)] :=<107/1> __tmp__5[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<207/R*/E2>
-  while_do__GB<215>:
-  (
-    Self__2[Strict HELLO] :=<197/1> Self__HB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<110/R107,108/E1>->self[Strict HELLO]<111/R112/E1>
-    Switch (Expanded INTEGER j__Y[Expanded INTEGER]<216/R149,150/E2>>(Expanded INTEGER)0<217>)
-    +-TRUE:
-    | (
-    |   `fputc((int)(@),stdout)('I'<218>)`VOID<2>
-    |   j__Y[Expanded INTEGER] :=<150/2> (j__Y[Expanded INTEGER]<219/R149,150/E2>-(Expanded INTEGER)1<220>)
-    |   Self__HB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)] :=<108/1> Self__NB[Expanded {Expanded BOOLEAN}(PROFIL_BLOCK)]<221/R*/E1>
-    |   goto while_do__GB<222>
-    | )<127>
-    +-FALSE:
-      (
-      )<134>
-  )<138>
-)<223>
+  arg_vector = argv`VOID<155>
+  Strict HELLO<156>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<132/1> Strict NULL<157>
+  j__Y[Expanded CHARACTER] :=<79/2> `64`Expanded CHARACTER<83>
+  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<89/R*/E2>->self[Strict HELLO] :=<90/1> Self__3[Strict HELLO]<91/R92/E2>
+  Self__3[Strict HELLO]<94/R92/E2>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<95/1> __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<96/R*/E2>
+  nop
+  Switch `(1)`Expanded BOOLEAN(TRUE,FALSE)<101>
+  +-TRUE:
+  | (
+  | )<116>
+  +-FALSE:
+    (
+    )<123>
+  Self__3[Strict HELLO] :=<92/2> Self__GB[Strict HELLO]<130/R*/E1>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)]<131/R95,132/E1>->self[Strict HELLO]<142/R90/E1>
+  __tmp__4[Expanded CHARACTER] :=<76/0> j__Y[Expanded CHARACTER]<77/R79/E2>
+  `fputc((int)(@),stdout)(j__Y[Expanded CHARACTER]<158/R79/E2>)`VOID<7>
+)<159>

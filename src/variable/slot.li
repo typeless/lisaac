@@ -162,7 +162,7 @@ Section Public
   - create_slot_data <-
   ( + typ:TYPE_FULL;
     + tm:ITM_TYPE_MULTI;            
-    + ts:ITM_TYPE_SIMPLE;
+    + ts:ITM_TYPE_MONO;
     
     tm ?= result_type;    
     (tm != NULL).if {            

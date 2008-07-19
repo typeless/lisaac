@@ -90,8 +90,10 @@ Section Public
     + rd:READ_LOCAL;
     + a_list:FAST_ARRAY[TYPE_FULL];
     + r_list:FAST_ARRAY[TYPE_FULL];
+    + stack_top:INTEGER;
     
     list := base.list;
+    stack_top := stack_local .upper + 1;
         
     PROFIL_LIST.add Self;
     type_self   := ITM_TYPE_SIMPLE.type_self.to_run_for profil_slot; 
@@ -146,6 +148,7 @@ Section Public
       argument_list := FAST_ARRAY[LOCAL].create 1; 
     };       
     var := LOCAL.create (list.position) name (ALIAS_STR.variable_self) style ' ' type type_self;
+        
     argument_list.put var to 0;
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       stack_local.add_last (argument_list.item j);
@@ -179,6 +182,7 @@ Section Public
     //
     context_extern := ITM_OBJECT.context_extern;
     to_type_block  := TYPE_BLOCK.get_direct a_list and_result r_list;
+    stack_local.remove_since stack_top;
     //
     NODE.set_node_list old_node_list;        
     profil := old_profil;

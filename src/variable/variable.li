@@ -209,11 +209,25 @@ Section Public
     };         
     
     e.set_create;
+    /*
+    (intern_name == "Self__GB").if {
+      "Creat :".print;
+      e.debug_display;
+      warning_error (e.position,"LA");
+    };
+    */
+    
     e
   );
     
   - unwrite e:WRITE <-
   ( + idx:INTEGER;
+    /*
+    (intern_name == "Self__GB").if {
+      e.debug_display;
+      warning_error (e.position,"LA");
+    };
+    */
     
     (! e.is_create).if {
       crash;
