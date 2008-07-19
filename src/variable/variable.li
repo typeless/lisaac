@@ -291,7 +291,14 @@ Section Public
         
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
-        
+    /*
+    (intern_name == "__tmp__4").if {
+      "VARIABLE create :".print;
+      result.debug_display;
+      crash;
+    };
+    */
+    
     result
   );
   //[ ? {ensure_count := Old ensure_count + 1}; ];
@@ -308,6 +315,13 @@ Section Public
       '\n'.print;
       crash;
     };
+    /*
+    (intern_name == "__tmp__4").if {
+      "VARIABLE delete :".print;
+      e.debug_display;
+    };
+*/
+    
     ? {ensure_count >= 0};
   );
     
