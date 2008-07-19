@@ -345,24 +345,24 @@ Section Public
     + tab:FAST_ARRAY[SLOT_DATA];
     + action:BLOCK;
     + tg:TYPE_GENERIC;
-   
+        
     ((slot_run.is_empty) || {slot_run.first != NULL}).if {            
             
       // Depending.
       (slot_run.lower).to (slot_run.upper) do { j:INTEGER;
 	slot := slot_run.item j;
 	((slot.style = '+') && {slot.lower_style = 0}).if {
-	  action := { s:SLOT_DATA;
+          action := { s:SLOT_DATA;
 	    (
 	      (
 		(s.ensure_count > 0) || 
 		{s.id_section.is_mapping}
 	      ) && 
 	      {s.type.raw != Self} &&
-	      {(s.type.is_expanded) || {s.type.is_strict} || {s.type.raw = type_block}}
-	    ).if {	      
+	      {(s.type.is_expanded) || {s.type.is_strict} || {s.type.raw.is_block}}
+            ).if {	                    
 	      s.type.raw.genere_struct;
-	    };
+            };
 	  };
 	  (slot.slot_data_list != NULL).if {
 	    (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
@@ -565,7 +565,7 @@ Section Public
   
   - put_reference_star_declaration buffer:STRING <-
   (    
-    (Self != type_block).if {
+    (is_block).if_false { // BSBS: A mettre dans TYPE_BLOCK
       buffer.add_last '*';
     };
   );
@@ -579,7 +579,7 @@ Section Public
   
   - put_generic_declaration buffer:STRING <-
   (         
-    (Self = type_block).if {
+    (is_block).if { // BSBS: A mettre dans TYPE_BLOCK
       put_expanded_declaration buffer;
     } else {
       buffer.append (ALIAS_STR.c_void);    

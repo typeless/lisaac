@@ -81,7 +81,7 @@ Section Public
     global.receiver_type.add_genere_list;
     buffer.append (global.intern_name);
     //
-    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw = type_block}).if {
+    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
       buffer.append ".__id=0";
     } else {
       buffer.add_last '=';    

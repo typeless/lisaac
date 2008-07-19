@@ -1,221 +1,35 @@
-
-input  file : hello.li
-output file : ./hello
-target : DEFAULT
-path directory :
-  ./
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/base/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/base/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/collection/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/collection/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/file_system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/ai/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/format/bmp/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/graphics/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/graphics/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/clipping/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/event/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/input/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/gui/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/io/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/kernel/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/memory/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/number/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/number/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/string/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib2/time/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/math/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/opengl/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/opengl/extensions/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/image_format/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/primitives/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/model_format/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/gfx_engine/low_level/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/su_doku/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/tetris/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/fouronline/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/shell/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/calculator/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/viewer/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/about/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/clock/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/desktop/
-  /home/sonntag/svn/isaac/trunk/lisaac/example/gui/mpg2/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/file_system/
-  /home/sonntag/svn/isaac/trunk/lisaac/lib_os/unix/video/
-  /home/sonntag/svn/isaac/trunk/lisaac/../libs/opengl-binding/unix/
---WARNING----------
-Create function last_string
-Line 47 column 3 in INPUT_STREAM(/home/sonntag/svn/isaac/trunk/lisaac/lib2/io/input_stream.li):
-  (
-   ^
-Creat :Self__GB[Strict HELLO] :=<0/4> true_block__NB[{}(TYPE_BLOCK)]<1/R2/E2>->self[Strict HELLO]<3/R4/E1>
---WARNING----------
-LA
-Line 30 column 36 in HELLO(./hello.li):
-    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
-                                    ^
-print_char({SYSTEM_IO},{CHARACTER}) Void (
-  `fputc((int)(@),stdout)(byte__IC[Expanded CHARACTER]<5/R6/E1>)`VOID<7>
-)<8>
----------------------
-basic_io_putc({IO},{CHARACTER}) Void (
-  Strict SYSTEM_IO<9>(
-    Strict SYSTEM_IO<10>(
-      print_char__GC<11>(Strict SYSTEM_IO<12>,c__EC[Expanded CHARACTER]<13/R14/E1>)
-    )<15>
-    Strict VOID<16>
-  )<17>
-)<18>
----------------------
-put_character({IO},{CHARACTER}) Void (
-  Self__4B[Strict IO]<19/R20/E3>(
-    Self__4B[Strict IO]<21/R20/E3>(
-      __tmp__AC[STD_OUTPUT] :=<22/2> parent_std_output__1B[STD_OUTPUT]<23/R24/E2>
-    )<25>
-    __tmp__AC[STD_OUTPUT]<26/R22/E2>(
-      __tmp__AC[STD_OUTPUT]<27/R22/E2>(
-        __tmp__BC[OUTPUT_STREAM] :=<28/2> parent_output_stream__0B[OUTPUT_STREAM]<29/R30/E1>
-      )<31>
-      __tmp__BC[OUTPUT_STREAM]<32/R28/E2>(
-        __tmp__BC[OUTPUT_STREAM]<33/R28/E2>(
-          basic_io_putc__CC<34>(Self__4B[Strict IO]<35/R20/E3>,c__5B[Expanded CHARACTER]<36/R37/E1>)
-        )<38>
-        Strict VOID<39>
-      )<40>
-      Strict VOID<41>
-    )<42>
-    Strict VOID<43>
-  )<44>
-)<45>
----------------------
-print({CHARACTER}) Void (
-  Strict IO<46>(
-    Strict IO<47>(
-      __tmp__2B[STD_OUTPUT] :=<48/2> parent_std_output__1B[STD_OUTPUT]<49/R24/E2>
-    )<50>
-    __tmp__2B[STD_OUTPUT]<51/R48/E2>(
-      __tmp__2B[STD_OUTPUT]<52/R48/E2>(
-        put_character__3B<53>(Strict IO<54>,Self__VB[Expanded CHARACTER]<55/R56/E1>)
-      )<57>
-      Strict VOID<58>
-    )<59>
-    Strict VOID<60>
-  )<61>
-)<62>
----------------------
-if({FALSE},{value__FB}) With result (
-  Result_1__TB[Expanded BOOLEAN] :=<63/1> Expanded FALSE<64>
-)<65>
----------------------
-if({TRUE},{value__FB}) With result (
-  true_block__NB[{}(TYPE_BLOCK)]<66/R2/E2>(
-    value__FB<67>(true_block__NB[{}(TYPE_BLOCK)]<1/R2/E2>->self[Strict HELLO]<3/R4/E1>)
-  )<68>
-  Strict VOID<69>
-  __tmp__PB[Expanded TRUE] :=<70/1> Expanded TRUE<71>
-  Result_1__OB[Expanded BOOLEAN] :=<72/1> __tmp__PB[Expanded TRUE]<73/R70/E1>
-)<74>
----------------------
-BLOCK SEND ({HELLO}) Void (
-)<75>
----------------------
-BLOCK SEND ({HELLO}) With result (
-  __tmp__4[Expanded CHARACTER] :=<76/1> j__Y[Expanded CHARACTER]<77/R78,79/E2>
-)<80>
----------------------
-main({HELLO}) Void (
-  j__Y[Expanded CHARACTER] :=<78/2> '\0'<81>
-  __tmp__Z[Expanded CHARACTER] :=<82/1> `64`Expanded CHARACTER<83>
-  j__Y[Expanded CHARACTER] :=<79/2> __tmp__Z[Expanded CHARACTER]<84/R82/E1>
-  j__Y[Expanded CHARACTER]<85/R78,79/E2>
-  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<86/R*/E4>->__id[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)] :=<87/1> Expanded {Expanded CHARACTER}(PROFIL_BLOCK)<88>
-  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<89/R*/E4>->self[Strict HELLO] :=<90/1> Self__3[Strict HELLO]<91/R92/E3>
-  Self__3[Strict HELLO]<93/R92/E3>(
-    Self__3[Strict HELLO]<94/R92/E3>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<95/1> __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<96/R*/E4>
-    Strict VOID<97>
-  )<98>
-  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<99/R*/E4>
-  __tmp__BB[Expanded BOOLEAN] :=<100/1> `(1)`Expanded BOOLEAN(TRUE,FALSE)<101>
-  __tmp__CB[Expanded BOOLEAN] :=<102/5> __tmp__BB[Expanded BOOLEAN]<103/R100/E1>
-  __tmp__HB[Expanded {}(PROFIL_BLOCK)]<104/R*/E4>->__id[Expanded {}(PROFIL_BLOCK)] :=<105/0> Expanded {}(PROFIL_BLOCK)<106>
-  __tmp__HB[Expanded {}(PROFIL_BLOCK)]<107/R*/E4>->self[Strict HELLO] :=<4/1> Self__GB[Strict HELLO]<108/R0/E4>
-  Switch __tmp__CB[Expanded BOOLEAN]<109/R102/E5>
-  +-TRUE:
-  | (
-  |   __tmp__CB[Expanded BOOLEAN]<110/R102/E5>(
-  |     if__LB<111>(__tmp__CB[Expanded BOOLEAN]<112/R102/E5>,__tmp__HB[Expanded {}(PROFIL_BLOCK)]<113/R*/E4>)
-  |   )<114>
-  |   Strict VOID<115>
-  | )<116>
-  +-FALSE:
-    (
-      __tmp__CB[Expanded BOOLEAN]<117/R102/E5>(
-        if__QB<118>(__tmp__CB[Expanded BOOLEAN]<119/R102/E5>,__tmp__HB[Expanded {}(PROFIL_BLOCK)]<120/R*/E4>)
-      )<121>
-      Strict VOID<122>
-    )<123>
-  __tmp__IB[Expanded BOOLEAN]<124/R125,126/E1>
-  Self__GB[Strict HELLO]<127/R0/E4>(
-    Self__GB[Strict HELLO]<128/R0/E4>(
-      __tmp__JB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<129/2> Self__GB[Strict HELLO]<130/R0/E4>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)]<131/R95,132/E1>
-    )<133>
-    Strict VOID<134>
-  )<135>
-  Switch __tmp__JB[{Expanded CHARACTER}(TYPE_BLOCK)]<136/R129/E2>
-  +-NULL:
-  | (
-  |   `print_string("Call on NULL\n(Use `-D' option)\n"); die_with_code(1)`VOID<137>
-  |   Strict VOID<138>
-  | )<139>
-  +-value__2:
-    (
-      value__2<140>(__tmp__JB[{Expanded CHARACTER}(TYPE_BLOCK)]<141/R129/E2>->self[Strict HELLO]<142/R90/E1>)
-    )<143>
-  __tmp__KB[Expanded CHARACTER]<144/R145/E3>(
-    __tmp__KB[Expanded CHARACTER]<146/R145/E3>(
-      print__UB<147>(__tmp__KB[Expanded CHARACTER]<148/R145/E3>)
-    )<149>
-    Strict VOID<150>
-  )<151>
-  Strict VOID<152>
-)<153>
----------------------
-Self__GB[Strict HELLO] :=<0/2> Self__GB[Strict HELLO]<154/R0/E2>
---WARNING----------
-LA
-Line 30 column 36 in HELLO(./hello.li):
-    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
-                                    ^
-Self__GB
-style [+]
---WARNING----------
-READ : Compiler BUG! (require_first = NULL) 
-Line 30 column 36 in HELLO(./hello.li):
-    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
-                                    ^
-(
-  `arg_count  = argc;
-  arg_vector = argv`VOID<155>
-  Strict HELLO<156>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<132/1> Strict NULL<157>
-  j__Y[Expanded CHARACTER] :=<79/2> `64`Expanded CHARACTER<83>
-  __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<89/R*/E2>->self[Strict HELLO] :=<90/1> Self__3[Strict HELLO]<91/R92/E2>
-  Self__3[Strict HELLO]<94/R92/E2>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)] :=<95/1> __tmp__5[Expanded {Expanded CHARACTER}(PROFIL_BLOCK)]<96/R*/E2>
-  nop
-  Switch `(1)`Expanded BOOLEAN(TRUE,FALSE)<101>
-  +-TRUE:
-  | (
-  | )<116>
-  +-FALSE:
-    (
-    )<123>
-  Self__3[Strict HELLO] :=<92/2> Self__GB[Strict HELLO]<130/R*/E1>->block__AB[{Expanded CHARACTER}(TYPE_BLOCK)]<131/R95,132/E1>->self[Strict HELLO]<142/R90/E1>
-  __tmp__4[Expanded CHARACTER] :=<76/0> j__Y[Expanded CHARACTER]<77/R79/E2>
-  `fputc((int)(@),stdout)(j__Y[Expanded CHARACTER]<158/R79/E2>)`VOID<7>
-)<159>
+any.li:  - type_block            :TYPE;
+lisaac.li:    type_block     := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_block).to_run_for NULL.raw;        
+parser.li:            (object.name != ALIAS_STR.prototype_block) || 
+parser.li:	      (object.name = ALIAS_STR.prototype_block) && 
+profil_block.li:  + to_type_block:TYPE_BLOCK;
+profil_block.li:    to_type_block  := TYPE_BLOCK.get_direct a_list and_result r_list;
+profil_block.li:    type_block.set_late_binding;
+profil_block.li:    other = to_type_block
+profil_block.li:  - prototype:PROTOTYPE <- type_block.prototype;
+profil_block.li:  - subtype_list:HASHED_SET[TYPE] <- type_block.subtype_list;
+profil_block.li:  - add_subtype t:TYPE <- type_block.add_subtype t;
+profil_block.li:    type_block.get_slot n
+profil_block.li:    type_block.get_local_slot n
+profil_block.li:    type_block.get_path_slot n
+external/comparison/expr_binary_cmp.li:    ((left.static_type.raw = TYPE_NULL) && {right.static_type.raw = type_block}).if {
+external/comparison/expr_binary_cmp.li:      (left.static_type.raw = type_block).if {
+external/comparison/expr_binary_cmp.li:    ((right.static_type.raw = TYPE_NULL) && {left.static_type.raw = type_block}).if {
+external/comparison/expr_binary_cmp.li:      (right.static_type.raw = type_block).if {
+tools/alias_str.li:  - prototype_block           :STRING_CONSTANT := "BLOCK";
+tools/alias_str.li:    list.add prototype_block;
+type/type_block.li:  - prototype:PROTOTYPE <- type_block.prototype;
+type/type_block.li:    type_block.get_slot n
+type/type_block.li:    type_block.get_local_slot n
+type/type_block.li:    type_block.get_path_slot n
+type/type.li:	  (Self = type_block).if {
+type/type.li:    (Self != type_block).if {
+type/type.li:    (Self = type_block).if {
+type/type.li:    }.elseif {t = type_block} then {
+variable/slot_data.li:      result := type_block;
+variable/variable.li:	      {typ = type_block}
+dispatcher/node.li:      block_model := pb.to_type_block;      
+code_life/switch.li:      ((expr.static_type.raw = type_block) && {typ_first = TYPE_NULL}).if {
+code_life/write_global.li:    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw = type_block}).if {
+code_life/write_local.li:    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw = type_block}).if {
+code_life/write_slot.li:    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw = type_block}).if {

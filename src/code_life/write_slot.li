@@ -123,7 +123,7 @@ Section Public
     //
     buffer.append (variable.intern_name);
     //
-    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw = type_block}).if {
+    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
       buffer.append ".__id=0";
     } else {
       buffer.add_last '=';    

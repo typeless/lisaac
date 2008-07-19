@@ -140,7 +140,7 @@ Section Public
     type_block.get_path_slot n
   );
   
-  - genere_struct; // Nothing.
+  - genere_struct <- type_block.genere_struct;
          
   //
   // Code source generation.
