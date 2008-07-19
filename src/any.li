@@ -368,11 +368,11 @@ Section Public
     lst ?= v;
     (lst != NULL).if {
       // Add function for init.
-      
+      /*
       string_tmp.copy "Create function ";
       string_tmp.append nam;
       warning_error (v.position,string_tmp);
-      
+      */
       string_tmp.copy "__init_";      
       string_tmp.append nam;
       n := ALIAS_STR.get string_tmp;
