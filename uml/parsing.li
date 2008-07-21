@@ -1,4 +1,4 @@
-/*******	Prototype qui permet de r�cup�rer toutes les informations relative � un fichier.li	*******/
+/*******	Prototype qui permet de recuperer toutes les informations relative a un fichier.li	*******/
 
 
 
@@ -42,6 +42,7 @@ Section Private
   
   //nettoie le fichier en enlevant tous les commentaires, ce qui se trouve entre "" et entre ()
   //->il ne restera que ce qu'il faut analyser!
+
   - le_nettoyeur3 <-
   (
     + index,index2,index_g,index_c,index_po,index_pf,index_p:INTEGER;
@@ -77,7 +78,7 @@ Section Private
         }else{
           //suppression des commentaires /* */
           ({index_c=index}&&{buffer1.item (index_c+1) = '*'}).if{
-            ((index2:=buffer1.substring_index ("*/",(index_c+2)))!=0).if{
+            ((index2:=buffer1.substring_index ("*/",index_c+2))!=0).if{
               buffer1.remove_between index to (index2+1);
             };
           }else{
@@ -93,9 +94,7 @@ Section Private
                 (nb_p=0).if{
                   buffer1.remove_between index_p to (index_pf+1);
                   index:=index_p;
-                }else{
-                  index:=index+1;
-                };
+                }else{index:=index+1;};
               }else{index:=index+1;};
             };
           };
@@ -122,32 +121,32 @@ Section Private
     
     index2:=1;
     texto:=STRING.create (s.count);
-section1:=STRING.create 256;
-section1.copy "";
-  texto.copy s;
-  texto.to_lower;
+    section1:=STRING.create 256;
+    section1.copy "";
+    texto.copy s;
+    texto.to_lower;
   
-  {(index0:=buffer1.substring_index ("section",index2))!=0}.while_do{
-    index:=index0+7;
-    {{buffer1.item index ==' '}||{buffer1.item index =='\n'}}.while_do{index:=index+1;};
-    (buffer1.substring index to (index+s.count-1) ==texto).if{
-      index0:=index+s.count;
-      index2:=index0-7;
-      {
-        index:=index2+7;
-        index2:=buffer1.substring_index ("section",(index));
-      }.do_while{{index2!=0}&&{{{(buffer1.item (index2-1))!='\n'}&&{(buffer1.item (index2-1))!=' '}}||{{(buffer1.item (index2+7))!=' '}&&{(buffer1.item (index2+7))!='\n'}}}};
-      
-      (index2==0).if{ 
-        index2:=buffer1.count;
-      };
-section1.append (buffer1.substring index0 to (index2-1));
-}else{index2:=index2+8;};
-"index2 ".print;index2.print;'\n'.print;
-"buffer1 ".print;buffer1.count.print;'\n'.print;
-};		
-section1
-);
+    {(index0:=buffer1.substring_index ("section",index2))!=0}.while_do{
+      index:=index0+7;
+      {{buffer1.item index ==' '}||{buffer1.item index =='\n'}}.while_do{index:=index+1;};
+      (buffer1.substring index to (index+s.count-1) ==texto).if{
+        index0:=index+s.count;
+        index2:=index0-7;
+        {
+          index:=index2+7;
+          index2:=buffer1.substring_index ("section",(index));
+        }.do_while{{index2!=0}&&{{{(buffer1.item (index2-1))!='\n'}&&{(buffer1.item (index2-1))!=' '}}||{{(buffer1.item (index2+7))!=' '}&&{(buffer1.item (index2+7))!='\n'}}}};
+        
+        (index2==0).if{ 
+          index2:=buffer1.count;
+        };
+        section1.append (buffer1.substring index0 to (index2-1));
+      }else{index2:=index2+8;};
+  //    "index2 ".print;index2.print;'\n'.print;
+  //    "buffer1 ".print;buffer1.count.print;'\n'.print;
+    };		
+    section1
+  );
 
 Section Public
   
@@ -159,7 +158,7 @@ Section Public
     + section1:STRING;
     + element:STRING;
     
-section1:=get_section s;
+  section1:=get_section s;
   index:=section1.substring_index (nom,1);
   index:=section1.substring_index (":=",(index+nom.count));
   index2:=section1.substring_index (";",(index+nom.count));
@@ -182,7 +181,7 @@ section1:=get_section s;
   + parent:STRING;
   
   parents:=ENS_PARENTS.create;
-section1:=get_section "INHERIT";
+  section1:=get_section "INHERIT";
   index:=1;
   index2:=1;
   
@@ -353,6 +352,8 @@ Section Public
     + tmp_string:STRING;
     em:=ENS_METHODES.create;
     section1:=get_section (acces.get_type);
+    "section\t".print;section1.print;'\n'.print;
+
     index:=0;
     {index!=(section1.count+1)}.while_do{
       index2:=index3:=index;
@@ -437,7 +438,8 @@ Section Public
             idx_end_type := tmp_string2.index_of ',' since (idx_end_type+1)
           ) != tmp_string2.count+1
       }.while_do {
-        tmp_string3 := tmp_string2.substring last_idx to (idx_end_type);
+        tmp_string3 := tmp_string2.substring last_idx to (idx_end_type-1);
+        "parametres méthodes\t".print;tmp_string3.print;'\n'.print;
         last_idx := idx_end_type + 1;
         ea.append_collection(get_attribut tmp_string3 with acces);
       };
@@ -454,4 +456,37 @@ Section Public
     methode.make (nom,type_retour,ea,acces);
     methode
   );
-	
+  
+  
+/* 
+  + le_nettoyeur4 <-
+  (
+    + idx_prefix,idx_end:INTEGER;
+    idx_prefix := 1;
+    { idx_prefix != buffer1.count+1 }.while_do{
+      idx_prefix := buffer1.substring_index "//" since idx_prefix;
+      (buffer1.item (idx_prefix-1) != '\\').if{
+        idx_end := buffer1.index_of '\\n' since idx_prefix;
+        buffer1.remove_between idx_prefix to idx_end;
+      };
+    };
+    idx_prefix := 1;
+    { idx_prefix != buffer1.count+1 }.while_do{
+      idx_prefix := buffer1.substring_index "/*" since idx_prefix;
+      (buffer1.item (idx_prefix-1) != '\\').if{
+        idx_end := buffer1.substring_index "*/" since idx_prefix;
+        (buffer1.item (idx_end-1) != '\\').if{
+          buffer1.remove_between idx_prefix to (idx_end+1);
+        };
+      };    
+    };
+    idx_prefix := 1;
+    {
+      ( idx_prefix := (buffer1.index_of '+' since idx_prefix ).min (buffer1.index_of '-' since idx_prefix);
+        idx_end := (buffer1.index_of ';' since idx_prefix).min (buffer1.substring_index "<-" since idx_prefix).min (buffer1.substring_index ":=" since idx_prefix)
+      ) != buffer1.count+1
+    }.while_do{
+      
+    };
+  );
+*/

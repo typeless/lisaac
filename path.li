@@ -57,27 +57,7 @@ Section COMPILER, SHORTER
   - source + "context/";
   - source + "code_life/";
   
-Section COMPILER_XAV
-  
-  + source  := lisaac+"../../branches/xavier/lisaac-0.13.1-external-optim/src/";
-  
-  - source + "tools/";
-  - source + "type/";
-  - source + "item/";
-  - source + "constant/";
-  - source + "variable/";
-  - source + "external/";
-  - source + "external/logic/";
-  - source + "external/arithmetic/";
-  - source + "external/comparison/";
-  - source + "dispatcher/";
-  - source + "context/";
-  - source + "code_life/";
-  - source + "optimizer/";
-  - source + "optimizer/lib_oil/";
-  - source + "compiler_any/";
-  
-Section COMPILER, SHORTER, COMPILER_XAV
+Section COMPILER, SHORTER
   
   * "gcc " + input_file + " -o " + output_file;  
   
@@ -99,7 +79,6 @@ Section Common
   
   + lib    := lisaac + "lib/";
   + lib_os := lisaac + "lib_os/";
-  + libs   := lisaac + "../libs/";
   
   + unix    := lib_os + "unix/";
   + windows := lib_os + "windows/";
@@ -129,22 +108,8 @@ Section Common
   - lib + "string/";
   - lib + "system/";
   - lib + "time/";
-    
-  - libs + "math/";
-  - libs + "opengl-binding/";
   
-  - libs + "opengl-binding/opengl/";
-  - libs + "opengl-binding/opengl/extensions/";
-  - libs + "opengl-binding/image_format/";
-  
-  - libs + "opengl-binding/gfx_engine/";
-  - libs + "opengl-binding/gfx_engine/primitives/";
-  - libs + "opengl-binding/gfx_engine/model_format";
-  - libs + "opengl-binding/gfx_engine/low_level/";
-  
-  //
-  //
-  //
+  //- lisaac + "example/gui/desktop";
   
   + application := lisaac + "example/";
 
@@ -158,8 +123,9 @@ Section Common
   - application + "gui/clock/";
   - application + "gui/desktop/";
   - application + "gui/mpg2/";
+
   
-Section UNIX, DOS, COMPILER, SHORTER, COMPILER_XAV
+Section UNIX, DOS, COMPILER, SHORTER
 
   - unix   + "system/";
   - unix   + "file_system/";
@@ -170,14 +136,15 @@ Section UNIX
   
   - unix   + "video/";
   
-  - libs   + "opengl-binding/unix/";
-  
-//  * "gcc " + input_file + " -lm -lX11 -lGL -lGLU -lXxf86vm -o " + 
-//    output_file + " -L" + path_lib_x11 + option_gcc;
-
-  * "gcc " + input_file + " -loil-0.3 -fomit-frame-pointer -lpcre -lgmp -lm -lpthread -lX11 -lGL -lGLU -lXxf86vm -o " + 
+  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -o " + 
     output_file + " -L" + path_lib_x11 + option_gcc;
 
+  //* "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
+  //output_file + " " + input_file + " -lm";
+  
+  //* "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
+  //"mandelbrot_c mandelbrot_c.c -lm";
+  
 Section WINDOWS
   
   - unix   + "system/";
@@ -202,68 +169,25 @@ Section X86, IPAQ, ST2XX, LINUX
   // Standard.
   //
   
-  + isaac := "/home/sonntag/svn/isaacos/trunk/isaacos/";  
-  + isaac_stdlib   := isaac + "stdlib/";
+  + isaac := "/home/jerome/svn/isaacos/trunk/isaacos/";  
+
+  // File System
   
-  //+ isaac_software := isaac + "software/";
-  
-  - isaac + "interface/";
-  
-  //
-  // Standard Library.
-  //
-  
-  - isaac_stdlib + "driver/";
-  - isaac_stdlib + "driver/clock";
-  - isaac_stdlib + "driver/keyboard";
-  - isaac_stdlib + "driver/mouse";
-  - isaac_stdlib + "driver/video";
-  
-  - isaac_stdlib + "event/";
-  
-  - isaac_stdlib + "file_system/";
-  
-  - isaac_stdlib + "format/";
-  - isaac_stdlib + "format/freetype";
-  
-  - isaac_stdlib + "interface/";
-  - isaac_stdlib + "interface/clipping";
-  - isaac_stdlib + "interface/group";
-  - isaac_stdlib + "interface/item";
-  
-  - isaac_stdlib + "system/";
-  
-  //
-  // Software
-  //
-    
-//  - isaac_software + "about/";
-  
-//  - isaac_software + "console/";
-  
-//  - isaac_software + "game/fouronline";
-//  - isaac_software + "game/tetris";
-  
-//  - isaac_software + "panel";
-  
-//  - isaac_software + "viewer";
+  - isaac + "file_system";
+  - isaac + "file_system/physical";
+  - isaac + "file_system/fat";
+  - isaac + "file_system/fat/partition";
+  - isaac + "file_system/ext2";
+  - isaac + "file_system/ext2/partition";
   
 Section X86  
   
   + machine := isaac + "x86/";
-  
-  // Specific directory
-  
-  - machine + "file_system/physical";
-  - machine + "file_system/partition";
-	- machine + "file_system_ext2/partition";
-	- machine + "file_system_ext2";
-    
+
   * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
   * isaac+"tool/elf2eof/elf2eof -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
-  * "rm startup.sys;mv startup.eof startup.sys;./dosemu c startup.sys .;./dosemu e";
- // * "rm startup.sys;mv startup.eof startup.sys;./dosemu c startup.sys .;./hdtolive";
-  
+
+
 Section IPAQ  
   
   + machine := isaac + "ipaq/";
@@ -300,7 +224,5 @@ Section IPAQ, X86, ST2XX, LINUX
   - machine + "driver/keyboard";
   - machine + "driver/mouse";
   - machine + "driver/video";
-  
-  - machine + "file_system/";
   
   - machine + "system/";

@@ -1,201 +1,202 @@
 Section Header
-	+ name := SVG_CREATOR;
-	- author:="HILBERT Jerome (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gregoire(greg-jacquemin@hotmail.fr)";
-	
+  + name := SVG_CREATOR;
+  - author:="HILBERT Jerome (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Gregoire(greg-jacquemin@hotmail.fr)";
+  
 Section Inherit
-
-	+ parent_object:OBJECT:=OBJECT;
-	
+  
+  + parent_object:OBJECT:=OBJECT;
+  
 Section Private
-
-	+ fichiers:ENS_FICHIERS;
-	+ rectangles:ENS_RECTANGLES;
-	+ x:INTEGER;
-	+ y:INTEGER;
-	//le fichier SVG dans lequel on ecrit
-	+ destination:STRING;
-	
+  
+  + fichiers:ENS_FICHIERS;
+  + rectangles:ENS_RECTANGLES;
+  + x:INTEGER;
+  + y:INTEGER;
+  //le fichier SVG dans lequel on ecrit
+  + destination:STRING;
+  
 Section Public
-	- make ef:ENS_FICHIERS to dest:STRING <-
-	(
-		fichiers:=ef;
-		ef.clean;
-		(fichiers.lower).to (fichiers.upper) do{ i:INTEGER;
+  - make ef:ENS_FICHIERS to dest:STRING <-
+  (
+    fichiers:=ef;
+    ef.clean;
+/* 
+   (fichiers.lower).to (fichiers.upper) do{ i:INTEGER;
       fichiers.item i.print;
-};
-		rectangles:=ENS_RECTANGLES.clone;
-		x:=10;
-		y:=10;
-		destination:=dest;
-	);
-	
-	//parcours l'ensemble des fichiers. Pour chaque fichier on cherche s'il a deja tous ses parents place sur le diagramme. Des que c'est le cas on cree une
-	// nouvelle instance de FORME_RECTANGLES e partir du fichier et on lui assigne des coordonnees calculees en fonction de la position de ses parents.
-	// gere egalement le cas des morts-vivants.
-	- parcours_fichiers <-
-	(
-   // "debut :::::----------------------------------\n".print;
-    (fichiers.lower).to (fichiers.upper) do{ i:INTEGER;
-  //    fichiers.item i.print;
     };
-		{(fichiers.count)>(rectangles.count)}.while_do{
-			+ h_max:INTEGER;
-			+ ens_tmp:ENS_RECTANGLES;
-			+ k:INTEGER;
-			ens_tmp:=ENS_RECTANGLES.create;
-			(fichiers.lower).to (fichiers.upper) do{ i:INTEGER;
-				+ r:FORME_RECTANGLE;
- 				r:=FORME_RECTANGLE.clone;
-				r.make_with_file (fichiers.item i);
-				h_max:=h_max.max (r.get_hauteur);
-				(rectangles.has (r.get_nom)).if_false{
-					+ xm,ym,tmp:INTEGER;
-				//	"svg_creator\n".print;
-				//	fichiers.item i.print;
-					
-					((tmp:=(rectangles.has_all_parents (fichiers.item i) and fichiers))>0).if{
-					//"tmp :: ".print;tmp.print;'\n'.print;
-						(rectangles.lower).to (rectangles.upper) do{j:INTEGER;
-							+g:FORME_RECTANGLE;
-							
-							g:=rectangles.item j;
-							(r.get_parents.has (g.get_nom)).if{
-								xm:= xm + g.get_x;
-								ym:=ym.max (g.get_y+g.get_hauteur);	
-								r.ajout_coord(g);
-							};
-						};
-						({r.get_parents.count == 0}||{tmp==2}).if{
-							(tmp==2).if{
-							ens_tmp.ajouter r;
-							};
-							xm:=x;
-							ym:=y;
-							modifie_coord_x (r.get_largeur);
-						}else{
-							xm:=xm/(r.get_parents.count);
-							ym:=ym+60;
-						};
-						r.set_coord (xm,ym);
-						rectangles.ajouter r;
- 						ajuste_coord r with rectangles;	
-					};
-				};
-			};
-			k:=ens_tmp.lower;
-			{k<=ens_tmp.upper}.while_do{
-				+ xm,ym:INTEGER;
-				(rectangles.lower).to (rectangles.upper) do{j:INTEGER;
-					+g:FORME_RECTANGLE;
-					
-					g:=rectangles.item j;
-					(ens_tmp.item k .get_parents.has (g.get_nom)).if{
-						xm:= xm + g.get_x;
-						ym:=ym.max (g.get_y+g.get_hauteur);	
-						ens_tmp.item k .ajout_coord(g);
-					};
-				};		
-				k:=k+1;
-			};	
-			modifie_coord_y h_max;
-		};
-		//rectangles.print;
- 		create_svg;	
-	);
-	// ecrit dans le fichier SVG destination tout le code SVG g�n�r� � partir de l'ensemble des rectangles.
-	- create_svg <-
-	(
-		+ xy_max:FAST_ARRAY[INTEGER];
-		+ buffer_svg1:STRING;
-		+ lee:LIREETECRIRE;
-		
-		lee:=LIREETECRIRE.clone;
-		lee.ouvrir_svg destination;
- 		xy_max:=rectangles.get_xy_max;
-		buffer_svg1:=STRING.create 32;
-		buffer_svg1.copy "";
-		buffer_svg1.append "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0\" y=\"0\" width=\"";
- 		xy_max.item 0 .append_in buffer_svg1;
-		buffer_svg1.append "\" height=\"";
- 		xy_max.item 1 .append_in buffer_svg1;
-		buffer_svg1.append "\"> <g>\n";
-		lee.ecrire_svg buffer_svg1;
-		(rectangles.lower).to (rectangles.upper) do{i:INTEGER;
-			+ r:FORME_RECTANGLE;
-			+ er:ENS_RECTANGLES;
-			+ buffer_svg:STRING;
-			r:=rectangles.item i;
- 			buffer_svg:=STRING.create 20;
- 			buffer_svg.copy "";
- 			buffer_svg.append (SVG_FORMES.rectangle r);
-			er:=r.get_couples;
-			(er.lower).to (er.upper) do{ j:INTEGER;
-				+ p:FORME_RECTANGLE;
-				
-				p:=er.item j;
-				buffer_svg.append (SVG_FORMES.trait p between r with rectangles);
-			};
-			lee.ecrire_svg buffer_svg;
-		};
-   		buffer_svg1:=STRING.create 12;
-   		buffer_svg1.copy "</g> </svg>\n";
- 		lee.ecrire_svg buffer_svg1;
-		lee.fermer_svg;
-	);
-	
-	//ajuste les coordonnees d'un rectangle en fonction de l'ensembles des rectangles. Permet d'eviter les collisions entre les rectangles.
-	- ajuste_coord fr:FORME_RECTANGLE with er:ENS_RECTANGLES <-
-	(
-		(er.lower).to (er.upper) do{i:INTEGER;
-			+ p:FORME_RECTANGLE;
-			+ y1,y2,y3,y4:INTEGER;
-			
-			p:=er.item i;
-			y1:=fr.get_y;
-			y2:=y1+fr.get_hauteur;
-			y3:=p.get_y;
-			y4:=y3+p.get_hauteur;
-			({{{y1<=y3}&&{y2>=y3}}||{{y1<=y4}&&{y2>=y4}}||{{y2<=y4}&&{y1>=y3}}} && {(p.get_nom)!=(fr.get_nom)}).if{
-				+ x1,x2,x3,x4:INTEGER;
+*/
+    rectangles:=ENS_RECTANGLES.clone;
+    x:=10;
+    y:=10;
+    destination:=dest;
+  );
+  
+  //parcours l'ensemble des fichiers. Pour chaque fichier on cherche s'il a deja tous ses parents place sur le diagramme. Des que c'est le cas on cree une
+  // nouvelle instance de FORME_RECTANGLES e partir du fichier et on lui assigne des coordonnees calculees en fonction de la position de ses parents.
+  // gere egalement le cas des morts-vivants.
+  - parcours_fichiers <-
+  (
+    // "debut :::::----------------------------------\n".print;
+    (fichiers.lower).to (fichiers.upper) do{ i:INTEGER;
+      //    fichiers.item i.print;
+    };
+    {(fichiers.count)>(rectangles.count)}.while_do{
+      + h_max:INTEGER;
+      + ens_tmp:ENS_RECTANGLES;
+      + k:INTEGER;
+      ens_tmp:=ENS_RECTANGLES.create;
+      (fichiers.lower).to (fichiers.upper) do{ i:INTEGER;
+        + r:FORME_RECTANGLE;
+        r:=FORME_RECTANGLE.clone;
+        r.make_with_file (fichiers.item i);
+        h_max:=h_max.max (r.get_hauteur);
+        (rectangles.has (r.get_nom)).if_false{
+          + xm,ym,tmp:INTEGER;
+          //	"svg_creator\n".print;
+          //	fichiers.item i.print;
+          
+          ((tmp:=(rectangles.has_all_parents (fichiers.item i) and fichiers))>0).if{
+            //"tmp :: ".print;tmp.print;'\n'.print;
+            (rectangles.lower).to (rectangles.upper) do{j:INTEGER;
+              +g:FORME_RECTANGLE;
+              
+              g:=rectangles.item j;
+              (r.get_parents.has (g.get_nom)).if{
+                xm:= xm + g.get_x;
+                ym:=ym.max (g.get_y+g.get_hauteur);	
+                r.ajout_coord(g);
+              };
+            };
+            ({r.get_parents.count == 0}||{tmp==2}).if{
+              (tmp==2).if{
+                ens_tmp.ajouter r;
+              };
+              xm:=x;
+              ym:=y;
+              modifie_coord_x (r.get_largeur);
+            }else{
+              xm:=xm/(r.get_parents.count);
+              ym:=ym+60;
+            };
+            r.set_coord (xm,ym);
+            rectangles.ajouter r;
+            ajuste_coord r with rectangles;	
+          };
+        };
+      };
+      k:=ens_tmp.lower;
+      {k<=ens_tmp.upper}.while_do{
+        + xm,ym:INTEGER;
+        (rectangles.lower).to (rectangles.upper) do{j:INTEGER;
+          +g:FORME_RECTANGLE;
+          
+          g:=rectangles.item j;
+          (ens_tmp.item k .get_parents.has (g.get_nom)).if{
+            xm:= xm + g.get_x;
+            ym:=ym.max (g.get_y+g.get_hauteur);	
+            ens_tmp.item k .ajout_coord(g);
+          };
+        };		
+        k:=k+1;
+      };	
+      modifie_coord_y h_max;
+    };
+    //rectangles.print;
+    create_svg;	
+  );
+// ecrit dans le fichier SVG destination tout le code SVG g�n�r� � partir de l'ensemble des rectangles.
+- create_svg <-
+(
+  + xy_max:FAST_ARRAY[INTEGER];
+  + buffer_svg1:STRING;
+  + lee:LIREETECRIRE;
+  
+  lee:=LIREETECRIRE.clone;
+  lee.ouvrir_svg destination;
+  xy_max:=rectangles.get_xy_max;
+  buffer_svg1:=STRING.create 32;
+  buffer_svg1.copy "";
+  buffer_svg1.append "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" x=\"0\" y=\"0\" width=\"";
+  xy_max.item 0 .append_in buffer_svg1;
+  buffer_svg1.append "\" height=\"";
+  xy_max.item 1 .append_in buffer_svg1;
+  buffer_svg1.append "\"> <g>\n";
+  lee.ecrire_svg buffer_svg1;
+  (rectangles.lower).to (rectangles.upper) do{i:INTEGER;
+    + r:FORME_RECTANGLE;
+    + er:ENS_RECTANGLES;
+    + buffer_svg:STRING;
+    r:=rectangles.item i;
+    buffer_svg:=STRING.create 20;
+    buffer_svg.copy "";
+    buffer_svg.append (SVG_FORMES.rectangle r);
+    er:=r.get_couples;
+    (er.lower).to (er.upper) do{ j:INTEGER;
+      + p:FORME_RECTANGLE;
+      
+      p:=er.item j;
+      buffer_svg.append (SVG_FORMES.trait p between r with rectangles);
+    };
+    lee.ecrire_svg buffer_svg;
+  };
+  buffer_svg1:=STRING.create 12;
+  buffer_svg1.copy "</g> </svg>\n";
+  lee.ecrire_svg buffer_svg1;
+  lee.fermer_svg;
+);
 
-				x1:=fr.get_x-20;
-				x2:=x1+fr.get_largeur+40;
-				x3:=p.get_x;
-				x4:=x3+p.get_largeur;
-				({x1<=x3}&&{x2>x3}).if{
-					p.decal (x2-x3);
-					ajuste_coord p with er;
-				}else{
-					({x2>=x4}&&{x1<x4}).if{
-						((x3+(x1-x4))>=0).if{
-							p.decal (x1-x4);
-							ajuste_coord p with er;
-						}else{
-							fr.decal (x4-x1);
-							ajuste_coord fr with er;
-						};
-					}else{
-					
-						({x1>=x3}&&{x2<=x4}).if{
-							p.decal (x2-x3);
-							ajuste_coord p with er;
-						};
-					};
-				};	
-			};
-			
-		};
-	
-	);
-	- modifie_coord_x coordx:INTEGER <-
-	(
-		x:=x+coordx + 20;
-	);
-	- modifie_coord_y coordy:INTEGER <-
-	(
-		y:=y+ coordy +60;
-		x:=10;
-	);
+//ajuste les coordonnees d'un rectangle en fonction de l'ensembles des rectangles. Permet d'eviter les collisions entre les rectangles.
+- ajuste_coord fr:FORME_RECTANGLE with er:ENS_RECTANGLES <-
+(
+  (er.lower).to (er.upper) do{i:INTEGER;
+    + p:FORME_RECTANGLE;
+    + y1,y2,y3,y4:INTEGER;
+    
+    p:=er.item i;
+    y1:=fr.get_y;
+    y2:=y1+fr.get_hauteur;
+    y3:=p.get_y;
+    y4:=y3+p.get_hauteur;
+    ({{{y1<=y3}&&{y2>=y3}}||{{y1<=y4}&&{y2>=y4}}||{{y2<=y4}&&{y1>=y3}}} && {(p.get_nom)!=(fr.get_nom)}).if{
+      + x1,x2,x3,x4:INTEGER;
+      
+      x1:=fr.get_x-20;
+      x2:=x1+fr.get_largeur+40;
+      x3:=p.get_x;
+      x4:=x3+p.get_largeur;
+      ({x1<=x3}&&{x2>x3}).if{
+        p.decal (x2-x3);
+        ajuste_coord p with er;
+      }else{
+        ({x2>=x4}&&{x1<x4}).if{
+          ((x3+(x1-x4))>=0).if{
+            p.decal (x1-x4);
+            ajuste_coord p with er;
+          }else{
+            fr.decal (x4-x1);
+            ajuste_coord fr with er;
+          };
+        }else{
+          
+          ({x1>=x3}&&{x2<=x4}).if{
+            p.decal (x2-x3);
+            ajuste_coord p with er;
+          };
+        };
+      };	
+    };
+    
+  };
+  
+);
+- modifie_coord_x coordx:INTEGER <-
+(
+  x:=x+coordx + 20;
+);
+- modifie_coord_y coordy:INTEGER <-
+(
+  y:=y+ coordy +60;
+  x:=10;
+);
 
 
-	

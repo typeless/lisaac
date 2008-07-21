@@ -78,6 +78,7 @@ Section Public
   // Return FILE or DIRECTORY, NULL:error.
   (    
     deferred;
+    FALSE
   );          
   
   - is_open:BOOLEAN <- 

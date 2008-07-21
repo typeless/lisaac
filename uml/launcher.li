@@ -28,7 +28,6 @@ Section Public
       "Parsing du dossier: ".print;
       string_tmp.print;
       "\n".print;
-      "\n\n\t!!!!ATTENTION A LA MODIFICATION DE STRING.LI !!!!!!!!!!!!!!!!!!!!!!!\n\n\n".print;
             
       reper := FILE_SYSTEM.get_entry string_tmp;
       (reper=NULL).if{			

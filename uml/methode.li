@@ -50,4 +50,4 @@ Section Public
     buffer.append ":";
     buffer.append type_retour;
     buffer
-	);
+  );
