@@ -95,9 +95,10 @@ Section Public
         
     (my_alias != NULL).if {      
       result := my_alias.read_direct p with NULL;
-    }.elseif {is_alias} then {
-      result := get_alias.read_direct p with NULL;
+    }.elseif {is_alias} then { // BSBS: voir Mildred
+      result := get_alias.read_direct p with NULL; // BSBS: cas impossible !!!
     } else {
+      //? {! is_alias};
       result := read_direct p with NULL;
     };        
     result

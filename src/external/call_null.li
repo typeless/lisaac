@@ -20,93 +20,70 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := TYPE_NULL;
+  + name        := CALL_NULL;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+    
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment     := "Special type NULL";
+  - comment     := "Call on NULL";
   
 Section Inherit
   
-  + parent_type:Expanded TYPE;
+  + parent_instr:Expanded INSTR; 
   
-Section Public
+Section Public 
   
-  - name:STRING_CONSTANT <- ALIAS_STR.variable_null;
+  - my_copy:SELF <- Self;
+  
+  - is_necessary:BOOLEAN;
+  
+  //
+  // Remove
+  //
+  
+  - remove; // Nothing.
+  
+  //
+  // Execute
+  //
+  
+  - execute:INSTR <- Self;
     
   //
-  // Creation.
+  // Genere.
   //
-
-  - make_null <-
-  ( 
-    index       := index_count;
-    index_count := index_count + 1;
-    dico_type.fast_put Self to name;    
-    slot_run := FAST_ARRAY[SLOT].create_with_capacity 1; // BSBS: Plus utile !
-    default := TYPE_FULL.create Self with 0;
+  
+  - genere buffer:STRING <-
+  ( + code:STRING_CONSTANT;
+    (debug_level_option != 0).if {
+      code := 
+      "stack_print(top_context); \
+      \print_string(\"Call on NULL\\n\"); \
+      \die_with_code(1)";
+    } else {
+      code := 
+      "print_string(\"Call on NULL\\n\
+      \(Use `-D' option)\\n\"); \ 
+      \die_with_code(1)";
+    };
+    is_necessary := TRUE;
   );
   
-  - get_local_slot n:STRING_CONSTANT :SLOT <- NULL; 
-  
-  - get_path_slot n:STRING_CONSTANT :SLOT <- NULL;
-  
   //
-  // Error.
+  // Display.
   //
   
-  //- bug:INTEGER;
-  
-  - product_error p:POSITION in lst:LIST <-
-  ( + ctext:LOCAL;
-    
-    (debug_level_option != 0).if {      
-      (profil = NULL).if {
-	ctext := context_main;
-      } else {
-	ctext := profil.context;
-      };
-      lst.add_last (
-	PUSH.create p context ctext first FALSE
-      );      
-    };    
-    lst.add_last CALL_NULL;        
-  );
-  
-Section Public
-  
-  //
-  // Import / Export
-  //
-    
-  - is_export_to t:TYPE_FULL :BOOLEAN <- FALSE;
-
-  - is_import_to t:TYPE_FULL :BOOLEAN <- FALSE;
-  
-  //
-  //
-  //
-  
-  - is_sub_type other:TYPE :BOOLEAN <- TRUE;  
-
-  - genere_struct <-
+  - display buffer:STRING <-
   (
-    output_decl.append 
-    "// NULL\n\
-    \#ifndef NULL\n\
-    \#define NULL ((void *)0)\n\
-    \#endif\n\n";
+    buffer.append "Call on NULL";
   );
-  
-  //
-  // Code source generation.
-  //
-  
-  - put_id buffer:STRING <- buffer.append name;
-  
-  - put_access_id e:EXPR in buffer:STRING <- e.genere buffer;   
-  
-  - put_value buffer:STRING <- buffer.append name;
-  
+
+
+
+
+
+
+
+
+

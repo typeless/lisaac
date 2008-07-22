@@ -319,17 +319,19 @@ Section Private
   - put_trace_code buf:STRING <-
   ( + proto:PROTOTYPE;
     
-    title "DEBUG MANAGER" in buf;
-    
-    buf.append 
-    "void print_string(char *str) \n\
-    \{ \n\
-    \  while (*str!=0) {\n\
-    \    print_char(*str); \n\
-    \    str++; \n\
-    \  };\n\
-    \}  \n\
-    \\n";
+    ((debug_level_option != 0) || {CALL_NULL.is_necessary}).if {
+      title "DEBUG MANAGER" in buf;
+      
+      buf.append 
+      "void print_string(char *str) \n\
+      \{ \n\
+      \  while (*str!=0) {\n\
+      \    print_char(*str); \n\
+      \    str++; \n\
+      \  };\n\
+      \}\n\
+      \\n";
+    };
 
     (debug_level_option != 0).if {
       buf.append "char *trace[";
@@ -641,8 +643,10 @@ Section Public
     title "FUNCTION HEADER" in output_code;
     
     // Debug source code.
-    output_code.append "// Debug Manager\n"; 
-    output_code.append "void print_string(char *str);\n";
+    ((debug_level_option != 0) || {CALL_NULL.is_necessary}).if {
+      output_code.append "// Debug Manager\n"; 
+      output_code.append "void print_string(char *str);\n";
+    };
     (debug_level_option != 0).if {      
       (is_ansi).if {
 	output_code.append "void interrupt_signal(int sig);\n";
