@@ -72,9 +72,13 @@ Section Public
   );    
   
   - open:BOOLEAN <-
+  [
+    -? {stream = NULL};
+  ]
   ( + pa:NATIVE_ARRAY[CHARACTER];    
+        
     pa := path.to_external;
-    stream := `fopen((char*)@pa,"r+b")`:(POINTER); 
+    stream := `fopen((char*)@pa,"r+b")`:(POINTER);         
     stream != NULL
   ); 
 
@@ -86,9 +90,13 @@ Section Public
   ); 
   
   - close <-
+  [
+    -? {stream != NULL};
+  ]
   ( + str:POINTER;
+        
     str := stream;    
-    `fclose((FILE*)(@str))`;
+    `fclose((FILE*)(@str))`;        
     stream := NULL;
   );
     

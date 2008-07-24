@@ -103,6 +103,7 @@ Section DIRECTORY
   - physical_get_entry new_path:ABSTRACT_STRING :ENTRY <-
   ( + pe:NATIVE_ARRAY[CHARACTER];
     + result:ENTRY;
+        
     pe := new_path.to_external;
     `{ struct stat t`; 
       (`stat(@pe,&t)`:INTEGER = 0).if {		  
@@ -113,9 +114,11 @@ Section DIRECTORY
           // Directory.
           result := DIRECTORY_UNIX.clone;
         };          
+        result.set_path new_path;
+        alias.put result to (result.path);
       };
     `}`;
-    result.set_path new_path;
+        
     result
   );
   
