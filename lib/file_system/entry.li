@@ -88,7 +88,15 @@ Section Public
   );
     
 Section ENTRY
-      
+  
+  //
+  // Service routine
+  //
+
+  - string_tmp:STRING  := STRING.create 255;
+  
+  - string_tmp2:STRING  := STRING.create 255;
+  
   - set_path n:ABSTRACT_STRING <-
   ( + idx:INTEGER;
     path := STRING_CONSTANT.create_copy n;
@@ -195,8 +203,9 @@ Section ENTRY
       st.add_last '/';
     };
   );
-
-  //
+  
+  
+/* obsolete  //
   // Alias Entry.
   //
       
@@ -220,3 +229,4 @@ Section ENTRY
     };
   );
   
+*/

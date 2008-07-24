@@ -98,3 +98,7 @@ Section Public
     deferred;
   );
   
+Section FORMAT_IMG
+  
+  + pos_buffer:INTEGER;
+  

@@ -74,7 +74,7 @@ Section Public
   ]
   ( + buf:NATIVE_ARRAY[UINTEGER_8];
     buf := CONVERT[OBJECT,NATIVE_ARRAY[UINTEGER_8]].on dest;
-    physical_read buf from 0 size (dest.object_size)
+    physical_read buf size (dest.object_size)
   ); 
   
   - read dest:ARRAYED size nb_elt:INTEGER :INTEGER <-

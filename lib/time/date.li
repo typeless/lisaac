@@ -151,5 +151,10 @@ Section Public
   (
     to_string.print;
   );
-
+  
+  - create_with_sec sec:INTEGER :DATE <-
+  // JHJH : to do
+  (
+    DATE.create (2008,07,24,3)
+  );
 

@@ -329,7 +329,7 @@ Section Public
   );
 
   - to_uinteger_16:UINTEGER_16   <- 
-  [ -? {bound_test (UINTEGER_16.minimum) to (UINTEGER_16.maximum)}; ]
+  //[ -? {bound_test (UINTEGER_16.minimum) to (UINTEGER_16.maximum)}; ]
   ( 
     to_raw_uinteger_16
   );

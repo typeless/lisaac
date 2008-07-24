@@ -83,6 +83,8 @@ Section Public
   ( + result:BOOLEAN;
     + e:ENTRY;
     
+    "WARNING : Et les alias des sous répertoires, fichiers, ...\n".print;
+    
     string_tmp.copy path;
     string_tmp.add_last '/';
     string_tmp.append old_path;    
@@ -101,37 +103,28 @@ Section Public
   );
   
   - get_entry p:ABSTRACT_STRING :ENTRY <- 
-  ( + new_entry,result:ENTRY;
-    
+  ( + result:ENTRY;
+    + idx:INTEGER;
     string_tmp2.copy path;
     string_tmp2.add_last '/';
     string_tmp2.append p;
     reduce_path string_tmp2;
-    string_tmp.copy string_tmp2;
+    string_tmp3.copy string_tmp2;
     {
       result := alias.reference_at string_tmp2;
-      (result = NULL).if{
-        string_tmp2 := string_tmp2.substring (string_tmp2.lower) to ((string_tmp2.last_index_of '/') - 1);
-      };
-    }.do_while{(result = NULL) && {string_tmp2.count > 1}};
-    "result\t".print;result.path.print;'\n'.print;
-    ((result != NULL) && {string_tmp.count != string_tmp2.count}).if{
-      + dir:DIRECTORY;
-      dir ?= result;
-      "aua\n".print;
-      new_entry := dir.physical_get_entry string_tmp;      
-      (new_entry != NULL).if {
-        alias.put new_entry to (new_entry.path);
-        result := new_entry;
-      };
-    } else {
-/*      (result != NULL).if{
-        (result.is_directory).if{
-          result := DIRECTORY_FAT.clone;
-        }else{
-          result := STD_FILE_FAT.clone;
+      (result = NULL).if {
+        idx := string_tmp2.fast_last_index_of '/';        
+        (idx > 0).if {
+          string_tmp2.keep_head (idx-1);
+        } else {
+          string_tmp2.clear;
         };
-      };*/
+      };
+    }.do_while {(result = NULL) && {! string_tmp2.is_empty}};       
+    ((result != NULL) && {string_tmp3.count != string_tmp2.count}).if{
+      + dir:DIRECTORY;
+      dir ?= result;            
+      result := dir.physical_get_entry string_tmp3;      
     };
     result
   );  
@@ -143,6 +136,7 @@ Section Public
   - open:BOOLEAN <-
   (
     deferred;
+    FALSE
   )
   [
     +? {list != NULL};
@@ -224,8 +218,7 @@ Section Public
   
   - parent:ENTRY <-
   (
-    get_parent_path path in string_tmp;
-    get_entry string_tmp
+    get_entry ".."
   );
     
   //
@@ -264,10 +257,19 @@ Section Public
   
   - print <-
   ( 
-    lower.to upper do { j:INTEGER;
-      item j.path.print;
-      '\n'.print;
+    lower.to upper do { j:INTEGER;      
+      string_tmp.copy (item j.path); 
+      (item j.is_directory).if {
+        string_tmp.append " D ";
+      } else {
+        string_tmp.append "   ";
+      };
+      {string_tmp.count % 20 != 0}.while_do {
+        string_tmp.add_last ' ';
+      };
+      string_tmp.print;
     };    
+    '\n'.print;
   );
   
 Section DIRECTORY
@@ -277,9 +279,12 @@ Section DIRECTORY
   //
 
   - physical_get_entry new_path:ABSTRACT_STRING :ENTRY <-
-  (
-    deferred;
-    NULL
+  ( + result:ENTRY;
+       
+    ((! is_open) && {open}).if {   
+      result := get_entry new_path;
+    };
+    result
   );
               
   - physical_make_directory new_path:ABSTRACT_STRING :BOOLEAN <-
@@ -306,12 +311,6 @@ Section DIRECTORY
     FALSE
   );
   
-  //
-  // Service routine
-  //
-
-  - string_tmp:STRING  := STRING.create 255;
-  
 Section Private
   
-  - string_tmp2:STRING  := STRING.create 255;
+  - string_tmp3:STRING  := STRING.create 255;

@@ -128,7 +128,7 @@ Section Public
     ? {idx_begin <= idx_end};
     ? {idx_begin >= 0};
     ? {idx_end.in_range 0 to upper};
-    ? {ofs >= 0};
+    ? {ofs >= 0};    
     ? {(ofs + (idx_end - idx_begin)) <= bmp.upper}; 
         
     offset := ofs;

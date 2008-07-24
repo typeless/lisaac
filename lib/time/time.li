@@ -158,5 +158,9 @@ Section Public
     to_string.print;
   );
 
-
+  - create_with_sec sec:INTEGER :TIME <-
+  // JHJH : to do
+  (
+    TIME.create (3,13,30,5)
+  );
 
