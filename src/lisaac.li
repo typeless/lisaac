@@ -253,10 +253,12 @@ Section Private
 	input_name := ALIAS_STR.get string_tmp2;
       };
       j := j+1;
-    };
-
+    };    
+    
     (input_name = NULL).if {
-      display_usage;
+      path_directory.add_last "./"; // BSBS: Just for look
+      input_name := ALIAS_STR.get "HELLO";
+      //display_usage;
     };
     ((debug_level_option != 0) && {is_optimization}).if {
       "Warning: `-O' option is not activated with a debug mode.\n".print;

@@ -192,6 +192,7 @@ Section Public
         result := result_list.item j;
       };
     };
+        
     result
   );
   

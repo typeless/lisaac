@@ -145,7 +145,7 @@ Section Public
       ts ?= s.result_type;      
       (ts != ITM_TYPE_SIMPLE.type_void).if {
         typ := ts.to_run_for Self;	        
-        result_list.add_last (typ.get (s.position) result 1);         
+        result_list.add_last (typ.get (s.position) result 0);         
       };
     };       
     //
