@@ -208,6 +208,8 @@ Section Public
     r
   );
   
+  - Self:SELF '!' :SELF <- factorial;
+  
   - factorial:SELF <-
   [
     -? {Self >= 0};

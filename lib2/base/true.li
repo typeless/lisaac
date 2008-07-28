@@ -70,7 +70,7 @@ Section Public
   
   - elseif cond:{BOOLEAN} then block:{} :BOOLEAN <- TRUE;
   
-  - elseif cond:{} then block:{} else block_else:{};
+  - elseif cond:{BOOLEAN} then block:{} else block_else:{};
   
   //
   // Binary operator :
