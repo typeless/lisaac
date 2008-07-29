@@ -334,11 +334,11 @@ Section Public
   
   - is_isaac:BOOLEAN <- my_window != NULL;
   
-  - run:G_WIN_OUT <-
+  - run s:ABSTRACT_STRING :G_WIN_OUT <-
   (
     line_tmp  := BMP_LINE[PIXEL_32].create (VIDEO.width);
     x_screen := y_screen := 0;
-    load_font;
+    load_font s;
     command := STRING.create 100;    
     cmds := FAST_ARRAY[STRING].create_with_capacity 10;
     
@@ -442,13 +442,15 @@ Section Private
   
   - sav_line:FAST_ARRAY[FAST_ARRAY[UINTEGER_16]] := FAST_ARRAY[FAST_ARRAY[UINTEGER_16]].create 16;
   
-  - load_font <-
+  - load_font s:ABSTRACT_STRING <-
   ( + cur_dir:DIRECTORY;    
     + e:ENTRY;
     + f:STD_FILE;
         
     cur_dir := FILE_SYSTEM;          
-    e := cur_dir.get_entry "font.fnt";
+    string_tmp.copy s;
+    string_tmp.append "font.fnt";
+    e := cur_dir.get_entry string_tmp;
     ((e != NULL) && {e.is_file}).if {
       f ?= e;
       f.open;

@@ -46,11 +46,11 @@ Section Public
     isaac := G_WIN_OUT.create (
       G_RAW.create (        
         G_BUTTON.create (G_IMG.create (path "terminal.bmp") | G_OUT.create " Terminal ")
-        connect (SHELL.run)
+        connect (SHELL.run path_dir)
       ) /
       G_RAW.create (
         G_BUTTON.create (G_IMG.create (path "about.bmp") | G_OUT.create " About ") 
-        connect (ABOUT.run) /
+        connect (ABOUT.run path_dir) /
         G_BUTTON.create (G_IMG.create (path "reboot.bmp") | G_OUT.create " Reboot ")
         action { b:G_BUTTON; "Reboot...\n".print; die_with_code 0; }
       )
@@ -68,7 +68,7 @@ Section Public
       ) /
       G_RAW.create (
         G_BUTTON.create (G_IMG.create (path "video.bmp") | G_OUT.create " Video ")
-        connect (MPEG2DEC.run)
+        /*connect (MPEG2DEC.run)*/
       )
     );    
     game := G_WIN_OUT.create (
