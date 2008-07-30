@@ -499,6 +499,14 @@ Section Public
     result
   );
   
+  - create_with_capacity n:INTEGER :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.with_capacity n;
+    result
+  );
+  
   - make <-
   // Create an empty dictionary. Internal storage `capacity' of the
   // dictionary is initialized using the `Default_size' value. Then,
