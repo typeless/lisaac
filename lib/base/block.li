@@ -58,11 +58,11 @@ Section Public
   // Loop :
   //
   
-  - loop_without_end <-
+  - loop_infinitely <-
   (
     (`1`:BOOLEAN(TRUE,FALSE)).if {
       value;
-      loop_without_end;
+      loop_infinitely;
     };
   );
   

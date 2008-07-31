@@ -102,6 +102,7 @@ Section Public
   ];
   
   - make_with_native_array_byte na:NATIVE_ARRAY[UINTEGER_8] size s:INTEGER <-
+  // BSBS: super naze !
   [ ...
     -? {s > 0};
     -? {na != NULL};
@@ -110,6 +111,20 @@ Section Public
     storage  := na;
     capacity := s;
     upper := -1;
+  )
+  [ ...
+    +? {storage != NULL};
+  ];
+
+  - make_with_native_array na:NATIVE_ARRAY[V] size s:INTEGER <-
+  [ ...
+    -? {s > 0};
+    -? {na != NULL};
+  ]
+  (    
+    storage  := na;
+    capacity := s;
+    upper := s-1;
   )
   [ ...
     +? {storage != NULL};
