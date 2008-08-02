@@ -92,8 +92,6 @@ Section Public
   
 Section ITM_READ  
   
-  - bug:INTEGER;
-  
   - to_run_with first_itm:ITM_CODE args larg:FAST_ARRAY[ITM_CODE] :EXPR <-
   ( + args:FAST_ARRAY[EXPR];
     + receiver:EXPR;
@@ -109,14 +107,6 @@ Section ITM_READ
     + is_block_value:BOOLEAN;
     //
     + base:NODE;
-    
-    string_tmp.copy "ITM_READ : La ";
-    bug.append_in string_tmp;
-    warning_error (position,string_tmp);
-    bug := bug + 1;
-    (bug = 70).if {
-      crash;
-    };
     
     //
     // Compute `receiver'.

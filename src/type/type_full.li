@@ -268,13 +268,19 @@ Section Public
   //
   // Default value.
   //
-  
+  + recursivity_test:BOOLEAN;
   - default_value p:POSITION :EXPR <- 
   ( + result:EXPR;
     
     ((prototype != NULL) && {prototype.default_value != NULL}).if {
       // Prototype User definition.	      
-      result := prototype.default_value.to_run_expr;
+      (recursivity_test).if {
+        semantic_error (prototype.default_value.position,"Recursivity without end.");
+      } else {
+        recursivity_test := TRUE;
+        result := prototype.default_value.to_run_expr;
+        recursivity_test := FALSE;
+      };
     } else {
       (is_expanded).if {      
 	// Copy of model prototype.

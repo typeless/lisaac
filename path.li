@@ -169,7 +169,7 @@ Section X86, IPAQ, ST2XX, LINUX
   // Standard.
   //
   
-  + isaac := "/home/jerome/svn/isaacos/trunk/isaacos/";  
+  + isaac := "/home/sonntag/svn/isaacos/trunk/isaacos/";  
 
   // File System
   
