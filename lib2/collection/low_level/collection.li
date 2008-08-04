@@ -497,7 +497,7 @@ Section Public
   // Looking and comparison:
   //
   
-  - '=='  Right 60 other:COLLECTION[V] :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:COLLECTION[V] :BOOLEAN <-
   // Do both collections have the same `lower', `upper', and
   // items?
   // The basic `=' is used for comparison of items.

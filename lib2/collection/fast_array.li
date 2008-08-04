@@ -293,7 +293,7 @@ Section Public
     }.elseif {capacity = 0} then {
       storage := NATIVE_ARRAY[V].create 2;
       capacity := 2;
-      upper := 0
+      upper := 0;
     } else {
       new_capacity := 2 * capacity;
       storage := storage.realloc capacity with new_capacity;
@@ -387,7 +387,7 @@ Section Public
     }; 
   ); 
     
-  - '=='  Right 60 other:COLLECTION[V] :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:COLLECTION[V] :BOOLEAN <-
   ( + result:BOOLEAN;
     + o:SELF;
     

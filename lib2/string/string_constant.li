@@ -115,10 +115,10 @@ Section Public
   // Debug: Require / Ensure / Check
   //
   
-  - Self:SELF '?'  test:BLOCK <- test ? Self;
+  - Self:SELF '?'  test:{BOOLEAN} <- test ? Self;
   
-  - Self:SELF '-?' test:BLOCK <- test -? Self;
+  - Self:SELF '-?' test:{BOOLEAN} <- test -? Self;
   
-  - Self:SELF '+?' test:BLOCK <- test +? Self;
+  - Self:SELF '+?' test:{BOOLEAN} <- test +? Self;
     
 

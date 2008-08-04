@@ -80,42 +80,42 @@ Section Public
   // binary operator :
   //
   
-  - '-'  Left 80  other:SELF :SELF <- 
+  - Self:SELF '-'  Left 80  other:SELF :SELF <- 
   (
     CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 - other.to_raw_uinteger_32)
   );
 
-  - '*#' Left 100 other:INTEGER :SELF <- 
+  - Self:SELF '*#' Left 100 other:INTEGER :SELF <- 
   (    
     CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 * other)
   );
   
-  - '*'  Left 100 other:SELF :SELF <- 
+  - Self:SELF '*'  Left 100 other:SELF :SELF <- 
   (
     CONVERT[UINTEGER_64,SELF].on ((to_raw_uinteger_64 * other.to_raw_uinteger_64) >> shift_bits)
   );
   
-  - '/#' Left 100 other:INTEGER :SELF <- 
+  - Self:SELF '/#' Left 100 other:INTEGER :SELF <- 
   (
     CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 / other)
   );
   
-  - '/'  Left 100 other:SELF :SELF <- 
+  - Self:SELF '/'  Left 100 other:SELF :SELF <- 
   (
     CONVERT[UINTEGER_64,SELF].on ((to_raw_uinteger_64 << shift_bits) / other.to_raw_uinteger_64)
   );
   
-  - '&'  Left 100 other:SELF :SELF <-
+  - Self:SELF '&'  Left 100 other:SELF :SELF <-
   (
     CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 & other.to_raw_uinteger_32)
   );
   
-  - '>>' Left 100 other:INTEGER :SELF <- 
+  - Self:SELF '>>' Left 100 other:INTEGER :SELF <- 
   (
     CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 >> other)
   );
   
-  - '<<' Left 100 other:INTEGER :SELF <- 
+  - Self:SELF '<<' Left 100 other:INTEGER :SELF <- 
   (
     CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 << other)
   );
@@ -124,7 +124,7 @@ Section Public
   // Test binary operator :
   //
   
-  - '>'   Right 60 other:SELF :BOOLEAN <- 
+  - Self:SELF '>'   Right 60 other:SELF :BOOLEAN <- 
   (
     to_raw_uinteger_32 > other.to_raw_uinteger_32
   );
@@ -133,7 +133,7 @@ Section Public
   // prefix : Unary operator
   //
   
-  - '~' :SELF <- 
+  - '~' Self:SELF :SELF <- 
   (
     CONVERT[UINTEGER_32,SELF].on (~ to_raw_uinteger_32)
   );

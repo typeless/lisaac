@@ -321,7 +321,7 @@ Section Public
     storage.copy_from (other.storage) until (count - 1);
   );
     
-  - '=='  Right 60 other:SELF :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <-
   (
     + result:BOOLEAN;
     result := FALSE;

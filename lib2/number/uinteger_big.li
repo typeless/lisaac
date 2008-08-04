@@ -276,7 +276,7 @@ Section Public
     result
   );
   
-  - '*#' Left 100 other:INTEGER :SELF <-
+  - Self:SELF '*#' Left 100 other:INTEGER :SELF <-
   (
     + result:UINTEGER_BIG;
     + part1,product,over:UINTEGER_64;
@@ -303,14 +303,14 @@ Section Public
     result
   );
   
-  - '/'  Left 100 other:SELF :SELF <- 
+  - Self:SELF '/'  Left 100 other:SELF :SELF <- 
   ( + result:UINTEGER_BIG;
     
     
   );
   
   
-  - '/#' Left 100 other:INTEGER :SELF <-
+  - Self:SELF '/#' Left 100 other:INTEGER :SELF <-
   ( + result:SELF;
     + last_mod,div:UINTEGER_64;
     + idx:INTEGER;
@@ -365,7 +365,7 @@ Section Public
   // Test binary operator :
   //
     
-  - '>'   Right 60 other:SELF :BOOLEAN <- 
+  - Self:SELF '>'   Right 60 other:SELF :BOOLEAN <- 
   (
     + result:BOOLEAN;
     (count > (other.count)).if {
@@ -394,7 +394,7 @@ Section Public
   );
   
   
-  - '>#' Right 60 other:INTEGER :BOOLEAN <-
+  - Self:SELF '>#' Right 60 other:INTEGER :BOOLEAN <-
   (
     + result:BOOLEAN;
     (count > 1).if {
@@ -405,7 +405,7 @@ Section Public
     result
   );
   
-  - '=='  Right 60 other:SELF :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <-
   (
     + result:BOOLEAN;
     + idx:INTEGER;

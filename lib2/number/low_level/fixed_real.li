@@ -212,7 +212,7 @@ Section Public
   // Comparaison.
   //
   
-  - '~=' other:SELF :BOOLEAN <-
+  - Self:SELF '~=' other:SELF :BOOLEAN <-
   (
     Self = other
   );
