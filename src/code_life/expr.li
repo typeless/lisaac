@@ -112,8 +112,8 @@ Section Public
 	(slot_msg.argument_count != 1).if {	  
 	  semantic_error ((slot_msg.position),"No argument for this slot.");
 	};
-	ts ?= slot_msg.result_type;
-	((ts = NULL) || {ts != t.raw.itm_type}).if {	  	  
+        ts ?= slot_msg.result_type;               
+	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
           string_tmp.copy "Type result `";          
           slot_msg.result_type.append_in string_tmp;	            
 	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
@@ -157,7 +157,7 @@ Section Public
 	  semantic_error ((slot_msg.position),"Incorrect argument for this slot.");
 	};
 	ts ?= slot_msg.result_type;
-	((ts = NULL) || {ts != t.raw.itm_type}).if {	  	  
+	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
 	  string_tmp.copy "Type result `";	  
           slot_msg.result_type.append_in string_tmp;
 	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
