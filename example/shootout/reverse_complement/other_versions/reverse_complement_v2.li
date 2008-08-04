@@ -1,0 +1,163 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 reverse_complement.li
+*/
+
+// GCC #2 shootout
+
+Section Header
+  
+  + name := REVERSE_COMPLEMENT;
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Public
+      
+  - iubpairs: FAST_ARRAY2[CHARACTER] := FAST_ARRAY2[CHARACTER].create (7,2); 
+
+  - iubcomplement: FAST_ARRAY[CHARACTER] := FAST_ARRAY[CHARACTER].create 256; 
+
+  - init_iubpairs <-
+  (
+    iubpairs.put 'A'  to (0,0);   iubpairs.put 'T'  to (0,1);
+    iubpairs.put 'C'  to (1,0);   iubpairs.put 'G'  to (1,1);
+    iubpairs.put 'B'  to (2,0);   iubpairs.put 'V'  to (2,1);
+    iubpairs.put 'D'  to (3,0);   iubpairs.put 'H'  to (3,1);
+    iubpairs.put 'K'  to (4,0);   iubpairs.put 'M'  to (4,1);
+    iubpairs.put 'R'  to (5,0);   iubpairs.put 'Y'  to (5,1);
+    iubpairs.put '\0' to (6,0);   iubpairs.put '\0' to (6,1);
+  );
+
+  - build_iub_complement <-
+  ( + j:INTEGER;
+
+    j := 0;
+
+    0.to 255 do { i:INTEGER;
+      iubcomplement.put (i.to_character) to i;
+    };
+
+    {iubpairs.item(j,0) != '\0'}.while_do {
+      iubcomplement.put (iubpairs.item(j,1)) to (iubpairs.item(j,0).to_integer);
+      iubcomplement.put (iubpairs.item(j,0)) to (iubpairs.item(j,1).to_integer);
+      iubcomplement.put (iubpairs.item(j,1)) to (((iubpairs.item(j,0)).to_lower).to_integer);
+      iubcomplement.put (iubpairs.item(j,0)) to (((iubpairs.item(j,1)).to_lower).to_integer);
+      j := j + 1;
+    }; 
+  );
+
+  - in_place_reverse(strand:STRING, len:INTEGER) <-
+  ( + c:CHARACTER;
+    + i:INTEGER;
+    + len_tmp:INTEGER;
+    + strand_tmp:STRING;
+
+    i := strand.lower;
+    len_tmp := len;
+    strand_tmp := STRING.create_from_string strand;
+    len_tmp:=129;
+    //{ i < len }.while_do {
+    { i < 129 }.while_do {
+      
+      "DEBUG:".print;
+      (strand_tmp.count).print;
+      '\n'.print;
+      //len_tmp.print;
+
+      
+      // 2000
+
+      c := strand.item i;
+      strand_tmp.put ((iubcomplement.item((strand.item i).to_integer))) to i;
+      strand_tmp.put (iubcomplement.item (c.to_integer)) to len_tmp;
+
+      i := i + 1;
+      len_tmp := len_tmp - 1;
+    };
+  );
+
+  - process (strand:STRING, len:INTEGER) <-
+  (
+    //+ c:STRING;
+    + c:CHARACTER;
+    + strand_tmp:STRING;
+    + len_tmp:INTEGER;
+
+    in_place_reverse(strand,len);
+
+    strand_tmp := STRING.create_from_string strand;
+    len_tmp := len;
+
+    {len_tmp > 60}.while_do{
+      c := strand_tmp.item 60;
+      strand_tmp.put '\0' to 60;
+      strand_tmp.print;
+      '\n'.print;
+      strand_tmp.put c to 60;
+      //strand_tmp := strand_tmp + 60;
+      len_tmp := len_tmp - 60;
+    };
+
+    strand_tmp.put '\0' to len_tmp;
+    strand_tmp.print;
+    '\n'.print;
+  );
+
+  - main <-
+  ( + buffer:STRING;
+    + inp:STRING;
+    + mlen:INTEGER;
+    + slen:INTEGER;
+    + l:INTEGER;
+
+    buffer:= STRING.create 1024;
+    inp := STRING.create_filled(' ',129);
+    
+    "DEBUG_MAIN:".print;
+    inp.count.print;
+    '\n'.print;
+
+
+    mlen := 128;
+    slen := 0;
+
+    init_iubpairs;
+    build_iub_complement;
+
+    IO.read_line;
+    {IO.end_of_input}.until_do {
+      buffer := IO.last_string;
+      (buffer.item (buffer.lower) == '>').if {
+        (slen > 0).if {
+          process (inp,slen);
+          slen := 0;
+        };
+        buffer.print;
+      } else {
+        l := buffer.count;
+        
+        {(l > 0) && {!buffer.item(l-1).is_alpha}}.while_do {
+          l := l - 1;
+        };
+        
+        {slen + l > mlen}.while_do{
+          mlen := mlen + mlen;
+          //inp realloc
+          inp.set_capacity (mlen+1);
+        };
+        //memcpy (inp + slen, buffer, l);
+        slen := slen + l;
+      };
+
+      IO.read_line;
+    };
+    
+    (slen > 0).if {
+      process(inp,slen);
+    };
+  );

@@ -1,0 +1,138 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald
+
+   Compilation:
+     - lisaac -O -i20 reverse_complement.li
+*/
+
+Section Header
+  
+  + name := REVERSE_COMPLEMENT;
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Public
+      
+
+  - cmp: FAST_ARRAY[CHARACTER] := FAST_ARRAY[CHARACTER].create 128; 
+
+  - count: INTEGER;
+
+  - make_init <-
+  (
+    0.to (cmp.upper) do { i:INTEGER;
+      cmp.put (i.to_character) to i;
+    };
+  
+    cmp.put 'A' to ('t'.to_integer); cmp.put 'A' to ('T'.to_integer);
+    cmp.put 'T' to ('a'.to_integer); cmp.put 'T' to ('A'.to_integer);
+    cmp.put 'C' to ('g'.to_integer); cmp.put 'C' to ('G'.to_integer);
+    cmp.put 'G' to ('c'.to_integer); cmp.put 'G' to ('C'.to_integer);
+    cmp.put 'B' to ('v'.to_integer); cmp.put 'B' to ('V'.to_integer);
+    cmp.put 'D' to ('h'.to_integer); cmp.put 'D' to ('H'.to_integer);
+    cmp.put 'Y' to ('r'.to_integer); cmp.put 'Y' to ('R'.to_integer);
+    cmp.put 'K' to ('m'.to_integer); cmp.put 'K' to ('M'.to_integer);
+    cmp.put 'R' to ('y'.to_integer); cmp.put 'R' to ('Y'.to_integer);
+    cmp.put 'M' to ('k'.to_integer); cmp.put 'M' to ('K'.to_integer);
+    cmp.put 'V' to ('b'.to_integer); cmp.put 'V' to ('B'.to_integer);
+    cmp.put 'H' to ('d'.to_integer); cmp.put 'H' to ('D'.to_integer);
+    cmp.put 'A' to ('u'.to_integer); cmp.put 'A' to ('U'.to_integer);
+  );
+
+  - reverse (line:STRING, buf:NATIVE_ARRAY[CHARACTER]) <-
+  ( + begin:INTEGER;
+    + end:INTEGER;
+    + tmp:CHARACTER;
+    + buf_tmp: NATIVE_ARRAY[CHARACTER];
+
+    (count > 0).if{
+      end := count - 1 ;
+      //begin := count - 1; 
+      /* 
+      {line.item begin != '\n'}.while_do{
+        begin := begin + 1;
+      };
+      */
+
+
+      {begin <= end}.while_do{
+        (buf.item begin == '\n').if{ begin := begin + 1; };
+        (buf.item end == '\n').if{ end := end - 1; };
+        
+        (begin <= end).if{
+          tmp := buf.item begin;
+          buf.put ( cmp.item ((buf.item end).to_integer) ) to begin;
+          buf.put ( cmp.item (tmp.to_integer) ) to end;
+          begin := begin + 1;
+          end := end - 1;
+        };
+      };
+      buf.println;
+    };
+  ); 
+
+  - main <-
+  ( + line: STRING;
+    + buf: NATIVE_ARRAY[CHARACTER];
+    + read: INTEGER;
+    + i: INTEGER;
+    + last: INTEGER;
+    + j:INTEGER;
+    + last_tmp:INTEGER;
+    + i_tmp:INTEGER;
+    + size: INTEGER;
+
+    line := STRING.create 82;
+    buf := NATIVE_ARRAY[CHARACTER].create 61;
+    make_init;
+
+    IO.read_line;
+    {IO.end_of_input}.until_do {
+      line := IO.last_string;
+      
+
+      i := 0;
+      last := 0;
+      {i < line.count}.while_do{
+        (buf.item i = '>').if{
+          // JAVA  
+          //write(byte[] b, int off, int len) 
+          //Writes len bytes from the specified byte array starting 
+          //at offset off to this byte array output stream.
+          
+          //buf.write(line, last, i - last);
+          //buf := STRING.create_from_string line;
+          /*
+          size := i - last;
+          last_tmp := last;
+          j:=0;
+          {size > 0}.while_do{
+            buf.put (line.item last_tmp) to j;
+            last_tmp := last_tmp + 1;
+            size := size - 1;
+            j := j + 1;
+          };
+          
+          //reverse buf;
+          //buf.clear;
+          last := i;
+          */
+          line.print;
+          '\n'.print;
+        } else {
+          //buf.write(line, last, read - last);
+          buf := line.storage;
+          count := line.count;
+          read := count;
+          
+          count := line.upper - 1;
+          reverse (line,buf);
+        };
+        IO.read_line;
+      };
+
+    };
+  );
