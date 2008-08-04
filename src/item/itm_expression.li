@@ -30,10 +30,12 @@ Section Header
   
 Section Inherit
   
-  + parent_itm_code:Expanded ITM_CODE;
+  - parent_itm_code:ITM_CODE := ITM_CODE;
   
 Section Public
-
+  
+  - position:POSITION <- value_list.first.position;
+  
   //
   // Data
   //

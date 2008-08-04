@@ -65,6 +65,9 @@ Section Public
   
   - append_in buffer:STRING <-
   (
+    "ITM_CODE : Type:".print;
+    type_id_intern.print; 
+    '\n'.print;
     deferred;
   );
   

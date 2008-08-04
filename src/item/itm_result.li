@@ -30,7 +30,7 @@ Section Header
   
 Section Inherit
   
-  + parent_itm_code:Expanded ITM_CODE;
+  - parent_itm_code:ITM_CODE := ITM_CODE;
   
 Section Public
   
@@ -51,16 +51,10 @@ Section Public
   - create r:ITM_CODE :SELF <-
   [
     -? {r != NULL};
-   // -? {r.position.code != 0};
+    -? {r.position.code != 0};
   ]
   ( + result:SELF;
-    
-    (r.position.code = 0).if {
-      "ERR: ".print;
-      r.print;
-      '\n'.print;
-    };
-    
+           
     result := clone;
     result.make r;
     result

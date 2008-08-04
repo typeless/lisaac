@@ -41,6 +41,9 @@ Section Public
   //  
 
   - create p:POSITION name n:STRING_CONSTANT :SELF <-
+  [
+    -? {p.code != 0};
+  ]
   ( + result:SELF;
     result := clone;
     result.make p name n;
