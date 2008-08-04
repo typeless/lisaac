@@ -1,88 +1,70 @@
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
+/* ------------------------------------------------------------------ */
+/* The Computer Language Shootout                               */
+/* http://shootout.alioth.debian.org/                                 */
+/*                                                                    */
+/* Contributed by Anthony Borla                                       */
+/* Modified by Vaclav Haisman                                         */
+/* Changed to match style of Perl example: Greg Buchholz              */
+/* ------------------------------------------------------------------ */
 
-static unsigned char iubpairs[][2] = {
-    {    'A',    'T'    },
-    {    'C',    'G'    },
-    {    'B',    'V'    },
-    {    'D',    'H'    },
-    {    'K',    'M'    },
-    {    'R',    'Y'    },
-    {    '\0',   '\0'   }
-};
+#include <cctype>
+#include <string>
+#include <algorithm>
+#include <iterator>
+#include <iostream>
+using namespace std;
 
-static unsigned char iubComplement[1+UCHAR_MAX];
+const int LINELENGTH = 60;
 
-static void buildIubComplement (void) {
-    int i;
-    for (i=0; i <= UCHAR_MAX; i++) iubComplement[i] = (unsigned char) i;
-    for (i=0; iubpairs[i][0] != '\0'; i++) {
-    	iubComplement[iubpairs[i][0]] = iubpairs[i][1];
-    	iubComplement[iubpairs[i][1]] = iubpairs[i][0];
-    	iubComplement[tolower (iubpairs[i][0])] = iubpairs[i][1];
-    	iubComplement[tolower (iubpairs[i][1])] = iubpairs[i][0];
-    }
+typedef string Header;
+typedef string Segment;
+
+inline char complement(char element)
+{
+  static const char charMap[] =
+    {
+      'T', 'V', 'G', 'H', '\0', '\0', 'C', 'D', '\0', '\0', 'M', '\0', 'K',
+      'N', '\0', '\0', '\0', 'Y', 'S', 'A', 'A', 'B', 'W', '\0', 'R', '\0'
+    };
+
+  return charMap[toupper(element) - 'A'];
 }
 
-static void inPlaceReverse (unsigned char * strand, int len) {
-    int i;
-    for (i=0, len--; i < len; i++,len--) {
-    	unsigned char c = strand[i];
-    	strand[i] = iubComplement[strand[len]];
-    	strand[len] = iubComplement[c];
-    }
-    if (i == len) strand[i] = iubComplement[strand[i]];
+void print_revcomp(Header const& header, Segment const& seg, ostream& out = std::cout)
+{
+    out << header << "\n";
+
+    Segment comp(seg.rbegin(),seg.rend());
+    transform(comp.begin(),comp.end(), comp.begin(), complement);
+
+    size_t i = 0;
+    size_t stop = comp.length()/LINELENGTH + ((comp.length()%LINELENGTH)?1:0);
+
+    while(i < stop)
+        out << comp.substr(i++*LINELENGTH,LINELENGTH) << "\n";
 }
 
-static void process (char * strand, int len) {
-    char * s, c;
+int main ()
+{
+  ios_base::sync_with_stdio(false);
 
-    inPlaceReverse ((unsigned char *) strand, len);
+  Segment line, segment;
+  Header header;
 
-    s = strand;
+  while (getline(cin, line))
+  {
+      if (line[0] == '>')
+      {
+          if (! segment.empty())
+            print_revcomp(header, segment);
+          header = line;
+          segment.clear();
+      }
+      else
+          segment += line;
+  }
+  print_revcomp(header, segment);
 
-    while (len > 60) {
-    	c = s[60];
-    	s[60] = '\0';
-    	puts (s);
-    	s[60] = c;
-    	s += 60;
-    	len -= 60;
-    }
-
-    s[len] = '\0';
-    puts (s);
+  return 0;
 }
 
-int main (int argc, char * argv[]) {
-    static char buffer[1024];
-    char * inp = (char *) malloc (129);
-    int mlen = 128;
-    int slen = 0;
-
-    buildIubComplement ();
-
-    while (NULL != fgets (buffer, 1023, stdin)) {
-    	if (buffer[0] == '>') {
-    	    if (slen > 0) {
-	        process (inp, slen);
-    	    	slen = 0;
-    	    }
-    	    printf ("%s", buffer);
-    	} else {
-    	    int l = strlen (buffer);
-    	    while (l > 0 && !isalpha (buffer[l-1])) l--;
-    	    while (slen + l > mlen) {
-    	    	mlen += mlen;
-    	    	inp = (char *) realloc (inp, mlen + 1);
-    	    }
-
-    	    memcpy (inp + slen, buffer, l);
-    	    slen += l;
-    	}
-    }
-    if (slen > 0) process (inp, slen);
-    free (inp);
-    return 0;
-}
