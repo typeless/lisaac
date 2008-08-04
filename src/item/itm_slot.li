@@ -245,16 +245,16 @@ Section Public
   // Display.
   //
   
-  - display buffer:STRING <-
+  - append_in buffer:STRING <-
   (
     buffer.append name;
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;       
       buffer.add_last ' ';
-      argument_list.item j.display buffer;
+      argument_list.item j.append_in buffer;
     }; 
     buffer.add_last ' ';
     buffer.add_last ':';
-    result_type.display buffer;    
+    result_type.append_in buffer;    
   );    
   
 

@@ -1469,7 +1469,7 @@ Section Private
 	    } else {
 	      typ_arg := ITM_TYPE_MULTI.get lst;
 	      string_tmp.copy "Added '";
-	      typ_arg.display string_tmp;
+	      typ_arg.append_in string_tmp;
 	      string_tmp.append "'.";
 	      warning_error (current_position,string_tmp);
             };

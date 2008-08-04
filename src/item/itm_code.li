@@ -63,9 +63,16 @@ Section Public
   // Display.
   //
   
-  - print <-
+  - append_in buffer:STRING <-
   (
     deferred;
+  );
+  
+  - print <-
+  (
+    string_tmp.clear;
+    append_in string_tmp;
+    string_tmp.print;
   );
 
 

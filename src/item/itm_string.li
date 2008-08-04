@@ -34,7 +34,8 @@ Section Inherit
   
 Section Public
   
-  - dico_string:HASHED_DICTIONARY[INTEGER,STRING_CONSTANT] := HASHED_DICTIONARY[INTEGER,STRING_CONSTANT].create;
+  - dico_string:HASHED_DICTIONARY[INTEGER,STRING_CONSTANT] := 
+  HASHED_DICTIONARY[INTEGER,STRING_CONSTANT].create;
   
   //
   // Data
@@ -68,6 +69,18 @@ Section Public
   (     
     STRING_CST.create position text string    
   );
+  
+  // 
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.add_last '\"';
+    buffer.append string;
+    buffer.add_last '\"';
+  );
+  
 
 
 

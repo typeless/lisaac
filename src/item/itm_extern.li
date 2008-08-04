@@ -99,5 +99,16 @@ Section Public
     last_code := ALIAS_STR.get string_tmp2;
     access_list
   );
+  
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.add_last '`';
+    buffer.append extern;
+    buffer.add_last '`';
+  );
 
 

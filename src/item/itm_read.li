@@ -90,6 +90,16 @@ Section Public
     result
   );
   
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.append name;
+    buffer.append "()";
+  );
+  
 Section ITM_READ  
   
   - to_run_with first_itm:ITM_CODE args larg:FAST_ARRAY[ITM_CODE] :EXPR <-
@@ -107,7 +117,7 @@ Section ITM_READ
     + is_block_value:BOOLEAN;
     //
     + base:NODE;
-    
+        
     //
     // Compute `receiver'.
     //    
@@ -240,7 +250,7 @@ Section ITM_READ
     (larg != NULL).if {
       ALIAS_ARRAY[ITM_CODE].free larg;
     };
-    
+        
     ? {base.result_expr != NULL};    
     base.result_expr    
   );

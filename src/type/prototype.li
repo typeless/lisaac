@@ -160,7 +160,7 @@ Section Public
 
   - set_default_value v:ITM_CODE <-
   ( 
-    default_value := default_value v to_slot name in Self;
+    default_value := v; //default_value v to_slot name in Self;
   );
   
   //

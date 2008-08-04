@@ -85,7 +85,6 @@ Section Public
       result := Self;
     } else {            
       ? {list_current != NULL};
-
       (static_type.is_export_to t).if {	
 	// Auto-export.	
 	local := static_type.get_temporary position;
@@ -116,7 +115,7 @@ Section Public
 	ts ?= slot_msg.result_type;
 	((ts = NULL) || {ts != t.raw.itm_type}).if {	  	  
           string_tmp.copy "Type result `";          
-          slot_msg.result_type.display string_tmp;	            
+          slot_msg.result_type.append_in string_tmp;	            
 	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
 	  t.append_name_in string_tmp; 
 	  string_tmp.append "').";
@@ -160,7 +159,7 @@ Section Public
 	ts ?= slot_msg.result_type;
 	((ts = NULL) || {ts != t.raw.itm_type}).if {	  	  
 	  string_tmp.copy "Type result `";	  
-          slot_msg.result_type.display string_tmp;
+          slot_msg.result_type.append_in string_tmp;
 	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
 	  t.append_name_in string_tmp;
 	  string_tmp.append "').";

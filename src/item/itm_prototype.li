@@ -76,7 +76,15 @@ Section Public
     };
     result
   );
-
+  
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    type.append_in buffer;
+  );
 
 
 

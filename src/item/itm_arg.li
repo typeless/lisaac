@@ -102,7 +102,7 @@ Section Public
   // Display.
   //
   
-  - display buffer:STRING <-
+  - append_in buffer:STRING <-
   (
     buffer.append name;
     buffer.add_last ':';

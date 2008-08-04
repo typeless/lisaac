@@ -52,7 +52,14 @@ Section Public
     position := p;
     name := n;
   );
-
-
+  
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.append name; 
+  );
 
 

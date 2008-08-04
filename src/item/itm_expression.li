@@ -228,6 +228,17 @@ Section Public
     result
   );
   
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    (value_list.lower).to (value_list.upper) do { i:INTEGER;
+      value_list.item i.append_in buffer;
+    };
+  );
+  
 Section Private  
   
   - error_slot p:POSITION name s:STRING_CONSTANT operator op:STRING_CONSTANT in t:TYPE <-

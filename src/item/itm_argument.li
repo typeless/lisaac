@@ -67,15 +67,6 @@ Section Public
   );
   
   //
-  // Display.
-  //
-  
-  - display buffer:STRING <-
-  (
-    deferred;
-  );
-  
-  //
   // Comparaison.
   //
   

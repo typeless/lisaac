@@ -357,6 +357,7 @@ Section Public
   - last_position:POSITION;
 
   - default_value v:ITM_CODE to_slot nam:ABSTRACT_STRING in t:PROTOTYPE :ITM_CODE <-
+  // BSBS: A mettre dans ITM_SLOT (unique utilisation)
   ( + lst:ITM_LIST;
     + s:ITM_SLOT;
     + n:STRING_CONSTANT;

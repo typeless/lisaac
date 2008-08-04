@@ -41,7 +41,13 @@ Section Public
   + assign:ITM_CODE;
 
   + value:ITM_CODE;
-
+  
+  - type:STRING_CONSTANT <-
+  (
+    deferred;
+    NULL
+  );
+  
   //
   // Constructor
   //
@@ -75,6 +81,17 @@ Section Public
       semantic_error (position,"ITM_WRITE: Not yet implemented.");
     };
     result
+  );
+  
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    assign.append_in buffer;
+    buffer.append type;
+    value.append_in buffer;
   );
   
 Section Private

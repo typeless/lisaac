@@ -84,7 +84,7 @@ Section Public
     TYPE.get Self
   );
   
-  - display buffer:STRING <-
+  - append_in buffer:STRING <-
   (
     (style != NULL).if {
       buffer.append style;

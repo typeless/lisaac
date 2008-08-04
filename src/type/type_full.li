@@ -85,6 +85,9 @@ Section TYPE
   (
     parent_type := typ;
     flag := code;       
+    ((raw != NULL) && {raw.name != NULL} && {raw.name == "INTEGER"} && {! is_expanded}).if {
+      crash;
+    };
     ? {is_expanded -> (! is_strict)};
   );
   
@@ -273,9 +276,14 @@ Section Public
   ( + result:EXPR;
     
     ((prototype != NULL) && {prototype.default_value != NULL}).if {
-      // Prototype User definition.	      
+      // Prototype User definition.	            
       (recursivity_test).if {
-        semantic_error (prototype.default_value.position,"Recursivity without end.");
+        crash;
+        POSITION.put_error semantic text 
+        "Recursivity without end (default used default, ...).";
+        list_current.position.put_position;
+        prototype.default_value.position.put_position;
+        POSITION.send_error;        
       } else {
         recursivity_test := TRUE;
         result := prototype.default_value.to_run_expr;

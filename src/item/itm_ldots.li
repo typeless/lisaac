@@ -76,3 +76,12 @@ Section Public
     NULL
   );
 
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.append "...";
+  );
+  

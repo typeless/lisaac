@@ -36,6 +36,8 @@ Section Public
   
   - is_affect:POSITION <- value.is_affect;
   
+  - position:POSITION <- value.position;
+  
   //
   // Data
   //
@@ -47,7 +49,18 @@ Section Public
   //
   
   - create r:ITM_CODE :SELF <-
+  [
+    -? {r != NULL};
+   // -? {r.position.code != 0};
+  ]
   ( + result:SELF;
+    
+    (r.position.code = 0).if {
+      "ERR: ".print;
+      r.print;
+      '\n'.print;
+    };
+    
     result := clone;
     result.make r;
     result
@@ -55,7 +68,6 @@ Section Public
   
   - make r:ITM_CODE <-
   (
-    position := r.position;
     value    := r;
   );
   
@@ -86,6 +98,17 @@ Section Public
   (
     crash;
     NULL
+  );
+  
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.append "return(";
+    value.append_in buffer;
+    buffer.add_last ')';
   );
 
 Section Private

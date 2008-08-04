@@ -110,6 +110,16 @@ Section Public
     result_old.read position
   );
   
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.append "Old ";
+    value.append_in buffer;
+  );
+  
 Section Private
   
   - stack_local_empty:FAST_ARRAY[LOCAL] := FAST_ARRAY[LOCAL].create 0;

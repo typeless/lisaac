@@ -171,6 +171,28 @@ Section Public
     result
   );
   
+  //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    (code.count = 1).if {
+      buffer.add_last '(';
+      code.first.append_in buffer;
+      buffer.add_last ')';      
+    } else {
+      buffer.append "(\n";      
+      (code.lower).to (code.upper) do { i:INTEGER;
+        indent.append "  ";
+        code.item i.append_in buffer;
+        buffer.append ";\n";
+      };
+      indent.remove_last 2;
+      buffer.append ")";      
+    };      
+  );
+  
 Section ITM_LIST, ITM_RESULT
   
   - stack_result:FAST_ARRAY[LOCAL] := FAST_ARRAY[LOCAL].create_with_capacity 16;    

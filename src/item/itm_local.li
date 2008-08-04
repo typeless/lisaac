@@ -126,6 +126,18 @@ Section Public
     //
     result
   );
+  
+  // 
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    buffer.append name;
+    buffer.add_last ':';
+    type.append_in buffer;
+  );
+    
 
 
 
