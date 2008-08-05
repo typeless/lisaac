@@ -1,0 +1,49 @@
+/* The Computer Language Shootout Benchmarks
+   http://shootout.alioth.debian.org/
+   contributed by Xavier Oswald & Pierre-Alexandre Voye
+
+   Compilation:
+     - lisaac -O -i20 chameneos_redux.li
+*/
+
+Section Header
+  
+  + name := PAIR;
+  
+Section Inherit
+  
+  - parent_any:OBJECT := OBJECT;
+
+Section Public 
+  
+  + two_met:BOOLEAN;
+  + sameid:BOOLEAN;
+  + colour:COLOUR;
+
+  - copy p:PAIR <-
+  (
+    sameid  := p.sameid;
+    two_met := p.two_met;
+    colour  := p.colour;
+  );
+
+  - meet (smid:BOOLEAN, c:COLOUR) <-
+  (
+    sameid  := smid;
+    colour  := c;
+    two_met := TRUE;
+  );
+
+  - create :SELF <-
+  ( + result :SELF;
+
+    result := clone;
+    result.make;
+    result
+  );
+
+  - make <-
+  (
+    two_met := FALSE;
+  );
+
