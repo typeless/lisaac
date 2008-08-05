@@ -88,7 +88,7 @@ Section Public
     };
     buffer.append (variable.intern_name);     
     //
-    tb ?= local.type.raw;
+    tb ?= local.type.raw;    
     (tb != NULL).if {
       add_var_size local;
     };

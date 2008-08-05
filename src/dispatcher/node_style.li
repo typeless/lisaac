@@ -128,7 +128,7 @@ Section Private
     + call:CALL_SLOT;
     + em:EXPR_MULTIPLE;
     + rd:READ;
-    + wrt:WRITE;
+    + wrt:WRITE;    
     + result_var:VARIABLE;
     + new_larg:FAST_ARRAY[EXPR];    
     + slot_dta:SLOT_DATA;
@@ -221,14 +221,14 @@ Section Private
 	    result_var := rd.variable;	    
 	    rd  := call.profil.result_list.item j.read position;
 	    wrt := result_var.write position value rd;
-            call.result_list.add_last wrt;	                
+            call.result_list.add_last wrt;
 	  };	  
 	} else {
           rd ?= result_expr;
           result_var := rd.variable;	    
           rd  := call.profil.result_list.first.read position;
           wrt := result_var.write position value rd;
-          call.result_list.add_last wrt;	    
+          call.result_list.add_last wrt; 
 	};	
       };
       result.add_last call;

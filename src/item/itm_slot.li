@@ -178,7 +178,7 @@ Section Public
     (affect = '<').if {
       value := e;
     } else {
-      value := default_value e to_slot name in p;
+      value := default_value e in p;
     };
   );    
 
@@ -257,5 +257,47 @@ Section Public
     result_type.append_in buffer;    
   );    
   
-
+Section Private
   
+  - default_value v:ITM_CODE in t:PROTOTYPE :ITM_CODE <-
+  ( + lst:ITM_LIST;
+    + s:ITM_SLOT;
+    + n:STRING_CONSTANT;
+    + sec:SECTION_;
+    + larg:FAST_ARRAY[ITM_ARGUMENT];
+    + a:ITM_CODE;
+    + result:ITM_CODE;
+    
+    lst ?= v;
+    (lst != NULL).if {
+      // Add function for init.
+      /*
+      string_tmp.copy "Create function ";
+      string_tmp.append nam;
+      warning_error (v.position,string_tmp);
+      */
+      string_tmp.copy "__init_";      
+      string_tmp.append name;
+      n := ALIAS_STR.get string_tmp;
+      sec := SECTION_.get_name (ALIAS_STR.section_public);
+      larg := FAST_ARRAY[ITM_ARGUMENT].create_with_capacity 1;
+      larg.add_last (
+        ITM_ARG.create (v.position)
+        name (ALIAS_STR.variable_self) 
+        type (ITM_TYPE_SIMPLE.type_self)
+      );
+      s := ITM_SLOT.create (v.position) name n feature sec;
+      s.set_affect '<';
+      ? {result_type != NULL};
+      s.set_value v type t;      
+      s.set_argument_list larg;      
+      s.set_result_type result_type;
+      t.slot_list.fast_put s to (s.name);
+      a := ITM_PROTOTYPE.create (v.position) type (ITM_TYPE_SIMPLE.get (t.name));            
+      result := ITM_READ_ARG1.create (v.position) name n arg a;
+    } else {
+      // Direct value.
+      result := v;
+    };    
+    result
+  );

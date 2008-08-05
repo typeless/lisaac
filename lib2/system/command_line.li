@@ -37,8 +37,6 @@ Section Private
   
   - c_count:INTEGER <- `arg_count`:INTEGER;
   
-Section Private
-  
   - args:FAST_ARRAY[STRING] :=
   ( + result:FAST_ARRAY[STRING];
     + arg:NATIVE_ARRAY[CHARACTER];

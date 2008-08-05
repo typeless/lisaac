@@ -67,7 +67,7 @@ Section Public
   
   - get n:STRING_CONSTANT :ITM_TYPE_SIMPLE <-
   [
-    -? {n != NULL};
+    -? {n != NULL};    
   ]
   ( + result:ITM_TYPE_SIMPLE;
   

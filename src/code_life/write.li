@@ -237,16 +237,7 @@ Section Public
       value.genere buffer;    
     };*/
   );
-  
-  - genere_argument_result buffer:STRING <-
-  ( + loc:LOCAL;
-    buffer.add_last '&';
-    buffer.append (variable.intern_name);
-    loc ?= variable;
-    loc.set_ensure_count 1; // BSBS: Bidouille !
-    add_var_size loc;
-  );
-  
+    
   //
   // Display.
   //

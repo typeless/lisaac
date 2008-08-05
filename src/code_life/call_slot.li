@@ -158,8 +158,8 @@ Section Private
     + new_src:LIST;
     + wrt:WRITE;
     + old_val:EXPR;
-    + loc:LOCAL;
-    + prof_block:PROFIL_BLOCK;
+  //  + loc:LOCAL;
+  //  + prof_block:PROFIL_BLOCK;
         
     (source = list_current).if {
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
@@ -187,7 +187,8 @@ Section Private
 	// Inline by copy:	  
 	//
 	(list_current.old_seq_or_and = seq_or_and).if {	    	    	    
-	  profil.unlink;	  	  	    	    
+          profil.unlink;	  	  	    	    
+          /*
 	  prof_block ?= profil;
 	  (prof_block != NULL).if {	    
 	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
@@ -196,20 +197,20 @@ Section Private
 		loc.set_my_alias (loc.my_copy);
 	      };
 	    };
-	  } else {
+          } else {
+            */
 	    LOCAL.alias_on;
-	  };
-	  
-	  new_src := source.my_copy;	  
-	  argument_to_assignment new_src index 1 alias TRUE;	  
+	  //};                    
+          new_src := source.my_copy;	                     
+          argument_to_assignment new_src index 1 alias TRUE;	                      
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
-            wrt := result_list.item j;
+            wrt := result_list.item j;                        
             old_val := wrt.value;
             wrt.set_value (old_val.my_copy);	      	      
             old_val.remove;
-            new_src.add wrt to (new_src.upper);
+            new_src.add wrt to (new_src.upper);                        
 	  };		  	  
-	  
+          /*
 	  (prof_block != NULL).if {
 	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
 	      loc := profil.argument_list.item j;
@@ -217,9 +218,10 @@ Section Private
 		loc.set_my_alias NULL;
 	      };
 	    };
-	  } else {
+          } else {
+            */
 	    LOCAL.alias_off;
-          };
+          //};
           //
 	  result := new_src.execute;
           ? {result != NULL};
@@ -371,10 +373,11 @@ Section Public
   - genere buffer:STRING <-
   ( + val:WRITE;
     + arg:LOCAL;
+    + wrt:WRITE_LOCAL;
     
     (result_list.is_empty).if_false {
-      buffer.append (result_list.first.variable.intern_name);
-      buffer.add_last '=';
+      wrt ?= result_list.first;
+      wrt.genere_first_result buffer;      
     };
     buffer.append (profil.name);
     (is_interrupt || {is_external}).if {
@@ -388,24 +391,21 @@ Section Public
       (argument_list.lower).to (argument_list.upper) do { j:INTEGER; 
 	val := argument_list.item j;
 	arg := profil.argument_list.item j;
-	(val != NULL).if {
-	  //var := val.variable;
-	  //t := var.type;
-	  val.genere_value buffer;
-	  buffer.add_last ',';
-	}.elseif {arg != NULL} then {  // BSBS: Bizarre, ca sert a quoi ?
-	  buffer.append (arg.intern_name);
-	  buffer.add_last ',';
+        (val != NULL).if {	 
+          (buffer.last != '(').if {
+            buffer.add_last ',';
+          };
+	  val.genere_value buffer;	  
 	};
       };
       (result_list.count > 1).if {
-	(result_list.lower+1).to (result_list.upper-1) do { j:INTEGER;
-	  result_list.item j.genere_argument_result buffer;
-	  buffer.add_last ',';
+        (result_list.lower+1).to (result_list.upper) do { j:INTEGER;
+          (buffer.last != '(').if {
+            buffer.add_last ',';
+          };
+          wrt ?= result_list.item j;
+          wrt.genere_argument_result buffer;	  
         };
-        result_list.last.genere_argument_result buffer;
-      } else {      
-	buffer.remove_last 1;
       };
       buffer.add_last ')';
     };

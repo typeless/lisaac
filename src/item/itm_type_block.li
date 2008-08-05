@@ -84,18 +84,18 @@ Section Public
     TYPE_BLOCK.get Self with p
   );
   
-  - display buffer:STRING <-
+  - append_in buffer:STRING <-
   ( + typ_mul:ITM_TYPE_MULTI;
     buffer.add_last '{';
     (type_argument != NULL).if {
-      type_argument.display buffer;
+      type_argument.append_in buffer;
       buffer.add_last ';';
       buffer.add_last ' ';
     };    
     (type_result != NULL).if {
       typ_mul ?= type_result;
       (typ_mul = NULL).if {
-	type_result.display buffer;
+	type_result.append_in buffer;
       } else {
 	typ_mul.display_row buffer;
       };

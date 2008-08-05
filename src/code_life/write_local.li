@@ -107,8 +107,8 @@ Section Public
   
   - genere buffer:STRING <-
   ( 
-    add_var_size local;
-    (variable.ensure_count = -1).if {
+    add_var_size local;        
+    (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
       buffer.add_last '*';
     };
     buffer.append (variable.intern_name);     
@@ -120,7 +120,18 @@ Section Public
       genere_value buffer;
     };
   );
-    
+  
+  - genere_first_result buffer:STRING <-
+  (
+    add_var_size local;        
+    (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
+      buffer.add_last '*';
+    };
+    buffer.append (variable.intern_name);     
+    //    
+    buffer.add_last '=';    
+  );
+  
   - genere_argument_result buffer:STRING <-
   ( 
     buffer.add_last '&';

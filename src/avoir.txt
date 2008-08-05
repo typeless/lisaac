@@ -1,0 +1,39 @@
+hello.c: In function ‘main’:
+hello.c:310: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:310: error: (Each undeclared identifier is reported only once
+hello.c:310: error: for each function it appears in.)
+hello.c:310: error: expected expression before ‘)’ token
+hello.c:341: error: expected expression before ‘)’ token
+hello.c:379: error: expected expression before ‘)’ token
+hello.c:409: error: expected expression before ‘)’ token
+hello.c:440: error: expected expression before ‘)’ token
+hello.c: In function ‘print__2EC’:
+hello.c:601: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:601: error: expected expression before ‘)’ token
+hello.c:639: error: expected expression before ‘)’ token
+hello.c:665: error: expected expression before ‘)’ token
+hello.c: In function ‘align_power__RN’:
+hello.c:740: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:740: error: expected expression before ‘)’ token
+hello.c: In function ‘micro_alloc__table__lab__4P’:
+hello.c:850: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:850: error: expected expression before ‘)’ token
+hello.c:875: error: expected expression before ‘)’ token
+hello.c: In function ‘new_lab__54’:
+hello.c:1156: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:1156: error: expected expression before ‘)’ token
+hello.c:1247: error: expected expression before ‘)’ token
+hello.c:1274: error: expected expression before ‘)’ token
+hello.c:1313: error: expected expression before ‘)’ token
+hello.c:1416: error: expected expression before ‘)’ token
+hello.c: In function ‘put__to__DHB’:
+hello.c:1522: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:1522: error: expected expression before ‘)’ token
+hello.c:1545: error: expected expression before ‘)’ token
+hello.c:1569: error: expected expression before ‘)’ token
+hello.c: In function ‘item__03’:
+hello.c:1627: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:1627: error: expected expression before ‘)’ token
+hello.c: In function ‘put_last__to__15B’:
+hello.c:1772: error: ‘_____CONTEXT’ undeclared (first use in this function)
+hello.c:1772: error: expected expression before ‘)’ token

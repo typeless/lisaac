@@ -86,6 +86,10 @@ Section DTA_RD
     (slot.id_section.is_interrupt).if {
       result := type_pointer.default.get_temporary_expr position;
     } else {
+      (slot.result_type = NULL).if {
+        slot.name.print; '\n'.print;
+        syntax_error (slot.position,"LA");
+      };
       result := slot.result_type.get_expr_for Self;
     };
     result

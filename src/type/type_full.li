@@ -204,13 +204,14 @@ Section Public
   );  
 
   - get p:POSITION result n:INTEGER :LOCAL <-
-  (     
+  ( + intern:STRING_CONSTANT;
     string_tmp.copy (ALIAS_STR.keyword_result);
     (n != 0).if {
       string_tmp.add_last '_';
       n.append_in string_tmp;
     };
-    new_local p name (ALIAS_STR.get string_tmp) style '+'
+    intern := ALIAS_STR.get string_tmp;    
+    new_local p name intern style '+'
   );  
     
   //

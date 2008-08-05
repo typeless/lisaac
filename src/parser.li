@@ -1073,6 +1073,7 @@ Section Private
     
     list_arg := ALIAS_ARRAY[ITM_ARGUMENT].new;
     arg := read_loc_arg FALSE with_self TRUE;
+        
     (arg = NULL).if {
       (read_character '\'').if {
 	result := read_slot_operator list_arg;

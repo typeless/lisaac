@@ -34,7 +34,9 @@ Section Inherit
   - parent_parameter_to_type:Expanded PARAMETER_TO_TYPE;
   
 Section Public
-    
+  
+  - position:POSITION <- slot.position;
+  
   - slot:SLOT <- slot_code;
   
   - is_interrupt:BOOLEAN <- slot_code.id_section.is_interrupt;  

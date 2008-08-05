@@ -136,7 +136,12 @@ Section Public
     lst_typ := TYPES_TMP.new;        
     expr.get_type lst_typ;            
     ? {! lst_typ.is_empty};
-    
+    (lst_typ.is_empty).if {
+      list_current.debug_display;
+      "\n----------\n".print;
+      expr.debug_display;
+      semantic_error (expr.position,"BUG");
+    };
     /*
     (lst_typ.first = TYPE_NULL).if {
       null_counter := null_counter + 1;

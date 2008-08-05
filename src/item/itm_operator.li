@@ -57,6 +57,16 @@ Section Public
   );
   
   //
+  // Runnable.
+  //
+  
+  - to_run_expr:EXPR <-
+  (
+    crash_with_message "ITM_OPERATOR.to_run_expr";
+    NULL
+  );    
+  
+  //
   // Display.
   //
   
