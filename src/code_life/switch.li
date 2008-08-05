@@ -135,7 +135,7 @@ Section Public
     // Update.
     lst_typ := TYPES_TMP.new;        
     expr.get_type lst_typ;            
-    ? {! lst_typ.is_empty};
+    //? {! lst_typ.is_empty};
     (lst_typ.is_empty).if {
       list_current.debug_display;
       "\n----------\n".print;

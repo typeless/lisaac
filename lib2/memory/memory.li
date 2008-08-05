@@ -526,6 +526,8 @@ Section Public
     ptr_table := table_size (new_size / POINTER.object_size.to_uinteger_32);
     result := micro_alloc new_size table ptr_table lab new_size;
     
+    
+    
     //fill_memory result size new_size;
     
     result
