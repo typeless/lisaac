@@ -100,6 +100,7 @@ Section Public
   ( + result:SELF;
     + wrt:WRITE;
     + new_arg:FAST_ARRAY[WRITE];
+    + rd:READ;
         
     result := clone;
     
@@ -108,6 +109,7 @@ Section Public
       (argument_list.item j = NULL).if {
 	wrt := NULL;
       } else {
+        // No Alias := Alias.
 	wrt := argument_list.item j;
 	wrt := wrt.variable.write_direct (wrt.position) with NULL value (wrt.value.my_copy); 
 	//wrt := argument_list.item j.my_copy;
@@ -121,7 +123,11 @@ Section Public
       (result_list.item j = NULL).if {
         wrt := NULL;
       } else {
-        wrt := result_list.item j.my_copy;
+        // Alias := No Alias.
+        wrt := result_list.item j;
+        rd  ?= wrt.value;
+        rd  := rd.variable.read_direct (rd.position) with NULL;   
+        wrt := wrt.variable.write (wrt.position) with NULL value rd;
       };
       result.result_list.add_last wrt;
     };
@@ -280,20 +286,7 @@ Section Public
   
   - execute:INSTR <-
   ( + result:INSTR;        
-    + is_good:BOOLEAN;
-    + p:PROFIL_SLOT;
-    
-    p ?= profil;
-    ((p != NULL) && {p.slot.name == "__prefix_sub"}).if {
-      "=========================\n".print;
-      "Write : ".print;
-      (result_list.lower).to (result_list.upper) do { j:INTEGER;
-        result_list.item j.debug_display;
-      };
-      "Source : ".print; 
-      source.debug_display;
-    };
-    
+    + is_good:BOOLEAN;    
     
     (profil.search_tail_recursive).if {
       //

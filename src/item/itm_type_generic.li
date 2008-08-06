@@ -89,7 +89,7 @@ Section Public
       t := list_type.item j.to_run_for p;      
       
       (t = NULL).if {        
-        crash;
+        //crash;
         
         string_tmp.copy "Type parameter `";
         list_type.item j.append_in string_tmp;
