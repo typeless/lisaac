@@ -1,6 +1,6 @@
 /* The Computer Language Shootout Benchmarks
    http://shootout.alioth.debian.org/
-   contributed by Xavier Oswald & Pierre-Alexandre Voye
+   contributed by Xavier Oswald
 
    Compilation:
      - lisaac -O -i20 chameneos_redux.li
@@ -8,7 +8,7 @@
 
 Section Header
   
-  + name := COLOUR;
+  + name := ANY_CHAMENEOS_REDUX;
   
 Section Inherit
   

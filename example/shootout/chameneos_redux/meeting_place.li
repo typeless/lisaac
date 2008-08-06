@@ -1,6 +1,6 @@
 /* The Computer Language Shootout Benchmarks
    http://shootout.alioth.debian.org/
-   contributed by Xavier Oswald & Pierre-Alexandre Voye
+   contributed by Xavier Oswald
 
    Compilation:
      - lisaac -O -i20 chameneos_redux.li
@@ -10,16 +10,18 @@ Section Header
   
   + name := MEETING_PLACE;
   
+  - external := `pthread_mutex_t mutex;`
+  
 Section Inherit
   
-  - parent_any:OBJECT := OBJECT;
+  - parent_any:ANY_CHAMENEOS_REDUX := ANY_CHAMENEOS_REDUX;
 
 Section Private
-  
-  + `pthread_mutex_t   mutex;`
+
   + meetings_left: INTEGER;
-  + first_colour: COLOUR;
-  + first_id: INTEGER;
+  + first_colour:  INTEGER;
+  + first_id:      INTEGER;
+
   + current:PAIR;
 
 Section Public 
@@ -34,7 +36,7 @@ Section Public
 
   - make meetings:INTEGER <-
   (
-    `pthread_mutex_init( &mutex, 0 );`
+    `pthread_mutex_init( &mutex, 0 )`;
     meetings_left := meetings;
     first_colour := invalid;
     first_id := 0;
@@ -42,12 +44,14 @@ Section Public
 
   - destroy <-
   (
-    `pthread_mutex_destroy( &mutex );`
+    `pthread_mutex_destroy( &mutex )`;
   );
 
-  - meet (id:INTEGER, c:COLOUR, rp:PAIR) :BOLLEAN <-
-  ( + result:BOOLEAN;
-    `pthread_mutex_lock( &mutex );`
+  - meet (id:INTEGER, c:INTEGER, rp:PAIR) :BOLLEAN <-
+  ( + result: BOOLEAN;
+    + new_colout: INTEGER;
+
+    `pthread_mutex_lock( &mutex )`;
     result := TRUE;
 
     (meetings_left > 0).if {
@@ -58,7 +62,7 @@ Section Public
         rp.two_met := FALSE;
         current := rp;
       } else {
-        //Colour new_colour = doCompliment( c, firstColour );
+        new_colour := do_compliment( c, first_colour );
         
         (id = first_id).if {
           rp.meet(TRUE, new_colour);
@@ -74,7 +78,7 @@ Section Public
       result := FALSE;
     };
  
-    `pthread_mutex_unlock( &mutex );`
+    `pthread_mutex_unlock( &mutex )`;
     result
   );
 
