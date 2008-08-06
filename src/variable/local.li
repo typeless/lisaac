@@ -34,13 +34,15 @@ Section Inherit
   
 Section Public  
   
-  //
-  // Copy alias manager.
-  //
-
+  // BSBS: Doit pas etre utile.
+  
   + is_result :BOOLEAN := FALSE;
 
   - set_result r:BOOLEAN <- is_result := r;
+  
+  //
+  // Copy alias manager.
+  //
   
   - is_alias:BOOLEAN;
   
@@ -275,9 +277,9 @@ Section Public
     is_result   := r;
     intern_name := ALIAS_STR.get_intern n; 
     
-    (intern_name == "Result__0Y").if {
-      crash;
-    };
+    //(intern_name == "Result__0Y").if {
+      //crash;
+    //};
     
     ((t.is_expanded) && {! t.is_expanded_c}).if {
       type := t + TYPE_FULL.expanded_ref_bit;
