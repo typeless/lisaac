@@ -134,31 +134,9 @@ Section Public
     
     // Update.
     lst_typ := TYPES_TMP.new;        
-    expr.get_type lst_typ;            
-    //? {! lst_typ.is_empty};
-    (lst_typ.is_empty).if {
-      list_current.debug_display;
-      "\n----------\n".print;
-      expr.debug_display;
-      semantic_error (expr.position,"BUG");
-    };
-    /*
-    (lst_typ.first = TYPE_NULL).if {
-      null_counter := null_counter + 1;
-      (debug_level_option = 0).if {
-	// Remove TYPE_NULL
-	(list.first.id = TYPE_NULL).if {
-	  wrt ?= list.first.code.first; // For ?= with NULL type.
-	  (wrt = NULL).if {
-	    lst_typ.remove_first;
-	  };
-	};	
-      };
-    };
-    */
+    expr.get_type lst_typ;       
     ? {lst_typ.count <= list.count};        
-    
-    
+        
     (lst_typ.count > list.count).if {
       "New type: ".print;
       lst_typ.print;
@@ -215,10 +193,12 @@ Section Public
       is_end := TRUE;
     };
     (
-      (list.count = 2) && 
-      {expr.static_type.raw = type_boolean} && 
-      {list.first .code.is_empty} &&
-      {list.second.code.is_empty}
+      (list.count = 0) || {
+        (list.count = 2) && 
+        {expr.static_type.raw = type_boolean} && 
+        {list.first .code.is_empty} &&
+        {list.second.code.is_empty}
+      }
     ).if { 
       result := expr.execute_unlink;
       is_end := TRUE;

@@ -306,10 +306,12 @@ Section Public
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
     /*
-    (intern_name == "__tmp__4").if {
+    (intern_name == "Result__ID").if {
       "VARIABLE create :".print;
-      result.debug_display;
-      crash;
+      result.debug_display;      
+      (result.object_id = 6).if {
+       // crash;
+      };
     };
     */
     
@@ -329,8 +331,8 @@ Section Public
       '\n'.print;
       crash;
     };
-    /*
-    (intern_name == "__tmp__4").if {
+  /*  
+    (intern_name == "Result__ID").if {
       "VARIABLE delete :".print;
       e.debug_display;
     };

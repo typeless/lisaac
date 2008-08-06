@@ -146,8 +146,10 @@ Section Public
       (e != NULL).if {
 	e.remove;
       };
+    };    
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;
+      result_list.item j.remove;
     };
-    // BSBS: Pourquoi tu nettoi pas les results ?
   );
   
 Section Private  
@@ -190,19 +192,16 @@ Section Private
 	//
 	(list_current.old_seq_or_and = seq_or_and).if {	    	    	    
           profil.unlink;	  	  	    	    
-          /*
-	  prof_block ?= profil;
-	  (prof_block != NULL).if {	    
-	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
-	      loc := profil.argument_list.item j;
-	      (loc != NULL).if {
-		loc.set_my_alias (loc.my_copy);
-	      };
-	    };
-          } else {
-            */
-	    LOCAL.alias_on;
-	  //};                    
+          LOCAL.alias_on;
+          
+          "Write : ".print;
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;
+            result_list.item j.debug_display;
+          };
+          "Source : ".print; 
+          source.debug_display;
+          "--------------------\n".print;
+          
           new_src := source.my_copy;	                     
           argument_to_assignment new_src index 1 alias TRUE;	                      
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
@@ -211,20 +210,14 @@ Section Private
             wrt.set_value (old_val.my_copy);	      	      
             old_val.remove;
             new_src.add wrt to (new_src.upper);                        
-	  };		  	  
-          /*
-	  (prof_block != NULL).if {
-	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
-	      loc := profil.argument_list.item j;
-	      (loc != NULL).if {
-		loc.set_my_alias NULL;
-	      };
-	    };
-          } else {
-            */
-	    LOCAL.alias_off;
-          //};
-          //
+          };		  	                      
+          LOCAL.alias_off;          
+          
+          "Copy:".print;
+          new_src.debug_display;
+          "===========================FIN============================\n".print;
+          
+          
 	  result := new_src.execute;
           is_good := TRUE;
 	  new_execute_pass;	  	  
