@@ -25,8 +25,8 @@ Section Header
   - copyright := "2003-2008 Sonntag Benoit";
 
   - author    := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
-  - comment   := "DemoMaker version 1980 on Amiga :-)";
-
+  - comment   := "DemoMaker (La nostalgie d'un temps passé 07/08/1994-2008)";
+  
 Section Inherit  
   
   + parent_area:Expanded AREA;
