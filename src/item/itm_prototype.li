@@ -60,8 +60,17 @@ Section Public
   - to_run_expr:EXPR <- 
   ( + t:TYPE_FULL;
     + result:EXPR;
-        
+    
+    warning_error (position,"ICI");
+    
     t := type.to_run_for profil_slot;    
+    
+    (t = NULL).if {
+      string_tmp.copy "Type `";
+      type.append_in string_tmp;
+      string_tmp.append "' not found (Undefine type parameter).";      
+      semantic_error (position,string_tmp);
+    };
     // TYPE Classic.
     (
       (t.is_expanded_c) && 

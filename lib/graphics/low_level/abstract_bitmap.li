@@ -219,6 +219,11 @@ Section Public
   (
     deferred;
   );
+
+  - get_color_hard (x,y:INTEGER) :UINTEGER_32 <-
+  (
+    deferred;
+  );
   
 Section Public  
   

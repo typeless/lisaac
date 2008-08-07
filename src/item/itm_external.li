@@ -130,7 +130,7 @@ Section Public
 	exp1 := profil_slot.argument_list.first.read position;
 	result := SIZE_OF.create position receiver exp1;
       }
-      .when 13 then { // CONVERT[SRC to DST].on src:SRC :DST.
+      .when 13 then { // CONVERT SRC TO DST.on src:SRC :DST.
 	type := profil_slot.result_list.first.type;
 	exp2 := profil_slot.argument_list.second.read position;
 	result := CAST.create type value exp2;

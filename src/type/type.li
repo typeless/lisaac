@@ -721,7 +721,7 @@ Section TYPE
 	POSITION.send_error;
       };	
     } else {
-      (result.generic_count != gen_count).if {
+      (result.generic_count != gen_count).if {        
 	POSITION.put_error semantic text "Incorrect genericity definition.";
 	result.position.put_position;
 	(last_position.code != 0).if {

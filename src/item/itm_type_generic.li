@@ -83,26 +83,23 @@ Section Public
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + lst:FAST_ARRAY[TYPE_FULL];
     + t:TYPE_FULL;
-        
+    + j:INTEGER;    
+    + result:TYPE_FULL;
+    
     lst := ALIAS_ARRAY[TYPE_FULL].new;
-    (list_type.lower).to (list_type.upper) do { j:INTEGER;
-      t := list_type.item j.to_run_for p;      
-      
-      (t = NULL).if {        
-        //crash;
-        
-        string_tmp.copy "Type parameter `";
-        list_type.item j.append_in string_tmp;
-        string_tmp.append "' not found in ";
-        append_in string_tmp;
-        string_tmp.add_last '.';
-        semantic_error (p.position,string_tmp);
-      };
-      ? {t != NULL};
+    j := list_type.lower;    
+    {
+      t := list_type.item j.to_run_for p;            
       lst.add_last t;
+      j := j + 1;
+    }.do_while {(j <= list_type.upper) && {t != NULL}};
+    (t = NULL).if {
+      ALIAS_ARRAY[TYPE_FULL].free lst;
+    } else {
+      lst := ALIAS_ARRAY[TYPE_FULL].alias lst;
+      result := TYPE_GENERIC.get Self with lst;
     };
-    lst := ALIAS_ARRAY[TYPE_FULL].alias lst;
-    TYPE_GENERIC.get Self with lst     
+    result
   );
   
   - append_in buffer:STRING <-

@@ -382,7 +382,8 @@ Section Private
   
   - table_size idx:UINTEGER_32 :POINTER <- 
   (
-    {idx.in_range 1 to (minimum_size/POINTER.object_size.to_uinteger_32)} ? "Memory: Bound table_size.";
+    {idx.in_range 1 to (minimum_size/POINTER.object_size.to_uinteger_32)} ? 
+    "Memory: Bound table_size.";
     `&(table_size[@idx-1])`:POINTER
   );
           
@@ -408,13 +409,13 @@ Section Private
     {(new_size & (POINTER.object_size.to_uinteger_32 - 1)) = 0} ? "Memory: Alignment.";
     {new_size >= POINTER.object_size.to_uinteger_32} ? "Memory: Size = 0.";
 
-    result := read ptr_table;        
+    result := read ptr_table;            
     (result = NULL).if {      
-      // Allocation new LAB.      
+      // Allocation new LAB.            
       result := new_lab lab_type;          
       next := result + new_size;            
       put NULL to next;
-      put next to ptr_table;          
+      put next to ptr_table;                
     } else {      
       // Next Linked list.
       next := read result;
@@ -433,7 +434,7 @@ Section Private
 	next2 := read next & ~11b;
 	put next2 to result;	
 	result := next;	
-      };		
+      };		      
     }; 
     result
   );
@@ -523,11 +524,9 @@ Section Public
     
     {(new_size & (POINTER.object_size.to_uinteger_32 - 1)) = 0} ? "Memory: Alignment.";
     
-    ptr_table := table_size (new_size / POINTER.object_size.to_uinteger_32);
+    ptr_table := table_size (new_size / POINTER.object_size.to_uinteger_32);    
     result := micro_alloc new_size table ptr_table lab new_size;
-    
-    
-    
+        
     //fill_memory result size new_size;
     
     result

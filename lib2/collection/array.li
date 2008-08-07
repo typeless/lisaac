@@ -406,7 +406,7 @@ Section Public
     result
   );
 			
-  - '=='  Right 60 other:SELF :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <-
   ( + result:BOOLEAN;    
     
     (Self = other).if {

@@ -269,7 +269,7 @@ Section Private
     + result:ITM_CODE;
     
     lst ?= v;
-    (lst != NULL).if {
+//    (lst != NULL).if {
       // Add function for init.
       /*
       string_tmp.copy "Create function ";
@@ -295,9 +295,9 @@ Section Private
       t.slot_list.fast_put s to (s.name);
       a := ITM_PROTOTYPE.create (v.position) type (ITM_TYPE_SIMPLE.get (t.name));            
       result := ITM_READ_ARG1.create (v.position) name n arg a;
-    } else {
+/*    } else {
       // Direct value.
       result := v;
-    };    
+    };    */
     result
   );

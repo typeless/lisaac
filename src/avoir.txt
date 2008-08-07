@@ -1,82 +1,147 @@
-=========================
-Write : __tmp__CC[Expanded INTEGER] := Result__ED[Expanded INTEGER]<0/R1/E2>
-Source : (
-  (Expanded INTEGER)0(
-    (Expanded INTEGER)0(
-      __tmp__BE[NUMERIC] := parent_numeric__H[NUMERIC]<2/R3/E9>
-    )
-    __tmp__BE[NUMERIC]<4/R5/E2>(
-      __tmp__BE[NUMERIC]<6/R5/E2>(
-        zero__CE((Expanded INTEGER)0)
-      )
-      Strict VOID
-    )
-    Strict VOID
-  )
-  __tmp__FD[Expanded INTEGER]<7/R8/E3>(
-    __tmp__FD[Expanded INTEGER]<9/R8/E3>(
-      __tmp__FE[NUMERIC] := parent_numeric__H[NUMERIC]<10/R3/E9>
-    )
-    __tmp__FE[NUMERIC]<11/R12/E2>(
-      __tmp__FE[NUMERIC]<13/R12/E2>(
-        __infix_sub__LC(__tmp__FD[Expanded INTEGER]<14/R8/E3>,Self__DD[Expanded INTEGER]<15/R16,17/E1>)
-      )
-      Strict VOID
-    )
-    Strict VOID
-  )
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-=========================
-Write : __tmp__HC[Expanded INTEGER] := Result__ED[Expanded INTEGER]<20/R1/E2>
-Source : (
-  __tmp__BE[NUMERIC] := Strict NUMERIC
-  Result__EE[Expanded INTEGER] := (Expanded INTEGER)0
-  __tmp__FD[Expanded INTEGER] := (Expanded INTEGER)0
-  __tmp__FE[NUMERIC] := Strict NUMERIC
-  __infix_sub__LC((Expanded INTEGER)0,Self__DD[Expanded INTEGER]<15/R16,17/E1>)
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-=========================
-Write : __tmp__HC[Expanded INTEGER] := Result__ED[Expanded INTEGER]<20/R1/E2>
-Source : (
-  __tmp__BE[NUMERIC] := Strict NUMERIC
-  Result__EE[Expanded INTEGER] := (Expanded INTEGER)0
-  __tmp__FD[Expanded INTEGER] := (Expanded INTEGER)0
-  __tmp__FE[NUMERIC] := Strict NUMERIC
-  __infix_sub__LC((Expanded INTEGER)0,Self__DD[Expanded INTEGER]<15/R16,17/E1>)
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-=========================
-Write : __tmp__CC[Expanded INTEGER] := Result__ED[Expanded INTEGER]<0/R1/E2>
-Source : (
-  __tmp__BE[NUMERIC] := Strict NUMERIC
-  Result__EE[Expanded INTEGER] := (Expanded INTEGER)0
-  __tmp__FD[Expanded INTEGER] := (Expanded INTEGER)0
-  __tmp__FE[NUMERIC] := Strict NUMERIC
-  __infix_sub__LC((Expanded INTEGER)0,Self__DD[Expanded INTEGER]<15/R16,17/E1>)
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-=========================
-Write : __tmp__HC[Expanded INTEGER] := Result__ED[Expanded INTEGER]<20/R1/E2>
-Source : (
-  __infix_sub__LC((Expanded INTEGER)0,Self__DD[Expanded INTEGER]<15/R16,17/E1>)
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-=========================
-Write : __tmp__CC[Expanded INTEGER] := Result__ED[Expanded INTEGER]<0/R1/E2>
-Source : (
-  __infix_sub__LC((Expanded INTEGER)0,Self__DD[Expanded INTEGER]<15/R16,17/E1>)
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-=========================
-Write : __tmp__0V[Expanded INTEGER] := Result__ZV[Expanded INTEGER]<21/R*/E1>
-Source : (
-  Self__MC[Expanded INTEGER] := (Expanded INTEGER)0
-  other__NC[Expanded INTEGER] := Self__DD[Expanded INTEGER]<15/R16,17,22/E2>
-  nop
-  __tmp__GD[Expanded INTEGER] := (- Self__DD[Expanded INTEGER]<23/R16,17,22/E2>)
-  Result__ED[Expanded INTEGER] := __tmp__GD[Expanded INTEGER]<18/R19/E1>
-)
-__prefix_sub
-CALL_SLOT: Result not affect!
+profil_block.li:    + old_profil:PROFIL;
+profil_block.li:    type_self   := ITM_TYPE_SIMPLE.type_self.to_run_for profil_slot; 
+profil_block.li:    profil_list := FAST_ARRAY[PROFIL_SLOT].create_with_capacity 2;    
+profil_block.li:    old_profil := profil;
+profil_block.li:    profil       := Self;
+profil_block.li:      base.argument.to_run_in argument_list for profil_slot;
+profil_block.li:    profil := old_profil;
+profil_block.li:    parent_profil.genere_handler buffer;
+profil_block.li:    parent_profil.write_argument args
+profil.li:	    ((msg != NULL) && {msg.profil = Self}).if {	      	      
+profil_list.li:    profil := profil_slot := NULL;
+profil_list.li:    reduce_profil := TRUE;
+profil_list.li:    profil := profil_slot := NULL;
+profil_slot.li:    profil := profil_slot := Self;    
+profil_slot.li:    parent_profil.remove_inline;
+profil_slot.li:    slot_code.remove_profil Self;    
+profil_slot.li:    parent_profil.remove;
+profil_slot.li:    slot_code.remove_profil Self;            
+item/itm_external.li:	exp1 := profil_slot.argument_list.first.read position;
+item/itm_external.li:	exp1 := profil_slot.argument_list.first.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	left   := profil_slot.argument_list.first .read position;
+item/itm_external.li:	right  := profil_slot.argument_list.item 1.read position;
+item/itm_external.li:	exp1 := profil_slot.argument_list.first .read position;
+item/itm_external.li:	exp2 := profil_slot.argument_list.item 1.read position; 
+item/itm_external.li:	exp3 := profil_slot.argument_list.item 2.read position; 
+item/itm_external.li:	exp1 := profil_slot.argument_list.first .read position;
+item/itm_external.li:	exp2 := profil_slot.argument_list.item 1.read position; 
+item/itm_external.li:	exp1 := profil_slot.argument_list.first.read position;
+item/itm_external.li:	type := profil_slot.result_list.first.type;
+item/itm_external.li:	exp2 := profil_slot.argument_list.second.read position;
+item/itm_external_type.li:    access lst_acc persistant is_persistant type (type.to_run_for profil_slot);
+item/itm_external_type.li:	typ := type_list.item j.to_run_for profil_slot.raw;	
+item/itm_ldots.li:    slot_code ?= profil_slot.slot;
+item/itm_local.li:    result := LOCAL.create position name name style '+' type (type.to_run_for profil_slot);
+item/itm_local.li:    result := LOCAL.create position name name style '-' type (type.to_run_for profil_slot);    
+item/itm_object.li:    }.elseif {profil_slot != NULL} then {
+item/itm_object.li:      result := profil_slot.lookup n;            
+item/itm_old.li:    + old_profil:PROFIL;
+item/itm_old.li:    old_profil      := profil;
+item/itm_old.li:    profil          := profil_slot;
+item/itm_old.li:    lst := profil_slot.code;
+item/itm_old.li:    profil      := old_profil;
+item/itm_prototype.li:    t := type.to_run_for profil_slot;    
+item/itm_read.li:      // Mais que le profil général en a un...
+item/itm_read.li:	  slot_msg.id_section.access receiver_type with (profil_slot.type_self.raw)
+item/itm_read.li:	  profil_slot.type_self.append_name_in string_tmp;
+item/itm_read.li:	string_tmp.append (profil_slot.slot.name);
+item/itm_write_cast.li:      slot := profil_slot.type_self.get_slot nm; 
+item/itm_write_cast.li:	profil_slot.type_self.append_name_in string_tmp;
+item/itm_write_cast.li:      typ_cast := ts.to_run_for profil_slot; 
+item/itm_write_value.li:      slot := profil_slot.type_self.get_slot idf;
+item/itm_write_value.li:	profil_slot.type_self.append_name_in string_tmp;
+type/type.li:      {(j <= lst.upper) && {lst.item j.to_run_for profil_slot != t}}.while_do {
+type/type_null.li:      (profil = NULL).if {
+type/type_null.li:	ctext := profil.context;
+variable/argument.li:  // To profil
+variable/slot_code.li:  // Static and Dynamic profil.
+variable/slot_code.li:  // Dynamic profil.
+variable/slot_code.li:  + profil:FAST_ARRAY[PROFIL_SLOT];
+variable/slot_code.li:  - get_profil args:FAST_ARRAY[EXPR] self type_self:TYPE_FULL :(PROFIL, FAST_ARRAY[WRITE]) <-
+variable/slot_code.li:      pro_list := typ_block.profil_list;
+variable/slot_code.li:	typ_block.profil_list.add_last result;
+variable/slot_code.li:      j := profil.lower;      
+variable/slot_code.li:      {(j <= profil.upper) && {result = NULL}}.while_do {
+variable/slot_code.li:	pro := profil.item j;					
+variable/slot_code.li:	profil.add_last result;
+variable/slot_code.li:	((id_section.is_external) && {profil.count > 1}).if {
+variable/slot_code.li:      res_lst := result.make Self with (type_self, args) verify (profil.count = 1);      
+variable/slot_code.li:    profil := FAST_ARRAY[PROFIL_SLOT].create_with_capacity 1;    
+variable/slot_code.li:	  is_equal_profil slot;
+variable/slot_code.li:    (profil_slot.result_list.count != nb_result_list).if {
+variable/slot_code.li:      profil_slot.result_list.count.append_in string_tmp;
+variable/slot_code.li:      put_result result in (profil_slot.result_list.first);
+variable/slot_code.li:        put_result (mul.item j) in (profil_slot.result_list.item j);
+variable/slot_code.li:  - remove_profil prof:PROFIL_SLOT <-
+variable/slot_code.li:    idx := profil.fast_first_index_of prof;
+variable/slot_code.li:    (idx <= profil.upper).if { // Else, This profil is in BLOCK      
+variable/slot_code.li:      profil.remove idx;
+variable/slot_code.li:    (profil != NULL).if {
+variable/slot_code.li:      (profil.upper).downto (profil.lower) do { k:INTEGER;
+variable/slot_code.li:	prof := profil.item k;
+variable/slot_data.li:    //+ old_profil_current:PROFIL_SLOT;
+variable/slot_data.li:      //old_profil_current := profil_current;
+variable/slot_data.li:      //profil_current := NULL;
+variable/slot_data.li:      //profil_current := old_profil_current;        
+dispatcher/dta_block.li:    context := profil;    
+dispatcher/dta_block.li:      call := CALL_SLOT.create (e.position) profil t_block with wrt_larg;      
+dispatcher/dta_block.li:	    rd  := call.profil.result_list.item j.read (e.position);
+dispatcher/dta_block.li:          rd  := call.profil.result_list.first.read (e.position);
+dispatcher/node.li:      (profil = NULL).if {
+dispatcher/node.li:	PUSH.create p context (profil.context) first FALSE
+dispatcher/node_style.li:    + my_profil:PROFIL;
+dispatcher/node_style.li:      (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
+dispatcher/node_style.li:      call := CALL_SLOT.create position profil my_profil with wrt_lst;      
+dispatcher/node_style.li:	    rd  := call.profil.result_list.item j.read position;
+dispatcher/node_style.li:          rd  := call.profil.result_list.first.read position;
+code_life/call_slot.li:  + profil:PROFIL;
+code_life/call_slot.li:  - set_profil p:PROFIL <-
+code_life/call_slot.li:    profil := p;
+code_life/call_slot.li:  - source:LIST <- profil.code;
+code_life/call_slot.li:  - is_interrupt:BOOLEAN <- profil.is_interrupt;
+code_life/call_slot.li:  - is_external:BOOLEAN  <- profil.is_external;
+code_life/call_slot.li:  - create p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY[WRITE] :SELF <-
+code_life/call_slot.li:    result.make p profil prof with l_arg;
+code_life/call_slot.li:  - make p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY[WRITE] <-
+code_life/call_slot.li:    // Choice profil.
+code_life/call_slot.li:    profil := prof;    
+code_life/call_slot.li:    profil.link;                
+code_life/call_slot.li:    result_list.make_with_capacity (profil.result_list.count);        
+code_life/call_slot.li:    result.profil.link;
+code_life/call_slot.li:    (profil.link_count = 0).if {
+code_life/call_slot.li:    profil.unlink;
+code_life/call_slot.li:      (profil.link_count = 1).if {      
+code_life/call_slot.li:	  profil.remove_inline;	  	  
+code_life/call_slot.li:      }.elseif {profil.is_inlinable/* && {FALSE}*/} then {
+code_life/call_slot.li:          profil.unlink;	  	  	    	    
+code_life/call_slot.li:              profil.slot.name.print; '\n'.print;
+code_life/call_slot.li:              warning_error (profil.slot.position,"CALL_SLOT : Result bizarre!");              
+code_life/call_slot.li:    // Pour l'instant ne change pas le profil
+code_life/call_slot.li:    //profil := profil.update self link FALSE;
+code_life/call_slot.li:	    profil.argument_list.put NULL to j;
+code_life/call_slot.li:    (profil.is_context_sensitive).if {
+code_life/call_slot.li:    (! profil.is_recursive).if {
+code_life/call_slot.li:    (profil.is_context_sensitive).if {
+code_life/call_slot.li:    (profil.search_tail_recursive).if {
+code_life/call_slot.li:      profil.remove_inline;		
+code_life/call_slot.li:	  profil.unlink;	
+code_life/call_slot.li:	  profil.set_life;
+code_life/call_slot.li:    buffer.append (profil.name);
+code_life/call_slot.li:    buffer.append (profil.name);
+code_life/call_slot.li:    string_tmp.append (profil.name);
+code_life/call_slot.li:    buffer.append (profil.name);
+code_life/call_slot.li:	arg := profil.argument_list.item j;
+code_life/call_slot.li:    result := LOOP.create position name (profil.name) body source;
+code_life/call_slot.li:	  (msg_slot.profil != profil).if {

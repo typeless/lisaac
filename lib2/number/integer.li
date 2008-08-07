@@ -183,12 +183,12 @@ Section Public
   ( + val:SELF;
     + result:BOOLEAN;
     
-    (Self != 0).if {
+    (Self != 0).if {      
       val := Self;
       {val.is_even}.while_do {
 	val := val >> 1;
-      };
-      result := val = 1;
+      };      
+      result := val = 1;      
     };
     result
   );
