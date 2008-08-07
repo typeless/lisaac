@@ -35,7 +35,7 @@ Section Inherit
   
 Section Public
   
-  - filename:ABSTRACT_STRING := "/home/sonntag/svn/isaac/trunk/lisaac/example/demomaker/images/cobaye.bmp"; // "grille.bmp";
+  - filename:ABSTRACT_STRING := "cobaye.bmp";  
   
   - bitmap:ABSTRACT_BITMAP;
 //  - background:ABSTRACT_BITMAP;
