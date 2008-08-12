@@ -123,8 +123,10 @@ Section Common
   - application + "gui/clock/";
   - application + "gui/desktop/";
   - application + "gui/mpg2/";
+  - application + "demomaker/rotozoom/";
+  - application + "demomaker/glass/";
+  - application + "demomaker/fire/";
 
-  
 Section UNIX, DOS, COMPILER, SHORTER
 
   - unix   + "system/";
