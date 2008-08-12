@@ -75,6 +75,7 @@ Section SHORTER
 Section Common
   // Always valid path.
   
+  
   + option_gcc := " ";
   
   + lib    := lisaac + "lib/";
@@ -83,6 +84,7 @@ Section Common
   + unix    := lib_os + "unix/";
   + windows := lib_os + "windows/";
   + dos     := lib_os + "dos/";
+  
     
   // Standard library:
   - lib + "base/";
@@ -171,7 +173,7 @@ Section X86, IPAQ, ST2XX, LINUX
   // Standard.
   //
   
-  + isaac := "/home/sonntag/svn/isaacos/trunk/isaacos/";  
+  + isaac := "/home/jerome/svn/isaacos/trunk/isaacos/";  
 
   // File System
   
@@ -185,7 +187,9 @@ Section X86, IPAQ, ST2XX, LINUX
 Section X86  
   
   + machine := isaac + "x86/";
-
+  
+  - machine + "memory/";
+  
   * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
   * isaac+"tool/elf2eof/elf2eof -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
 

@@ -66,7 +66,7 @@ Section Public
     
     capacity := nb_elements * element_sizeof;    
     //p := `malloc(@capacity)`:POINTER; 
-    p := MEMORY.alloc_dynamic (capacity.to_uinteger_32);
+    p := SYSTEM.memory.alloc_dynamic (capacity.to_uinteger_32);
     result := CONVERT[POINTER,NATIVE_ARRAY[V]].on p;
     result
   )
@@ -108,7 +108,7 @@ Section Public
     old_ptr := CONVERT[NATIVE_ARRAY[V],POINTER].on Self; 
     new_cap := new_nb_elts * element_sizeof;
     //new_ptr := `realloc(@old_ptr,@new_cap)`:POINTER;
-    new_ptr := MEMORY.realloc_dynamic old_ptr 
+    new_ptr := SYSTEM.memory.realloc_dynamic old_ptr 
     old_size ((old_nb_elts * element_sizeof).to_uinteger_32) 
     new_size (new_cap.to_uinteger_32);
     new := CONVERT[POINTER,NATIVE_ARRAY[V]].on new_ptr;

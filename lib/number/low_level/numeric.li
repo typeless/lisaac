@@ -335,13 +335,13 @@ Section Public
   );
 
   - to_uinteger_32:UINTEGER_32   <-
-  [ -? {bound_test (UINTEGER_32.minimum) to (UINTEGER_32.maximum)}; ]
+//  [ -? {bound_test (UINTEGER_32.minimum) to (UINTEGER_32.maximum)}; ]
   ( 
     to_raw_uinteger_32
   );
 
   - to_uinteger_64:UINTEGER_64   <- 
-  [ -? {bound_test (UINTEGER_64.minimum) to (UINTEGER_64.maximum)}; ]
+ // [ -? {bound_test (UINTEGER_64.minimum) to (UINTEGER_64.maximum)}; ]
   ( 
     to_raw_uinteger_64
   );

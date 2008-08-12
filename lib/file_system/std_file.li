@@ -91,6 +91,7 @@ Section Public
     buf := dest.to_native_array_uinteger_8;
     index := dest.count * dest.element_sizeof;
     s := nb_elt * dest.element_sizeof;    
+    (buf = NULL).if {"STD_FILE : buf NULL\n".print;};
     result := physical_read (buf+index) size s;
     dest.set_count new_count;
     ? {result % dest.element_sizeof = 0};

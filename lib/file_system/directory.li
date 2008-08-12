@@ -123,6 +123,7 @@ Section Public
     }.do_while {(result = NULL) && {! string_tmp2.is_empty}};       
     ((result != NULL) && {string_tmp3.count != string_tmp2.count}).if{
       + dir:DIRECTORY;
+
       dir ?= result;            
       result := dir.physical_get_entry string_tmp3;      
     };

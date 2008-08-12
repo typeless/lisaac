@@ -62,6 +62,15 @@ Section Public
   
   - to_integer:INTEGER <- to_raw_integer;
   
+/*  
+  - '+' Left 80 other:INTEGER :POINTER<- (to_uinteger_32 + other).to_pointer;
+
+  - '&' Left 80 other:INTEGER :POINTER<- (to_uinteger_32 & other).to_pointer;
+  
+  - '>' Left 80 other:INTEGER :BOOLEAN<- (to_uinteger_32 > other);
+  
+  - '<=' Left 80 other:INTEGER :BOOLEAN<- (to_uinteger_32 <= other);
+*/
   //
   // Convertion format without test.
   //

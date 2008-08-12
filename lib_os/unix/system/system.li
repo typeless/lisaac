@@ -75,11 +75,13 @@ Section Public
   );
 
   // Memory Management
-  
+ 
+ - memory:MEMORY := MEMORY;
+   
   - get_begin_memory:POINTER;
   
-  - get_memory_capacity:UINTEGER_32 <- 
-  ( + cap:UINTEGER_32;
+  - get_memory_capacity:UINTEGER_64 <- 
+  ( + cap:UINTEGER_64;
     + mem:POINTER;
        
     cap := 32.mb;

@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name     := Strict MEMORY;
+  + name     := MEMORY;
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -44,17 +44,28 @@ Section Inherit
     
 Section Mapping
   
-  + previous_linear:UINTEGER_32;  
-  + size_and_id:UINTEGER_32;
+  + map_previous_linear:UINTEGER_32;  
+  + map_size_and_id:UINTEGER_32;
     
   //---------------> Limit for Busy (64 bits)
   
-  + next_free    :MEMORY;
-  + previous_free:MEMORY;
+  + map_next_free    :MEMORY;
+  + map_previous_free:MEMORY;
   
   //---------------> Limit for Free
   
-Section Private  
+Section MEMORY  
+  
+  + previous_linear:UINTEGER_32 <- map_previous_linear;  
+  + size_and_id:UINTEGER_32 <- map_size_and_id;
+    
+  //---------------> Limit for Busy (64 bits)
+  
+  + next_free    :MEMORY <- map_next_free;
+  + previous_free:MEMORY <- map_previous_free;
+
+
+  
   
   //
   // Product by compiler.
@@ -90,9 +101,9 @@ Section MEMORY
   
   - is_end:BOOLEAN      <- (size_and_id & id_end).to_boolean;
   
-  - set_previous_linear p:UINTEGER_32 <- ( previous_linear := p; );
+  - set_previous_linear p:UINTEGER_32 <- ( map_previous_linear := p; );
   
-  - set_size_and_id s:UINTEGER_32     <- ( size_and_id     := s; );
+  - set_size_and_id s:UINTEGER_32     <- ( map_size_and_id     := s; );
   
   - get_index p:POINTER :UINTEGER_32  <- (p - begin_memory).to_uinteger_32 >> 26;
   
@@ -133,7 +144,7 @@ Section MEMORY
   );
 
   - new_page:MEMORY <-
-  ( + old_size,new_size:UINTEGER_32;
+  ( + old_size,new_size:UINTEGER_64;
     + block:MEMORY;
     
     (capacity_max = 0).if {
@@ -150,7 +161,7 @@ Section MEMORY
     
     {nb_page < 64} ? "Memory: 4GB limit.";    
         
-    block := CONVERT[POINTER,MEMORY].on (begin_memory + old_size);    
+    block := CONVERT[POINTER,MEMORY].on (begin_memory +# old_size);    
     
     block.set_previous_linear 0FFFF_FFFFh;
     block.set_size_and_id ((64.mb - object_size) | id_free | id_end);
@@ -172,8 +183,8 @@ Section MEMORY
   - id_free:UINTEGER_32 <- 00b;
   - id_busy:UINTEGER_32 <- 01b;
   
-  - set_next_free     n:MEMORY <- ( next_free     := n; );
-  - set_previous_free p:MEMORY <- ( previous_free := p; );
+  - set_next_free     n:MEMORY <- ( map_next_free     := n; );
+  - set_previous_free p:MEMORY <- ( map_previous_free := p; );
   
   - delete_link_free <-
   ( + prev,next:MEMORY;
@@ -192,8 +203,8 @@ Section MEMORY
   
   - add_link_free <-
   (    
-    next_free     := first_free;
-    previous_free := NULL;
+    map_next_free     := first_free;
+    map_previous_free := NULL;
     (first_free != NULL).if {      
       first_free.set_previous_free Self;
     };    
@@ -265,7 +276,7 @@ Section MEMORY
 	next.set_previous_linear ((new.this - begin_memory).to_uinteger_32);
       };
     };
-    size_and_id := siz | id_busy;
+    map_size_and_id := siz | id_busy;
     {id = id_busy} ? "Memory: Macro Block not busy.";
   );
   
@@ -283,7 +294,7 @@ Section MEMORY
 	sz  := new_size - old_size - object_size.to_uinteger_32;
 	((nxt.id = id_free) && {nxt.size >= sz}).if {
 	  nxt.to_busy sz index idx;
-	  size_and_id := size_and_id + (nxt.size_and_id&0FFFF_FFFEh) + object_size.to_uinteger_32;
+	  map_size_and_id := size_and_id + (nxt.size_and_id&0FFFF_FFFEh) + object_size.to_uinteger_32;
 	  (is_end).if {
 	    put_last Self to idx;
 	  } else {
@@ -370,7 +381,7 @@ Section MEMORY
     result + POINTER.object_size
   );  
   
-Section Private
+Section MEMORY
     
   - minimum_size:UINTEGER_32 <- `MINIMUM_SIZE`:UINTEGER_32;
   
@@ -388,7 +399,7 @@ Section Private
           
   - begin_memory:POINTER;
   
-  - capacity_max:UINTEGER_32;
+  - capacity_max:UINTEGER_64;
   
   - read p:POINTER :POINTER <-
   ( + mem:NATIVE_ARRAY[POINTER];
@@ -452,7 +463,7 @@ Section Private
     put p to last;
   );
   
-Section Private
+Section MEMORY
 
   - copy src:POINTER to dst:POINTER size sz:UINTEGER_32 <-
   ( + na_src,na_dst:NATIVE_ARRAY[POINTER];

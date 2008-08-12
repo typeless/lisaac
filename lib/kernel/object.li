@@ -125,9 +125,9 @@ Section Public
       //ptr := `malloc((@sz + 3)&0xFFFFFFFC)`:POINTER;                  
       clone_allocation_size := clone_allocation_size + sz;                  
       (typ_id = -1).if {
-	ptr := MEMORY.alloc_size sz;
+	ptr := SYSTEM.memory.alloc_size sz;
       } else {
-	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
+	ptr := SYSTEM.memory.alloc_type (typ_id.to_uinteger_32) size sz;
       };                                         
       //MEMORY.copy to_pointer to ptr size sz;
       result := CONVERT[POINTER,SELF].on ptr;            
@@ -150,9 +150,9 @@ Section Public
       clone_allocation_size := clone_allocation_size - sz;      
       ptr := to_pointer;
       (typ_id = -1).if {
-	MEMORY.free ptr size sz;
+	SYSTEM.memory.free ptr size sz;
       } else {
-	MEMORY.free ptr type (typ_id.to_uinteger_32);
+	SYSTEM.memory.free ptr type (typ_id.to_uinteger_32);
       };                       
     };
   );
