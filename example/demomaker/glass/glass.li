@@ -38,9 +38,10 @@ Section Public
   - filename:ABSTRACT_STRING := "cobaye.bmp";  
   
   - bitmap:ABSTRACT_BITMAP;
-//  - background:ABSTRACT_BITMAP;
   
-  - size:INTEGER := 200;
+  - background:ABSTRACT_BITMAP;
+  
+  - size:INTEGER := 300;
   
   - mask:FAST_ARRAY2[XY];
   
@@ -79,9 +80,9 @@ Section Public
   // Width / Height
   //
   
-  - width_min:INTEGER  := 640;
+  - width_min:INTEGER  := 1024;
   
-  - height_min:INTEGER := 480;
+  - height_min:INTEGER := 768;
   
   //
   // Creation.
@@ -109,6 +110,7 @@ Section Public
     w := fmt.width;
     h := fmt.height;
     bitmap := BITMAP[PIXEL_24].create (w,h);
+    background := BITMAP[PIXEL_24].create (width_min,height_min);
     fmt.put_image_in bitmap;    
     compute_mask;
     f.close;
@@ -147,9 +149,11 @@ Section Public
   - draw (x0,y0:INTEGER) to (x1,y1:INTEGER) <-  
   ( + col:UINTEGER_32;    
     + px,py:INTEGER_32;
-    
+
     clipping (x0,y0) to (x1,y1);
-        
+    
+    //bac
+    
     0.to (size-1) do { y:INTEGER;      
       0.to (size-1) do { x:INTEGER;        
         px := (x_origin + mask.item (x,y).x) & 0FFh;
@@ -188,4 +192,3 @@ Section Public
       refresh;
     };    
   );
-
