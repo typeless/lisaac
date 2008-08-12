@@ -259,7 +259,7 @@ Section Public
   
 Section Private
   
-  - default_value v:ITM_CODE in t:PROTOTYPE :ITM_CODE <-
+  - default_value v:ITM_CODE in t:ITM_TYPE :ITM_CODE <-
   ( + lst:ITM_LIST;
     + s:ITM_SLOT;
     + n:STRING_CONSTANT;
@@ -292,8 +292,8 @@ Section Private
       s.set_value v type t;      
       s.set_argument_list larg;      
       s.set_result_type result_type;
-      t.slot_list.fast_put s to (s.name);
-      a := ITM_PROTOTYPE.create (v.position) type (ITM_TYPE_SIMPLE.get (t.name));            
+      t.to_run_for NULL.prototype.slot_list.fast_put s to (s.name);
+      a := ITM_PROTOTYPE.create (v.position) type t;            
       result := ITM_READ_ARG1.create (v.position) name n arg a;
 /*    } else {
       // Direct value.

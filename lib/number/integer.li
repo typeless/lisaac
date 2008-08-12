@@ -275,16 +275,16 @@ Section Public
     +? {Result >= 0};
   ];
 
-  - random_upper upper:SELF :SELF <-
-  // Random number between 0 to `upper'.
+  - random_upper:SELF <-
+  // Random number between 0 to `Self'.
   [ 
-    -? {upper > 0}; 
+    -? {Self > 0}; 
   ]
   (
-    random % (upper+1)
+    random % (Self+1)
   )
   [
-    +? {Result.in_range 0 to upper};
+    +? {Result.in_range 0 to Self};
   ];
 
   - random_between lower:SELF and upper:SELF :SELF <-
@@ -293,7 +293,7 @@ Section Public
     -? {lower < upper};
   ]
   ( 
-    lower + random_upper (upper-lower)
+    lower + (upper-lower).random_upper 
   )
   [
     +? {Result.in_range lower to upper};

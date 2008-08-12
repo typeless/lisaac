@@ -70,7 +70,7 @@ Section Public
     -? {n != NULL};    
   ]
   ( + result:ITM_TYPE_SIMPLE;
-  
+    
     result := dico.fast_reference_at n;    
     (result = NULL).if {
       result := create n;      
@@ -80,7 +80,7 @@ Section Public
   );
   
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  (
+  (    
     TYPE.get Self
   );
   

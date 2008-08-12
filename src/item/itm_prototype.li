@@ -60,9 +60,7 @@ Section Public
   - to_run_expr:EXPR <- 
   ( + t:TYPE_FULL;
     + result:EXPR;
-    
-    warning_error (position,"ICI");
-    
+        
     t := type.to_run_for profil_slot;    
     
     (t = NULL).if {
