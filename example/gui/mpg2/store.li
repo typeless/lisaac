@@ -28,13 +28,13 @@ Section Public
   
 Section Private
   
-  - my_write (file:STD_FILE,buf:NATIVE_ARRAY[UINTEGER_8],len:INTEGER) <-
+  - my_write (file:STD_FILE,buf:FAST_ARRAY[UINTEGER_8],len:INTEGER) <-
   (
-    outfile.write buf from 0 size len);
+    outfile.write buf from 0 size len;
   );
   
   - obfrsize:INTEGER := 4096;
-  - obfr:NATIVE_ARRAY[UINTEGER_8] := NATIVE_ARRAY[UINTEGER_8].calloc_intern obfrsize;
+  - obfr:FAST_ARRAY[UINTEGER_8] := FAST_ARRAY[UINTEGER_8].create obfrsize;
   - optr:INTEGER;
 
   - outfile:STD_FILE; 
@@ -48,8 +48,7 @@ Section Private
   );
   
   - closefile <-
-  ( + file:INTEGER;    
-    file := outfile;
+  ( 
     (optr != 0).if {          
       my_write (outfile,obfr,optr); 
     };    

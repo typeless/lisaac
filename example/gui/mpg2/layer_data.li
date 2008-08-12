@@ -26,7 +26,7 @@ Section Private
   // BitStream manager.
   //
   
-  - buffer:NATIVE_ARRAY[UINTEGER_8];  
+  - buffer:FAST_ARRAY[UINTEGER_8];  
   - pos:INTEGER;
   - max:INTEGER;
     
@@ -40,7 +40,7 @@ Section Public
   //  
   
   // bit input 
-  - infile:INTEGER;
+  - infile:STD_FILE;
      
   // sequence header and quant_matrix_extension() 
   - intra_quantizer_matrix:NATIVE_ARRAY[INTEGER];
@@ -103,24 +103,19 @@ Section Public
   //
   
   - make name:ABSTRACT_STRING <-
-  ( //+ f:ENTRY;
-    + code:INTEGER;
-    + n:NATIVE_ARRAY[CHARACTER];
-    
-    // Open file.    
-    //f := FILE_SYSTEM.get name;            
-    n := name.to_external;
-    infile := `open(@n,O_RDONLY,0666)`:INTEGER;
-    (infile = -1).if {
+  ( + code:INTEGER;
+        
+    // Open file.        
+    infile ?= FILE_SYSTEM.get_entry name;    
+    ((infile = NULL) || {! infile.open}).if {
       error_text.copy "Base layer input file ";
       error_text.append name;
       error_text.append " not found\n";
       error error_text;
     };
-    //infile ?= f.open;    
-        
+            
     // initialize_buffer.
-    buffer := NATIVE_ARRAY[UINTEGER_8].create 2048;
+    buffer := FAST_ARRAY[UINTEGER_8].create 2048;
     pos    := 2048;
     max    := 2048;
     n_cache := cache := pos := 0;
@@ -268,13 +263,9 @@ Section Private
   
   - fill_buffer <-
   ( + buffer_level:INTEGER;
-    + buf:NATIVE_ARRAY[UINTEGER_8];
-    + f:INTEGER;
-    
-    buffer.clear_all 2047;
-    f   := infile;
-    buf := buffer;
-    buffer_level := `read(@f,@buf,2048)`:INTEGER;
+        
+    buffer.clear;
+    buffer_level := infile.read buffer size 2048;    
     pos := 0;
     
     (system_stream_flag).if {
@@ -311,15 +302,10 @@ Section Private
   - get_byte:INTEGER <-
   // MPEG-1 system layer demultiplexer 
   ( + result:INTEGER;
-    + buf:NATIVE_ARRAY[UINTEGER_8];
-    + f:INTEGER;
         
     {pos >= 2048}.while_do {      
-      buffer.clear_all 2047;
-      buf := buffer;
-      f   := infile;
-      `read(@f,@buf,2048)`;
-      //infile.read buffer size 2048;
+      buffer.clear;      
+      infile.read buffer size 2048;
       pos := pos - 2048;
       max := max - 2048;
     };
