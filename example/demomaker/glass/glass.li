@@ -152,7 +152,11 @@ Section Public
 
     clipping (x0,y0) to (x1,y1);
     
-    //bac
+    0.to height by (bitmap.height) do { y:INTEGER;
+      0.to width by (bitmap.width) do { x:INTEGER;
+        background.put_bitmap bitmap to (x,y);
+      };
+    };
     
     0.to (size-1) do { y:INTEGER;      
       0.to (size-1) do { x:INTEGER;        
@@ -161,8 +165,9 @@ Section Public
         col := bitmap.get_color_hard (px,py);
         bmp_line.put col to x;
       };      
-      line_h_hard (x_origin,y_origin+y) until (x_origin+size-1) image bmp_line offset 0;      
+      background.line_h_hard (x_origin,y_origin+y) until (x_origin+size-1) image bmp_line offset 0;
     };        
+    put_bitmap background to (0,0);
   );
   
   //
