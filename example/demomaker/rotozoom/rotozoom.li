@@ -42,12 +42,12 @@ Section Public
   - angle:UINTEGER_8;
   - zoom:UINTEGER_8;
   
-  - sin:FAST_ARRAY[INTEGER_16] :=
-  ( + result:FAST_ARRAY[INTEGER_16];
+  - sin:FAST_ARRAY[INTEGER_32] :=
+  ( + result:FAST_ARRAY[INTEGER_32];
     + r:REAL;
-    result := FAST_ARRAY[INTEGER_16].create_with_capacity 256;
+    result := FAST_ARRAY[INTEGER_32].create_with_capacity 256;
     0.to 255 do { i:INTEGER;
-      r := (REAL.pi/128*i).sin * 256;
+      r := (REAL.pi/128*i).sin * 65536;
       result.add_last (r.to_integer);
     };
     result
@@ -135,12 +135,12 @@ Section Public
     0.to height do { y:INTEGER;      
       plx := px;
       ply := py;
-      aax := ax + y >> 3;
-      aay := ay + y >> 3;
+      aax := ax + y << 5;
+      aay := ay + y << 5;
       0.to width do { x:INTEGER;
         plx := plx + aay;
         ply := ply - aax;
-        col := bitmap.get_color_hard ((plx>>8) & 0FFh,(ply>>8) & 0FFh);
+        col := bitmap.get_color_hard ((plx>>16) & 0FFh,(ply>>16) & 0FFh);
         bmp_line.put col to x;
       };      
       line_h_hard (0,y) until width image bmp_line offset 0;

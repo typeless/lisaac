@@ -70,9 +70,9 @@ Section Public
   // Width / Height
   //
   
-  - width_min:INTEGER  := 1024;
+  - width_min:INTEGER  := 640;
   
-  - height_min:INTEGER := 768;
+  - height_min:INTEGER := 480;
   
   //
   // Creation.
