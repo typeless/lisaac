@@ -156,11 +156,14 @@ Section Public
   - receive msg:EVENT <-
   ( + evt_time:EVENT_TIMER;
     + evt_mouse:EVENT_MOUSE;
-        
+    + win:AREA;
+    
     evt_mouse ?= msg;
-    (evt_mouse != NULL).if {
-      // 
-      //refresh;
+    (evt_mouse != NULL).if {    
+      win := DESK.get_object (evt_mouse.x_current,evt_mouse.y_current);
+      (win != Self).if {
+        DESK.receive msg;
+      };
     };
     
     evt_time ?= msg;    

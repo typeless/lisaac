@@ -16,7 +16,7 @@ Section Header
   - author       := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment      := "picture output routines.";
   
-  - external := `#include <fcntl.h>`;
+//  - external := `#include <fcntl.h>`;
   
 Section Inherit
   
@@ -28,25 +28,22 @@ Section Public
   
 Section Private
   
-  - my_write (file:INTEGER,buf:NATIVE_ARRAY[UINTEGER_8],len:INTEGER) <-
+  - my_write (file:STD_FILE,buf:NATIVE_ARRAY[UINTEGER_8],len:INTEGER) <-
   (
-    `write(@file,@buf,@len)`;      
+    outfile.write buf from 0 size len);
   );
   
   - obfrsize:INTEGER := 4096;
   - obfr:NATIVE_ARRAY[UINTEGER_8] := NATIVE_ARRAY[UINTEGER_8].calloc_intern obfrsize;
   - optr:INTEGER;
 
-  - outfile:INTEGER; 
+  - outfile:STD_FILE; 
   - outname:STRING := STRING.create 256;
   
   - openfile <-
-  ( + name:NATIVE_ARRAY[CHARACTER];
-    
-    //"saving ".print; outname.print; '\n'.print;
-    name := outname.to_external;
-    outfile := `open(@name,O_CREAT|O_TRUNC|O_WRONLY,0666)`:INTEGER;
-    
+  ( 
+    outfile := FILE_SYSTEM.make_file outname;    
+    outfile.open;
     optr := 0;
   );
   
@@ -56,7 +53,7 @@ Section Private
     (optr != 0).if {          
       my_write (outfile,obfr,optr); 
     };    
-    `close(@file)`;    
+    outfile.close;    
   );
 
   - putbyte c:UINTEGER_8 <-
