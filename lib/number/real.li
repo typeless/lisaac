@@ -48,17 +48,17 @@ Section Public
   
   - pi   :SELF <- 3.14159265358979323846;
 
-  - atan :SELF <- `atan(@Self)`:SELF;
+  - atan :SELF <- FLOAT_PROCESSOR.atan Self;
 
-  - sqrt :SELF <- `sqrt(@Self)`:SELF;
+  - sqrt :SELF <- FLOAT_PROCESSOR.sqrt Self;
 
-  - log  :SELF <- `log(@Self)`:SELF;
+  - log  :SELF <- FLOAT_PROCESSOR.log Self;
 
-  - sin  :SELF <- `sin(@Self)`:SELF;
+  - sin  :SELF <- FLOAT_PROCESSOR.sin Self;
 
-  - cos  :SELF <- `cos(@Self)`:SELF;
+  - cos  :SELF <- FLOAT_PROCESSOR.cos Self;
 
-  - pow exp:SELF :SELF <- `pow(@Self,@exp)`:SELF;
+  - pow exp:SELF :SELF <- FLOAT_PROCESSOR.pow Self;
 
   - '**' Right 120 exp:SELF :SELF <-
   (
