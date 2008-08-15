@@ -78,6 +78,8 @@ Section Public
  
  - memory:MEMORY := MEMORY;
    
+  - memory:MEMORY := MEMORY;
+  
   - get_begin_memory:POINTER;
   
   - get_memory_capacity:UINTEGER_64 <- 
@@ -88,7 +90,7 @@ Section Public
     {
       cap := cap * 2;
       mem := `malloc(@cap)`:POINTER;    
-      (mem != NULL).if {
+      (mem != NULL).if { 
 	`free(@mem)`;
       };
     }.do_until {(mem = NULL) || {cap = 2048.mb}};           
