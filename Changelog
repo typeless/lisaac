@@ -1,3 +1,12 @@
+Version 0.14 :
+==============
+[Xavier Oswald]
+ * New vim syntax coloration file (2008/11/06)
+
+[Benoit Sonntag]
+ * Lip project path Makefile
+
+
 Version 0.12 :
 ==============
 2007/07/22
