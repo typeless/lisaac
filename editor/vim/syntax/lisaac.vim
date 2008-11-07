@@ -2,7 +2,7 @@
 " Language:     Lisaac
 " Maintainer:   Xavier Oswald <x.oswald@free.fr>
 " URL:          http://isaacproject.u-strasbg.fr/
-" Last Change:  2008 Nov 06 
+" Last Change:  2008 November 06 
 " Filenames:    *.li
 
 " Quit when a syntax file was already loaded
@@ -88,7 +88,7 @@ if version >= 508 || !exists("did_li_syn_inits")
   HiLink liNumberFloat          Float
   HiLink liFunction             Function
   HiLink liBoolean              Boolean
-  HiLink liKey                  Statement 
+  HiLink liKey                  Label 
   HiLink liString               String
   HiLink liStringSpecial        SpecialChar
   HiLink liSpecial              Todo
@@ -99,7 +99,7 @@ if version >= 508 || !exists("did_li_syn_inits")
   HiLink liQuotedExpr           Special 
   HiLink liPrototype            Type
   HiLink liSlot                 Keyword 
-  HiLink liBlock                Comment
+  HiLink liBlock                Conditional
   HiLink liElement              keyword
   HiLink liSymbolDeclaration    Keyword
   HiLink liContrat              keyword
