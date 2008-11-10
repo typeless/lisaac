@@ -3,6 +3,7 @@ Version 0.14 :
 [Xavier Oswald]
  * New vim syntax coloration file (2008/11/07)
  * Update default vimrc (2008/11/06)
+ * Add JPTemplate support for vim (2008/11/10)
 
 [Benoit Sonntag]
  * Lip project path Makefile

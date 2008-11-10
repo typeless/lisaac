@@ -467,6 +467,8 @@ Section Private
       } else {
         ENVIRONMENT.execute_command "mkdir -p ~/.vim/syntax";
         ENVIRONMENT.execute_command "mkdir -p ~/.vim/indent";
+        ENVIRONMENT.execute_command "mkdir -p ~/.vim/plugin";
+        ENVIRONMENT.execute_command "mkdir -p ~/.vim/jptemplate/lisaac";
         
         // Syntax hilightning support
         string_tmp.copy "cp -f editor/vim/syntax/lisaac.vim ~/.vim/syntax/";
@@ -491,6 +493,30 @@ Section Private
         } else {
           "OK.\n".print;  
         };
+
+        // JPTemplate plugin - A simple yet powerful interactive template system for VIM v1.5
+        string_tmp.copy "cp -f editor/vim/plugin/lisaac.vim ~/.vim/plugin/";
+        "  `".print;
+        string_tmp.print;
+        "'\t".print;
+        (ENVIRONMENT.execute_command string_tmp != 0).if {	
+          "\n  Sorry, auto-install fail !\n\
+          \  You can read the `editor/vim/install_vim_plugin.sh' file.\n".print;
+        } else {
+          "OK.\n".print;  
+        };
+        
+        string_tmp.copy "cp -f editor/vim/jptemplate/lisaac/* ~/.vim/jptemplate/lisaac/";
+        "  `".print;
+        string_tmp.print;
+        "'\t".print;
+        (ENVIRONMENT.execute_command string_tmp != 0).if {	
+          "\n  Sorry, auto-install fail !\n\
+          \  You can read the `editor/vim/install_vim_plugin.sh' file.\n".print;
+        } else {
+          "OK.\n".print;  
+        };
+
 
         // Install ~/.vimrc file
         char := question
