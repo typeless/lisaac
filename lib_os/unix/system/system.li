@@ -76,8 +76,6 @@ Section Public
 
   // Memory Management
  
- - memory:MEMORY := MEMORY;
-   
   - memory:MEMORY := MEMORY;
   
   - get_begin_memory:POINTER;
