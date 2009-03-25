@@ -1,17 +1,6 @@
 lisaac nbody -q -O -i20
 gcc nbody_c.c -o nbody_c -O3 -fomit-frame-pointer -lm
-echo Lisaac 2.10^5:
-time ./nbody 200000 > out_li.txt
-echo C:
-time ./nbody_c 200000 > out_c.txt
-diff out_li.txt out_c.txt
-echo Lisaac 2.10^6:
-time ./nbody 2000000 > out_li.txt
-echo C:
-time ./nbody_c 2000000 > out_c.txt
-diff out_li.txt out_c.txt
-
-echo Lisaac 2.10^7: 
+echo Lisaac: 
 time ./nbody 20000000 > out_li.txt
 # time ./nbody 1 > out_li.txt
 echo C:

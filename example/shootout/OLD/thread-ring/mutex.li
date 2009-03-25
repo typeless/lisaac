@@ -1,0 +1,22 @@
+Section Header
+  
+  + name := Expanded MUTEX;
+  
+  - type := `pthread_mutex_t`;
+  
+  - default := `MUTEX__`:MUTEX;
+  
+  - external := `pthread_mutex_t MUTEX__;`;
+  
+Section Insert
+  
+  - parent_object:OBJECT := OBJECT;
+  
+Section Public
+    
+  - init   <- `pthread_mutex_init(&@Self, NULL)`;
+  
+  - lock   <- `pthread_mutex_lock(&@Self)`;
+  
+  - unlock <- `pthread_mutex_unlock(&@Self)`;
+  
