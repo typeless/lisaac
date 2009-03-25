@@ -1,0 +1,200 @@
+Section Header
+
+	+ name := ABSTRACT_STRING_TEST;
+
+Section Public
+
+	- run <-
+	(
+		+ name:ABSTRACT_STRING;
+		+ empty:ABSTRACT_STRING;
+		+ values:ARRAY[STRING];
+
+		name := "John Doe";
+		empty := "";
+
+		UNIT_TEST.suite "ABSTRACT_STRING";
+
+		UNIT_TEST.section "basic";
+		UNIT_TEST.test "count #1" integer (name.count) equals 8;
+		UNIT_TEST.test "count #2" integer (empty.count) equals 0;
+		UNIT_TEST.test "lower #1" integer (name.lower) equals 1;
+		UNIT_TEST.test "lower #2" integer (empty.lower) equals 1;
+		UNIT_TEST.test "upper #1" integer (name.upper) equals 8;
+		UNIT_TEST.test "upper #2" integer (empty.upper) equals 0;
+
+		UNIT_TEST.section "Access";
+		UNIT_TEST.test "item #1" character (name.item 1) equals 'J';
+		UNIT_TEST.test "item #2" character (name.item 2) equals 'o';
+		UNIT_TEST.test "item #3" character (name.item 3) equals 'h';
+
+		UNIT_TEST.section "Testing";
+		UNIT_TEST.test "valid_index #1" boolean (name.valid_index 0) equals FALSE;
+		UNIT_TEST.test "valid_index #2" boolean (name.valid_index 1) equals TRUE;
+		UNIT_TEST.test "valid_index #3" boolean (name.valid_index 2) equals TRUE;
+		UNIT_TEST.test "valid_index #4" boolean (name.valid_index 3) equals TRUE;
+		UNIT_TEST.test "valid_index #5" boolean (name.valid_index 40) equals FALSE;
+		UNIT_TEST.test "valid_index #6" boolean (empty.valid_index 1) equals FALSE;
+		UNIT_TEST.test "valid_index #7" boolean (empty.valid_index 2) equals FALSE;
+		UNIT_TEST.test "is_empty #1" boolean (name.is_empty) equals FALSE;
+		UNIT_TEST.test "is_empty #2" boolean (empty.is_empty) equals TRUE;
+		UNIT_TEST.test "hash_code #1" integer (name.hash_code) equals 7915731; // TODO: is correct?
+		UNIT_TEST.test "hash_code #2" integer ("ABC".hash_code) equals 2022;   // TODO: is correct?
+		UNIT_TEST.test "has #1" boolean (name.has 'o') equals TRUE;
+		UNIT_TEST.test "has #2" boolean (name.has 'D') equals TRUE;
+		UNIT_TEST.test "has #3" boolean (name.has '8') equals FALSE;
+		UNIT_TEST.test "has #4" boolean (name.has 'x') equals FALSE;
+		UNIT_TEST.test "has #5" boolean (name.has 'd') equals FALSE;
+		UNIT_TEST.test "has_substring #1" boolean (name.has_substring "Doe") equals TRUE;
+		UNIT_TEST.test "has_substring #2" boolean (name.has_substring "John") equals TRUE;
+		UNIT_TEST.test "has_substring #3" boolean (name.has_substring "hn D") equals TRUE;
+		UNIT_TEST.test "has_substring #4" boolean (name.has_substring "e") equals TRUE;
+		UNIT_TEST.test "has_substring #5" boolean (name.has_substring "Jeff") equals FALSE;
+		UNIT_TEST.test "has_substring #6" boolean (name.has_substring "10") equals FALSE;
+		UNIT_TEST.test "occurrences #1" integer (name.occurrences  'o') equals 2;
+		UNIT_TEST.test "occurrences #2" integer (name.occurrences  'h') equals 1;
+		UNIT_TEST.test "occurrences #3" integer (name.occurrences  'X') equals 0;
+		UNIT_TEST.test "occurrences #4" integer (empty.occurrences  'X') equals 0;
+		UNIT_TEST.test "has_suffix #1" boolean (name.has_suffix "Doe") equals TRUE;
+		UNIT_TEST.test "has_suffix #2" boolean (name.has_suffix "oe") equals TRUE;
+		UNIT_TEST.test "has_suffix #3" boolean (name.has_suffix "e") equals TRUE;
+		UNIT_TEST.test "has_suffix #4" boolean (name.has_suffix "Smith") equals FALSE;
+		UNIT_TEST.test "has_suffix #5" boolean (name.has_suffix "o") equals FALSE;
+		UNIT_TEST.test "has_suffix #6" boolean (empty.has_suffix "Bye") equals FALSE;
+		UNIT_TEST.test "has_prefix #1" boolean (name.has_prefix "John") equals TRUE;
+		UNIT_TEST.test "has_prefix #2" boolean (name.has_prefix "Joh") equals TRUE;
+		UNIT_TEST.test "has_prefix #3" boolean (name.has_prefix "Jo") equals TRUE;
+		UNIT_TEST.test "has_prefix #4" boolean (name.has_prefix "J") equals TRUE;
+		UNIT_TEST.test "has_prefix #5" boolean (name.has_prefix "Jeff") equals FALSE;
+		UNIT_TEST.test "has_prefix #6" boolean (empty.has_prefix "Jack") equals FALSE;
+
+		UNIT_TEST.section "Testing/Conversion";
+		UNIT_TEST.test "is_boolean #1" boolean ("TRUE".is_boolean) equals TRUE;
+		UNIT_TEST.test "is_boolean #2" boolean ("FALSE".is_boolean) equals TRUE;
+		UNIT_TEST.test "is_boolean #3" boolean ("John".is_boolean) equals FALSE;
+		UNIT_TEST.test "is_boolean #4" boolean ("".is_boolean) equals FALSE;
+		UNIT_TEST.test "to_boolean #1" boolean ("TRUE".to_boolean) equals TRUE;
+		UNIT_TEST.test "to_boolean #2" boolean ("FALSE".to_boolean) equals FALSE;
+		UNIT_TEST.test "is_integer #1" boolean ("10".is_integer) equals TRUE;
+		UNIT_TEST.test "is_integer #2" boolean ("1029".is_integer) equals TRUE;
+		UNIT_TEST.test "is_integer #3" boolean ("-110".is_integer) equals TRUE;
+		UNIT_TEST.test "is_integer #4" boolean ("+110".is_integer) equals TRUE;
+		UNIT_TEST.test "is_integer #5" boolean ("Jack".is_integer) equals FALSE;
+		UNIT_TEST.test "is_integer #6" boolean ("".is_integer) equals FALSE;
+		UNIT_TEST.test "is_integer #7" boolean ("100.44".is_integer) equals FALSE;
+		UNIT_TEST.test "to_integer #1" integer ("100".to_integer) equals 100;
+		UNIT_TEST.test "to_integer #2" integer ("-12".to_integer) equals (-12);
+		UNIT_TEST.test "to_integer #3" integer ("0".to_integer) equals 0;
+		UNIT_TEST.test "is_hexadecimal #1" boolean ("16AF".is_hexadecimal) equals TRUE;
+		UNIT_TEST.test "is_hexadecimal #2" boolean ("10".is_hexadecimal) equals TRUE;
+		UNIT_TEST.test "is_hexadecimal #3" boolean ("16ZC".is_hexadecimal) equals FALSE;
+		UNIT_TEST.test "to_hexadecimal #1" integer ("16AF".to_hexadecimal) equals 5807;
+		UNIT_TEST.test "to_hexadecimal #2" integer ("10".to_hexadecimal) equals 16;
+		UNIT_TEST.test "is_octal #1" boolean ("5".is_octal) equals TRUE;
+		UNIT_TEST.test "is_octal #2" boolean ("25".is_octal) equals TRUE;
+		UNIT_TEST.test "is_octal #3" boolean ("2AF".is_octal) equals FALSE;
+		UNIT_TEST.test "is_octal #4" boolean ("Jack".is_octal) equals FALSE;
+		UNIT_TEST.test "to_octal #1" integer ("5".to_octal) equals 5;
+		UNIT_TEST.test "to_octal #2" integer ("25".to_octal) equals 21;
+		// TODO: Where is is_binary ?
+		UNIT_TEST.test "to_binary #1" integer ("101".to_binary) equals 5;
+		UNIT_TEST.test "to_binary #2" integer ("10000000101".to_binary) equals 1029;
+		UNIT_TEST.test "is_real_16_16 #1" boolean ("10".is_real_16_16) equals TRUE;
+		UNIT_TEST.test "is_real_16_16 #2" boolean ("-33.1".is_real_16_16) equals TRUE;
+		UNIT_TEST.test "is_real_16_16 #3" boolean ("13FD".is_real_16_16) equals FALSE;
+		UNIT_TEST.test "is_real_16_16 #4" boolean ("+100.39".is_real_16_16) equals TRUE;
+		UNIT_TEST.test "to_real_16_16 #1" real_16_16 ("10".to_real_16_16) equals 10.0;
+		UNIT_TEST.test "to_real_16_16 #2" real_16_16 ("-33.1".to_real_16_16) equals (-33.1);
+
+		UNIT_TEST.section "Indexing";
+		UNIT_TEST.test "item_code #1" integer (name.item_code 1) equals 74;
+		UNIT_TEST.test "item_code #2" integer (name.item_code 2) equals 111;
+		UNIT_TEST.test "item_code #3" integer (name.item_code 3) equals 104;
+		UNIT_TEST.test "index_of since #1" integer (name.index_of 'J' since 1) equals 1;
+		UNIT_TEST.test "index_of since #2" integer (name.index_of 'o' since 1) equals 2;
+		UNIT_TEST.test "index_of since #3" integer (name.index_of 'h' since 1) equals 3;
+		UNIT_TEST.test "index_of since #6" integer (name.index_of 'o' since 4) equals 7;
+		UNIT_TEST.test "index_of since #4" integer (name.index_of 'Z' since 1) equals 9;
+		UNIT_TEST.test "index_of since #5" integer (name.index_of 'J' since 2) equals 9;
+		UNIT_TEST.test "last_index_of since #1" integer (name.last_index_of 'o' since 8) equals 7;
+		UNIT_TEST.test "last_index_of since #2" integer (name.last_index_of 'o' since 5) equals 2;
+		UNIT_TEST.test "fast_index_of #1" integer (name.fast_index_of 'J') equals 1;
+		UNIT_TEST.test "fast_index_of #2" integer (name.fast_index_of 'o') equals 2;
+		UNIT_TEST.test "fast_index_of #3" integer (name.fast_index_of 'h') equals 3;
+		UNIT_TEST.test "fast_index_of #4" integer (name.fast_index_of 'D') equals 6;
+		UNIT_TEST.test "first_index_of #1" integer (name.first_index_of 'o') equals 2;
+		UNIT_TEST.test "first_index_of #2" integer (name.first_index_of 'n') equals 4;
+		UNIT_TEST.test "first_index_of #3" integer (name.first_index_of 'D') equals 6;
+		UNIT_TEST.test "fast_last_index_of #1" integer (name.fast_last_index_of 'e') equals 8;
+		UNIT_TEST.test "fast_last_index_of #2" integer (name.fast_last_index_of 'o') equals 7;
+		UNIT_TEST.test "fast_last_index_of #3" integer (name.fast_last_index_of 'n') equals 4;
+		UNIT_TEST.test "last_index_of #1" integer (name.last_index_of 'J') equals 1;
+		UNIT_TEST.test "last_index_of #2" integer (name.last_index_of 'o') equals 7;
+		UNIT_TEST.test "last_index_of #3" integer (name.last_index_of 'D') equals 6;
+		UNIT_TEST.test "index_of #1" integer (name.index_of 'J') equals 1;
+		UNIT_TEST.test "index_of #2" integer (name.index_of 'o') equals 2;
+		UNIT_TEST.test "index_of #3" integer (name.index_of 'h') equals 3;
+		UNIT_TEST.test "index_of #4" integer (name.index_of 'e') equals 8;
+
+		UNIT_TEST.section "Comparisons";
+		UNIT_TEST.test "equal #1" string "A" equals "A";
+		UNIT_TEST.test "equal #2" string name equals "John Doe";
+		UNIT_TEST.test "equal #3" string empty equals "";
+		UNIT_TEST.test "compare #1" integer (name.compare "Mike Smith") equals (-1);
+		UNIT_TEST.test "compare #2" integer (name.compare "Andy Jones") equals 1;
+		UNIT_TEST.test "compare #3" integer (name.compare "John Doe") equals 0;
+		UNIT_TEST.test "< #1" boolean (name < "ABC") equals FALSE;
+		UNIT_TEST.test "< #2" boolean (name < "Xyz Abc") equals TRUE;
+		UNIT_TEST.test "same_as #1" boolean (name.same_as "John Doe") equals TRUE;
+		UNIT_TEST.test "same_as #2" boolean (name.same_as "Jeff Doe") equals FALSE;
+		UNIT_TEST.test "same_as #3" boolean (name.same_as "john doe") equals TRUE;
+		UNIT_TEST.test "same_as #4" boolean (name.same_as "jeff doe") equals FALSE;
+		UNIT_TEST.test "== #1" boolean (name == "John Doe") equals TRUE;
+		UNIT_TEST.test "== #2" boolean (name == "john Doe") equals FALSE;
+		UNIT_TEST.test "== #3" boolean (name == "jeff Doe") equals FALSE;
+
+		UNIT_TEST.section "Modification";
+		UNIT_TEST.test "+ #1" string (name + " had a dog") equals "John Doe had a dog";
+		UNIT_TEST.test "+ #2" string (name + "") equals name;
+		UNIT_TEST.test "as_lower #1" string (name.as_lower) equals "john doe";
+		UNIT_TEST.test "as_lower #2" string (empty.as_lower) equals "";
+		UNIT_TEST.test "as_lower #3" string ("John 15".as_lower) equals "john 15";
+		UNIT_TEST.test "as_upper #1" string (name.as_upper) equals "JOHN DOE";
+		UNIT_TEST.test "as_upper #2" string (empty.as_upper) equals "";
+		UNIT_TEST.test "as_upper #3" string ("John 15".as_upper) equals "JOHN 15";
+
+		UNIT_TEST.section "Other features";
+		UNIT_TEST.test "first #1" character (name.first) equals 'J';
+		UNIT_TEST.test "first #2" character ("15th Street".first) equals '1';
+		UNIT_TEST.test "last #1" character (name.last) equals 'e';
+		UNIT_TEST.test "last #2" character ("15 + 15 = 30".last) equals '0';
+		UNIT_TEST.test "substring #1" string (name.substring 1 to 4) equals "John";
+		UNIT_TEST.test "substring #2" string (name.substring 6 to 8) equals "Doe";
+		UNIT_TEST.test "substring_index #1" integer (name.substring_index ("John", 1)) equals 1;
+		UNIT_TEST.test "substring_index #2" integer (name.substring_index ("Doe", 1)) equals 6;
+		UNIT_TEST.test "substring_index #3" integer (name.substring_index ("o", 1)) equals 2;
+		UNIT_TEST.test "substring_index #4" integer (name.substring_index ("o", 4)) equals 7;
+		UNIT_TEST.test "substring_index #5" integer (name.substring_index ("Smith", 1)) equals 0;
+		UNIT_TEST.test "first_substring_index #1" integer (name.first_substring_index "John") equals 1;
+		UNIT_TEST.test "first_substring_index #2" integer (name.first_substring_index "Doe") equals 6;
+		UNIT_TEST.test "first_substring_index #3" integer (name.first_substring_index "o") equals 2;
+		UNIT_TEST.test "first_substring_index #4" integer (name.first_substring_index "Smith") equals 0;
+
+		UNIT_TEST.section "Splitting a STRING";
+		values := name.split;
+		UNIT_TEST.test "split size" integer (values.count) equals 2;
+		UNIT_TEST.test "split val #1" string (values.item 1) equals "John";
+		UNIT_TEST.test "split val #2" string (values.item 2) equals "Doe";
+
+		name.split_in values;
+		UNIT_TEST.test "split_in size" integer (values.count) equals 4;
+		UNIT_TEST.test "split_in val #3" string (values.item 3) equals "John";
+		UNIT_TEST.test "split_in val #4" string (values.item 4) equals "Doe";
+		//TODO: This causes a compile error:
+		//UNIT_TEST.test "same_string #1" boolean (name.same_string "") equals FALSE;
+		//UNIT_TEST.test "same_string #2" boolean (name.same_string "John Doe") equals TRUE;
+		//UNIT_TEST.test "same_string #3" boolean (empty.same_string "Jim Doe") equals FALSE;
+		//UNIT_TEST.test "same_string #4" boolean (empty.same_string "") equals TRUE;
+		UNIT_TEST.test "to_string #1" string (name.to_string) equals name;
+		UNIT_TEST.test "to_string #2" string (empty.to_string) equals empty;
+	);

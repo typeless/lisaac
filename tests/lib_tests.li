@@ -1,0 +1,12 @@
+Section Header
+
+	+ name := TEST;
+
+Section Public
+
+	- main <-
+	(
+
+		ABSTRACT_STRING_TEST.run;
+		UNIT_TEST.test_results
+	);

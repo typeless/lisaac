@@ -1,0 +1,124 @@
+Section Header
+
+	+ name := UNIT_TEST;
+
+Section Private
+
+	+ pass_count:REAL_32 := 0;
+	+ fail_count:REAL_32 := 0;
+
+	- bar <-
+	(
+		"\n==============================\n".print;
+	);
+
+	- minibar <-
+	(
+		"\n   ---------------------------\n".print;
+	);
+
+Section Public
+
+	- suite name:ABSTRACT_STRING <-
+	(
+		("\n" + name).print;
+		bar;
+	);
+
+	- section name:ABSTRACT_STRING <-
+	(
+		("\n   " + name).print;
+		minibar;
+	);
+
+	- test name:ABSTRACT_STRING integer value:INTEGER equals expect:INTEGER <-
+	(
+		("   " + name + "... ").print;
+		(expect = value).if {
+			pass_count := pass_count + 1.0;
+			"passed\n".print;
+		} else {
+			fail_count := fail_count + 1.0;
+			"failed: expected '".print;
+			expect.print;
+			"' got '".print;
+			value.print;
+		 "'\n".print;
+		};
+	);
+
+	- test name:ABSTRACT_STRING real_16_16 value:REAL_16_16 equals expect:REAL_16_16 <-
+	(
+		("   " + name + "... ").print;
+		(expect = value).if {
+			pass_count := pass_count + 1.0;
+			"passed\n".print;
+		} else {
+			fail_count := fail_count + 1.0;
+			"failed: expected '".print;
+			expect.print;
+			"' got '".print;
+			value.print;
+		 "'\n".print;
+		};
+	);
+
+	- test name:ABSTRACT_STRING boolean value:BOOLEAN equals expect:BOOLEAN <-
+	(
+		("   " + name + "... ").print;
+		(value = expect).if {
+			pass_count := pass_count + 1.0;
+			"passed\n".print;
+		} else {
+			fail_count := fail_count + 1.0;
+			"failed: expected '".print;
+			expect.print;
+			"' got '".print;
+			value.print;
+			"'\n".print;
+		};
+	);
+
+	- test name:ABSTRACT_STRING character value:CHARACTER equals expect:CHARACTER <-
+	(
+		("   " + name + "... ").print;
+		(value = expect).if {
+			pass_count := pass_count + 1.0;
+			"passed\n".print;
+		} else {
+			fail_count := fail_count + 1.0;
+			"failed: expected '".print;
+			expect.print;
+			"' got '".print;
+			value.print;
+			"'\n".print;
+		};
+	);
+
+	- test name:ABSTRACT_STRING string value:ABSTRACT_STRING equals expect:ABSTRACT_STRING <-
+	(
+		("   " + name + "... ").print;
+		((expect.compare value) = 0).if {
+			pass_count := pass_count + 1.0;
+			"passed\n".print;
+		} else {
+			fail_count := fail_count + 1.0;
+			("failed: expected '" + expect + "' got '" + value + "'\n").print;
+		};
+	);
+
+	- test_results <-
+	(
+		+ total:REAL_32;
+		+ success:REAL_32;
+
+		total := pass_count + fail_count;
+		success := pass_count / total;
+
+		"\nResults".print;
+		bar;
+		"  Passed: ".print; pass_count.to_integer.print; "\n".print;
+		"  Failed: ".print; fail_count.to_integer.print; "\n".print;
+		"   Total: ".print; total.to_integer.print; "\n".print;
+		" Success: ".print; (success * 100).to_integer.print; "%\n".print;
+	);
