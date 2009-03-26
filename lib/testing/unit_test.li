@@ -190,7 +190,7 @@ Section Public
     (got = expected).if {
       test_passed name;
     } else {
-      //test_failed name got (got.to_string) expected (expected.to_string);
+      test_failed name got (got.to_string) expected (expected.to_string);
     };
   );
 

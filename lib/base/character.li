@@ -327,7 +327,7 @@ Section Public
   );
   
   - is_separator:BOOLEAN <-
-  // True when character is a separator.
+  // True when character is a separator (' ', '\t', '\n', '\r', '\0', '\f', '\v')?
   (
     (Self= ' ') || {Self = '\t'} || {Self='\n'} ||
     {Self='\r'} || {Self = '\0'} || {Self='\f'} || {Self='\v'}
@@ -362,7 +362,21 @@ Section Public
   //
   // Conversions:
   //
-  
+
+  - to_string:STRING <-
+  // Create a new STRING containing only this character.
+  (
+    STRING.create_filled (Self,1)
+  );
+
+  - to_string_in str:STRING <-
+  // Append this character at the end of 'str'. Thus you
+  // can save memory because no other STRING is allocated
+  // for the job.
+  (
+    str.append_character str;
+  );
+
   - to_hexadecimal:STRING <-
   // Create a new STRING giving the `code' in hexadecimal.
   // For example :
