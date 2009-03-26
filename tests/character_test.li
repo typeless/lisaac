@@ -21,21 +21,25 @@
 
 Section Header
 
-  + name := LIB_TESTS;
+  + name := CHARACTER_TEST;
 
   - copyright := "2009 Jeremy Cowgar";
 
-  - comment := "Unit testing of the Lisaac library.";
+  - comment := "Test suite for CHARACTER.";
 
 Section Public
 
-  - main <-
+  - run <-
   (
-    UNIT_TEST.init;
+    +tmp:STRING;
 
-    ABSTRACT_STRING_TEST.run;
-    BOOLEAN_TEST.run;
-    CHARACTER_TEST.run;
+    tmp := STRING.create 5;
 
-    UNIT_TEST.test_results
+    UNIT_TEST.suite "CHARACTER";
+
+    UNIT_TEST.section "Conversions";
+    UNIT_TEST.test "to_string #1" string ('a'.to_string) equals "a";
+
+    'A'.to_string_in tmp;
+    UNIT_TEST.test "append_in #1" string tmp equals "A";
   );

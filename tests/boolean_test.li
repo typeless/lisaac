@@ -40,7 +40,7 @@ Section Public
 
   - run <-
   ( + pass:BOOLEAN;
-    + tmp:ABSTRACT_STRING;
+    + tmp:STRING;
 
     UNIT_TEST.suite "BOOLEAN";
 
@@ -184,7 +184,18 @@ Section Public
     UNIT_TEST.test "& #2" boolean (TRUE & FALSE) equals FALSE;
     UNIT_TEST.test "& #3" boolean (FALSE & TRUE) equals FALSE;
     UNIT_TEST.test "& #4" boolean (FALSE & FALSE) equals FALSE;
-    // TODO: What does ^, ->, ->> => do on BOOLEAN values?
+    UNIT_TEST.test "^ #1" boolean (TRUE ^ TRUE) equals FALSE;
+    UNIT_TEST.test "^ #2" boolean (TRUE ^ FALSE) equals TRUE;
+    UNIT_TEST.test "^ #3" boolean (FALSE ^ TRUE) equals TRUE;
+    UNIT_TEST.test "^ #4" boolean (FALSE ^ FALSE) equals FALSE;
+    UNIT_TEST.test "-> #1" boolean (TRUE -> TRUE) equals TRUE;
+    UNIT_TEST.test "-> #2" boolean (TRUE -> FALSE) equals FALSE;
+    UNIT_TEST.test "-> #3" boolean (FALSE -> TRUE) equals TRUE;
+    UNIT_TEST.test "-> #4" boolean (FALSE -> FALSE) equals TRUE;
+    UNIT_TEST.test "->> #1" boolean (TRUE ->> { TRUE }) equals TRUE;
+    UNIT_TEST.test "->> #2" boolean (TRUE ->> { FALSE }) equals FALSE;
+    UNIT_TEST.test "->> #3" boolean (FALSE ->> { TRUE }) equals TRUE;
+    UNIT_TEST.test "->> #4" boolean (FALSE ->> { FALSE }) equals TRUE;
 
     UNIT_TEST.test "! #1" boolean (! TRUE) equals FALSE;
     UNIT_TEST.test "! #2" boolean (! FALSE) equals TRUE;
@@ -201,11 +212,10 @@ Section Public
     UNIT_TEST.test "to_character #1" character (TRUE.to_character) equals '1';
     UNIT_TEST.test "to_character #2" character (FALSE.to_character) equals '0';
 
-    tmp := "TMP";
+    tmp := STRING.create 5;
     TRUE.append_in tmp;
-    UNIT_TEST.test "TRUE.append_in" string tmp equals "TMP1";
+    UNIT_TEST.test "TRUE.append_in" string tmp equals "1";
 
     FALSE.append_in tmp;
-    UNIT_TEST.test "FALSE.append_in" string tmp equals "TMP10";
+    UNIT_TEST.test "FALSE.append_in" string tmp equals "10";
   );
-

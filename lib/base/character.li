@@ -374,7 +374,7 @@ Section Public
   // can save memory because no other STRING is allocated
   // for the job.
   (
-    str.append_character str;
+    str.append_character Self;
   );
 
   - to_hexadecimal:STRING <-
