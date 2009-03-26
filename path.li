@@ -38,7 +38,7 @@
   
 Section DEFAULT  
 
-  + target := UNIX;
+  + target := WINDOWS;
 
 Section COMPILER, SHORTER
   
@@ -110,6 +110,7 @@ Section Common
   - lib + "string/";
   - lib + "system/";
   - lib + "time/";
+  - lib + "testing/";
   
   //- lisaac + "example/gui/desktop";
   
