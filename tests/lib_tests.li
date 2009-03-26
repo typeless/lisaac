@@ -34,6 +34,7 @@ Section Public
     UNIT_TEST.init;
 
     ABSTRACT_STRING_TEST.run;
+    BOOLEAN_TEST.run;
 
     UNIT_TEST.test_results
   );
