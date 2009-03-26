@@ -540,6 +540,22 @@ Section Public
     result
   );
 
+  - is_binary :BOOLEAN <-
+  ( + result:BOOLEAN;
+    + j:INTEGER;
+
+    (is_empty).if_false {
+      j := lower;
+      { (j > upper) || {! item j.is_binary_digit} }.until_do {
+        j := j + 1;
+      };
+
+      result := j > upper;
+    };
+
+    result
+  );
+
   - to_binary :INTEGER_64 <-
   ( + result:INTEGER_64;
     ? {is_bit};
@@ -590,54 +606,53 @@ Section Public
     { (state = 5) || {i > count}}.until_do {
       cc := item i;
       ( state = 0).if {
-	cc.is_separator.if {
-	}.elseif {cc = '+'} then {
-	  state := 1;
-	}.elseif {cc = '-'} then {
-	  negative := TRUE;
-	  state := 1;
-	}.elseif {cc.is_digit} then {
-	  value_int := cc.decimal_value;
-	  state := 2;
-	} else {
-	  state := 5;
-	};
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        }.elseif {cc.is_digit} then {
+          value_int := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 1} then {
-	cc.is_digit.if {
-	  value_int := cc.decimal_value;
-	  state := 2;
-	} else {
-	  state := 5;
-	};
+        cc.is_digit.if {
+          value_int := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 2 } then {
-	cc.is_digit.if {
-	  value_int := 10 * value_int + cc.decimal_value;
-	  // over/underflow check here
-	  ((negative && {value_int > 0}) || { ! negative && {value_int < 0}}).if {
-	    state := 5;
-	  };
-	}.elseif { cc = '.' } then {
-	  state := 3;	
-	  value := value_int.to_real_16_16;
-	}.elseif {cc.is_separator} then {
-	  state := 4;
-	} else {
-	  state := 5;
-	};
+        cc.is_digit.if {
+          value_int := 10 * value_int + cc.decimal_value;
+          (value_int < 0).if {
+            state := 5;
+          };
+        }.elseif { cc = '.' } then {
+          state := 3;
+          value := value_int.to_real_16_16;
+        }.elseif {cc.is_separator} then {
+          state := 4;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 3 } then {
-	cc.is_digit.if {
-	  d := d * 10;
-	  value := value + (cc.decimal_value.to_real_16_16) /# d;
-	}.elseif {cc.is_separator} then {
-	  state := 4;
-	} else {
-	  state := 5;
-	};
+        cc.is_digit.if {
+          d := d * 10;
+          value := value + (cc.decimal_value.to_real_16_16) /# d;
+        }.elseif {cc.is_separator} then {
+          state := 4;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 4 } then {
-	cc.is_separator.if {
-	} else {	    
-	  state := 5;
-	};
+        cc.is_separator.if {
+        } else {
+          state := 5;
+        };
       };
       
       i := i + 1;

@@ -121,7 +121,10 @@ Section Public
     UNIT_TEST.test "is_octal #4" boolean ("Jack".is_octal) equals FALSE;
     UNIT_TEST.test "to_octal #1" integer ("5".to_octal) equals 5;
     UNIT_TEST.test "to_octal #2" integer ("25".to_octal) equals 21;
-    // TODO: Where is is_binary ?
+    UNIT_TEST.test "is_binary #1" boolean ("101".is_binary) equals TRUE;
+    UNIT_TEST.test "is_binary #2" boolean ("101.1".is_binary) equals FALSE;
+    UNIT_TEST.test "is_binary #3" boolean ("1013".is_binary) equals FALSE;
+    UNIT_TEST.test "is_binary #4" boolean ("".is_binary) equals FALSE;
     UNIT_TEST.test "to_binary #1" integer ("101".to_binary) equals 5;
     UNIT_TEST.test "to_binary #2" integer ("10000000101".to_binary) equals 1029;
     UNIT_TEST.test "is_real_16_16 #1" boolean ("10".is_real_16_16) equals TRUE;
