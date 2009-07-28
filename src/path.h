@@ -1,1 +1,1 @@
-#define LISAAC_DIRECTORY "/home/sonntag/lisaac"
+#define LISAAC_DIRECTORY "/home/sonntag/compiler"

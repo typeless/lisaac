@@ -30,8 +30,7 @@ Section Header
 Section Public
 
   - run <-
-  (
-    + name:ABSTRACT_STRING;
+  ( + name:ABSTRACT_STRING;
     + empty:ABSTRACT_STRING;
     + values:ARRAY[STRING];
 
