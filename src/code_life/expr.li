@@ -54,7 +54,6 @@ Section Public
     NULL
   ); 
     
-
   - get_type t:TYPES_TMP <- deferred;
 
   //
@@ -126,7 +125,8 @@ Section Public
 	};
 	//	
 	rec  := local.read position;
-	node := NODE.new_read position slot slot_msg receiver rec self rec;  	
+	node := NODE.new_read position slot slot_msg 
+        receiver rec self rec intern FALSE;
 	list_current.add_last node;
 	//	
 	result := node.result_expr;
@@ -172,7 +172,8 @@ Section Public
 	args := FAST_ARRAY[EXPR].create_with_capacity 2;
 	args.add_last (PROTOTYPE_CST.create position type t);
 	args.add_last (local.read position);
-	node := NODE.new_read position slot slot_msg receiver (args.first.my_copy) with args;  	
+	node := NODE.new_read position slot slot_msg 
+        receiver (args.first.my_copy) with args intern FALSE;
 	list_current.add_last node;
 	//	
 	result := node.result_expr;	

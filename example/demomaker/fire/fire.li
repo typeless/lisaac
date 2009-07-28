@@ -35,11 +35,10 @@ Section Inherit
   
 Section Public
   
-  - palette:FAST_ARRAY[UINTEGER_32] :=
-  ( + result:FAST_ARRAY[UINTEGER_32];
-    + r,v,b:INTEGER;
+  - palette:FAST_ARRAY(UINTEGER_32) :=
+  ( + result:FAST_ARRAY(UINTEGER_32);
     
-    result := FAST_ARRAY[UINTEGER_32].create_with_capacity 256;
+    result := FAST_ARRAY(UINTEGER_32).create_with_capacity 256;
     // Gray.
     0.to 31 do { i:INTEGER;
       result.add_last (((i*1)<<16) | ((i*1)<<8) | i*1);
@@ -62,9 +61,9 @@ Section Public
     result
   );
   
-  - bg:FAST_ARRAY2[UINTEGER_8];
+  - bg:FAST_ARRAY2(UINTEGER_8);
     
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE[PIXEL_24].create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
   
   //
   // Width / Height
@@ -81,7 +80,7 @@ Section Public
   - init:G_EXPR <-
   ( 
     // Initialization bitmap.    
-    bg := FAST_ARRAY2[UINTEGER_8].create (width_min>>2,height_min>>2+2);
+    bg := FAST_ARRAY2(UINTEGER_8).create (width_min>>2,height_min>>2+2);
     TIMER.add_client Self;
     G_RAW.create (Self.fix_height.fix_width)
   );
@@ -160,10 +159,10 @@ Section Public
   
   - step_time <-
   ( + col,col0,col1,col2:UINTEGER_32;    
-    
+        
     0.to 10 do { x:INTEGER;
-      bg.put 255 to (bg.count1.random_upper,bg.upper2);
-      bg.put 0 to (bg.count1.random_upper,bg.upper2);
+      bg.put 255 to (bg.count1.random_upper%bg.upper1,bg.upper2);
+      bg.put 0 to (bg.count1.random_upper%bg.upper1,bg.upper2);
     };
     
     (bg.upper2).downto (bg.lower2+2) do { y:INTEGER;
@@ -171,7 +170,7 @@ Section Public
         col0 := bg.item (x,y);
         col1 := bg.item (x-1/*-2.random_upper*/,y-1);
         col2 := bg.item (x+1/*+2.random_upper*/,y-1);        
-        col := (col0 << 1 + col1 + col2) / 4;
+        col := ((col0 << 1) + col1 + col2) / 4;
         bg.put (col.to_uinteger_8) to (x,y-1);        
       };      
     };        

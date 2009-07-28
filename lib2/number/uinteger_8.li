@@ -55,7 +55,7 @@ Section Public
   - to_character:CHARACTER <- 
   [ -? {in_range (CHARACTER.minimum) to (CHARACTER.maximum)}; ]
   (    
-    CONVERT[UINTEGER_8, CHARACTER].on Self
+    CONVERT(UINTEGER_8, CHARACTER).on Self
   );
 
 

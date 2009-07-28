@@ -43,7 +43,7 @@ Section Public
   
   - size:INTEGER := 300;
   
-  - mask:FAST_ARRAY2[XY];
+  - mask:FAST_ARRAY2(XY);
   
   - x_origin:INTEGER;
   - y_origin:INTEGER;
@@ -55,7 +55,7 @@ Section Public
   ( + di:REAL;    
     + a,npx,npy,px,py:REAL;
     
-    mask := FAST_ARRAY2[XY].create (size,size);
+    mask := FAST_ARRAY2(XY).create (size,size);
     0.to (size-1) do { y:INTEGER;
       0.to (size-1) do { x:INTEGER;
         mask.put (XY.create (x,y)) to (x,y);
@@ -74,7 +74,7 @@ Section Public
     }.do_while {a < REAL.pi*2};
   );
   
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE[PIXEL_24].create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
   
   //
   // Width / Height
@@ -87,15 +87,18 @@ Section Public
   //
   // Creation.
   //  
+  - string_tmp:STRING := STRING.create 40;
   
-  - init:G_EXPR <-
+  - init p:ABSTRACT_STRING :G_EXPR <-
   ( + entry:ENTRY;
     + fmt:FORMAT_IMG;
     + f:STD_FILE;
     + w,h:INTEGER;
     
     // Initialization bitmap.
-    entry := FILE_SYSTEM.get_entry filename;
+    string_tmp.copy p;
+    string_tmp.append filename;
+    entry := FILE_SYSTEM.get_entry string_tmp;
     ((entry = NULL) || {! entry.is_file}).if {
       VIDEO.message ("ERROR: File '" + filename + "' not found.\n");
       die_with_code exit_failure_code;
@@ -109,8 +112,8 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP[PIXEL_24].create (w,h);
-    background := BITMAP[PIXEL_24].create (width_min,height_min);
+    bitmap := BITMAP(PIXEL_24).create (w,h);
+    background := BITMAP(PIXEL_24).create (width_min,height_min);
     fmt.put_image_in bitmap;    
     compute_mask;
     f.close;
@@ -119,9 +122,9 @@ Section Public
     G_RAW.create (Self.fix_height.fix_width)
   );
   
-  - run:G_WIN_OUT <-
+  - run p:ABSTRACT_STRING :G_WIN_OUT <-
   ( 
-    G_WIN_OUT.create "Glass" with init
+    G_WIN_OUT.create "Glass" with (init p)
   );
   
   - main <-
@@ -129,7 +132,7 @@ Section Public
     // Init window.
     VIDEO.make (width_min+64,height_min+64);
     DESK.make VIDEO with (
-      G_OUT.create "Glass" justify (G_OUT.center) / init      
+      G_OUT.create "Glass" justify (G_OUT.center) / init "./"
     );        
   );
   

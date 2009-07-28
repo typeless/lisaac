@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := /*Strict*/ STRING_CONSTANT; 
+  + name    := Strict STRING_CONSTANT; 
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -31,18 +31,13 @@ Section Inherit
   
   - parent_abstract_string:ABSTRACT_STRING := ABSTRACT_STRING;
         
-Section Public //ABSTRACT_STRING, ABSTRACT_ENTRY
+Section Public
+    
+  + storage:NATIVE_ARRAY(CHARACTER);  
   
-  // BSBS: A revoir avec les Section External.
+  + count:INTEGER;
   
-  + storage:NATIVE_ARRAY[CHARACTER] := 
-  `NULL`:NATIVE_ARRAY[CHARACTER](NATIVE_ARRAY[CHARACTER],NULL);
-  
-Section Public  
-  
- // - clone:SELF <- Self;
-  
-  + count:INTEGER := `(0)`:INTEGER;
+Section Public
   
   - to_string:Strict STRING <-
   ( + new:Strict STRING;
@@ -59,20 +54,20 @@ Section Public
   // Aliasing String.
   //
   
-  - bucket:SET[STRING_CONSTANT] := SET[STRING_CONSTANT].make;
+  - bucket:SET(STRING_CONSTANT) := SET(STRING_CONSTANT).make;
   
   //
   // The Guru section: The Compiler consideration.
   //
   
-  - set_storage p:NATIVE_ARRAY[CHARACTER] count nb_char:INTEGER <-
+  - set_storage p:NATIVE_ARRAY(CHARACTER) count nb_char:INTEGER <-
   // Do not use directly.
   (
     storage := p;
     count   := nb_char;
   );
   
-  - new_intern p:NATIVE_ARRAY[CHARACTER] count nb_char:INTEGER :STRING_CONSTANT<-
+  - new_intern p:NATIVE_ARRAY(CHARACTER) count nb_char:INTEGER :STRING_CONSTANT<-
   // Do not use directly. WARNING: Use by c_string and c_argument (COMMAND_LINE). 
   ( + result:STRING_CONSTANT;
     
@@ -82,7 +77,7 @@ Section Public
     result
   );
   
-  - to_external:NATIVE_ARRAY[CHARACTER] <-
+  - to_external:NATIVE_ARRAY(CHARACTER) <-
   // Gives C access to the internal `storage' (may be dangerous).
   // To be compatible with C, a null character is added at the end
   // of the internal `storage'. This extra null character is not
@@ -104,7 +99,7 @@ Section Public
     
     c := other.count;
     (c != 0).if {
-      storage := NATIVE_ARRAY[CHARACTER].create (c+1);
+      storage := NATIVE_ARRAY(CHARACTER).create (c+1);
       storage.copy_from (other.storage) until (c-1);
       storage.put '\0' to c;
       count := c;

@@ -35,7 +35,7 @@ Section Inherit
 Section Public
 
   + type:ITM_TYPE_MONO;
-
+  
   //
   // Constructor
   //
@@ -48,9 +48,9 @@ Section Public
   );
     
   - make p:POSITION type n:ITM_TYPE_MONO <-
-  (
+  ( 
     position := p;
-    type := n;
+    type := n;    
   );
 
   //
@@ -61,15 +61,15 @@ Section Public
   ( + t:TYPE_FULL;
     + result:EXPR;
         
-    t := type.to_run_for profil_slot;    
-    
+    last_position := position;                
+    t := type.to_run_for profil_slot;        
     (t = NULL).if {
       string_tmp.copy "Type `";
       type.append_in string_tmp;
       string_tmp.append "' not found (Undefine type parameter).";      
       semantic_error (position,string_tmp);
     };
-    // TYPE Classic.
+    // TYPE Classic.    
     (
       (t.is_expanded_c) && 
       {t.raw != type_boolean} && 

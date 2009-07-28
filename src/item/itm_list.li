@@ -151,8 +151,8 @@ Section Public
     nb_result := stack_result.upper - result_top + 1;    
         
     (nb_result = 0).if {            
-      result := PROTOTYPE_CST.create position type (TYPE_VOID.default);      
-    } else {            
+      result := PROTOTYPE_CST.create position type (TYPE_VOID.default); // BSBS: Alias.   
+    } else {                 
       (nb_result > 1).if {
 	// Creation Vector.
 	lr := FAST_ARRAY[EXPR].create_with_capacity nb_result;
@@ -167,6 +167,7 @@ Section Public
     // Pop local / Result.
     pop_stack_until stack_top;    
     stack_result.remove_since result_top;
+    ? {stack_result.upper = Old stack_result.upper};
     // 
     result
   );

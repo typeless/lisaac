@@ -36,8 +36,8 @@ Section Mapping
 Section REAL, REAL_32, REAL_64, REAL_80
     
   - get_map f:SELF <-
-  ( + tab:NATIVE_ARRAY[SELF];
-    tab := CONVERT[FLOAT_MAP80,NATIVE_ARRAY[SELF]].on FLOAT_MAP80;
+  ( + tab:NATIVE_ARRAY(SELF);
+    tab := CONVERT(FLOAT_MAP80,NATIVE_ARRAY(SELF)).on FLOAT_MAP80;
     tab.put f to 0;        
   );
     

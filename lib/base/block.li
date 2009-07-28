@@ -60,7 +60,7 @@ Section Public
   
   - loop_infinitely <-
   (
-    (`1`:BOOLEAN(TRUE,FALSE)).if {
+    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
       value;
       loop_infinitely;
     };

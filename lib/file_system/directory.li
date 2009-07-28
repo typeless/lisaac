@@ -121,7 +121,9 @@ Section Public
         };
       };
     }.do_while {(result = NULL) && {! string_tmp2.is_empty}};       
-    ((result != NULL) && {string_tmp3.count != string_tmp2.count}).if{
+    (result = NULL).if {
+      result := FILE_SYSTEM.physical_get_entry string_tmp3;
+    }.elseif {string_tmp3.count != string_tmp2.count} then {
       + dir:DIRECTORY;
 
       dir ?= result;            

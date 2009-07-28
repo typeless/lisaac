@@ -36,7 +36,7 @@ Section Inherit
   
 Section Public  //ABSTRACT_STRING, ABSTRACT_ENTRY
   
-  + storage:NATIVE_ARRAY[CHARACTER];
+  + storage:NATIVE_ARRAY(CHARACTER);
   
 Section Public
   
@@ -184,7 +184,7 @@ Section Public
   
   - same_as other:ABSTRACT_STRING :BOOLEAN <-
   // Case insensitive `=='.
-  ( + s1, s2:NATIVE_ARRAY[CHARACTER];
+  ( + s1, s2:NATIVE_ARRAY(CHARACTER);
     + i:INTEGER;
     + result:BOOLEAN;
     ? {other != NULL};
@@ -303,7 +303,7 @@ Section Public
     storage.fast_occurrences c until (count - 1)
   );
   
-  -  has_suffix s:ABSTRACT_STRING :BOOLEAN <-
+  - has_suffix s:ABSTRACT_STRING :BOOLEAN <-
   // True if suffix of `Current' is `s'.
   (
     + result:BOOLEAN;
@@ -495,7 +495,7 @@ Section Public
 	// cc.is_digit
 	result := cc.decimal_value;
 	negative.if {
-	  result := - result
+	  result := - result;
 	};
 	state := 2;
       }.elseif { state = 2} then {
@@ -916,16 +916,16 @@ Section Public
     partition sep from lower
   );
 
-  - split_str sep:ABSTRACT_STRING :ARRAY[STRING] <-
+  - split_str sep:ABSTRACT_STRING :ARRAY(STRING) <-
   [
     -? {sep != NULL};
   ]
-  ( + result:ARRAY[STRING];
+  ( + result:ARRAY(STRING);
     ( count > 0 ).if {
       split_buffer.clear;
       split_str sep in split_buffer;
       (! split_buffer.is_empty).if {
-	result := ARRAY[STRING].create (split_buffer.lower) to (split_buffer.upper);
+	result := ARRAY(STRING).create (split_buffer.lower) to (split_buffer.upper);
 	result.copy split_buffer;
       };
     };
@@ -936,7 +936,7 @@ Section Public
     +? { (Result != NULL) ->> { ! Result.is_empty }};
   ];
   
-  - split_str sep:ABSTRACT_STRING in words:COLLECTION[STRING] <-
+  - split_str sep:ABSTRACT_STRING in words:COLLECTION(STRING) <-
   // Same jobs as `split_str' but result is appended in `words'.
   [
     -? {words != NULL};
@@ -955,16 +955,16 @@ Section Public
     words.add_last (substring i to upper);
   );
 
-  - split:ARRAY[STRING] <-
+  - split:ARRAY(STRING) <-
   // Split the string into an array of words. Uses `is_separator' of
   // CHARACTER to find words. Gives Void or a non empty array.
   (
-    + result:ARRAY[STRING];
+    + result:ARRAY(STRING);
     ( count > 0 ).if {
       split_buffer.clear;
       split_in split_buffer;
       (! split_buffer.is_empty).if {
-	result := ARRAY[STRING].create (split_buffer.lower) to (split_buffer.upper);
+	result := ARRAY(STRING).create (split_buffer.lower) to (split_buffer.upper);
 	result.copy split_buffer;
       };
     };
@@ -973,7 +973,7 @@ Section Public
     result
   );
   
-  - split_in words:COLLECTION[STRING] <-
+  - split_in words:COLLECTION(STRING) <-
   // Same jobs as `split' but result is appended in `words'.
   (
     + state,old_count: INTEGER;
@@ -1009,15 +1009,15 @@ Section Public
     ? { (words.count) >= old_count };
   );
   
-  - split_at sep:CHARACTER :ARRAY[STRING] <-
+  - split_at sep:CHARACTER :ARRAY(STRING) <-
   // Split the string at characters `c' into an array of words.
   (
-    + result:ARRAY[STRING];
+    + result:ARRAY(STRING);
     ( count > 0 ).if {
       split_buffer.clear;
       split_at sep in split_buffer;
       (! split_buffer.is_empty).if {
-	result := ARRAY[STRING].create (split_buffer.lower) to (split_buffer.upper);
+	result := ARRAY(STRING).create (split_buffer.lower) to (split_buffer.upper);
 	result.copy split_buffer;
       };
     };
@@ -1028,7 +1028,7 @@ Section Public
     +? { (Result != NULL) ->> { ! Result.is_empty }};
   ];
   
-  - split_at sep:CHARACTER in words:COLLECTION[STRING] <-
+  - split_at sep:CHARACTER in words:COLLECTION(STRING) <-
   // Same jobs as `split' but result is appended in `words'.
   (
     + state,old_count: INTEGER;
@@ -1064,9 +1064,9 @@ Section Public
     ? { (words.count) >= old_count };
   );
   
-  - get_new_iterator:ITERATOR[CHARACTER] <-
+  - get_new_iterator:ITERATOR(CHARACTER) <-
   (
-    ITERATOR_ON_STRING[CHARACTER].create Self
+    ITERATOR_ON_STRING(CHARACTER).create Self
   );
   
   - same_string other:ABSTRACT_STRING :BOOLEAN <-
@@ -1086,15 +1086,15 @@ Section Public
   
   - string_buffer:STRING := STRING.create 256; // Private, temporary once buffer.
   
-  - split_buffer:ARRAY[STRING] := ARRAY[STRING].create_with_capacity 4 lower 1;
+  - split_buffer:ARRAY(STRING) := ARRAY(STRING).create_with_capacity 4 lower 1;
     
   //
   // Display.
   //
   
   - print <- 
-  (
-    IO.put_string Self;  
+  (    
+    IO.put_string Self;      
   );
 
   -  printline <-
@@ -1102,20 +1102,23 @@ Section Public
     IO.put_string Self;
     IO.put_string "\n";
   );
-
+  
+  - fast_print <-
+  (
+    SYSTEM_IO.print_string Self;
+  );
   
   - println <-
   [ -? {storage.item count = '\0'}; ]
   (
     to_external.println;
   );
-                                   
-
+  
   //
   // The guru section
   //
   
-  - to_external:NATIVE_ARRAY[CHARACTER] <- 
+  - to_external:NATIVE_ARRAY(CHARACTER) <- 
   // Gives C access to the internal `storage' (may be dangerous).
   // To be compatible with C, a null character is added at the end
   // of the internal `storage'. This extra null character is not

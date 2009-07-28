@@ -88,12 +88,12 @@ Section SELF
   - from_integer i:INTEGER :SELF <-
   (
     ? { is_valid i };
-    CONVERT[INTEGER,SELF].on i
+    CONVERT(INTEGER,SELF).on i
   );
 
   - to_integer :INTEGER <-
   ( 
-    CONVERT[SELF,INTEGER].on Self
+    CONVERT(SELF,INTEGER).on Self
   );
 
 

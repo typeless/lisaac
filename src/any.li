@@ -70,30 +70,31 @@ Section Public
   // Compiler Options.
   //
   
-  - is_optimization:BOOLEAN;  
-  
-  - inline_level:INTEGER := 17;
-  
-  - is_statistic:BOOLEAN;
-  
-  - is_quiet_operation:BOOLEAN;
-  
   - debug_level_option:INTEGER;  
-  
   - debug_with_code:BOOLEAN;
-    
-  - verbose_level:INTEGER;
-  - is_verbose:BOOLEAN <- (verbose_level != 0);
-
-  - is_warning:BOOLEAN;
   
   - is_all_warning:BOOLEAN;
   
-  - is_executing_pass:BOOLEAN;
+  - is_optimization:BOOLEAN;    
+  - inline_level:INTEGER := 17;
   
+  - is_java:BOOLEAN; // Fuck the Java!
+  
+  - is_statistic:BOOLEAN;  
+  - is_quiet:BOOLEAN;
+  
+  //
+  //
+  //
+     
+  - verbose_level:INTEGER;
+  - is_verbose:BOOLEAN <- (verbose_level != 0);
+
   //
   // Other flags.
   //
+  
+  - is_cop:BOOLEAN;
   
   - is_copy_local:BOOLEAN;
   
@@ -110,6 +111,8 @@ Section Public
   );
   
   - new_execute_pass <- new_depend_pass;
+  
+  - is_executing_pass:BOOLEAN;
   
   //
   // Sequence counter.
@@ -147,7 +150,7 @@ Section Public
   - stack_local:FAST_ARRAY[LOCAL]  := FAST_ARRAY[LOCAL].create_with_capacity 64;  
   
   - profil_slot:PROFIL_SLOT; // Principal slot.
-  - profil:PROFIL;           // Sub-profil or (profil = profil_slot)
+  - profil_current:PROFIL;           // Sub-profil or (profil = profil_slot)
      
   - display_stack_local <-
   (
@@ -326,11 +329,8 @@ Section Public
   // Path directory and command front end.
   //
   
-  - path_directory:LINKED_LIST[STRING_CONSTANT] := 
-  LINKED_LIST[STRING_CONSTANT].create;
-
-  - command_list  :LINKED_LIST[STRING_CONSTANT] := 
-  LINKED_LIST[STRING_CONSTANT].create;
+  - path_file:FAST_ARRAY[STRING_CONSTANT] := 
+  FAST_ARRAY[STRING_CONSTANT].create_with_capacity 3000;
 
   //
   // Alias type.

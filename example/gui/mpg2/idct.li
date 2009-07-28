@@ -46,11 +46,11 @@ Section Private
   - w6:INTEGER := 1108; // 2048*sqrt(2)*cos(6*pi/16) 
   - w7:INTEGER :=  565; // 2048*sqrt(2)*cos(7*pi/16) 
 
-  - iclip:ARRAY[INTEGER_16] := 
+  - iclip:ARRAY(INTEGER_16) := 
   // clipping table 
-  ( + result:ARRAY[INTEGER_16];
+  ( + result:ARRAY(INTEGER_16);
     
-    result := ARRAY[INTEGER_16].create (-512) to 511;
+    result := ARRAY(INTEGER_16).create (-512) to 511;
     result.set_slice (-512) to (-256) with (-256);
     result.set_slice 255    to 511    with 255;
     (-255).to 254 do { i:INTEGER; 
@@ -59,7 +59,7 @@ Section Private
     result
   );
 
-  - idctrow blk:NATIVE_ARRAY[INTEGER_16] index idx:INTEGER <-
+  - idctrow blk:NATIVE_ARRAY(INTEGER_16) index idx:INTEGER <-
   // row (horizontal) IDCT
   //
   //           7                       pi         1
@@ -127,7 +127,7 @@ Section Private
     };
   );
 
-  - idctcol blk:NATIVE_ARRAY[INTEGER_16] index idx:INTEGER <-
+  - idctcol blk:NATIVE_ARRAY(INTEGER_16) index idx:INTEGER <-
   // column (vertical) IDCT
   //
   //             7                         pi         1
@@ -198,7 +198,7 @@ Section Private
 
 Section Public
 
-  - idct block:NATIVE_ARRAY[INTEGER_16] <-
+  - idct block:NATIVE_ARRAY(INTEGER_16) <-
   // two dimensional inverse discrete cosine transform 
   (          
     0.to 7 do { i:INTEGER;

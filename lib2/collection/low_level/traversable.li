@@ -20,12 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := TRAVERSABLE[V];
+  + name    := TRAVERSABLE(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
-  - comment := "A `TRAVERSABLE[E_]' is a finite readable sequence of objects of type E_.";
+  - comment := "A `TRAVERSABLE(E_)' is a finite readable sequence of objects of type E_.";
   
   // For instance, `COLLECTION's and `STRING's are `TRAVERSABLE'.
   //
@@ -157,17 +157,17 @@ Section Public
   // Iterate:
   //
 
-  - iterate :ITERATOR[V] <- ITERATOR[V].create Self;
+  - iterate :ITERATOR(V) <- ITERATOR(V).create Self;
 
-  - iterate_index idx:INTEGER :ITERATOR[V] <-
-    ITERATOR[V].create Self index idx;
+  - iterate_index idx:INTEGER :ITERATOR(V) <-
+    ITERATOR(V).create Self index idx;
 
-  - iterate_increment inc:INTEGER :ITERATOR[V] <-
-    ITERATOR[V].create Self increment inc;
+  - iterate_increment inc:INTEGER :ITERATOR(V) <-
+    ITERATOR(V).create Self increment inc;
 
-  - iterate_index idx:INTEGER increment inc:INTEGER :ITERATOR[V] <-
-    ITERATOR[V].create Self index idx increment inc;
+  - iterate_index idx:INTEGER increment inc:INTEGER :ITERATOR(V) <-
+    ITERATOR(V).create Self index idx increment inc;
 
-  - iterate_reverse :ITERATOR[V] <- ITERATOR[V].create_reverse Self;
+  - iterate_reverse :ITERATOR(V) <- ITERATOR(V).create_reverse Self;
 
 

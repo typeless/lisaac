@@ -38,11 +38,11 @@ Section Inherit
   
 Section Private  
   
-  - gui_buffer_event:FAST_ARRAY[EVENT_GUI] := 
-  ( + result:FAST_ARRAY[EVENT_GUI];
+  - gui_buffer_event:FAST_ARRAY(EVENT_GUI) := 
+  ( + result:FAST_ARRAY(EVENT_GUI);
     + new_evt:EVENT_GUI;
     
-    result := FAST_ARRAY[EVENT_GUI].create 16; 
+    result := FAST_ARRAY(EVENT_GUI).create 16; 
     0.to 15 do { j:INTEGER;
       new_evt := EVENT_GUI.clone;
       result.put new_evt to j;

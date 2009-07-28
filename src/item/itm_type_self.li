@@ -20,27 +20,65 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := ITM_TYPE_SELF;
+  + name        := ITM_TYPE_SELF;
 
-  - copyright := "2003-2007 Benoit Sonntag";
+  - copyright   := "2003-2007 Benoit Sonntag";
+
   
-  - author    := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment   := "Type Self";
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment     := "Type Self";
   
 Section Inherit
   
   + parent_itm_type_simple:Expanded ITM_TYPE_SIMPLE;
   
+Section ITM_TYPE_SIMPLE
+  
+  - make <-
+  (
+    name   := ALIAS_STR.prototype_self;
+  );
+  
 Section Public
   
-  // BSBS: Voir si il est encore necessaire avec ITM_TYPE_PARAMETER
+  - run_value:TYPE_FULL;
   
-  - name:STRING_CONSTANT <- ALIAS_STR.prototype_self;
+  - is_self:BOOLEAN <- TRUE;
   
   - to_run:TYPE_FULL <-
+  ( 
+    (run_value = NULL).if {
+      ANY.semantic_error (ANY.last_position,"SELF type result for data slot is not possible.");
+    };
+    run_value
+  );
+        
+  //
+  // Self_up
+  //
+  
+  - self_up:TYPE;
+  
+Section NODE, SLOT  
+
+  - set_run t:TYPE_FULL <-
+  (    
+    run_value := t;
+  );
+  
+Section SLOT, TYPE_FULL
+  
+  - set_self_up t:TYPE <-
   (
-    not_yet_implemented;
-    NULL
+    self_up := t;
+  );
+  
+Section SLOT_DATA
+  
+  - set_run t1:TYPE_FULL self_up t2:TYPE <-
+  (
+    run_value := t1;
+    self_up   := t2;
   );
 
   

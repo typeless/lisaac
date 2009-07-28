@@ -66,7 +66,7 @@ Section Public
   - execute_access_link;
 
   - execute_argument:BOOLEAN <- 
-  // BSBS: Cette methode foureuse ne doit plus etre necessaire (utilise execute normal)
+  // BSBS: Cette methode foireuse ne doit plus etre necessaire (utilise execute normal)
   ( + new_val:INSTR;
     + read:READ;    
     + result:BOOLEAN;
@@ -75,10 +75,7 @@ Section Public
     ? { value    != NULL };
     
     read ?= value;
-    ((read != NULL) && {read.variable = variable}).if {
-      remove;      
-      result := TRUE;
-    }.elseif {ensure_count = 0} then {
+    (ensure_count = 0).if {
       //
       // Supprime affectation.
       //      
@@ -108,16 +105,18 @@ Section Public
   - genere buffer:STRING <-
   ( 
     add_var_size local;        
-    (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
-      buffer.add_last '*';
-    };
-    buffer.append (variable.intern_name);     
-    //
-    ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
-      buffer.append ".__id=0";
-    } else {
-      buffer.add_last '=';    
-      genere_value buffer;
+    (quiet_generation).if_false {
+      (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
+        buffer.add_last '*';
+      };    
+      buffer.append (variable.intern_name);     
+      //
+      ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
+        buffer.append ".__id=0";
+      } else {
+        buffer.add_last '=';    
+        genere_value buffer;
+      };
     };
   );
   

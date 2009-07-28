@@ -35,7 +35,9 @@ Section Inherit
 Section Public
   
   - name:STRING_CONSTANT <- ALIAS_STR.variable_void;
-    
+  
+  - intern_name:STRING_CONSTANT <- name;    
+  
   //
   // Creation.
   //
@@ -57,6 +59,11 @@ Section Public
   //
   // Genere.
   //
+
+  - genere_typedef <-
+  (
+    // Nothing.
+  );
   
   - genere_struct <-
   (

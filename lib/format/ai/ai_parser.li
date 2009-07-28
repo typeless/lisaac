@@ -41,7 +41,7 @@ Section Public
   
   + position:INTEGER;
   
-  + source:FAST_ARRAY[CHARACTER];
+  + source:FAST_ARRAY(CHARACTER);
   
   - string_tmp:STRING;
   
@@ -361,9 +361,9 @@ Section Public
   // Results
   //
   
-  + list_layer:LINKED_LIST[AI_LAYER];
+  + list_layer:LINKED_LIST(AI_LAYER);
   
-  + current_list:LINKED_LIST[AI_OPERATION];
+  + current_list:LINKED_LIST(AI_OPERATION);
   
   + current_color:AI_COLOR;
   
@@ -1286,7 +1286,7 @@ Section Public
     };
     result.if {
       new_layer := AI_LAYER.create current_list color current_color fill is_fill stroke is_stroke;
-      current_list := LINKED_LIST[AI_OPERATION].create;
+      current_list := LINKED_LIST(AI_OPERATION).create;
       current_color:= current_color.clone;
       list_layer.add_last new_layer;
     };
@@ -1664,23 +1664,23 @@ Section Public
   // Parser
   //
   
-  - create s:FAST_ARRAY[CHARACTER] :SELF <-
+  - create s:FAST_ARRAY(CHARACTER) :SELF <-
   ( + result:SELF;
     result := clone;
     result.make s;
     result
   );    
   
-  - make s:FAST_ARRAY[CHARACTER] <-
+  - make s:FAST_ARRAY(CHARACTER) <-
   (
     AI_ALIAS.make;
     source := s;
     position := 0;
     msg_err := STRING.create 80;
     string_tmp := STRING.create 250;
-    list_layer := LINKED_LIST[AI_LAYER].create;
+    list_layer := LINKED_LIST(AI_LAYER).create;
     current_color := AI_COLOR.clone;
-    current_list  := LINKED_LIST[AI_OPERATION].create;
+    current_list  := LINKED_LIST(AI_OPERATION).create;
     trace := FALSE;
     read_document;    
   );

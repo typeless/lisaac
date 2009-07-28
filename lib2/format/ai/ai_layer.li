@@ -37,7 +37,7 @@ Section Public
   
   + color:AI_COLOR;
   
-  + operation:LINKED_LIST[AI_OPERATION];
+  + operation:LINKED_LIST(AI_OPERATION);
   
   + is_fill:BOOLEAN;
   
@@ -47,14 +47,14 @@ Section Public
   // Creation.
   //
   
-  - create lst_op:LINKED_LIST[AI_OPERATION] color col:AI_COLOR fill f:BOOLEAN stroke s:BOOLEAN :SELF <-
+  - create lst_op:LINKED_LIST(AI_OPERATION) color col:AI_COLOR fill f:BOOLEAN stroke s:BOOLEAN :SELF <-
   ( + result:SELF;
     result := clone;
     result.make lst_op color col fill f stroke s;
     result
   );
   
-  - make lst_op:LINKED_LIST[AI_OPERATION] color col:AI_COLOR fill f:BOOLEAN stroke s:BOOLEAN <-
+  - make lst_op:LINKED_LIST(AI_OPERATION) color col:AI_COLOR fill f:BOOLEAN stroke s:BOOLEAN <-
   (
     color     := col;
     operation := lst_op;

@@ -115,3 +115,15 @@ Section Public
   - to_integer:INTEGER     <- 1;
   
   - to_character:CHARACTER <- '1';
+  
+  //
+  // Print.
+  //
+  
+  - print <- "TRUE".print;
+
+
+
+
+
+

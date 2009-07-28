@@ -129,7 +129,7 @@ Section Public
     VARIABLE.update;
     life_limit := 0;
     PROFIL.set_mode_recursive TRUE;
-    profil := profil_slot := NULL;
+    profil_current := profil_slot := NULL;
     list_current   := NULL;          
     list_main.execute;    
     PROFIL.set_mode_recursive FALSE;
@@ -143,12 +143,13 @@ Section Public
   ( 
     VARIABLE.update;
     life_limit := 0;
-    profil := profil_slot := NULL;
+    profil_slot := NULL;
     list_current   := NULL; 
     list_main.execute;      
     current := profil_list.lower;
     {current < life_limit}.while_do {			            
-      profil_list.item current.execute inline_level_current;
+      profil_current := profil_list.item current;
+      profil_current.execute inline_level_current;
       current := current + 1;
     };      
     current := 0;
@@ -167,8 +168,6 @@ Section Public
   (
     (profil_list.lower).to (profil_list.upper) do { j:INTEGER;
       profil_list.item j.genere_handler buffer;            
-      buffer.add_last ';';      
-      buffer.add_last '\n';
     };
   );
   
@@ -178,7 +177,7 @@ Section Public
       profil_list.item j.genere buffer;            
     };
   );
-    
+
   //
   // Display.
   //

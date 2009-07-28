@@ -1,0 +1,84 @@
+///////////////////////////////////////////////////////////////////////////////
+//                            Lisaac OS Library                              //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name        := SYSTEM;
+
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+  
+  - comment     := "Generic System Object (methods).";
+
+Section Public
+  
+  - is_ansi:BOOLEAN := TRUE;
+  
+  - exit code:INTEGER <- `System.exit(@code)`;
+  
+  - putb value:UINTEGER_8 to port:UINTEGER_16 <-
+  // Write in port
+  ( 
+    not_yet_implemented;
+  );
+
+  - itemb port:UINTEGER_16 :UINTEGER_8 <-
+  // Read in port
+  ( 
+    not_yet_implemented;
+    0
+  );
+       
+  - get_universal_time:UINTEGER_64 <-
+  (
+    //`(unsigned long long)time(NULL)`:UINTEGER_64
+    not_yet_implemented;
+    0
+  );
+
+  // Memory Management
+   
+  - memory:MEMORY := MEMORY;
+  
+  - get_begin_memory:POINTER <-
+  (
+    not_yet_implemented;
+    NULL
+  );
+  
+  - get_memory_capacity:UINTEGER_64 <- 
+  ( 
+    `MemoryUsage.getMax()`:UINTEGER_64
+  );
+  
+Section SYSTEM,MEMORY
+  
+  - realloc_c (beg:UINTEGER_32,nb:INTEGER) :UINTEGER_32 <-
+  ( 
+    not_yet_implemented;
+    0
+  );
+  
+Section ISAAC  
+  
+  - make <-
+  // Isaac compatibility.
+  (
+    // Nothing.
+  );

@@ -88,6 +88,7 @@ Section Public
     + tmp:VARIABLE;   
 
     lst_acc := get_access;
+    last_position := position;
     e := EXTERNAL_C.create position text last_code 
     access lst_acc persistant is_persistant type (type.to_run_for profil_slot);
     

@@ -131,7 +131,7 @@ Section Public
 	result := SIZE_OF.create position receiver exp1;
       }
       .when 13 then { // CONVERT SRC TO DST.on src:SRC :DST.
-	type := profil_slot.result_list.first.type;
+        type := profil_slot.result_list.first.type;        
 	exp2 := profil_slot.argument_list.second.read position;
 	result := CAST.create type value exp2;
       }
@@ -143,8 +143,13 @@ Section Public
 	  access NULL persistant FALSE type (type_pointer.default);
 	};
       }
-      .when 15 then { // Free. (Nothing).
-	syntax_error (position,"External Lisaac #15 : Free.");
+      .when 15 then { // is_cop_type:BOOLEAN
+        type := profil_slot.argument_list.first.type;        
+        (type.prototype.style = '-').if {          
+          result := PROTOTYPE_CST.create position type (type_true.default);	
+        } else {
+          result := PROTOTYPE_CST.create position type (type_false.default);	
+        };
       };            
     } else {
       lst_acc := get_access;

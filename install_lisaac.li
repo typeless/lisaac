@@ -36,7 +36,7 @@ Section Private
   //
   // Independance File System 
   //
-  
+    
   - open_read n:ABSTRACT_STRING :POINTER <- 
   ( + buf:NATIVE_ARRAY[CHARACTER];
     string_tmp.copy n;
@@ -376,7 +376,7 @@ Section Private
   );
   
   //
-  // Install Emacs mode
+  // Install for Emacs.
   //
   
   - lisaac_mode_comment :STRING_CONSTANT := ";; **** LISAAC MODE ****";
@@ -398,7 +398,7 @@ Section Private
     
     char := question "  Do you want to install the `lisaac-mode' for Emacs editor ?";
     (char = 'n').if {
-      "  No install `lisaac-mode' for Emacs editor.\n\n".print;
+      "  Not install `lisaac-mode' for Emacs editor.\n\n".print;
     } else {
       file_name := STRING.create 100;
       (path_home = NULL).if {
@@ -418,10 +418,6 @@ Section Private
       update file_name idf lisaac_mode_comment with new_text confirmation TRUE;
     };
   );
-  
-  //
-  // Install Kate mode
-  //
 
   - install_kate <-
   ( + char:CHARACTER;
@@ -431,7 +427,7 @@ Section Private
     } else {
       char := question "  Do you want to install the `lisaac_v2.xml' for Kate editor ?";
       (char = 'n').if {
-        "  No install `lisaac_v2.xml' for Kate editor.\n\n".print;
+        "  Not install `lisaac_v2.xml' for Kate editor.\n\n".print;
       } else {
         ENVIRONMENT.execute_command "mkdir -p ~/.kde/share/apps/katepart/syntax";            
         string_tmp.copy "cp -f editor/kate/lisaac_v2.xml ~/.kde/share/apps/katepart/syntax/.";
@@ -448,10 +444,6 @@ Section Private
       '\n'.print;
     };
   );
-  
-  //
-  // Install Vim mode
-  //
 
   - install_vim <-
   ( + char:CHARACTER;
@@ -461,14 +453,14 @@ Section Private
     (system = system_windows).if {
       "  Sorry, not Vim editor for windows.\n\n".print;
     } else {
-      char := question "  Do you want to install the Lisaac support for the Vim editor ?"; 
+      char := question "  Do you want to install the Lisaac support for Vim editor ?"; 
       (char = 'n').if {
-        "  No install `lisaac.vim' syntax and indent for Vim editor.\n\n".print;
+        "  Not install `lisaac.vim' for Vim editor.\n\n".print;
       } else {
         ENVIRONMENT.execute_command "mkdir -p ~/.vim/syntax";
         ENVIRONMENT.execute_command "mkdir -p ~/.vim/indent";
-        ENVIRONMENT.execute_command "mkdir -p ~/.vim/plugin";
-        ENVIRONMENT.execute_command "mkdir -p ~/.vim/jptemplate/lisaac";
+        ENVIRONMENT.execute_command "mkdir -p ~/.vim/backup"; 
+        ENVIRONMENT.execute_command "mkdir -p ~/.vim/temp"; 
         
         // Syntax hilightning support
         string_tmp.copy "cp -f editor/vim/syntax/lisaac.vim ~/.vim/syntax/";
@@ -494,37 +486,12 @@ Section Private
           "OK.\n".print;  
         };
 
-        // JPTemplate plugin - A simple yet powerful interactive template system for VIM v1.5
-        string_tmp.copy "cp -f editor/vim/plugin/lisaac.vim ~/.vim/plugin/";
-        "  `".print;
-        string_tmp.print;
-        "'\t".print;
-        (ENVIRONMENT.execute_command string_tmp != 0).if {	
-          "\n  Sorry, auto-install fail !\n\
-          \  You can read the `editor/vim/install_vim_plugin.sh' file.\n".print;
-        } else {
-          "OK.\n".print;  
-        };
-        
-        string_tmp.copy "cp -f editor/vim/jptemplate/lisaac/* ~/.vim/jptemplate/lisaac/";
-        "  `".print;
-        string_tmp.print;
-        "'\t".print;
-        (ENVIRONMENT.execute_command string_tmp != 0).if {	
-          "\n  Sorry, auto-install fail !\n\
-          \  You can read the `editor/vim/install_vim_plugin.sh' file.\n".print;
-        } else {
-          "OK.\n".print;  
-        };
-
-
         // Install ~/.vimrc file
         char := question
-        "\n  Do you want to install the default configuration provided by lisaac   \n\
-        \  installer.                                                              \n\
-        \  yes : your ~/.vimrc will be replaced/created                            \n\
-        \  no  : your ~/.vimrc will be updated to support the Lisaac syntax ?      \n";
-
+        "\n  It is recommanded to install the default vimrc file provided by the   \n\
+        \  lisaac installer.                                                     \n\n\
+        \  If you choose not doing this action, your vimrc will only be updated    \n\
+        \  Do you want to install the default config provided by lisaac installer ?";        
         (char = 'n').if {
           file_name := STRING.create 100;
           (path_home = NULL).if {
@@ -535,20 +502,16 @@ Section Private
           file_name.append "/.vimrc";	
           update file_name idf lisaac_vim with lisaac_vim confirmation TRUE;
         } else {
-          ENVIRONMENT.execute_command "mkdir -p ~/.vim/backup"; 
-          ENVIRONMENT.execute_command "mkdir -p ~/.vim/temp"; 
           string_tmp.copy "cp -f editor/vim/vimrc ~/.vimrc";
           "  `".print;
           string_tmp.print;
           "'\t".print;
-
           (ENVIRONMENT.execute_command string_tmp != 0).if {	
             "\n  Sorry, auto-install fail !\n\
             \  You can read the `editor/vim/install_vim_plugin.sh' file.\n".print;
           } else {
             "OK.\n".print;  
           };
-
         };
       };
       '\n'.print;

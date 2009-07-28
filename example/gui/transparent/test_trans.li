@@ -33,7 +33,7 @@ Section Inherit
 Section Public  
   
   - main <-
-  ( + action_trans:BLOCK;
+  ( + action_trans:{G_BUTTON;};
     
     // Init window.
     VIDEO.make (640,400);

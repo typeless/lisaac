@@ -33,13 +33,16 @@ Section Inherit
   - parent_object:OBJECT := OBJECT;
   
 Section Public  
-
+  
+  - x_root:INTEGER;
+  - y_root:INTEGER;
+/*  
   - sleep n:INTEGER <-
   // Milisecond
   (
     `usleep(@n * 1000)`;
   );
-  
+*/  
   - make <-  
   ( + mask:UINTEGER_32;
     
@@ -49,17 +52,17 @@ Section Public
     mask := mask | `ClientMessage`:UINTEGER_32;
     //mask := mask | `ResizeRedirectMask`:UINTEGER_32;
     mask := mask | `StructureNotifyMask`:UINTEGER_32;
-    `XSelectInput(display,window,@mask)`;
+    `XSelectInput(display,window,@mask)`;    
   );
     
   - get_event <-
   ( //+ nb_ev:INTEGER;
     + type:INTEGER;
     + x0,y0,x1,y1:INTEGER;
-      
+       
     //nb_ev := `XPending(display)`:INTEGER;
     //(nb_ev != 0).if {
-    `{ XEvent ev`; 
+    `{ XEvent ev`;             
       (`XPending(display)`:INTEGER = 0).if {
 	`is_sleep = 1`;
       };
@@ -68,12 +71,12 @@ Section Public
       type := `ev.type`:INTEGER;
       
       //(type != 21h).if {
-//	"Event:".print; type.to_hexadecimal.print; "h\n".print;
-//      };
-      
+      //	"Event:".print; type.to_hexadecimal.print; "h\n".print;
+      //      };
+
       type
       .when `ClientMessage`:INTEGER then {
-	TIMER.get_event;
+        TIMER.get_event;                
       }
       //
       // Event Window
@@ -116,7 +119,9 @@ Section Public
       //
       // Event Mouse
       //
-      .when `ButtonPress`:INTEGER then {
+      .when `ButtonPress`:INTEGER then {        
+        x_root := `ev.xmotion.x_root`:INTEGER;
+        y_root := `ev.xmotion.y_root`:INTEGER;
 	(`ev.xbutton.button`:INTEGER = 1).if {
 	  MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (TRUE,(MOUSE.right));
 	} else {
@@ -124,6 +129,8 @@ Section Public
 	};
       }
       .when `ButtonRelease`:INTEGER then {
+        x_root := `ev.xmotion.x_root`:INTEGER;
+        y_root := `ev.xmotion.y_root`:INTEGER;
 	(`ev.xbutton.button`:INTEGER = 1).if {
 	  MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (FALSE,(MOUSE.right));
 	} else {
@@ -131,9 +138,12 @@ Section Public
 	};
       }
       .when `MotionNotify`:INTEGER then {
+        x_root := `ev.xmotion.x_root`:INTEGER;
+        y_root := `ev.xmotion.y_root`:INTEGER;
 	MOUSE.set (`ev.xmotion.x`:INTEGER,`ev.xmotion.y`:INTEGER) with ((MOUSE.left),(MOUSE.right));
       };
     `}`;
+  //  };
   );
   
   

@@ -62,20 +62,21 @@ Section Public
   // Creation.
   //
   
-  - create p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] :SELF <-
+  - create p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] intern flag:BOOLEAN :SELF <-
   ( + result:SELF;
     
     result := clone;
-    result.make p call sl with args;
+    result.make p call sl with args intern flag;
     result
   );
   
-  - make p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] <-
+  - make p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] intern flag:BOOLEAN <-
   (
     position      := p;    
     slot          := sl;
     argument_list := args;
     result_expr   := get_expr_result;
+    is_intern     := flag;
   );
   
   //

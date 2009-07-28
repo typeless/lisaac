@@ -22,12 +22,12 @@ Section Inherit
   
 Section Public
 
-  - decode_mpeg1_intra_block (comp:INTEGER, dc_dct_pred:NATIVE_ARRAY[INTEGER]) <-
+  - decode_mpeg1_intra_block (comp:INTEGER, dc_dct_pred:NATIVE_ARRAY(INTEGER)) <-
   // decode one intra coded MPEG-1 block 
   ( + val, i, j:INTEGER;
     + code, idx:INTEGER;
     + tab_len, tab_run, tab_level:INTEGER_8;
-    + bp:NATIVE_ARRAY[INTEGER_16];
+    + bp:NATIVE_ARRAY(INTEGER_16);
     + end,sign:BOOLEAN;
         
     bp := ld.block.item comp;
@@ -196,7 +196,7 @@ Section Public
     + sign:BOOLEAN;
     + code, idx:INTEGER;
     + tab_len, tab_level, tab_run:INTEGER_8;
-    + bp:NATIVE_ARRAY[INTEGER_16];
+    + bp:NATIVE_ARRAY(INTEGER_16);
     + end:BOOLEAN;
         
     bp := ld.block.item comp;
@@ -344,14 +344,14 @@ Section Public
     }.do_until {end};
   );
 
-  - decode_mpeg2_intra_block (comp:INTEGER,dc_dct_pred:NATIVE_ARRAY[INTEGER]) <-
+  - decode_mpeg2_intra_block (comp:INTEGER,dc_dct_pred:NATIVE_ARRAY(INTEGER)) <-
   // decode one intra coded MPEG-2 block 
   ( + val, i, j, nc, cc, run:INTEGER;
     + sign:BOOLEAN;
     + code,idx:INTEGER;
     + tab_len,tab_run,tab_level:INTEGER_8;
-    + bp:NATIVE_ARRAY[INTEGER_16];
-    + qmat:NATIVE_ARRAY[INTEGER];
+    + bp:NATIVE_ARRAY(INTEGER_16);
+    + qmat:NATIVE_ARRAY(INTEGER);
     + end:BOOLEAN;
         
     // with data partitioning, data always goes to base layer     
@@ -533,8 +533,8 @@ Section Public
     + sign:BOOLEAN;
     + code,idx:INTEGER;
     + tab_len,tab_run,tab_level:INTEGER_8;
-    + bp:NATIVE_ARRAY[INTEGER_16];
-    + qmat:NATIVE_ARRAY[INTEGER];
+    + bp:NATIVE_ARRAY(INTEGER_16);
+    + qmat:NATIVE_ARRAY(INTEGER);
     + end:BOOLEAN;
     
     bp := ld.block.item comp;

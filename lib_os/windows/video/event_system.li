@@ -31,6 +31,10 @@ Section Header
   
   - external :=   
 `  
+/*  
+#include <winuser.h>  
+#include <windowsx.h>  
+*/
 void (*get_event)()=NULL;
 int event_num;
 int event_p1;
@@ -46,6 +50,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
   PAINTSTRUCT ps;
   HDC hdc_old;
   RECT rect;
+  int xPos,yPos;
     switch (uMsg)
     {
       // Timer
@@ -102,7 +107,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       get_event();
       return 0;
       
-      // Kayboard
+      // Keyboard
       case WM_KEYDOWN: 
       //sprintf(buf,"KeyDown : %c(%d) ,%lx      ",wParam,wParam,lParam);
       //TextOutA(hdc_glob,10,100,buf,strlen(buf));
@@ -156,8 +161,8 @@ Section Interrupt
     //
     .when 0 then {
       // Refresh Linux Window
-      (INTERFACE.screen != NULL).if {
-	INTERFACE.screen.redraw (p1,p2) to (p3,p4);
+      (DESK.physical_screen != NULL).if {
+	DESK.physical_screen.redraw (p1,p2) to (p3,p4);
       };
     }
     //
@@ -194,7 +199,7 @@ Section Interrupt
       //KEYBOARD.key `ev.xkey.keycode`:UINTEGER_8 press FALSE;
     //}
     // Timer
-    .when 13 then {
+    .when 13 then {      
       TIMER.timer_interrupt;
       TIMER.get_event;
     };
@@ -225,6 +230,8 @@ Section Public
   );
   
   
+
+
 
 
 

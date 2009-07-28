@@ -64,7 +64,7 @@ Section Public
 
 Section Private
 
-  - tmp :NATIVE_ARRAY[UINTEGER_8] := NATIVE_ARRAY[UINTEGER_8].create 1;
+  - tmp :NATIVE_ARRAY(UINTEGER_8) := NATIVE_ARRAY(UINTEGER_8).create 1;
 
   + real_end_of_input :BOOLEAN;
 

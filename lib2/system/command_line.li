@@ -26,23 +26,23 @@ Section Header
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
     
   - comment := "Interface Command line (Unix).";
-  
+ /* 
 Section Inherit
     
-  - parent_traversable:TRAVERSABLE[STRING] := TRAVERSABLE[STRING];
-  
+  - parent_traversable:TRAVERSABLE(STRING) := TRAVERSABLE(STRING);
+  */
 Section Private
 
-  - c_item idx:INTEGER :NATIVE_ARRAY[CHARACTER] <- `arg_vector[@idx]`:NATIVE_ARRAY[CHARACTER];
+  - c_item idx:INTEGER :NATIVE_ARRAY(CHARACTER) <- `arg_vector[@idx]`:NATIVE_ARRAY(CHARACTER);
   
   - c_count:INTEGER <- `arg_count`:INTEGER;
   
-  - args:FAST_ARRAY[STRING] :=
-  ( + result:FAST_ARRAY[STRING];
-    + arg:NATIVE_ARRAY[CHARACTER];
+  - args:FAST_ARRAY(STRING) :=
+  ( + result:FAST_ARRAY(STRING);
+    + arg:NATIVE_ARRAY(CHARACTER);
     + str:STRING;
     
-    result := FAST_ARRAY[STRING].create_with_capacity c_count;
+    result := FAST_ARRAY(STRING).create_with_capacity c_count;
     0.to (c_count - 1) do { j:INTEGER;
       arg := c_item j;
       str := STRING.create (arg.fast_first_index_of '\0' until 1024);

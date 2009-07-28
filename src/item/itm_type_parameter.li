@@ -33,15 +33,6 @@ Section Inherit
   
 Section Public
   
-  - get n:STRING_CONSTANT :ITM_TYPE_SIMPLE <-
-  ( 
-    string_tmp.clear;
-    string_tmp.add_last '[';
-    string_tmp.append n;
-    string_tmp.add_last ']';
-    parent_itm_type.get (ALIAS_STR.get string_tmp)
-  );
-  
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + result:TYPE_FULL;
         

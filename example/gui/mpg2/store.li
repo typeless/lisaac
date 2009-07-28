@@ -28,13 +28,13 @@ Section Public
   
 Section Private
   
-  - my_write (file:STD_FILE,buf:FAST_ARRAY[UINTEGER_8],len:INTEGER) <-
+  - my_write (file:STD_FILE,buf:FAST_ARRAY(UINTEGER_8),len:INTEGER) <-
   (
     outfile.write buf from 0 size len;
   );
   
   - obfrsize:INTEGER := 4096;
-  - obfr:FAST_ARRAY[UINTEGER_8] := FAST_ARRAY[UINTEGER_8].create obfrsize;
+  - obfr:FAST_ARRAY(UINTEGER_8) := FAST_ARRAY(UINTEGER_8).create obfrsize;
   - optr:INTEGER;
 
   - outfile:STD_FILE; 
@@ -68,13 +68,13 @@ Section Private
     
 Section Public
 
-  - write_frame (src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]],frame:INTEGER) <-
+  - write_frame (src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)),frame:INTEGER) <-
   // store a picture as either one frame or two fields  
   ( //+ ofs:INTEGER;     
     (output_type = 0).if {
       
       (screen = NULL).if {
-	screen := BITMAP[PIXEL_24].create (horizontal_size,vertical_size);
+	screen := BITMAP(PIXEL_24).create (horizontal_size,vertical_size);
       };      
       output src bitmap screen;
     } else {      
@@ -99,7 +99,7 @@ Section Public
   
 Section Private
       
-  - store_yuv src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]] <-
+  - store_yuv src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)) <-
   // separate headerless files for y, u and v   
   ( + hsize,vsize,incr:INTEGER;
         
@@ -125,9 +125,9 @@ Section Private
     store_yuv1 ((src.item 2),incr,hsize,vsize);
   );
 
-  - store_yuv1 (src:NATIVE_ARRAY[UINTEGER_8],incr,hsize,vsize:INTEGER) <-
+  - store_yuv1 (src:NATIVE_ARRAY(UINTEGER_8),incr,hsize,vsize:INTEGER) <-
   // auxiliary routine   
-  ( + psrc:NATIVE_ARRAY[UINTEGER_8];
+  ( + psrc:NATIVE_ARRAY(UINTEGER_8);
     + hsize_m1:INTEGER;
     + idx:INTEGER;
 
@@ -150,10 +150,10 @@ Section Private
     closefile;
   );
 
-  - store_sif src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]] <-
+  - store_sif src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)) <-
   // store as headerless file in U,Y,V,Y format  
   ( + incr_uv,py,hsize:INTEGER;
-    + u422,v422,y444:NATIVE_ARRAY[UINTEGER_8];
+    + u422,v422,y444:NATIVE_ARRAY(UINTEGER_8);
     
     (chroma_format = chroma444).if {
       error "4:4:4 not supported for SIF format";
@@ -188,7 +188,7 @@ Section Private
     closefile;
   );
 
-  - store_ppm_tga src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]] is_tga tgaflag:BOOLEAN <-
+  - store_ppm_tga src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)) is_tga tgaflag:BOOLEAN <-
   // store as PPM (PBMPLUS) or uncompressed Truevision TGA ('Targa') file
   (         
     (tgaflag).if {
@@ -230,13 +230,13 @@ Section Private
   // RGB action.
   //
   
-  - output_rgb src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]] flag tga_flag:BOOLEAN <-
+  - output_rgb src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)) flag tga_flag:BOOLEAN <-
   ( + y, u, v:INTEGER;
     + r, g, b:UINTEGER_8;
     + crv, cbu, cgu, cgv:INTEGER; 
-    + u444, v444, y444,ptr_clip:NATIVE_ARRAY[UINTEGER_8];
+    + u444, v444, y444,ptr_clip:NATIVE_ARRAY(UINTEGER_8);
     + line,col,hs:INTEGER;
-    //+ py,pu,pv:NATIVE_ARRAY[UINTEGER_8];
+    //+ py,pu,pv:NATIVE_ARRAY(UINTEGER_8);
     
     y444 := src.item 0;
     (chroma_format != chroma444).if {      
@@ -300,14 +300,15 @@ Section Private
     };
   );  
   
-  - output src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]] bitmap bmp:ABSTRACT_BITMAP <-
+  - output src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)) bitmap bmp:ABSTRACT_BITMAP <-
   ( + y, u, v:INTEGER;
     + r, g, b:UINTEGER_8;
     + color:UINTEGER_32;
     + crv, cbu, cgu, cgv:INTEGER; 
-    + u444, v444, y444,ptr_clip:NATIVE_ARRAY[UINTEGER_8];
+    + u444, v444, y444,ptr_clip:NATIVE_ARRAY(UINTEGER_8);
     + line,col,hs:INTEGER;
     + bmp_line:ABSTRACT_BMP_LINE;
+    + tmp:INTEGER;
     
     y444 := src.item 0;
     (chroma_format != chroma444).if {      
@@ -340,10 +341,18 @@ Section Private
 	u :=  u444.item col.to_integer - 128;
 	v :=  v444.item col.to_integer - 128;
 	y := 76309 * (y444.item col.to_integer - 16 ); // (255/219)*65536 
-	
-	r := ptr_clip.item ((y + crv * v           + 32768) >> 16);
-	g := ptr_clip.item ((y - cgu * u - cgv * v + 32768) >> 16);
-	b := ptr_clip.item ((y + cbu * u           + 32786) >> 16);
+        // BSBS: PATCH! BUG ! C LA MERDE !!!!!!
+        tmp := (y + crv * v           + 32768) >> 16;
+        tmp := tmp.max 0.min 255;
+        r := ptr_clip.item tmp;
+
+        tmp := (y - cgu * u - cgv * v + 32768) >> 16;
+        tmp := tmp.max 0.min 255;
+        g := ptr_clip.item tmp;        
+        
+        tmp := (y + cbu * u           + 32786) >> 16;
+        tmp := tmp.max 0.min 255;
+        b := ptr_clip.item tmp;
         
         color := (r.to_uinteger_32 << 16) | (g.to_uinteger_32 << 8) | b;
         bmp_line.put color to j;
@@ -358,29 +367,29 @@ Section Private
   // Conversion.
   //
   
-  - u422buf:NATIVE_ARRAY[UINTEGER_8];
-  - v422buf:NATIVE_ARRAY[UINTEGER_8];
+  - u422buf:NATIVE_ARRAY(UINTEGER_8);
+  - v422buf:NATIVE_ARRAY(UINTEGER_8);
   
-  - conv420to422 u420:NATIVE_ARRAY[UINTEGER_8] and v420:NATIVE_ARRAY[UINTEGER_8] <-
+  - conv420to422 u420:NATIVE_ARRAY(UINTEGER_8) and v420:NATIVE_ARRAY(UINTEGER_8) <-
   ( + size:INTEGER;
     (u422buf = NULL).if {
       size    := (coded_picture_width >> 1) * coded_picture_height;
-      u422buf := NATIVE_ARRAY[UINTEGER_8].calloc_intern size;
-      v422buf := NATIVE_ARRAY[UINTEGER_8].calloc_intern size;
+      u422buf := NATIVE_ARRAY(UINTEGER_8).calloc_intern size;
+      v422buf := NATIVE_ARRAY(UINTEGER_8).calloc_intern size;
     };      
     conv420 (u420) to422 (u422buf);
     conv420 (v420) to422 (v422buf);
   );    
 
-  - u444buf:NATIVE_ARRAY[UINTEGER_8];
-  - v444buf:NATIVE_ARRAY[UINTEGER_8];
+  - u444buf:NATIVE_ARRAY(UINTEGER_8);
+  - v444buf:NATIVE_ARRAY(UINTEGER_8);
   
-  - conv422to444 u422:NATIVE_ARRAY[UINTEGER_8] and v422:NATIVE_ARRAY[UINTEGER_8] <-
+  - conv422to444 u422:NATIVE_ARRAY(UINTEGER_8) and v422:NATIVE_ARRAY(UINTEGER_8) <-
   ( + size:INTEGER;
     (u444buf = NULL).if {
       size    := coded_picture_width * coded_picture_height;
-      u444buf := NATIVE_ARRAY[UINTEGER_8].calloc_intern size;
-      v444buf := NATIVE_ARRAY[UINTEGER_8].calloc_intern size;
+      u444buf := NATIVE_ARRAY(UINTEGER_8).calloc_intern size;
+      v444buf := NATIVE_ARRAY(UINTEGER_8).calloc_intern size;
     };      
     conv422 (u422) to444 (u444buf);
     conv422 (v422) to444 (v444buf);
@@ -390,14 +399,14 @@ Section Private
   // Conversion Vertical / Horizontal
   //
   
-  - conv420 sc:NATIVE_ARRAY[UINTEGER_8] to422 dt:NATIVE_ARRAY[UINTEGER_8] <-  
+  - conv420 sc:NATIVE_ARRAY(UINTEGER_8) to422 dt:NATIVE_ARRAY(UINTEGER_8) <-  
   // vertical 1:2 interpolation filter   
   ( + w, h, j2,y_up,x_up:INTEGER;    
     + jm6, jm5, jm4, jm3, jm2, jm1, jp1, jp2, jp3, jp4, jp5, jp6, jp7:INTEGER;
     + p1,p2,p3,p4,p5,p6,p7:INTEGER;
     + idx:INTEGER;
-    + pclip:NATIVE_ARRAY[UINTEGER_8];
-    + src,dst:NATIVE_ARRAY[UINTEGER_8];
+    + pclip:NATIVE_ARRAY(UINTEGER_8);
+    + src,dst:NATIVE_ARRAY(UINTEGER_8);
         
     src := sc;
     dst := dt;
@@ -436,10 +445,18 @@ Section Private
 	  p7 := src.item (jp3 * w);
 	  // FIR filter coefficients (*256): 5 -21 70 228 -37 11 
 	  // New FIR filter coefficients (*256): 3 -16 67 227 -32 7 
-	  idx := (3*p1 - 16*p2 + 67*p3 + 227*p4 - 32*p5 + 7*p6 + 128) >> 8;	  
+          idx := (3*p1 - 16*p2 + 67*p3 + 227*p4 - 32*p5 + 7*p6 + 128) >> 8;	  
+          
+          // BSBS: PATCH 4012 :
+          idx := idx.max 0.min 255;
+          
 	  dst.put (pclip.item idx) to (j2 * w);
 	  
-	  idx := (3*p7 - 16*p6 + 67*p5 + 227*p4 - 32*p3 + 7*p2 + 128) >> 8;	  
+          idx := (3*p7 - 16*p6 + 67*p5 + 227*p4 - 32*p3 + 7*p2 + 128) >> 8;	  
+          
+          // BSBS: PATCH 2 ! BUG C la le méga merde !!!
+          idx := idx.max 0.min 255;
+          
 	  dst.put (pclip.item idx) to ((j2 + 1) * w);
 	};
 	src := src + 1;
@@ -542,14 +559,14 @@ Section Private
     };    
   );
   
-  - conv422 sc:NATIVE_ARRAY[UINTEGER_8] to444 dt:NATIVE_ARRAY[UINTEGER_8] <-
+  - conv422 sc:NATIVE_ARRAY(UINTEGER_8) to444 dt:NATIVE_ARRAY(UINTEGER_8) <-
   // horizontal 1:2 interpolation filter  
   ( + w, im3, im2, im1, ip1, ip2, ip3:INTEGER;
     + x_up,y_up/*,y_up_x_w*/:INTEGER;
     + idx,i2:INTEGER;
     + p1,p2,p3,p4,p5,p6,p7:INTEGER;
-    + pclip:NATIVE_ARRAY[UINTEGER_8];
-    + src,dst:NATIVE_ARRAY[UINTEGER_8];
+    + pclip:NATIVE_ARRAY(UINTEGER_8);
+    + src,dst:NATIVE_ARRAY(UINTEGER_8);
     src := sc;
     dst := dt;
     
@@ -632,7 +649,10 @@ Section Private
 	  idx := (5*p1 - 21*p2 + 70*p3 + 228*p4 - 37*p5 + 11*p6 + 128) >> 8;	  
 	  dst.put (pclip.item idx) to i2;
 	  
-	  idx := (5*p7 - 21*p6 + 70*p5 + 228*p4 - 37*p3 + 11*p2 + 128) >> 8;	  
+          idx := (5*p7 - 21*p6 + 70*p5 + 228*p4 - 37*p3 + 11*p2 + 128) >> 8;	  
+          // BSBS: PATCH 3 C'est la merde !
+          idx := idx.max 0.min 255;
+          
 	  dst.put (pclip.item idx) to (i2 + 1);
 	};
 	src := src + w;

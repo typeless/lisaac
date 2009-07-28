@@ -114,7 +114,7 @@ Section Public
   
   - make t:ABSTRACT_STRING with elt:G_EXPR <-
   (
-    title_len := BITMAP[PIXEL_32].font_width t + 2 + 12;
+    title_len := BITMAP(PIXEL_32).font_width t + 2 + 12;
     title := t;
     root := elt;
   );

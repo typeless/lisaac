@@ -56,6 +56,10 @@ Section Public
   - symbol_auto_import     :STRING_CONSTANT := symbol_affect_code;
   - symbol_equal           :STRING_CONSTANT := "=";
   - symbol_not_equal       :STRING_CONSTANT := "!=";
+  - symbol_great           :STRING_CONSTANT := ">";
+  - symbol_great_equal     :STRING_CONSTANT := ">=";
+  - symbol_less            :STRING_CONSTANT := "<";
+  - symbol_less_equal      :STRING_CONSTANT := "<=";
   
   - operator_equal     :STRING_CONSTANT; 
   - operator_not_equal :STRING_CONSTANT;
@@ -77,6 +81,7 @@ Section Public
   - prototype_real            :STRING_CONSTANT := "REAL";
   - prototype_character       :STRING_CONSTANT := "CHARACTER";
   - prototype_string_constant :STRING_CONSTANT := "STRING_CONSTANT";  
+  - prototype_string          :STRING_CONSTANT := "STRING";
   - prototype_native_array    :STRING_CONSTANT := "NATIVE_ARRAY";
   - prototype_native_array_volatile:STRING_CONSTANT := "NATIVE_ARRAY_VOLATILE";
   - prototype_block           :STRING_CONSTANT := "BLOCK";
@@ -85,6 +90,7 @@ Section Public
   - prototype_false           :STRING_CONSTANT := "FALSE";
   - prototype_pointer         :STRING_CONSTANT := "POINTER";
   - prototype_context         :STRING_CONSTANT := "___CONTEXT";
+  - prototype_cop             :STRING_CONSTANT := "___COP";
   - prototype_generic         :STRING_CONSTANT := "___GENERIC";
   - prototype_type_id         :STRING_CONSTANT := "___TYPE_ID";
   - prototype_self            :STRING_CONSTANT := "SELF";
@@ -108,10 +114,11 @@ Section Public
   - variable_tmp           :STRING_CONSTANT := "__tmp";
   
   - variable_lisaac     :STRING_CONSTANT := "lisaac";
+  /*
   - variable_input_file :STRING_CONSTANT := "input_file";
   - variable_output_file:STRING_CONSTANT := "output_file";
   - variable_target     :STRING_CONSTANT := "target";
-    
+  */  
   - slot_name         :STRING_CONSTANT := "name";
   - slot_export       :STRING_CONSTANT := "export";
   - slot_import       :STRING_CONSTANT := "import";
@@ -138,7 +145,31 @@ Section Public
   - slot_to           :STRING_CONSTANT := "to_";
   - slot_from         :STRING_CONSTANT := "from_";
   - slot_storage      :STRING_CONSTANT := "storage";
+  - slot_count        :STRING_CONSTANT := "count";
   
+  // LIP file.
+  - slot_lip          :STRING_CONSTANT := "lip";
+  - slot_if           :STRING_CONSTANT := "if";
+  - slot_else         :STRING_CONSTANT := "else";  
+  - slot_print        :STRING_CONSTANT := "print";
+  - slot_exit         :STRING_CONSTANT := "exit";
+  - slot_run          :STRING_CONSTANT := "run";
+  - slot_path         :STRING_CONSTANT := "path";
+  - slot_front_end    :STRING_CONSTANT := "front_end";
+  - slot_back_end     :STRING_CONSTANT := "back_end";
+  - slot_input_file   :STRING_CONSTANT := "input_file";
+  - slot_debug_level  :STRING_CONSTANT := "debug_level";
+  - slot_debug_with_code:STRING_CONSTANT := "debug_with_code";
+  - slot_is_all_warning:STRING_CONSTANT := "is_all_warning";
+  - slot_is_optimization:STRING_CONSTANT := "is_optimization";
+  - slot_inline_level :STRING_CONSTANT := "inline_level";
+  - slot_is_java      :STRING_CONSTANT := "is_java";
+  - slot_is_statistic :STRING_CONSTANT := "is_statistic";
+  - slot_is_quiet     :STRING_CONSTANT := "is_quiet";    
+  - slot_get_integer  :STRING_CONSTANT := "get_integer";
+  - slot_get_string   :STRING_CONSTANT := "get_string";
+  - slot_is_cop       :STRING_CONSTANT := "is_cop";
+    
   - c_void           :STRING_CONSTANT := "void";
   - c_struct         :STRING_CONSTANT := "struct __";
   - code_empty       :STRING_CONSTANT := "/* NOTHING */";
@@ -168,6 +199,16 @@ Section Public
   - short_slot_style  :STRING_CONSTANT := "slot_style";
   - short_block       :STRING_CONSTANT := "block";
   - short_external    :STRING_CONSTANT := "external";
+
+  - short_title       :STRING_CONSTANT := "title";
+  - short_table_begin :STRING_CONSTANT := "table_begin";
+  - short_table_item  :STRING_CONSTANT := "table_item";
+  - short_table_slot_name    :STRING_CONSTANT := "table_slot_name";
+  - short_table_slot_comment :STRING_CONSTANT := "table_slot_comment";
+  - short_table_end   :STRING_CONSTANT := "table_end";
+  - short_sub_title   :STRING_CONSTANT := "sub_title";
+  - short_slot_title  :STRING_CONSTANT := "slot_title";
+  
   
   - short_index       :STRING_CONSTANT := "index";
   - short_default     :STRING_CONSTANT := "default";
@@ -219,7 +260,7 @@ Section Public
     result
   );
   
-  - get_intern str:STRING_CONSTANT :STRING_CONSTANT <-
+  - get_intern str:ABSTRACT_STRING :STRING_CONSTANT <-
   ( + result:STRING_CONSTANT;
     + v,m:INTEGER;
     
@@ -285,6 +326,10 @@ Section Public
     list.add symbol_auto_export;
     list.add symbol_equal;
     list.add symbol_not_equal;
+    list.add symbol_great;
+    list.add symbol_great_equal;
+    list.add symbol_less;
+    list.add symbol_less_equal;
     
     // Section name list :
     list.add section_header;
@@ -305,6 +350,7 @@ Section Public
     list.add prototype_real;
     list.add prototype_character;
     list.add prototype_string_constant;
+    list.add prototype_string;
     list.add prototype_native_array;
     list.add prototype_native_array_volatile;
     list.add prototype_block;
@@ -337,9 +383,11 @@ Section Public
     list.add variable_tmp;
     
     list.add variable_lisaac;     
+    /*
     list.add variable_input_file; 
     list.add variable_output_file;
     list.add variable_target;     
+    */
     
     // Slot particulier :
     list.add slot_name;
@@ -368,7 +416,30 @@ Section Public
     list.add slot_to;
     list.add slot_from;
     list.add slot_storage;
-    
+    list.add slot_count;
+    // Lip.
+    list.add slot_lip;
+    list.add slot_if;
+    list.add slot_else;    
+    list.add slot_print;
+    list.add slot_exit;
+    list.add slot_run;
+    list.add slot_path;
+    list.add slot_front_end;
+    list.add slot_back_end;
+    list.add slot_input_file;
+    list.add slot_debug_level;
+    list.add slot_debug_with_code;
+    list.add slot_is_all_warning;
+    list.add slot_is_optimization;
+    list.add slot_inline_level;
+    list.add slot_is_java;
+    list.add slot_is_statistic;
+    list.add slot_is_quiet;
+    list.add slot_get_integer;
+    list.add slot_get_string;
+    list.add slot_is_cop;    
+          
     // Type C :
     list.add c_void;
     list.add c_struct;
@@ -400,7 +471,17 @@ Section Public
     list.add short_slot_style;
     list.add short_block;
     list.add short_external;
+    
+    list.add short_title;
+    list.add short_table_begin;
+    list.add short_table_item;
+    list.add short_table_slot_name;
+    list.add short_table_slot_comment;
+    list.add short_table_end;
+    list.add short_sub_title;
+    list.add short_slot_title;
 
+    
     list.add short_index;
     list.add short_default;
     list.add short_directory_list_begin;

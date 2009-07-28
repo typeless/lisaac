@@ -48,7 +48,7 @@ Section Public
   
   - create mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] :SELF <-
   ( + result:SELF;
-    context := profil;    
+    context := profil_current;    
     result := clone;    
     result.make mod with larg;
     result    
@@ -117,7 +117,7 @@ Section NODE_TYPE, DTA
       };
       
       wrt_larg := t_block.write_argument get_argument;
-      call := CALL_SLOT.create (e.position) profil t_block with wrt_larg;      
+      call := CALL_SLOT.create (e.position) profil t_block with wrt_larg cop NULL;      
       (result_expr.static_type.raw != TYPE_VOID).if {	
 	em ?= result_expr;
 	(em != NULL).if {
@@ -127,14 +127,14 @@ Section NODE_TYPE, DTA
 	    result_var := rd.variable;	    
 	    rd  := call.profil.result_list.item j.read (e.position);
 	    wrt := result_var.write (e.position) value rd;
-	    call.result_list.add_last wrt;	    
+	    call.result_list.add_last (RESULT.create wrt);	    
 	  };	  
 	} else {
           rd ?= result_expr;
           result_var := rd.variable;	    
           rd  := call.profil.result_list.first.read (e.position);
           wrt := result_var.write (e.position) value rd;
-          call.result_list.add_last wrt;	    
+          call.result_list.add_last (RESULT.create wrt);	    
 	};	
       };
       result.add_last call;

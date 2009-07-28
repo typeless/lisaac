@@ -104,7 +104,7 @@ Section DIRECTORY
   ( + pe:NATIVE_ARRAY[CHARACTER];
     + result:ENTRY;
         
-    pe := new_path.to_external;
+    pe := new_path.to_external;        
     `{ struct stat t`; 
       (`stat(@pe,&t)`:INTEGER = 0).if {		  
         (`S_ISDIR(t.st_mode)`:INTEGER = 0).if {

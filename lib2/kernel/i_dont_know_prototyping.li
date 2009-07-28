@@ -23,7 +23,7 @@ Section Header
   + name    := I_DONT_KNOW_PROTOTYPING;
 
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+  - copyright   := "2003-2007 Benoit Sonntag";
 
   - comment := "Facility, but it's not in prototype spirit.";
 
@@ -60,5 +60,14 @@ Section Public
   - repeat body:BLOCK until cond:BLOCK <-
   (
     body.do_until cond;
+  );
+  
+  //
+  // Print.
+  //
+  
+  - print str:ABSTRACT_STRING <-
+  (
+    str.print;
   );
   

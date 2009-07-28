@@ -241,7 +241,7 @@ Section Public
   );
   
   - append_in buffer:STRING format_c fmt:ABSTRACT_STRING <-
-  ( + nc_buf,nc_fmt:NATIVE_ARRAY[CHARACTER];    
+  ( + nc_buf,nc_fmt:NATIVE_ARRAY(CHARACTER);    
     + old_count,cap:INTEGER;
     
     old_count := buffer.count;

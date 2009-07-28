@@ -601,7 +601,7 @@ Section AREA
   //                       .
   //                     list_y
   
-  - stack_plan:FAST_ARRAY[PLAN]:= FAST_ARRAY[PLAN].create 16;
+  - stack_plan:FAST_ARRAY(PLAN):= FAST_ARRAY(PLAN).create 16;
   
   - last_clip :CLIP;
   - first_clip:CLIP;

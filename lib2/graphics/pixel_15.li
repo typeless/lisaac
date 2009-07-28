@@ -37,11 +37,11 @@ Section Mapping
   
 Section Private
       
-  - convert_5_to_8:FAST_ARRAY[UINTEGER_8] :=
-  ( + result:FAST_ARRAY[UINTEGER_8];
+  - convert_5_to_8:FAST_ARRAY(UINTEGER_8) :=
+  ( + result:FAST_ARRAY(UINTEGER_8);
     + value:UINTEGER_8;
     
-    result:=FAST_ARRAY[UINTEGER_8].create 32;
+    result:=FAST_ARRAY(UINTEGER_8).create 32;
     0.to 31 do { j:INTEGER;
       result.put value to j;
       value := value + 8;      

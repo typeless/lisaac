@@ -45,7 +45,7 @@ Section Public
   ( 
     + win_about:G_WIN_OUT;
     + win_exit:G_WIN_OUT;
-    + action_send:BLOCK;
+    + action_send:{G_IN; };
     
     // Init window.
     VIDEO.make (640,400);

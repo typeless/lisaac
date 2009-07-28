@@ -32,7 +32,7 @@ Section Insert
   - im_an_idiot:Expanded I_DONT_KNOW_PROTOTYPING;
     
 Section Public
-        
+  
   //
   // Compiler consideration.
   //
@@ -59,6 +59,8 @@ Section Public
       `stack_print((_____CONTEXT *)@ptr)`;
     };
   );
+  
+  - wait_all_the_time <- `pthread_join(c_thread, NULL)`;
   
   - print_runtime_stack <- print_runtime_stack_on top_runtime_stack;
   
@@ -109,15 +111,15 @@ Section Public
   - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- (! (Self == other));
   
   
-  - clone_allocation_size:UINTEGER_32;
+  - clone_allocation_size:POINTER;
   
   - clone:SELF <- 
   ( + result:SELF;
     + ptr:POINTER;
-    + sz:UINTEGER_32;
+    + sz:POINTER;
     + typ_id:INTEGER;
       
-    sz := object_size.to_uinteger_32;        
+    sz := object_size.to_pointer;        
     (sz = 0).if {      
       result := Self;
     } else {      
@@ -129,9 +131,13 @@ Section Public
       } else {        
 	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
       };                                               
-      result := CONVERT[POINTER,SELF].on ptr;            
+      result := CONVERT(POINTER,SELF).on ptr;            
       //OLD MEMORY.copy to_pointer to ptr size sz;
       copy_intern_in result;      
+      (is_cop_type).if {        
+        `((lith_object *)@result)->first = NULL`;
+        `((lith_object *)@result)->last  = NULL`;
+      };
     };
     result
   );
@@ -156,7 +162,7 @@ Section Public
     };
   );
     
-  - to_pointer:POINTER <- CONVERT[SELF,POINTER].on Self;
+  - to_pointer:POINTER <- CONVERT(SELF,POINTER).on Self;
 
   - to_string :STRING <- to_pointer.to_string;
 
@@ -192,8 +198,10 @@ Section Public
   // The Guru section (Don't touch, don't use !)
   //
     
-  - is_expanded_type:BOOLEAN <- `0`;
+  - is_expanded_type:BOOLEAN  <- `0`;
   
-  - type_id_intern:INTEGER   <- `1`;
+  - type_id_intern:INTEGER    <- `1`;
+  
+  - is_cop_type:BOOLEAN       <- `15`;
     
   - copy_intern_in other:SELF <- `*@other = *@Self`;

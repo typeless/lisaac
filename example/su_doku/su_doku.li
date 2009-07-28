@@ -34,7 +34,7 @@ Section Private
   // Data.
   //
   
-  - array  :FAST_ARRAY2[INTEGER] := FAST_ARRAY2[INTEGER].create (9,9);
+  - array  :FAST_ARRAY2(INTEGER) := FAST_ARRAY2(INTEGER).create (9,9);
       
   //
   // Example.
@@ -94,7 +94,7 @@ Section Private
   //
 
   - is_good value:INTEGER to (x,y:INTEGER) :BOOLEAN <-
-  ( + j,bx,by:INTEGER;
+  ( + j,k,bx,by:INTEGER;
     + result:BOOLEAN;
     result := TRUE;
     // Horizontal/Vertical test.
@@ -104,18 +104,17 @@ Section Private
     };
     (result).if {
       // Block test.
+      by := y / 3 * 3;      
       bx := x / 3 * 3;
-      by := y / 3 * 3;
-      result := 
-      (array.item (bx,by)         != value) && 
-      {array.item ((bx+1),by)     != value} && 
-      {array.item ((bx+2),by)     != value} &&
-      {array.item (bx,(by+1))     != value} && 
-      {array.item ((bx+1),(by+1)) != value} && 
-      {array.item ((bx+2),(by+1)) != value} &&
-      {array.item (bx,(by+2))     != value} && 
-      {array.item ((bx+1),(by+2)) != value} && 
-      {array.item ((bx+2),(by+2)) != value};
+      j := 0;
+      {(j < 3) && {result}}.while_do {
+        k := 0;
+        {(k < 3) && {result}}.while_do {
+          result := array.item (bx+k,by+j) != value;
+          k := k + 1;
+        };
+        j := j + 1;
+      };      
     };
     result
   );
@@ -153,7 +152,7 @@ Section Private
     is_found
   );
   
-  - graph_table:FAST_ARRAY2[G_IN];
+  - graph_table:FAST_ARRAY2(G_IN);
   
   - array_to_graph <-
   ( + val:INTEGER;
@@ -195,7 +194,7 @@ Section Public
   ( + c1,l1,c2,l2,r:G_EXPR;
     + g:G_IN;
     
-    graph_table := FAST_ARRAY2[G_IN].create (9,9); 
+    graph_table := FAST_ARRAY2(G_IN).create (9,9); 
     0.to 2 do { xx:INTEGER;
       c2 := NULL;
       0.to 2 do { yy:INTEGER;

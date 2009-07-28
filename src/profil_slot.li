@@ -62,13 +62,13 @@ Section Public
   ( + idx:INTEGER;
     + result:TYPE_FULL;
     
-    // For Genericity.
-    result := type_self.raw.parameter_to_type p;
-    (result = NULL).if {
-      (p.name = ALIAS_STR.prototype_self).if {
-        // For Self.
-        result := type_self;                
-      } else {
+    (p.name = ALIAS_STR.prototype_self).if {
+      // For Self.
+      result := type_self;                
+    } else {
+      // For Genericity.    
+      result := type_self.raw.parameter_to_type p;
+      (result = NULL).if {            
         // For Type parametric.
         idx := slot_code.get_index_argument_type p;
         (idx != - 1).if {
@@ -76,7 +76,7 @@ Section Public
         };
       };
     };
-        
+    
     result
   );
   
@@ -91,7 +91,7 @@ Section Public
     + item_lst:FAST_ARRAY[ITM_ARGUMENT];         
     + result:FAST_ARRAY[WRITE];
     + tm:ITM_TYPE_MULTI;
-    + ts:ITM_TYPE_SIMPLE;
+    + ts:ITM_TYPE_MONO;
     
     PROFIL_LIST.add Self;
     
@@ -104,7 +104,7 @@ Section Public
     type_self := typ_self;
     //
     list_current := LIST.create (s.position);
-    profil := profil_slot := Self;    
+    profil_current := profil_slot := Self;    
     //
     (debug_level_option != 0).if {
       // Debug mode : Add context local.
@@ -123,6 +123,7 @@ Section Public
     (item_lst.lower).to (item_lst.upper) do { j:INTEGER;
       item_lst.item j.to_run_in argument_list for Self;
     };
+    
     ((s.id_section.is_external) && {argument_list.count > 1}).if {
       (argument_list.lower+1).to (argument_list.upper) do { j:INTEGER;      
 	loc := argument_list.item j;
@@ -149,7 +150,7 @@ Section Public
         typ := ts.to_run_for Self;	        
         result_list.add_last (typ.get (s.position) result 0);         
       };
-    };       
+    };           
     //
     result := write_argument call_lst;
     //        

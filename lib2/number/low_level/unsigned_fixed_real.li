@@ -82,42 +82,42 @@ Section Public
   
   - Self:SELF '-'  Left 80  other:SELF :SELF <- 
   (
-    CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 - other.to_raw_uinteger_32)
+    CONVERT(UINTEGER_32,SELF).on (to_raw_uinteger_32 - other.to_raw_uinteger_32)
   );
 
   - Self:SELF '*#' Left 100 other:INTEGER :SELF <- 
   (    
-    CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 * other)
+    CONVERT(UINTEGER_32,SELF).on (to_raw_uinteger_32 * other)
   );
   
   - Self:SELF '*'  Left 100 other:SELF :SELF <- 
   (
-    CONVERT[UINTEGER_64,SELF].on ((to_raw_uinteger_64 * other.to_raw_uinteger_64) >> shift_bits)
+    CONVERT(UINTEGER_64,SELF).on ((to_raw_uinteger_64 * other.to_raw_uinteger_64) >> shift_bits)
   );
   
   - Self:SELF '/#' Left 100 other:INTEGER :SELF <- 
   (
-    CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 / other)
+    CONVERT(UINTEGER_32,SELF).on (to_raw_uinteger_32 / other)
   );
   
   - Self:SELF '/'  Left 100 other:SELF :SELF <- 
   (
-    CONVERT[UINTEGER_64,SELF].on ((to_raw_uinteger_64 << shift_bits) / other.to_raw_uinteger_64)
+    CONVERT(UINTEGER_64,SELF).on ((to_raw_uinteger_64 << shift_bits) / other.to_raw_uinteger_64)
   );
   
   - Self:SELF '&'  Left 100 other:SELF :SELF <-
   (
-    CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 & other.to_raw_uinteger_32)
+    CONVERT(UINTEGER_32,SELF).on (to_raw_uinteger_32 & other.to_raw_uinteger_32)
   );
   
   - Self:SELF '>>' Left 100 other:INTEGER :SELF <- 
   (
-    CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 >> other)
+    CONVERT(UINTEGER_32,SELF).on (to_raw_uinteger_32 >> other)
   );
   
   - Self:SELF '<<' Left 100 other:INTEGER :SELF <- 
   (
-    CONVERT[UINTEGER_32,SELF].on (to_raw_uinteger_32 << other)
+    CONVERT(UINTEGER_32,SELF).on (to_raw_uinteger_32 << other)
   );
   
   //
@@ -135,7 +135,7 @@ Section Public
   
   - '~' Self:SELF :SELF <- 
   (
-    CONVERT[UINTEGER_32,SELF].on (~ to_raw_uinteger_32)
+    CONVERT(UINTEGER_32,SELF).on (~ to_raw_uinteger_32)
   );
     
 

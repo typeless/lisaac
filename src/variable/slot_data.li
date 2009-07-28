@@ -328,6 +328,7 @@ Section Public
   ( + val,rec:EXPR;
     + wrt:WRITE;    
     + old_list:LIST;
+    + rd:ITM_READ_ARG1;
    /* 
     string_tmp.copy "init : ";
     string_tmp.append name; 
@@ -343,7 +344,13 @@ Section Public
       } else {		
         // Code.	
         (value != NULL).if {
-          val := value.to_run_expr;
+          rd ?= value;
+          ((rd != NULL) && {rd.arg = NULL}).if {
+            rec := PROTOTYPE_CST.create position type (receiver_type.default);
+            val := rd.to_run_with_self (rec,FALSE,FALSE) args NULL;
+          } else {
+            val := value.to_run_expr;
+          };
         } else {
           val := type.default_value position;
         };
@@ -351,13 +358,18 @@ Section Public
       };      
       (style = '+').if {
 	rec := PROTOTYPE_CST.create position type (receiver_type.default);
-      };      
+      } else {
+        rec := NULL;
+      };
       (debug_level_option != 0).if {
         list_current.add_last (
           PUSH.create position context context_main first FALSE 
         );
       };
       wrt := write position with rec value val;
+      (is_zero val).if {
+        wrt.set_quiet_generation;
+      };            
       list_current.add_last wrt;    
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS:Alias
       
@@ -485,5 +497,18 @@ Section VARIABLE
     };
     result
   );
-*/
-  
+  */
+  - is_zero e:EXPR :BOOLEAN <-
+  ( + pro:PROTOTYPE_CST;
+    + int:INTEGER_CST;
+    (
+      pro ?= e;
+      (pro != NULL) && {
+        (pro.static_type.raw = TYPE_NULL) ||
+        {pro.static_type.raw = type_false}
+      }
+    ) || {
+      int ?= e;
+      (int != NULL) && {int.value = 0}
+    }
+  );

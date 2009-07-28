@@ -67,6 +67,7 @@ Section Public
       \(Use `-D' option)\\n\"); \ 
       \die_with_code(1)";
     };
+    buffer.append code;
     is_necessary := TRUE;
   );
   

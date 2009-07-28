@@ -296,6 +296,22 @@ Section Public
     result
   );
   
+  - fast_reference_at e:V :V <-
+  ( + idx:INTEGER; 
+    + node:HASHED_SET_NODE[V];
+    + result:V;
+				
+    idx := e.hash_code % capacity;
+    node := buckets.item idx;
+    {(node = NULL) || {node.item = e}}.until_do {
+      node := node.next;
+    };
+    (node != NULL).if {
+      result := node.item;
+    };
+    result
+  );
+  
   //
   // To provide iterating facilities:
   //
@@ -444,7 +460,7 @@ Section Private
     
   // -----------------OLD-----------------  
   
-  
+  /*
   
   
   
@@ -755,4 +771,4 @@ Section Private
     };
     result
   );
-
+*/

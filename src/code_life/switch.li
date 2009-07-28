@@ -70,6 +70,7 @@ Section Public
     result
   );  
   
+  
   - make n:NODE with e:EXPR size s:INTEGER <-
   ( + first:CASE;
     position := n.position;
@@ -122,7 +123,19 @@ Section Public
   //
   // Execute
   //
+  
+  - i_am_the_last i:INSTR :BOOLEAN <- 
+  ( + result:BOOLEAN;
+    + j:INTEGER;
     
+    j := list.lower;
+    {(j <= list.upper) && {!result}}.while_do {
+      result := list.item j.code.i_am_the_last i;
+      j := j + 1;
+    };
+    result
+  );
+
   - execute:INSTR <-
   ( + lst_typ:TYPES_TMP;        
     + result:INSTR;
@@ -131,13 +144,14 @@ Section Public
     + lst:LIST;
     + tb:PROFIL_BLOCK;    
     + is_end:BOOLEAN;
+    + count_empty:INTEGER;
     
     // Update.
     lst_typ := TYPES_TMP.new;        
     expr.get_type lst_typ;       
     ? {lst_typ.count <= list.count};        
         
-    (lst_typ.count > list.count).if {
+    (lst_typ.count > list.count).if {      
       "New type: ".print;
       lst_typ.print;
       "\nOld type: ".print;
@@ -152,9 +166,6 @@ Section Public
     };
     
     //    
-    // BSBS: Il faut que tu supprimes aussi les listes vides
-    // Le pb : Le test des set types devient obsolète...
-    //
     // BSBS: Ajoute un pattern pour les elseif ...
     //    
     (lst_typ.lower).to (lst_typ.upper) do { j:INTEGER;	
@@ -163,19 +174,24 @@ Section Public
 	list.item j.remove;
 	list.remove j;
       };
+      (list.item j.code.is_empty).if {
+        count_empty := count_empty + 1;
+      };
     };    
     {lst_typ.count = list.count}.until_do {
       list.last.remove;
       list.remove_last;
     };
     lst_typ.free;
-    
+            
     // Execute.
     (
       (list.count = 1) || {
 	(list.count = 2) && 
 	{debug_level_option = 0} && 
-	{list.first.id = TYPE_NULL} && {
+        {list.first.id = TYPE_NULL} && 
+        {! list.first.code.is_empty} &&
+        {
 	  wrt ?= list.first.code.first; // For ?= with NULL type.
 	  wrt = NULL
 	}
@@ -191,15 +207,7 @@ Section Public
       };
       result := list.last.code.execute;
       is_end := TRUE;
-    };
-    (
-      (list.count = 0) || {
-        (list.count = 2) && 
-        {expr.static_type.raw = type_boolean} && 
-        {list.first .code.is_empty} &&
-        {list.second.code.is_empty}
-      }
-    ).if { 
+    }.elseif {count_empty = list.count} then { 
       result := expr.execute_unlink;
       is_end := TRUE;
     };
@@ -225,7 +233,7 @@ Section Public
 	list.second.code.execute_case;		
       } else {		
 	(list.lower).to (list.upper) do { j:INTEGER;
-	  list.item j.execute;	
+          list.item j.execute;	          
 	};
       };      
       result := detect_logic_expr;
@@ -246,73 +254,88 @@ Section Public
     + typ_first:TYPE;
     + typ_id:TYPE_ID;
     + wrt:WRITE;
+    + i:INTEGER;
     
     (
       (list.first.id = TYPE_NULL) && 
-      {debug_level_option = 0} && {
+      {debug_level_option = 0} && 
+      {! list.first.code.is_empty} && 
+      {
 	wrt ?= list.first.code.first; // For ?= with NULL type.
 	wrt = NULL
       }
     ).if {
       list.remove_first;
     };
+    i := list.upper;
+    {i >= list.lower}.while_do {
+      (list.item i.code.is_empty).if {
+        list.remove i;
+      };
+      i := i - 1;
+    };      
     //
-    typ_first := list.first.id;
-    typ_id ?= typ_first;    
-    ((list.count = 2) || {typ_first = TYPE_NULL}).if {
-      buffer.append "if (";
-      //                  
-      ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {
-	expr.genere buffer;	
-	buffer.append ".__id==0";
-      } else {
-	typ_first.put_access_id expr in buffer;      
-	(expr.static_type.raw != type_boolean).if {
-	  buffer.append "==";
-	  typ_first.put_id buffer;	
-	} else {
-	  ? {typ_first.name = ALIAS_STR.prototype_true};
-	};
+    (list.is_empty).if_false {
+      typ_first := list.first.id;
+      typ_id ?= typ_first;    
+      ((list.count <= 2) || {typ_first = TYPE_NULL}).if {
+        buffer.append "if (";
+        //                        
+        ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {
+          expr.genere buffer;	
+          buffer.append ".__id==0";
+        } else {
+          typ_first.put_access_id expr in buffer;      
+          (expr.static_type.raw != type_boolean).if {
+            buffer.append "==";
+            typ_first.put_id buffer;	
+          } else {
+            ? {typ_first.name = ALIAS_STR.prototype_true};
+          };
+        };
+        buffer.append ") ";
+        //
+        list.first.genere buffer;             
+        first_case := 1;
+        //
+        (list.count = 2).if {
+          lst := list.second.code;          
+          buffer.append " else ";
+            
+          buffer.append "/* ";
+          buffer.append (list.second.id.name);
+          buffer.append " */ ";
+            
+          list.second.genere buffer;          
+          first_case := 2;
+        }.elseif {list.count > 2} then {
+          buffer.append " else {\n";
+          indent.append "  ";
+          buffer.append indent;          
+        };
       };
-      buffer.append ") ";
-      //
-      list.first.genere buffer; 
-      //
-      (list.count = 2).if {
-	lst := list.second.code;
-	(! lst.is_empty).if {
-	  buffer.append " else ";
-	  list.second.genere buffer;
-	};
-	first_case := 2;
-      } else {
-	buffer.append " else {\n";
-	indent.append "  ";
-	buffer.append indent;
-	first_case := 1;
-      };
-    };
-    (first_case <= list.upper).if {
-      polymorphic_counter := polymorphic_counter + 1;
-      buffer.append "switch (";      
-      list.item first_case.id.put_access_id expr in buffer;
-      buffer.append ") {\n";
-      (first_case).to (list.upper) do { j:INTEGER;
-	buffer.append indent; 
-	buffer.append "case ";
-	list.item j.id.put_id buffer;
-	buffer.append ": ";
-	list.item j.genere buffer;
-	buffer.add_last ' ';	
-	buffer.append "break;\n";
-      };	
-      buffer.append indent;
-      buffer.add_last '}';
-      (first_case != 0).if {
-	buffer.add_last '\n';
-	indent.remove_last 2;    
-	buffer.append indent;
-	buffer.add_last '}';
+      (first_case <= list.upper).if {
+        polymorphic_counter := polymorphic_counter + 1;            
+        buffer.append "switch (";      
+        list.item first_case.id.put_access_id expr in buffer;
+        buffer.append ") {\n";
+        (first_case).to (list.upper) do { j:INTEGER;
+          buffer.append indent; 
+          buffer.append "case ";
+          list.item j.id.put_id buffer;
+          buffer.append ": ";          
+          list.item j.genere buffer;        
+          buffer.add_last ' ';	
+          buffer.append "break;\n";
+        };	
+        buffer.append indent;
+        buffer.add_last '}';
+        (first_case != 0).if {
+          buffer.add_last '\n';
+          indent.remove_last 2;    
+          buffer.append indent;
+          buffer.add_last '}';
+        };
       };
     };
   );

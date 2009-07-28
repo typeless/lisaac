@@ -22,16 +22,16 @@ Section Inherit
   
 Section Private
   
-  - dmv:FAST_ARRAY2[INTEGER] := FAST_ARRAY2[INTEGER].create (2,2);
+  - dmv:FAST_ARRAY2(INTEGER) := FAST_ARRAY2(INTEGER).create (2,2);
   
 Section Public
   
   - form_predictions (bx,by,macroblock_type,motion_type:INTEGER,pmv:PMV,
-  motion_vertical_field_select:FAST_ARRAY2[BOOLEAN],dmvector:VECTOR,stwtype:INTEGER) <-
+  motion_vertical_field_select:FAST_ARRAY2(BOOLEAN),dmvector:VECTOR,stwtype:INTEGER) <-
   //
   // motion_vertical_field_select[2][2];
   ( + currentfield:BOOLEAN;
-    + predframe:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]];    
+    + predframe:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8));    
     + stwtop, stwbot:INTEGER;
         
     stwtop := stwtype % 3; // 0:temporal, 1:(spat+temp)/2, 2:spatial 
@@ -242,7 +242,7 @@ Section Public
 Section Private
   
   - form_prediction
-	 (src:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]],sfield:BOOLEAN,dst:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]],
+	 (src:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)),sfield:BOOLEAN,dst:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)),
   dfield:BOOLEAN,plx,plx2,pw,ph,px,py,pdx,pdy:INTEGER,average_flag:BOOLEAN) <-
   // unsigned char *src[];    prediction source buffer 
   // int sfield;              prediction source field number (0 or 1) 
@@ -316,8 +316,8 @@ Section Private
   );
 
 
-  - form_component_prediction (src:NATIVE_ARRAY[UINTEGER_8],idx_src:INTEGER,
-  dst:NATIVE_ARRAY[UINTEGER_8],idx_dst:INTEGER,
+  - form_component_prediction (src:NATIVE_ARRAY(UINTEGER_8),idx_src:INTEGER,
+  dst:NATIVE_ARRAY(UINTEGER_8),idx_dst:INTEGER,
   lx,lx2,w,h,x,y,dx,dy:INTEGER,average_flag:BOOLEAN) <-
   // ISO/IEC 13818-2 section 7.6.4: Forming predictions 
   // NOTE: the arithmetic below produces numerically equivalent results
@@ -354,7 +354,7 @@ Section Private
     + s:INTEGER;         // source pointer: analogous to pel_ref[][]   
     + d:INTEGER;         // destination pointer:  analogous to pel_pred[][]  
     + si,sil,di,wm1,hm1:INTEGER;
-    + psrc,pdst:NATIVE_ARRAY[UINTEGER_8];
+    + psrc,pdst:NATIVE_ARRAY(UINTEGER_8);
     
     // half pel scaling for integer vectors 
     xint := dx >> 1;

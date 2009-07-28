@@ -74,23 +74,25 @@ Section Public
   // Extern Creation read.
   //
   
-  - new_read p:POSITION slot s:SLOT receiver rec:EXPR self my_self:EXPR :NODE <-
+  - new_read p:POSITION slot s:SLOT receiver rec:EXPR 
+  self my_self:EXPR intern is_intern:BOOLEAN :NODE <-
   ( + result:NODE_TYPE;
     + dta:DTA_RD;
     //    
-    dta := DTA_RD.create p call s self my_self;
+    dta := DTA_RD.create p call s self my_self intern is_intern;
     result := NODE_TYPE.create rec with dta;
     //    
     node_list.add_last result;
     result
   );
 
-  - new_read p:POSITION slot s:SLOT receiver rec:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
+  - new_read p:POSITION slot s:SLOT receiver rec:EXPR 
+  with larg:FAST_ARRAY[EXPR] intern is_intern:BOOLEAN :NODE <-
   ( + dta:DTA_RD_ARGS;        
     + result:NODE_TYPE;
     
     // Control argument type.            
-    dta := DTA_RD_ARGS.create p call s with larg;
+    dta := DTA_RD_ARGS.create p call s with larg intern is_intern;
     s.check_argument_type larg for dta;    
     result := NODE_TYPE.create rec with dta;
     //    
@@ -109,11 +111,12 @@ Section Public
     NODE_TYPE.create_partial dta
   );
   
-  - new_read_finalize rec:EXPR with larg:FAST_ARRAY[EXPR] <-
+  - new_read_finalize (rec:EXPR,s:SLOT) with larg:FAST_ARRAY[EXPR] <-
   ( + dta:DTA_RD_ARGS;    
     // Control argument type.            
     dta ?= data;
-    dta.make (data.position) call (data.slot) with larg;
+    
+    dta.make (data.position) call s with larg intern FALSE;
     data.slot.check_argument_type larg for dta;            
     make rec with data;
     //        
@@ -201,11 +204,11 @@ Section Public
     };
     //    
     (debug_level_option != 0).if {
-      (profil = NULL).if {
+      (profil_current = NULL).if {
 	crash_with_message "NODE";
       };
       list_current.add_last (
-	PUSH.create p context (profil.context) first FALSE
+	PUSH.create p context (profil_current.context) first FALSE
       );
     };
     //
@@ -219,6 +222,8 @@ Section Public
 Section Public  
   
   - position:POSITION <- data.position;
+  
+  + data:DTA;
   
   + expr:EXPR;  
     
@@ -236,8 +241,6 @@ Section Public
     };
     result
   );
-  
-  + data:DTA;
   
   - result_expr:EXPR <- deferred;
   
@@ -265,7 +268,7 @@ Section Public
     (switch != NULL).if {
       result := switch.execute;      
     } else {            
-      expr.remove;
+      expr.remove;      
       (first_code != NULL).if { // Warning: Dead Code!
 	result := first_code.execute;
       };

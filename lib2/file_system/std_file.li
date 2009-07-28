@@ -72,16 +72,16 @@ Section Public
   [
     -? {is_open};
   ]
-  ( + buf:NATIVE_ARRAY[UINTEGER_8];
-    buf := CONVERT[OBJECT,NATIVE_ARRAY[UINTEGER_8]].on dest;
-    physical_read buf from 0 size (dest.object_size)
+  ( + buf:NATIVE_ARRAY(UINTEGER_8);
+    buf := CONVERT(OBJECT,NATIVE_ARRAY(UINTEGER_8)).on dest;
+    physical_read buf size (dest.object_size)
   ); 
   
   - read dest:ARRAYED size nb_elt:INTEGER :INTEGER <-
   [
     -? {is_open};
   ]
-  ( + buf:NATIVE_ARRAY[UINTEGER_8];
+  ( + buf:NATIVE_ARRAY(UINTEGER_8);
     + index,s:INTEGER;
     + result:INTEGER;
     + new_count:INTEGER;
@@ -105,7 +105,7 @@ Section Public
   [
     -? {is_open};
   ]
-  ( + buf:NATIVE_ARRAY[UINTEGER_8];
+  ( + buf:NATIVE_ARRAY(UINTEGER_8);
     + index,s:INTEGER;
     + result:INTEGER;
        
@@ -136,7 +136,7 @@ Section Public
     
 Section STD_FILE
   
-  - physical_read buf:NATIVE_ARRAY[UINTEGER_8] size s:INTEGER :INTEGER <-
+  - physical_read buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
   [
     -? {is_open};
   ]
@@ -148,7 +148,7 @@ Section STD_FILE
     +? {cursor = Old cursor + s};
   ];
     
-  - physical_write buf:NATIVE_ARRAY[UINTEGER_8] size s:INTEGER :INTEGER <-
+  - physical_write buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
   [
     -? {is_open};
   ]

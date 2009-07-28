@@ -33,7 +33,7 @@ Section Inherit
   + parent_node:Expanded NODE;
   
 Section Public
-    
+        
   - result_expr:EXPR <- data.result_expr;
   
   + is_self:BOOLEAN;
@@ -125,6 +125,12 @@ Section Private
       ((typ_f.raw.is_block) || {typ_f.raw.subtype_list.count != count}).if {
 	lst_typ := TYPES_TMP.new;      
         expr.get_type lst_typ;      
+        /*
+        ((data.slot != NULL) && {data.slot.name == "storage"}).if {
+          lst_typ.print; '\n'.print;
+        };
+        */
+        
 	(! lst_typ.is_empty).if {
 	  (lst_typ.count = 1).if {
 	    (first_code = NULL).if {
@@ -164,7 +170,7 @@ Section Private
   ( + result:BOOLEAN;
     + list:FAST_ARRAY[CASE];
     + new_type_self:TYPE_FULL;
-    
+        
     (switch = NULL).if {
       (first_code != NULL).if {
 	(self_type = NULL).if {	  
@@ -182,9 +188,10 @@ Section Private
       };
     } else {
       list := switch.list;
+      
       (list.lower).to (list.upper) do { j:INTEGER;
 	(self_type = NULL).if {
-	  new_type_self := list.item j.id.default.to_strict;
+          new_type_self := list.item j.id.default.to_strict;                    
 	} else {
 	  new_type_self := self_type;
 	};

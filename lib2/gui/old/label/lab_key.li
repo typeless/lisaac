@@ -55,7 +55,7 @@ Section Public
     
 Section GUI_LABEL
   
-  - my_width_min :INTEGER <- BITMAP[PIXEL_32].font_width name + 1;
+  - my_width_min :INTEGER <- BITMAP(PIXEL_32).font_width name + 1;
   
   - my_height_min:INTEGER <- 17;
   

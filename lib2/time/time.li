@@ -40,7 +40,7 @@ Section Private
   
   - to_raw:UINTEGER_32 <-
   (
-    CONVERT[SELF, UINTEGER_32].on Self
+    CONVERT(SELF, UINTEGER_32).on Self
   );
 Section Public
 
@@ -66,29 +66,29 @@ Section Public
   
 Section Public
   
-  - '>' Right 60 other:SELF :BOOLEAN <- to_raw > other.to_raw;
+  - Self:SELF '>' Right 60 other:SELF :BOOLEAN <- to_raw > other.to_raw;
   
-  - '<' Right 60 other:SELF :BOOLEAN <- to_raw < other.to_raw;
+  - Self:SELF '<' Right 60 other:SELF :BOOLEAN <- to_raw < other.to_raw;
   
-  - '>=' Right 60 other:SELF :BOOLEAN <- to_raw >= other.to_raw;
+  - Self:SELF '>=' Right 60 other:SELF :BOOLEAN <- to_raw >= other.to_raw;
   
-  - '<=' Right 60 other:SELF :BOOLEAN <- to_raw <= other.to_raw;
+  - Self:SELF '<=' Right 60 other:SELF :BOOLEAN <- to_raw <= other.to_raw;
   
   - to_csecond:INTEGER <- hour.to_integer * (60*60*100) + 
   minute.to_integer * (60*100) + 
   second.to_integer * 100 + 
   csecond;
   
-  - '-' Right 60 other:SELF :SELF <- 
+  - Self:SELF '-' Right 60 other:SELF :SELF <- 
   ( 
     create_csecond (Self -# other)
   );
   
   // BSBS: A uniformiser -# +# ???
   
-  - '-#' Right 60 other:SELF :INTEGER <- to_csecond - other.to_csecond;
+  - Self:SELF '-#' Right 60 other:SELF :INTEGER <- to_csecond - other.to_csecond;
   
-  - '+#' Right 60 other:INTEGER :TIME <-
+  - Self:SELF '+#' Right 60 other:INTEGER :TIME <-
   ( 
     create_csecond (to_csecond + other)
   );
@@ -104,7 +104,7 @@ Section Public
     t := t | (m.to_uinteger_32 << 16);
     t := t | (s.to_uinteger_32 << 8);
     t := t | cs;
-    CONVERT[UINTEGER_32, SELF].on t
+    CONVERT(UINTEGER_32, SELF).on t
   );
   
   - create_csecond csec:INTEGER :SELF <-

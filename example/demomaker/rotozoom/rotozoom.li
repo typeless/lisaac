@@ -42,10 +42,10 @@ Section Public
   - angle:UINTEGER_8;
   - zoom:UINTEGER_8;
   
-  - sin:FAST_ARRAY[INTEGER_32] :=
-  ( + result:FAST_ARRAY[INTEGER_32];
+  - sin:FAST_ARRAY(INTEGER_32) :=
+  ( + result:FAST_ARRAY(INTEGER_32);
     + r:REAL;
-    result := FAST_ARRAY[INTEGER_32].create_with_capacity 256;
+    result := FAST_ARRAY(INTEGER_32).create_with_capacity 256;
     0.to 255 do { i:INTEGER;
       r := (REAL.pi/128*i).sin * 65536;
       result.add_last (r.to_integer);
@@ -53,7 +53,7 @@ Section Public
     result
   );
   
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE[PIXEL_24].create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
   
   //
   // Width / Height
@@ -66,15 +66,18 @@ Section Public
   //
   // Creation.
   //  
+  - string_tmp:STRING := STRING.create 40;
   
-  - init:G_EXPR <-
+  - init p:ABSTRACT_STRING :G_EXPR <-
   ( + entry:ENTRY;
     + fmt:FORMAT_IMG;
     + f:STD_FILE;
     + w,h:INTEGER;
     
+    string_tmp.copy p;
+    string_tmp.append filename;
     // Initialization bitmap.
-    entry := FILE_SYSTEM.get_entry filename;
+    entry := FILE_SYSTEM.get_entry string_tmp;
     ((entry = NULL) || {! entry.is_file}).if {
       VIDEO.message ("ERROR: File '" + filename + "' not found.\n");
       die_with_code exit_failure_code;
@@ -88,7 +91,7 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP[PIXEL_24].create (w,h);
+    bitmap := BITMAP(PIXEL_24).create (w,h);
     fmt.put_image_in bitmap;    
     f.close;
     TIMER.add_client Self;
@@ -96,9 +99,9 @@ Section Public
     G_RAW.create (Self.fix_height.fix_width)
   );
   
-  - run:G_WIN_OUT <-
+  - run p:ABSTRACT_STRING :G_WIN_OUT <-
   ( 
-    G_WIN_OUT.create "Rotozoom" with init
+    G_WIN_OUT.create "Rotozoom" with (init p)
   );
   
   - main <-
@@ -106,7 +109,7 @@ Section Public
     // Init window.
     VIDEO.make (width_min+64,height_min+64);
     DESK.make VIDEO with (
-      G_OUT.create "Rotozoom" justify (G_OUT.center) / init      
+      G_OUT.create "Rotozoom" justify (G_OUT.center) / init "./"
     );        
   );
   
@@ -129,7 +132,7 @@ Section Public
     + px,py,ax,ay,aax,aay:INTEGER_32;
         
     clipping (x0,y0) to (x1,y1);
-    
+        
     ax := sin.item angle - (sin.item zoom);
     ay := sin.item ((angle+64) & 0FFh) - (sin.item zoom);
     0.to height do { y:INTEGER;      

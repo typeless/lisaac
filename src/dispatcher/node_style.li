@@ -139,13 +139,25 @@ Section Private
     + wrt_lst:FAST_ARRAY[WRITE];
     //+ ctext:LOCAL;
     + new_type_self:TYPE_FULL;
+    + data_rd:DTA_RD;
+    + cop_arg:EXPR;
+    + new_val:EXPR;
     
     result := LIST.create position;
     
+    data_rd ?= data;      
+    ((type_self.prototype.style = '-') && {data_rd != NULL} && {! data_rd.is_intern}).if {
+      cop_arg := data.self_arg.my_copy;
+    };
+    
     typ ?= t;
-    idx := typ.index;
+    idx := typ.index;    
     (idx = 0).if {
-      // Data.
+      // Data.      
+      (cop_arg != NULL).if {
+        result.add_last (COP_LOCK.create position with cop_arg);
+      };
+      //
       slot_dta := slot.slot_data;      
       slot_dta.init;
       (slot.slot_data_list != NULL).if {
@@ -153,14 +165,15 @@ Section Private
 	  slot.slot_data_list.item j.init;
 	};
       };
+      //
       (result_expr.static_type.raw = TYPE_VOID).if {
+        // BSBS: Pourquoi tu produit quelque chose qui serre à rien ???
 	(slot_dta.style = '-').if {
 	  result.add_last (slot_dta.read position);
 	} else {		
 	  result.add_last (slot_dta.read position with (expr.my_copy));
-	};
-	result.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS: Alias.
-      } else {	
+	};	
+      } else {	        
 	em ?= result_expr;
 	(em != NULL).if {
 	  (em.lower).to (em.upper - 1) do { j:INTEGER;
@@ -172,9 +185,36 @@ Section Private
 	  rd ?= em.last;
 	} else {
 	  rd ?= result_expr;
-	};	
+        };	
+        
+        //(slot_dta.name == "storage").if {
+        /*
+        string_tmp.clear;
+        string_tmp.copy (type_self.raw.name);
+        string_tmp.add_last ' ';
+        string_tmp.append (t.name);        
+        (data.slot != NULL).if {
+          string_tmp.add_last ' ';
+          string_tmp.append (data.slot.name);        
+        };
+        result.add_last (
+          EXTERNAL_C.create position text (ALIAS_STR.get string_tmp) access NULL persistant TRUE type (TYPE_NULL.default)
+        );
+         */ 
+          /*
+          "Data : ".print; slot_dta.intern_name.print; 
+          " dans ".print; type_self.raw.name.print; 
+          (profil_current != NULL).if {
+            profil_current.name.print;
+          };
+          '\n'.print;
+          */
+        //};
 	result_var := rd.variable;
 	result.add_last (new_write result_var with (expr,slot_dta));
+      };
+      (cop_arg != NULL).if {
+        result.add_last (COP_UNLOCK.create position);        
       };
     } else {
       // Function.
@@ -203,16 +243,40 @@ Section Private
         */
       };
       //
-      (type.is_strict).if {
-	// Fix Self type for resend call (else it's fixed by NODE_TYPE)
-	new_type_self := type;
+      rd ?= new_larg.first;      
+      ((rd != NULL) && {rd.variable.name = ALIAS_STR.variable_self}).if {
+        // Fix Self type for resend call (else it's fixed by NODE_TYPE)        
+        new_type_self := type;               
       } else {
 	new_type_self := type_self;
       };
+      /*
+      string_tmp.copy "// ";
+      new_type_self.display string_tmp;
+      string_tmp.append "  /  ";
+      type_self.display string_tmp;
+      result.add_last (
+        EXTERNAL_C.create (data.position) 
+        text (ALIAS_STR.get string_tmp) access NULL persistant TRUE type (TYPE_VOID.default)
+      );
+      */
+      new_val := CAST.create new_type_self value (new_larg.first);
+      new_larg.put new_val to 0;
       (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
-      //
-      call := CALL_SLOT.create position profil my_profil with wrt_lst;      
-      (result_expr.static_type.raw != TYPE_VOID).if {	
+      //      
+      (result_expr.static_type.raw = TYPE_VOID).if {	
+        result.add_last (
+          CALL_SLOT.create position profil my_profil with wrt_lst cop cop_arg
+        );
+      } else {        
+        call := CALL_SLOT.create position profil my_profil with wrt_lst cop NULL;            
+        (cop_arg != NULL).if {
+          result.add_last (COP_LOCK.create position with cop_arg);
+          result.add_last call;
+          result.add_last (COP_UNLOCK.create position);
+        } else {
+          result.add_last call;
+        };
 	em ?= result_expr;
 	(em != NULL).if {
 	  (em.lower).to (em.upper) do { j:INTEGER;
@@ -221,17 +285,21 @@ Section Private
 	    result_var := rd.variable;	    
 	    rd  := call.profil.result_list.item j.read position;
 	    wrt := result_var.write position value rd;
-            call.result_list.add_last wrt;
+            call.result_list.add_last (RESULT.create wrt);
 	  };	  
-	} else {
+	}.elseif {
+          (call.profil.result_list.count != 0) || 
+          {call.is_interrupt}
+        } then {
           rd ?= result_expr;
           result_var := rd.variable;	    
-          rd  := call.profil.result_list.first.read position;
+          (call.is_interrupt).if_false {
+            rd  := call.profil.result_list.first.read position;
+          };
           wrt := result_var.write position value rd;
-          call.result_list.add_last wrt; 
+          call.result_list.add_last (RESULT.create wrt); 
 	};	
-      };
-      result.add_last call;
+      };      
     };    
     result
   );

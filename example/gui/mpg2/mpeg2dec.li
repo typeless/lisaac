@@ -1,13 +1,23 @@
-////////////////////////////////////////////////////////////////////////////////
-//                                                                            //
-//                             MPEG2 Decode Video                             //
-//                                                                            //
-//                     LORIA - UHP - INRIA - ST - FRANCE                      //
-//               (c) INRIA (see `licence.txt' for more details)               //
-//                     Benoit SONNTAG - bsonntag@loria.fr                     //
-//                           http://www.IsaacOS.com                           //
-//                                                                            //
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Example                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
 Section Header
   
   + name         := MPEG2DEC;
@@ -43,7 +53,7 @@ Section Inherit
 
 Section Public
   
-  - init:G_EXPR <-
+  - init p:ABSTRACT_STRING :G_EXPR <-
   (    
     TIMER.add_client Self;
     (page := G_RAW.create (Self.fix_height.fix_width)) /
@@ -55,12 +65,12 @@ Section Public
     }.fix_height 
   );
 
-  - run:G_WIN_OUT <-
+  - run p:ABSTRACT_STRING :G_WIN_OUT <-
   ( 
     is_isaacos := TRUE;
-    load_default;
-    stat_mpg := 4;
-    page := G_WIN_OUT.create "Video" with init
+    load_default p;
+    stat_mpg := 0; //4
+    page := G_WIN_OUT.create "Video" with (init "./")
   );
   
   - main <-
@@ -71,7 +81,7 @@ Section Public
     (output_type = 0).if {
       VIDEO.make (640,480);              
       DESK.make VIDEO with (
-        G_OUT.create "Video" justify (G_OUT.center).fix_height / init      
+        G_OUT.create "Video" justify (G_OUT.center).fix_height / (init "./")
       ); 
     } else {  
       LAYER_DATA.make main_bitstream_filename;    
@@ -127,21 +137,21 @@ Section Private
     .when 2 then { block_count :=  8; }
     .when 3 then { block_count := 12; };
     
-    backward_reference_frame := NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]].create 3;
-    forward_reference_frame  := NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]].create 3;
-    current_frame            := NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]].create 3;
-    auxframe                 := NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]].create 3;
-    llframe0                 := NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]].create 3;
-    llframe1                 := NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]].create 3;
+    backward_reference_frame := NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)).create 3;
+    forward_reference_frame  := NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)).create 3;
+    current_frame            := NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)).create 3;
+    auxframe                 := NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)).create 3;
+    llframe0                 := NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)).create 3;
+    llframe1                 := NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)).create 3;
     0.to 2 do { cc:INTEGER;
       (cc = 0).if {
         size := coded_picture_width * coded_picture_height;
       } else {
         size := chroma_width * chroma_height;
       };
-      backward_reference_frame.put (NATIVE_ARRAY[UINTEGER_8].create size) to cc;
-      forward_reference_frame.put (NATIVE_ARRAY[UINTEGER_8].create size) to cc;
-      auxframe.put (NATIVE_ARRAY[UINTEGER_8].create size) to cc;
+      backward_reference_frame.put (NATIVE_ARRAY(UINTEGER_8).create size) to cc;
+      forward_reference_frame.put (NATIVE_ARRAY(UINTEGER_8).create size) to cc;
+      auxframe.put (NATIVE_ARRAY(UINTEGER_8).create size) to cc;
       
       (ld.scalable_mode = sc_spat).if {
         // this assumes lower layer is 4:2:0 
@@ -149,14 +159,14 @@ Section Private
 	(cc != 0).if {
 	  size := size / 4;
 	};	
-	llframe0.put (NATIVE_ARRAY[UINTEGER_8].create size) to cc;
-	llframe1.put (NATIVE_ARRAY[UINTEGER_8].create size) to cc;
+	llframe0.put (NATIVE_ARRAY(UINTEGER_8).create size) to cc;
+	llframe1.put (NATIVE_ARRAY(UINTEGER_8).create size) to cc;
       };
     };
 
     // SCALABILITY: Spatial 
     (ld.scalable_mode = sc_spat).if {
-      lltmp := NATIVE_ARRAY[INTEGER_16].create
+      lltmp := NATIVE_ARRAY(INTEGER_16).create
       (lower_layer_prediction_horizontal_size*(
 	(lower_layer_prediction_vertical_size*vertical_subsampling_factor_n)/
         vertical_subsampling_factor_m
@@ -164,9 +174,11 @@ Section Private
     };
   );
   
-  - load_default <-
+  - load_default p:ABSTRACT_STRING <-
   (
-    main_bitstream_filename := "anim.mpe".to_string;
+    main_bitstream_filename := STRING.create 40;
+    main_bitstream_filename.copy p;
+    main_bitstream_filename.append "anim.mpe";
     output_type := 0;
   );
   
@@ -174,7 +186,7 @@ Section Private
   // option processing
   ( + i:INTEGER; 
     + is_read:BOOLEAN;
-    + display_option:BLOCK;
+    + display_option:{};
     
     display_option := {
       "MPEG2 Decoder V1.0, 2005, Isaac/Lisaac project\n\n\
@@ -186,7 +198,7 @@ Section Private
     
     // at least one argument should be present 
     (COMMAND_LINE.count < 2).if {
-      load_default;
+      load_default "./";
     } else {
       i := 1;    
       // command-line options are proceeded by '-'     
@@ -345,6 +357,7 @@ Section Private
       //
       // End of sequence.
       //
+      stat_mpg := 0;
     };
   );
   

@@ -127,18 +127,19 @@ Section Public
 	}).if {	  
 	  level_type := level_pass;
 	  tmp_type := TYPES_TMP.new;      
-	  (require_first != NULL).if {	
+          (require_first != NULL).if {	
+                        
 	    require_first.get_type tmp_type;		
 	    (require_list != NULL).if {
 	      (require_list.lower).to (require_list.upper) do { j:INTEGER;	    
 		require_list.item j.get_type tmp_type;
 	      };  
-	    };
+            };                       
 	  };	  
 	  type_list := tmp_type.update type_list;
 	};
       };
-    };
+    };    
     t.union type_list;
   );
   
@@ -344,6 +345,35 @@ Section Public
   //
   // Display.
   //
+  
+  - display_require buffer:STRING <-
+  ( + rd:READ;
+    
+    (require_first != NULL).if {
+      buffer.append indent;      
+      require_first.display buffer;
+      buffer.add_last '\n';
+      rd ?= require_first.value;
+      (rd != NULL).if {
+        indent.append "  ";
+        rd.variable.display_require buffer;
+        indent.remove_last 2;
+      };
+      (require_list != NULL).if {
+        (require_list.lower).to (require_list.upper) do { i:INTEGER;
+          buffer.append indent;      
+          require_list.item i.display buffer;
+          buffer.add_last '\n';
+          rd ?= require_list.item i.value;
+          (rd != NULL).if {
+            indent.append "  ";
+            rd.variable.display_require buffer;
+            indent.remove_last 2;
+          };
+        };
+      };
+    };
+  );
 
   - display buffer:STRING <-
   (
@@ -360,7 +390,7 @@ Section Public
       (type_list.lower).to (type_list.upper - 1) do { j:INTEGER;
 	buffer.append (type_list.item j.intern_name);
 	buffer.add_last 'x';
-      };
+      };      
       buffer.append (type_list.last.intern_name);
     };
     buffer.add_last '}';

@@ -1,5 +1,6 @@
 cat ./*.li
 cat ./compiler_any/*.li
+cat ./lip/*.li
 cat ./constant/*.li
 cat ./dispatcher/*.li
 cat ./external/*.li

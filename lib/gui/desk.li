@@ -90,14 +90,13 @@ Section Public
     connect_to TIMER;
     {
       EVENT_SYSTEM.get_event;
-      
       {storage_message.is_empty}.until_do {
 	msg := storage_message.first;
 	storage_message.remove_first;
-	msg.set_destination focus;
-	focus.receive msg;	
+        msg.set_destination focus;
+        focus.receive msg;	
 	input ?= msg.source;
-	input.acknowledge;
+        input.acknowledge;
       };      
     }.do_while {`1`:BOOLEAN(TRUE,FALSE)}; // Infinity Loop     
   );
@@ -149,8 +148,9 @@ Section Public
   - receive msg:EVENT <-
   ( + mouse:EVENT_MOUSE;
     + win:AREA;
+        
     (msg.destination = NULL).if {
-      // Hardware Message.
+      // Hardware Message.      
       storage_message.add_last msg;
     } else {
       // Other message.

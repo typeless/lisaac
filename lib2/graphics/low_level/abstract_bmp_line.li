@@ -92,4 +92,4 @@ Section Public
   // Arrayed consideration.
   //
   
-  - get_storage:NATIVE_ARRAY[UINTEGER_8] <- ( deferred; NULL); 
+  - get_storage:NATIVE_ARRAY(UINTEGER_8) <- ( deferred; NULL); 

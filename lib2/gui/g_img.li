@@ -63,7 +63,7 @@ Section Public
       };
       w := bmp.width;
       h := bmp.height;      
-      bmp.close;
+      f.close;
     }.elseif {entry.path.has_suffix ".ai"} then {
       not_yet_implemented;
     };
@@ -94,33 +94,37 @@ Section Public
   - create filename:ABSTRACT_STRING :SELF <-
   ( + result:SELF;
     + entry:ENTRY;
-    + bmp_file:BMP_FILE;
+    + fmt:FORMAT_IMG;
+    + f:STD_FILE;
     + ai_file:AI_FILE;
     + w,h:INTEGER;
-    + bmp:BITMAP[PIXEL_24];
-    
+    + bmp:BITMAP(PIXEL_24);
+        
     entry := FILE_SYSTEM.get_entry filename;
     ((entry = NULL) || {! entry.is_file}).if {
       VIDEO.message ("ERROR: File '" + filename + "' not found.\n");
       die_with_code exit_failure_code;
     };    
     (entry.path.has_suffix ".bmp").if {
-      bmp_file := entry.open_bmp;    
-      bmp_file.read_header;
-      (! bmp_file.is_valid_bmp).if {
+      entry.open;    
+      f ?= entry;
+      fmt := FORMAT_BMP.create_with_file f;
+      (fmt = NULL).if {      
         VIDEO.message "Error: BMP format invalid.\n";
         die_with_code exit_failure_code;      
       };
-      w := bmp_file.header.width;
-      h := bmp_file.header.height;
-      bmp := BITMAP[PIXEL_24].create (w,h);
-      bmp_file.fill_bitmap bmp;    
-      bmp_file.close;
+      w := fmt.width;
+      h := fmt.height;
+      bmp := BITMAP(PIXEL_24).create (w,h);
+      fmt.put_image_in bmp;    
+      f.close;
     }.elseif {entry.path.has_suffix ".ai"} then {
-      ai_file := entry.open_ai;      
-      bmp := BITMAP[PIXEL_24].create (10,10);	
-      ai_file.fill_bitmap bmp scale 3;	
-      ai_file.close;
+      entry.open;      
+      f ?= entry;
+      bmp := BITMAP(PIXEL_24).create (10,10);	
+      ai_file := AI_FILE.clone;
+      ai_file.fill_bitmap f in bmp scale 3;	
+      f.close;      
     };
     //
     result := clone;

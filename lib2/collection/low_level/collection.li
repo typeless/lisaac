@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := COLLECTION[V];
+  + name    := COLLECTION(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag, 2007 Pierre-Alexandre Voye";
@@ -48,7 +48,7 @@ Section Inherit
   
 //  - parent_storage:STORAGE := STORAGE;
   
-  - parent_traversable:TRAVERSABLE[V] := TRAVERSABLE[V]; 
+  - parent_traversable:TRAVERSABLE(V) := TRAVERSABLE(V); 
   
 Section Public
   
@@ -200,7 +200,7 @@ Section Public
     +? { upper = 1 + Old upper };
   ];
     
-  - append_collection other:COLLECTION[V] <-
+  - append_collection other:COLLECTION(V) <-
   // Append `other' to Current.
   //
   // See also `add_last', `add_first', `add'.
@@ -243,7 +243,7 @@ Section Public
     deferred;
   );
     
-  - from_collection model:COLLECTION[V] <-
+  - from_collection model:COLLECTION(V) <-
   // Initialize the current object with the contents of `model'.
   [
     -? { model != NULL };
@@ -396,7 +396,7 @@ Section Public
   )
   [
     +? {Result.in_range start_index to (upper + 1)};
-    +? {valid_index Result ->> { SAFE_EQUAL[V].test element with (item Result)}};
+    +? {valid_index Result ->> { SAFE_EQUAL(V).test element with (item Result)}};
   ];
   
   - reverse_index_of element:V start start_index:INTEGER :INTEGER <-
@@ -497,7 +497,7 @@ Section Public
   // Looking and comparison:
   //
   
-  - Self:SELF '=='  Right 60 other:COLLECTION[V] :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:COLLECTION(V) :BOOLEAN <-
   // Do both collections have the same `lower', `upper', and
   // items?
   // The basic `=' is used for comparison of items.
@@ -535,7 +535,7 @@ Section Public
     FALSE
   );
     
-  - same_items other:COLLECTION[V] :BOOLEAN <-
+  - same_items other:COLLECTION(V) :BOOLEAN <-
   // Do both collections have the same items? The basic `=' is used
   // for comparison of items and indices are not considered (for
   // example this routine may yeld true with `Current' indexed in
@@ -832,7 +832,7 @@ Section Public
   )
   [
     +? { count = Old count};
-    +? { (! SAFE_EQUAL[V].test old_value with new_value) ->> {occurrences old_value = 0}};
+    +? { (! SAFE_EQUAL(V).test old_value with new_value) ->> {occurrences old_value = 0}};
   ];  
   
   - fast_replace_all old_value:V with new_value:V <-

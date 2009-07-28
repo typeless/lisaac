@@ -132,7 +132,7 @@ Section Public
   
   - print <-
   (
-    to_string.print;
+    deferred;
   );
 
 

@@ -44,10 +44,10 @@ Section Public
   // Output `s' to current output device.
   ( ? {is_connected};
     ? {s!=NULL};
-    
+        
     (s.lower).to (s.count) do {i:INTEGER;
       put_character (s.item i);
-    };
+    };    
   );
   
   - put_integer i:INTEGER <-

@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  + name := AVL_DICTIONARY_NODE[V,K];
+  + name := AVL_DICTIONARY_NODE(V,K);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -29,7 +29,7 @@ Section Header
   
 Section Inherit
   
-  + parent_avl_tree_node:Expanded AVL_TREE_NODE[K];
+  + parent_avl_tree_node:Expanded AVL_TREE_NODE(K);
   
   - parent_any_avl_dictionary_node:ANY_AVL_DICTIONARY_NODE := ANY_AVL_DICTIONARY_NODE;
   
@@ -51,13 +51,13 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
     +? {value = v};
   ];
 
-  - fast_at k:K :AVL_DICTIONARY_NODE[V, K] <-
+  - fast_at k:K :AVL_DICTIONARY_NODE(V, K) <-
   // Is element `e' in the tree?
-  ( + result:AVL_DICTIONARY_NODE[V, K];
+  ( + result:AVL_DICTIONARY_NODE(V, K);
     
     (key = k).if {
       result := Self;
-    }.elseif {key == k /*SAFE_EQUAL[K].test key and k*/} then {
+    }.elseif {key == k /*SAFE_EQUAL(K).test key and k*/} then {
       // because otherwise there would be an infinite recursion
       // result := NULL
     }.elseif {k < key} then {
@@ -85,7 +85,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
   - key_at v:V :K <-
   ( + result:K;
     
-    (v == value /*SAFE_EQUAL[V].test v and value*/).if {
+    (v == value /*SAFE_EQUAL(V).test v and value*/).if {
       result := key;
     }.elseif {left != NULL} then {
       result := left.key_at v;
@@ -114,7 +114,7 @@ Section AVL_DICTIONARY_NODE
   ( + result:INTEGER;
 
     result := cnt;
-    (v == value /*SAFE_EQUAL[V].test v and value*/).if {
+    (v == value /*SAFE_EQUAL(V).test v and value*/).if {
       result := result + 1;
     };
     (left != NULL).if {

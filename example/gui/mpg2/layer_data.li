@@ -26,7 +26,7 @@ Section Private
   // BitStream manager.
   //
   
-  - buffer:FAST_ARRAY[UINTEGER_8];  
+  - buffer:FAST_ARRAY(UINTEGER_8);  
   - pos:INTEGER;
   - max:INTEGER;
     
@@ -43,10 +43,10 @@ Section Public
   - infile:STD_FILE;
      
   // sequence header and quant_matrix_extension() 
-  - intra_quantizer_matrix:NATIVE_ARRAY[INTEGER];
-  - non_intra_quantizer_matrix:NATIVE_ARRAY[INTEGER];
-  - chroma_intra_quantizer_matrix:NATIVE_ARRAY[INTEGER];
-  - chroma_non_intra_quantizer_matrix:NATIVE_ARRAY[INTEGER];
+  - intra_quantizer_matrix:NATIVE_ARRAY(INTEGER);
+  - non_intra_quantizer_matrix:NATIVE_ARRAY(INTEGER);
+  - chroma_intra_quantizer_matrix:NATIVE_ARRAY(INTEGER);
+  - chroma_non_intra_quantizer_matrix:NATIVE_ARRAY(INTEGER);
   
   - mpeg2_flag:BOOLEAN;
   - set_mpeg2_flag b:BOOLEAN <-
@@ -94,7 +94,7 @@ Section Public
     quantizer_scale := n;
   );
     
-  - block:NATIVE_ARRAY[NATIVE_ARRAY[INTEGER_16]]; // [12][64]
+  - block:NATIVE_ARRAY(NATIVE_ARRAY(INTEGER_16)); // [12][64]
   
 Section Public
   
@@ -107,6 +107,12 @@ Section Public
         
     // Open file.        
     infile ?= FILE_SYSTEM.get_entry name;    
+    
+    // BSBS: PATCH !!!!!!!
+    (infile.is_open).if {
+      infile.close;
+    };
+    
     ((infile = NULL) || {! infile.open}).if {
       error_text.copy "Base layer input file ";
       error_text.append name;
@@ -115,7 +121,7 @@ Section Public
     };
             
     // initialize_buffer.
-    buffer := FAST_ARRAY[UINTEGER_8].create 2048;
+    buffer := FAST_ARRAY(UINTEGER_8).create 2048;
     pos    := 2048;
     max    := 2048;
     n_cache := cache := pos := 0;
@@ -141,14 +147,14 @@ Section Public
     flush_buffer 0;
     
     // Init Structure.
-    intra_quantizer_matrix            := NATIVE_ARRAY[INTEGER].create 64;
-    non_intra_quantizer_matrix        := NATIVE_ARRAY[INTEGER].create 64;
-    chroma_intra_quantizer_matrix     := NATIVE_ARRAY[INTEGER].create 64;
-    chroma_non_intra_quantizer_matrix := NATIVE_ARRAY[INTEGER].create 64;
+    intra_quantizer_matrix            := NATIVE_ARRAY(INTEGER).create 64;
+    non_intra_quantizer_matrix        := NATIVE_ARRAY(INTEGER).create 64;
+    chroma_intra_quantizer_matrix     := NATIVE_ARRAY(INTEGER).create 64;
+    chroma_non_intra_quantizer_matrix := NATIVE_ARRAY(INTEGER).create 64;
     
-    block := NATIVE_ARRAY[NATIVE_ARRAY[INTEGER_16]].create 12;
+    block := NATIVE_ARRAY(NATIVE_ARRAY(INTEGER_16)).create 12;
     0.to 11 do { j:INTEGER;
-      block.put (NATIVE_ARRAY[INTEGER_16].calloc_intern 64) to j;
+      block.put (NATIVE_ARRAY(INTEGER_16).calloc_intern 64) to j;
     };
   );
     

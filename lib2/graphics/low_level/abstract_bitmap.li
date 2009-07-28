@@ -220,6 +220,11 @@ Section Public
     deferred;
   );
   
+  - get_color_hard (x,y:INTEGER) :UINTEGER_32 <-
+  (
+    deferred;
+  );
+  
 Section Public  
   
   - color col:UINTEGER_32 <-
@@ -1058,12 +1063,12 @@ Section Public
   
 Section Private  
   
-  + edges:FAST_ARRAY[EDGE]; // BSBS: A optimiser avec un MAP_FAST_ARRAY ... quand il y aura add_last, resize...
+  + edges:FAST_ARRAY(EDGE); // BSBS: A optimiser avec un MAP_FAST_ARRAY ... quand il y aura add_last, resize...
 
   + edges_upper:INTEGER;
   + poly_ymax:INTEGER := INTEGER.minimum.to_integer;
   
-  + poly_list_y:FAST_ARRAY[EDGE];
+  + poly_list_y:FAST_ARRAY(EDGE);
     
   + begin_y:EDGE;  
   + begin_idx:INTEGER;
@@ -1143,8 +1148,8 @@ Section Public
   (     
     
     (edges = NULL).if {
-      poly_list_y := FAST_ARRAY[EDGE].create_with_capacity 16;
-      edges := FAST_ARRAY[EDGE].create 64;      
+      poly_list_y := FAST_ARRAY(EDGE).create_with_capacity 16;
+      edges := FAST_ARRAY(EDGE).create 64;      
       0.to 63 do { n:INTEGER;
 	edges.put (EDGE.clone) to n;
       };

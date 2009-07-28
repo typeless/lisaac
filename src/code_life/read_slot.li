@@ -113,35 +113,41 @@ Section Public
   ( + tf:TYPE_FULL;
     + t:TYPE;
     
-    (slot.intern_name = ALIAS_STR.slot_self).if {
-      buffer.append "((";
-      tf := slot.type;
-      tf.genere_declaration buffer;	
-      buffer.add_last ' ';
-      tf.genere_star_declaration buffer;	
-      buffer.add_last ')';
+    (is_java).if {
       receiver.genere buffer;
-      buffer.append ".self)";
-    } else {
-      tf := receiver.static_type;    
-      ((tf.is_strict) || {tf.is_expanded_ref}).if {
-	receiver.genere buffer;
-	buffer.append "->";
-      }.elseif {tf.is_expanded} then {      
-	receiver.genere buffer;
-	buffer.add_last '.';          
-      } else {
-	buffer.append "((";
-	t := slot.receiver_type;
-	t.put_reference_declaration buffer;	
-	buffer.add_last ' ';
-	t.put_reference_star_declaration buffer;	
-	buffer.add_last ')';
-	receiver.genere buffer;
-	buffer.append ")->";
-      };
+      buffer.add_last '.';
       buffer.append (variable.intern_name);
-    };    
+    } else {    
+      (slot.intern_name = ALIAS_STR.slot_self).if {
+        buffer.append "((";
+        tf := slot.type;
+        tf.genere_declaration buffer;	
+        buffer.add_last ' ';
+        tf.genere_star_declaration buffer;	
+        buffer.add_last ')';
+        receiver.genere buffer;
+        buffer.append ".self)";
+      } else {
+        tf := receiver.static_type;    
+        ((tf.is_strict) || {tf.is_expanded_ref}).if {
+          receiver.genere buffer;
+          buffer.append "->";
+        }.elseif {tf.is_expanded} then {      
+          receiver.genere buffer;
+          buffer.add_last '.';          
+        } else {          
+          buffer.append "((";
+          t := slot.receiver_type;
+          t.put_reference_declaration buffer;	
+          buffer.add_last ' ';
+          t.put_reference_star_declaration buffer;	
+          buffer.add_last ')';
+          receiver.genere buffer;
+          buffer.append ")->";
+        };
+        buffer.append (variable.intern_name);
+      };    
+    };
   );
   
   //

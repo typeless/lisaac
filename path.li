@@ -38,7 +38,7 @@
   
 Section DEFAULT  
 
-  + target := WINDOWS;
+  + target := UNIX;
 
 Section COMPILER, SHORTER
   
@@ -56,6 +56,7 @@ Section COMPILER, SHORTER
   - source + "dispatcher/";
   - source + "context/";
   - source + "code_life/";
+  - source + "lip/";
   
 Section COMPILER, SHORTER
   
@@ -75,7 +76,6 @@ Section SHORTER
 Section Common
   // Always valid path.
   
-  
   + option_gcc := " ";
   
   + lib    := lisaac + "lib/";
@@ -84,7 +84,6 @@ Section Common
   + unix    := lib_os + "unix/";
   + windows := lib_os + "windows/";
   + dos     := lib_os + "dos/";
-  
     
   // Standard library:
   - lib + "base/";
@@ -110,7 +109,6 @@ Section Common
   - lib + "string/";
   - lib + "system/";
   - lib + "time/";
-  - lib + "testing/";
   
   //- lisaac + "example/gui/desktop";
   
@@ -130,6 +128,21 @@ Section Common
   - application + "demomaker/glass/";
   - application + "demomaker/fire/";
 
+
+  - application + "cortex/combina/";
+  - application + "cortex/capnclic/";
+  - application + "cortex/gameduel/";
+  - application + "cortex/bejeweled/";
+  - application + "cortex/kbejeweled/";
+  - application + "cortex/bigmoney/";
+  - application + "cortex/midasminer/";
+  - application + "cortex/chuzzle/";
+  
+  - application + "cortex-3.0/video/";
+  - application + "cortex-3.0/minus/";
+
+  
+
 Section UNIX, DOS, COMPILER, SHORTER
 
   - unix   + "system/";
@@ -141,7 +154,9 @@ Section UNIX
   
   - unix   + "video/";
   
-  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -o " + 
+  //  * "gcc " + input_file + " -O3 -fomit-frame-pointer -lm -lX11 -lXtst -o " + 
+  //  * "gcc " + input_file + " -lm  -o " + 
+  * "gcc " + input_file + " -lm -lX11 -lXtst -o " + 
     output_file + " -L" + path_lib_x11 + option_gcc;
 
   //* "gcc -D_ISOC9X_SOURCE -O3 -mfpmath=sse -msse2 -march=pentium4 -ffast-math -funroll-loops -o " +
@@ -174,7 +189,7 @@ Section X86, IPAQ, ST2XX, LINUX
   // Standard.
   //
   
-  + isaac := "/home/jerome/svn/isaacos/trunk/isaacos/";  
+  + isaac := "/home/sonntag/svn/isaacos/trunk/isaacos/";  
 
   // File System
   
@@ -193,7 +208,7 @@ Section X86
   
   * "gcc -specs=" + isaac + "tool/gcc/x86/specs " + input_file + " -o " + output_file;
   * isaac+"tool/elf2eof/elf2eof -p 2048 "+output_file+" -prepend "+isaac+"x86/bootloader/startup.com";
-
+  
 
 Section IPAQ  
   
@@ -205,6 +220,7 @@ Section IPAQ
 Section ST2XX  
   
   + machine := isaac + "st2xx/";
+  
   
 //  * "/home/sonntagb/lxbe/le/bin/gcc entry_isaac.s -c";
   * "/home/sonntagb/lxbe/le/bin/gcc " + input_file + " -c";

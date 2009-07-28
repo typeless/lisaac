@@ -14,39 +14,26 @@ filetype plugin on   " load filetype plugins
 filetype indent on   " load filetype indents
 filetype on          " detect the type of file
 set backspace=indent,eol,start	" more powerful backspacing
-imap <buffer> <leader>it <Plug>Tex_InsertItemOnThisLine 
-set pastetoggle=<F10> "switch to insert/paste
-"set mouse=a
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Theme/Colors/GUI
+" Theme/Colors
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-syntax on      
-colo default
-set gfn=Bitstream\ Vera\ Sans\ Mono\ 8 
-"highlight Normal guibg=
-"highlight Normal guifg=white
-"set guioptions-=T
-
-"Color in gvim for white background
-hi Comment      gui=bold        guifg=#4423c5
-hi Type         gui=bold        guifg=#0b6f27
-hi Label        gui=bold        guifg=#207fa6
-hi String                       guifg=#720576
-hi SpecialChar  gui=bold        guifg=#720576
-hi Special      gui=bold        guifg=#720576
-hi Define       gui=bold        guifg=#720576
-hi Boolean      gui=bold        guifg=#4d9f16
-hi Delimiter    gui=bold        guifg=#83783a
-hi Conditional  gui=bold        guifg=#133ab7
+syntax on            " active coloration
+set background=light " default background
+colorscheme default  " default coloration theme
+"NOTE: nice theme is 'colorsheme elflord' if you have a dark background
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Files/Backups 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"set backup                   " make backup file
-"set backupdir=~/.vim/backup/ " where to put backup file
-"set directory=~/.vim/temp    " directory is the directory for temp file
-"set makeef=error.err         " When using make, where should it dump the file
+set backup                   " make backup file
+set backupdir=~/.vim/backup/ " where to put backup file
+set directory=~/.vim/temp    " directory is the directory for temp file
+set makeef=error.err         " When using make, where should it dump the file
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" GVim UI 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vim UI 
@@ -73,12 +60,12 @@ set laststatus=2  " always show the status line
 set showcmd       " display incomplete commands
 set modeline      " display the current mode
 set nostartofline " keep the cursor in the same colon when changing line
-set statusline=%F%m%r%h%w\ [TYPE=%Y]\ (Line=%04l)\ [%p%%]\ [LEN=%L]
+set statusline=%F%m%r%h%w\ [FORMAT=%{&ff}]\ [TYPE=%Y]\ [ASCII=\%03.3b]\ [HEX=\%02.2B]\ [POS=%04l,%04v][%p%%]\ [LEN=%L]
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Menu 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set wildmenu      " menu completion
+set wildmenu " menu completion
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Text Formatting/Layout 
@@ -101,29 +88,9 @@ let perl_extended_vars=1 " highlight advanced perl vars inside strings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Autocommands 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"autocmd FileType text setlocal textwidth=80
+autocmd FileType text setlocal textwidth=80
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Lisaac special support 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 au BufNewFile,BufRead *.li setf lisaac 
-
-function! AutoHeaderC()
-    let s:line=line(".")
-    let name = toupper("_" . expand("%:t:r") . "_H")
-    call setline(s:line, "#ifndef " . name)
-    call append(s:line, "#define " . name)
-    call append(s:line+1, "")
-    call append(s:line+2, "")
-    call append(s:line+3, "")
-    call append(s:line+4, "#endif")
-    unlet s:line
-    call cursor((line(".")+3),col("."))
-endfunction
-au BufNewFile *.h call AutoHeaderC()
-
-" tab navigation like firefox
-:nmap <C-p> :tabprevious<cr>
-:nmap <C-n> :tabnext<cr>
-:nmap <C-t> :tabnew<cr>
-":nmap <C-w> :tabc<cr>

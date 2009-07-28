@@ -27,7 +27,7 @@ Section Header
   - author   := "Benoit Sonntag (bsonntag@loria.fr)";
   
 Section Inherit  
-  
+    
   + parent_area:Expanded AREA;
   
   + parent_g_expr:Expanded G_EXPR;
@@ -52,7 +52,7 @@ Section Private
   // Data.
   //
 
-  - table:FAST_ARRAY2[UINTEGER_8];
+  - table:FAST_ARRAY2(UINTEGER_8);
 
   // 
   // Consultation.
@@ -301,7 +301,7 @@ Section Public
   
   - init <-
   (
-    table := FAST_ARRAY2[UINTEGER_8].create (7,7);        
+    table := FAST_ARRAY2(UINTEGER_8).create (7,7);        
     string_tmp := STRING.create 80;    
   );
   

@@ -79,7 +79,7 @@ Section Public
     is_verbose.if {
       msg_err.print;
     };
-    ((type_error != warning) || {is_warning}).if {    
+    (type_error != warning).if {    
       die_with_code exit_failure_code;
     };
   );

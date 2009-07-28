@@ -36,7 +36,7 @@ Section Inherit
           
 Section Public
   
-  + action:BLOCK := 
+  + action:{G_IN; } := 
   { in:G_IN; 
     // Nothing.
   };
@@ -80,7 +80,7 @@ Section Public
     result
   );
 
-  - create (car,line:INTEGER) action a:BLOCK :SELF <-
+  - create (car,line:INTEGER) action a:{G_IN; } :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -99,7 +99,7 @@ Section Public
     result
   );
 
-  - create (car,line:INTEGER) justify j:UINTEGER_8 action a:BLOCK :SELF <-
+  - create (car,line:INTEGER) justify j:UINTEGER_8 action a:{G_IN;} :SELF <-
   [
     -? {j.in_range 0 to 2};
   ]
@@ -110,7 +110,7 @@ Section Public
     result
   );
   
-  - make (car,line:INTEGER) justify j:UINTEGER_8 action a:BLOCK <-
+  - make (car,line:INTEGER) justify j:UINTEGER_8 action a:{G_IN;} <-
   [
     -? {car > 1}; 
     -? {line > 0};

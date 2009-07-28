@@ -68,9 +68,9 @@ Section Public
     + old_profil:PROFIL;
     
     old_stack_local := stack_local;
-    old_profil      := profil;
+    old_profil      := profil_current;
     stack_local     := stack_local_empty;    
-    profil          := profil_slot;
+    profil_current  := profil_slot;
     ? {stack_local.is_empty};    
     //
     old_upper  := list_current.upper;
@@ -104,7 +104,7 @@ Section Public
       diff := diff - 1;
     };    
     //
-    profil      := old_profil;
+    profil_current := old_profil;
     stack_local := old_stack_local;
     //
     result_old.read position

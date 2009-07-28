@@ -61,6 +61,7 @@ Section Public
   + count_intern_call:INTEGER;
   
   + link_count:INTEGER;
+  + cop_link_count:INTEGER;
   
   + name:STRING_CONSTANT;
     
@@ -98,20 +99,26 @@ Section Public
     };
   );
 
-  - link <-
+  - link call:CALL_SLOT <-
   ( 
-    link_count := link_count + 1;
+    (call.cop_argument != NULL).if {
+      cop_link_count := cop_link_count + 1;
+    } else {
+      link_count := link_count + 1;
+    };
   );
   
-  - unlink <-
+  - unlink call:CALL_SLOT <-
   (
-    link_count := link_count - 1;    
-    ((link_count = 0) && {life_index != -1}).if { // BSBS: -1 normalement impossible !
-      PROFIL_LIST.unset_life Self;
-    };
-    ? {link_count >= 0};
+    (call.cop_argument != NULL).if {
+      cop_link_count := cop_link_count - 1;
+      ? {cop_link_count >= 0};
+    } else {
+      link_count := link_count - 1;    
+      ? {link_count >= 0};
+    };    
   );
-    
+
   - write_argument args:FAST_ARRAY[EXPR] :FAST_ARRAY[WRITE] <-
   ( + loc:LOCAL;
     + val:EXPR;
@@ -250,6 +257,11 @@ Section Public
     result    
   );
   
+  - i_am_the_last i:INSTR :BOOLEAN <-
+  (
+    code.i_am_the_last i
+  );
+  
   - execute_recursive <-
   ( + old_list_current:LIST;    
     
@@ -307,6 +319,18 @@ Section Public
   - is_static:BOOLEAN <- deferred;
   
   - genere_handler buffer:STRING <-
+  (
+    (link_count != 0).if {
+      genere_handler_intern buffer;
+      buffer.append ";\n"; 
+    };
+    ((cop_link_count != 0) && {result_list.count = 0}).if {
+      genere_handler_cop buffer;
+      buffer.append ";\n"; 
+    };
+  );
+  
+  - genere_handler_intern buffer:STRING <-
   ( + ts:TYPE_FULL;    
     + v:LOCAL;
     
@@ -332,13 +356,13 @@ Section Public
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
-	? {v.style = ' '};
-	
-	(v.style != ' ').if {
-	  semantic_error (v.position,"BUG PROFIL.genere_handler Error");
-	};
-	genere v result FALSE in buffer;	
-	buffer.add_last ',';
+        ? {v.style = ' '};
+        
+        (v.style != ' ').if {
+          semantic_error (v.position,"BUG PROFIL.genere_handler Error");
+        };
+        genere v result FALSE in buffer;	
+        buffer.add_last ',';
       };
     };    
     
@@ -356,47 +380,118 @@ Section Public
     buffer.add_last ')';
   );
   
+  - genere_handler_cop buffer:STRING <-
+  (
+    buffer.append "lith_object *COP_";
+    buffer.append name;
+    buffer.append "(lith_object *obj,pthread_mutex_t *mutex)";
+  );
+  
   - genere buffer:STRING <-
   ( + loc:LOCAL;
-    + t:TYPE_FULL;
+    + t,ts:TYPE_FULL;
+    + v:LOCAL;
+    + np:INTEGER;
+    + low:INTEGER;
     
-    buffer.add_last '\n';
-    genere_handler buffer;
-    buffer.append "\n// ";
-    append_type buffer;
-    ((stat & 10b) = 0).if {
-      buffer.append "No recursive, ";
-    } else {
-      buffer.append "Recursive, ";
-    };
-    ((stat & 01b) = 0).if {
-      buffer.append "No inlinable.";
-    } else {
-      buffer.append "Inlinable.";
-    };
-    //
-    buffer.append "\n{\n";
-    indent.append "  ";
-    code.genere_extern buffer;    
-    (result_list.is_empty).if_false {
-      loc := result_list.first;
-      buffer.append indent;      
-      buffer.append "return(";          
-      t := loc.type;
-      (
-        (t.is_expanded) && 
-        {! t.is_expanded_ref} && 
-        {! t.is_expanded_c}
-      ).if {
-        buffer.add_last '&';
-      };	
-      buffer.append (loc.intern_name);
-      buffer.append ");\n";    
-    };
-    // End.
-    indent.remove_last 2;    
-    buffer.append indent;
-    buffer.append "}\n";    
+    ((link_count != 0) || {result_list.count != 0}).if {
+      ((cop_link_count != 0) && {result_list.count = 0}).if {
+        // COP link.
+        not_yet_implemented;
+        buffer.add_last '\n';
+        genere_handler_cop buffer;
+        buffer.append "\n{ ";
+        
+        buffer.append " self;\n\
+        \  self = ";
+        buffer.append "ptr;\n\
+        \  pthread_mutex_lock (&(self->mutex));\n\
+        \  pthread_setspecific(current_thread,self);\n  ";
+        buffer.append name;
+        buffer.append "(self);\n";        
+        buffer.append "  pthread_mutex_unlock (&(self->mutex));\n\
+        \  return(NULL);\n\
+        \};\n";
+      };
+      // Version normal.
+      buffer.add_last '\n';
+      genere_handler_intern buffer;      
+      buffer.add_last '\n';
+      add_comment buffer;
+      //
+      buffer.append "{\n";
+      indent.append "  ";
+      code.genere_extern buffer;    
+      (result_list.is_empty).if_false {
+        loc := result_list.first;
+        buffer.append indent;      
+        buffer.append "return(";          
+        t := loc.type;
+        (
+          (t.is_expanded) && 
+          {! t.is_expanded_ref} && 
+          {! t.is_expanded_c}
+        ).if {
+          buffer.add_last '&';
+        };	
+        buffer.append (loc.intern_name);
+        buffer.append ");\n";    
+      };
+      // End.
+      indent.remove_last 2;    
+      buffer.append indent;
+      buffer.append "}\n";    
+    } else {    
+      // COP direct.
+      buffer.add_last '\n';
+      genere_handler_cop buffer;      
+      buffer.add_last '\n';
+      add_comment buffer;
+      //
+      buffer.append "{\n";
+      indent.append "  ";
+      (argument_list.count > 0).if {
+        buffer.append indent;
+        v := argument_list.first;
+        ((v != NULL) && {v.name = ALIAS_STR.variable_self}).if {
+          genere v result FALSE in buffer;	
+          buffer.add_last '=';
+          put_cast_self buffer;
+          buffer.append "obj;\n";      
+          low := 1;
+        };        
+      };
+      (argument_list.count-low > 0).if {        
+        (low).to (argument_list.upper) do { j:INTEGER;
+          v := argument_list.item j;
+          (v != NULL).if {
+            buffer.append indent;
+            genere v result FALSE in buffer;	
+            buffer.append "=(";
+            ts := v.type;
+            ts.genere_declaration buffer;
+            buffer.add_last ' ';
+            ts.genere_star_declaration buffer;	
+            buffer.append ")((";
+            put_cast_self buffer;
+            buffer.append "obj)->param_";
+            np.append_in buffer;
+            buffer.append ");\n";
+            np := np + 1;
+          };
+        };
+        type_self.raw.set_param np;        
+      };         
+      buffer.append "  pthread_mutex_unlock(&obj->mutex);\n";
+      buffer.append "  pthread_mutex_lock(mutex);\n";      
+      //
+      name.print; '\n'.print;
+      
+      code.genere_extern buffer;    
+      //
+      buffer.append "  return NULL;\n}\n";
+      indent.remove_last 2;
+    };    
   );
   
   //
@@ -417,6 +512,32 @@ Section Public
   );
   
 Section Private  
+  
+  - put_cast_self buffer:STRING <-
+  (
+    buffer.add_last '(';
+    type_self.genere_declaration buffer;	
+    buffer.add_last ' ';
+    type_self.genere_star_declaration buffer;
+    buffer.add_last ')';
+  );
+  
+  - add_comment buffer:STRING <-
+  (
+    buffer.append "// ";
+    append_type buffer;
+    ((stat & 10b) = 0).if {
+      buffer.append "No recursive, ";
+    } else {
+      buffer.append "Recursive, ";
+    };
+    ((stat & 01b) = 0).if {
+      buffer.append "No inlinable.";
+    } else {
+      buffer.append "Inlinable.";
+    };
+    buffer.add_last '\n';
+  );
   
   - append_type buffer:STRING <-
   ( + v:VARIABLE;

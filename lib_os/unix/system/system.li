@@ -75,7 +75,7 @@ Section Public
   );
 
   // Memory Management
- 
+   
   - memory:MEMORY := MEMORY;
   
   - get_begin_memory:POINTER;
@@ -83,15 +83,14 @@ Section Public
   - get_memory_capacity:UINTEGER_64 <- 
   ( + cap:UINTEGER_64;
     + mem:POINTER;
-       
     cap := 32.mb;
     {
       cap := cap * 2;
       mem := `malloc(@cap)`:POINTER;    
       (mem != NULL).if { 
 	`free(@mem)`;
-      };
-    }.do_until {(mem = NULL) || {cap = 2048.mb}};           
+      };      
+    }.do_until {(mem = NULL) || {cap = `2048LU << 20`:UINTEGER_64}}; // BSBS: BUG COMPILO 0.13
     (mem = NULL).if {
       cap := cap / 2;
     };

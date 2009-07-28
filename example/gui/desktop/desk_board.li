@@ -33,7 +33,7 @@ Section Inherit
   + parent_g_raw:Expanded G_RAW;
   
 Section Private
-  
+    
   - path_base:ABSTRACT_STRING;
   
   - path_tmp:STRING := STRING.create 256;
@@ -47,6 +47,10 @@ Section Private
   
 Section Public
   
+  - bug1:G_WIN_OUT;
+  - bug2:G_WIN_OUT;
+
+  
   - isaac:G_WIN_OUT;
   - tools:G_WIN_OUT;
   - multimedia:G_WIN_OUT;
@@ -58,7 +62,9 @@ Section Public
     isaac := G_WIN_OUT.create (
       G_RAW.create (        
         G_BUTTON.create (G_IMG.create (path "terminal.bmp") | G_OUT.create " Terminal ")
-        connect (SHELL.run path_dir)
+        connect (SHELL.run path_dir) /
+        G_BUTTON.create (G_OUT.create " Monitor ")
+        connect (bug1 := MONITOR.run)
       ) /
       G_RAW.create (
         G_BUTTON.create (G_IMG.create (path "about.bmp") | G_OUT.create " About ") 
@@ -80,13 +86,13 @@ Section Public
       ) /
       G_RAW.create (
         G_BUTTON.create (G_IMG.create (path "video.bmp") | G_OUT.create " Video ")
-        connect (MPEG2DEC.run)
+        connect (bug2 := MPEG2DEC.run path_dir)
       ) /
       G_RAW.create (
         G_BUTTON.create (G_OUT.create " Rotozoom ")
-        connect (ROTOZOOM.run) /
+        connect (ROTOZOOM.run path_dir) /
         G_BUTTON.create (G_OUT.create " Glass ")
-        connect (GLASS.run) /
+        connect (GLASS.run path_dir) /
         G_BUTTON.create (G_OUT.create " Fire ")
         connect (FIRE.run) 
       )

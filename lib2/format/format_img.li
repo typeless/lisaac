@@ -72,14 +72,14 @@ Section Public
     deferred;
   );
   
-  - create_with buf:FAST_ARRAY[UINTEGER_8] :SELF <-
+  - create_with buf:FAST_ARRAY(UINTEGER_8) :SELF <-
   ( + result:SELF;
     result := clone;
     result.make_with buf;
     result
   );
 
-  - make_with buf:FAST_ARRAY[UINTEGER_8] <-
+  - make_with buf:FAST_ARRAY(UINTEGER_8) <-
   ( 
     deferred;
   );
@@ -97,4 +97,8 @@ Section Public
   (
     deferred;
   );
+  
+Section FORMAT_IMG
+  
+  + pos_buffer:INTEGER;
   

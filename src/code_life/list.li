@@ -175,7 +175,12 @@ Section Public
   //
   // Execute.
   //
-      
+  
+  - i_am_the_last i:INSTR :BOOLEAN <- 
+  (
+    last.i_am_the_last i
+  );
+  
   - execute:INSTR <-
   ( + result:INSTR;    
         
@@ -216,8 +221,15 @@ Section Public
       old_seq_or_and := seq_or_and;                  
       new_expr := item index.execute;      
       (new_expr != NULL).if {	
-	put new_expr to index;
-	index := index + 1;
+        put new_expr to index;        
+        index := index + 1;        
+        (new_expr = CALL_NULL).if {
+          // Delete all ...
+          {index <= upper}.while_do {
+            item index.remove;
+            remove_index index;
+          };
+        };
       } else {
 	remove_index index;
       };                  
@@ -299,10 +311,15 @@ Section Public
 Section Private  
   
   - genere_body buffer:STRING <-
-  (
-    lower.to upper do { j:INTEGER;
-      buffer.append indent;          
-      item j.genere buffer;
+  ( + old_count,j:INTEGER;
+    j := lower;
+    {j <= upper}.while_do {
+      buffer.append indent;
+      old_count := buffer.count;
+      {
+        item j.genere buffer;
+        j := j + 1;
+      }.do_while {(j <= upper) && {old_count = buffer.count}};      
       buffer.append ";\n";
     };        
   );

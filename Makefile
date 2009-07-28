@@ -18,12 +18,11 @@
 # Available targets:
 # ==================
 #  - all                   Starts the installer in automatic mode--use it if
-#                          you know the installer is smart enough to compute
-#                          default values, and those values suit your needs.
-#                          This option is used in order to install lisaac in a
-#                          non-userland way.
+#  you know the installer is smart enough to compute default values, and those
+#  values suit your needs. This option is used in order to install lisaac in a
+#  non-userland way.
 #
-#  - user                  Starts the installer in userland interactive mode
+#  - interactive_userland  Starts the installer in userland interactive mode
 #
 #  - install               Copy all files in a proper place (non-userland)
 #
@@ -31,10 +30,10 @@
 #
 # In short:
 # =========
-#  Use : make user                     for a userland installation
+#  Use : make interactive_userland     for a userland installation
 #  Use : make & make install(as root)  for a full system installation
 #  Use : make clean(as root)           to clean up a non-userland installation
-
+#
 # TODO:
 # =====
 #  - maybe use /etc/ instead of /usr/lib/lisaac four the compilation options
@@ -53,7 +52,7 @@
 #
 # Bug reports:
 # ============
-#  bug tracker system: http://alioth.debian.org/tracker/?atid=413092&group_id=100200&func=browse
+#  bug tracker system: https://gna.org/bugs/?func=additem&group=isaac
 #  mail to: Xavier Oswald <x.oswald@free.fr>
 
 PREFIX=/usr/local
@@ -78,7 +77,7 @@ bin/lisaac: bin/lisaac.c bin/path.h
 bin/shorter: bin/shorter.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@
 
-user: install_lisaac.c
+interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
 	@echo Please wait...
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
@@ -97,7 +96,7 @@ install: bin/lisaac bin/shorter
 	cp -rf shorter/  $(DESTDIR)$(LIB)
 	cp -rf manpage/*.gz  $(DESTDIR)$(MAN)
 
-	# Temporary since the shorter is broken
+	# Temprary since shorter is broken
 	# $(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
 	#
 	# previous html documentation:

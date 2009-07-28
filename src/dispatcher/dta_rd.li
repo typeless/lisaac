@@ -36,6 +36,8 @@ Section Inherit
   
 Section Public
   
+  + is_intern:BOOLEAN;
+  
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + result:TYPE_FULL;
         
@@ -53,20 +55,21 @@ Section Public
   // Creation.
   //
   
-  - create p:POSITION call sl:SLOT self arg:EXPR :SELF <-
+  - create p:POSITION call sl:SLOT self arg:EXPR intern flag:BOOLEAN :SELF <-
   ( + result:SELF;
     
     result := clone;
-    result.make p call sl self arg;        
+    result.make p call sl self arg intern flag;        
     result
   );
   
-  - make p:POSITION call sl:SLOT self arg:EXPR <-
+  - make p:POSITION call sl:SLOT self arg:EXPR intern flag:BOOLEAN <-
   ( ? {sl != NULL};    
     position    := p;              
     slot        := sl;
     self_arg    := arg;    
     result_expr := get_expr_result;  
+    is_intern   := flag;
   );
   
   //
@@ -85,11 +88,7 @@ Section DTA_RD
         
     (slot.id_section.is_interrupt).if {
       result := type_pointer.default.get_temporary_expr position;
-    } else {
-      (slot.result_type = NULL).if {
-        slot.name.print; '\n'.print;
-        syntax_error (slot.position,"LA");
-      };
+    } else {      
       result := slot.result_type.get_expr_for Self;
     };
     result

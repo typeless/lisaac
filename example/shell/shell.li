@@ -36,7 +36,7 @@ Section Private
   
   - command:STRING;    
   
-  - cmds:FAST_ARRAY[STRING];
+  - cmds:FAST_ARRAY(STRING);
   
   - dir:DIRECTORY;
   
@@ -308,7 +308,7 @@ Section Public
   - main <-
   ( + command:STRING;
         
-    cmds := FAST_ARRAY[STRING].create_with_capacity 10;
+    cmds := FAST_ARRAY(STRING).create_with_capacity 10;
     command := STRING.create 100;
     dir := FILE_SYSTEM;
     
@@ -336,11 +336,11 @@ Section Public
   
   - run s:ABSTRACT_STRING :G_WIN_OUT <-
   (
-    line_tmp  := BMP_LINE[PIXEL_32].create (VIDEO.width);
+    line_tmp  := BMP_LINE(PIXEL_32).create (VIDEO.width);
     x_screen := y_screen := 0;
     load_font s;
     command := STRING.create 100;    
-    cmds := FAST_ARRAY[STRING].create_with_capacity 10;
+    cmds := FAST_ARRAY(STRING).create_with_capacity 10;
     
     dir := FILE_SYSTEM;
     
@@ -374,7 +374,7 @@ Section Public
   
   - print st:ABSTRACT_STRING <-
   ( + car:CHARACTER;
-    + line:FAST_ARRAY[UINTEGER_16];
+    + line:FAST_ARRAY(UINTEGER_16);
     
     (is_isaac).if {    
       color green;
@@ -415,7 +415,7 @@ Section Public
   
 Section Private  
 
-  - font:FAST_ARRAY[UINTEGER_8];
+  - font:FAST_ARRAY(UINTEGER_8);
   
   - x_screen:INTEGER;
   - y_screen:INTEGER;
@@ -440,7 +440,7 @@ Section Private
     };
   );
   
-  - sav_line:FAST_ARRAY[FAST_ARRAY[UINTEGER_16]] := FAST_ARRAY[FAST_ARRAY[UINTEGER_16]].create 16;
+  - sav_line:FAST_ARRAY(FAST_ARRAY(UINTEGER_16)) := FAST_ARRAY(FAST_ARRAY(UINTEGER_16)).create 16;
   
   - load_font s:ABSTRACT_STRING <-
   ( + cur_dir:DIRECTORY;    
@@ -454,7 +454,7 @@ Section Private
     ((e != NULL) && {e.is_file}).if {
       f ?= e;
       f.open;
-      font := FAST_ARRAY[UINTEGER_8].create_with_capacity 4096;
+      font := FAST_ARRAY(UINTEGER_8).create_with_capacity 4096;
       f.read font size 4096;
       f.close;      
     } else {
@@ -468,11 +468,11 @@ Section Private
     ((255.to_real_16_16 /# 15) *# n).to_integer
   );
   
-  - color_table:NATIVE_ARRAY[UINTEGER_32] :=
-  ( + result:NATIVE_ARRAY[UINTEGER_32];
+  - color_table:NATIVE_ARRAY(UINTEGER_32) :=
+  ( + result:NATIVE_ARRAY(UINTEGER_32);
     + r,g,b,col:UINTEGER_32;
     
-    result := NATIVE_ARRAY[UINTEGER_32].create 4096;
+    result := NATIVE_ARRAY(UINTEGER_32).create 4096;
     0.to 4095 do { c:INTEGER;      
       r := color_4_to_8 ((c & 0F00h) >> 8);
       g := color_4_to_8 ((c & 00F0h) >> 4);
@@ -512,7 +512,7 @@ Section Private
   
   - update_command is_actif:BOOLEAN <-
   ( + y_max:INTEGER;
-    + line:FAST_ARRAY[UINTEGER_16];
+    + line:FAST_ARRAY(UINTEGER_16);
     
     y_command.to (mask.upper) do { y:INTEGER;
       line := mask.item y;

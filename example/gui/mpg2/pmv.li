@@ -22,7 +22,7 @@ Section Inherit
   
 Section Private
   
-  - buffer:NATIVE_ARRAY[INTEGER] := NATIVE_ARRAY[INTEGER].create 8;
+  - buffer:NATIVE_ARRAY(INTEGER) := NATIVE_ARRAY(INTEGER).create 8;
   
   - get_index (i0,i1,i2:INTEGER) :INTEGER <-
   (

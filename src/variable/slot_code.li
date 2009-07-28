@@ -227,6 +227,8 @@ Section Public
       } else {
         nb_result_list := 1;
       };
+    } else {
+      list_current.add_last result;
     };
     (profil_slot.result_list.count != nb_result_list).if {
       string_tmp.copy "Incorrect value result (slot:";

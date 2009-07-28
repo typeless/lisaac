@@ -125,3 +125,11 @@ Section Public
   
   - to_character:CHARACTER <- '0';
 
+  //
+  // Output.
+  //
+  
+  - print <-
+  (
+    "FALSE".print;
+  );

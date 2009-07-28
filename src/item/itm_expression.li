@@ -108,7 +108,7 @@ Section Public
           itm_op ?= value_list.item idx_post;
           slo := typ.get_slot (operator (ALIAS_STR.slot_postfix) name (itm_op.name));
           (slo != NULL).if {	  
-            site := NODE.new_read (itm_op.position) slot slo receiver val self val;
+            site := NODE.new_read (itm_op.position) slot slo receiver val self val intern FALSE;
             list_current.add_last site;
             val := site.result_expr;
             idx_post := idx_post + 1;
@@ -130,7 +130,7 @@ Section Public
           (slo = NULL).if {	  
             error_slot (itm_op.position) name "prefix" operator (itm_op.name) in typ;
           };
-          site := NODE.new_read (itm_op.position) slot slo receiver val self val;
+          site := NODE.new_read (itm_op.position) slot slo receiver val self val intern FALSE;
           list_current.add_last site;
           val := site.result_expr;	    	    
           idx_pre := idx_pre - 1;
@@ -209,8 +209,9 @@ Section Public
 	// SW_READ.
 	l_arg := FAST_ARRAY[EXPR].create_with_capacity 2;
 	l_arg.add_last left;
-	l_arg.add_last right;
-	n_t.new_read_finalize (left.my_copy) with l_arg;
+        l_arg.add_last right;
+        slo := left.static_type.raw.get_slot (n_t.data.slot.name);
+	n_t.new_read_finalize (left.my_copy,slo) with l_arg;
 	list_current.add_last n_t;
 	val := n_t.result_expr;
       };

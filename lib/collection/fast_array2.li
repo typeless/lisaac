@@ -189,7 +189,7 @@ Section Public
     count := count1 * count2;
     ( capacity < count).if {
       capacity := count;
-      storage := storage.calloc capacity;
+      storage := NATIVE_ARRAY[V].create capacity;
     };
     storage.copy_from (other.storage) until (count - 1);
   );

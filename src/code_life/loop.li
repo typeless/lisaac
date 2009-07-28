@@ -79,18 +79,18 @@ Section Public
     new_body := body.my_copy;
     result := LOOP.create position name (ALIAS_STR.get_intern name) body new_body;
     //
-    switch ?= new_body.item (new_body.upper - 1);
+    switch ?= new_body.last; 
     (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
       case := switch.list.item k.code;
-      (case.count > 1).if {
-	loop_end ?= case.item (case.upper - 1);
+      (! case.is_empty).if {
+	loop_end ?= case.last;
 	(loop_end != NULL).if {	  
 	  ? {loop_end.loop = Self};
 	  (loop_end.loop != Self).if {
 	    semantic_error (position,"LOOP.my_copy BUG!!!");
 	  };
 	  loop_end := LOOP_END.create (loop_end.position) loop result;
-	  case.put loop_end to (case.upper - 1);
+	  case.put loop_end to (case.upper);
 	};
       };
     };
@@ -102,9 +102,10 @@ Section Public
       " copy:".print;
       result.link_count.print;
       '\n'.print;
+      
+      body.debug_display;
+      
       semantic_error (position,"LOOP: Bug in copy.");
-    } else {
-     // "c\n".print;
     };
     
     ? {result.link_count = link_count};

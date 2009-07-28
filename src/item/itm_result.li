@@ -77,7 +77,7 @@ Section Public
     val := value.to_run_expr;    
     mul ?= val;
     (mul != NULL).if {
-      (mul.lower).to (mul.upper) do { j:INTEGER;
+      (mul.lower).to (mul.upper-1) do { j:INTEGER;
         result := to_run_intern (mul.item j);
         list_current.add_last result;
       };

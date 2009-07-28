@@ -46,14 +46,14 @@ Section Private
   - dir_w:G_WIN_IN;
   - fil_w:G_WIN_IN;    
 
-  - scan_directory_filter typ:ABSTRACT_STRING action_select select:BLOCK 
+  - scan_directory_filter typ:ABSTRACT_STRING action_select select:{ABSTRACT_STRING; }
   directory_widget d_w:G_WIN_IN 
   file_widget f_w:G_WIN_IN
   path_widget p_bug:G_IN <-
   ( + bt:G_BUTTON;
     + entry:ENTRY;
     + dir,file:G_EXPR;
-    + new_dir:BLOCK;
+    + new_dir:{G_BUTTON; };
     + background:G_RAW;
     + directory:DIRECTORY;
     
@@ -66,7 +66,7 @@ Section Private
       directory_widget dir_w file_widget fil_w path_widget path;
     };
     
-    directory ?= FILE_SYSTEM.get (path.text).open;
+    directory ?= FILE_SYSTEM.get_entry (path.text).open;
     path.text.copy (directory.path);
     path.text.add_last '/';
     path.refresh;
@@ -110,7 +110,7 @@ Section Public
   - filesystem_window dir:ABSTRACT_STRING 
   filter suffix:ABSTRACT_STRING
   with add_widget:G_EXPR 
-  action_select select:BLOCK action_ok ok:BLOCK <-
+  action_select select:{ABSTRACT_STRING; } action_ok ok:{ABSTRACT_STRING; } <-
   ( + win:G_WIN_OUT;    
     + body:G_EXPR;    
 
@@ -178,7 +178,7 @@ Section Public
     + t,m,b:G_CHECK;
     + r,c,l:G_CHECK;
     //
-    + action_not_yet_implemented:BLOCK;
+    + action_not_yet_implemented:{G_BUTTON; };
     
     current_directory.copy (FILE_SYSTEM.path);
     current_directory.append "/TravCUT";
@@ -226,7 +226,7 @@ Section Public
           + w:G_WIN_OUT;
           w ?= bt.parent;
           w.close;          
-        };
+        }
       )
     );
     t ^ m ^ b;
@@ -253,7 +253,7 @@ Section Public
             + f:STD_FILE;
             + e:ENTRY;
       
-            e := FILE_SYSTEM.get name;
+            e := FILE_SYSTEM.get_entry name;
             (e = NULL).if {
               "Error file!\n".print;
             } else {
@@ -261,12 +261,14 @@ Section Public
               (f = NULL).if {
                 "Error open\n".print;
               } else {
+                /*
                 (FORMAT_BCT.load f).if {
                   f.close;
                   page.refresh;
                 } else {
                   "Error format\n".print;
                 };
+                */
               };
             };
           };

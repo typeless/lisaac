@@ -40,18 +40,18 @@ Section Private
   
   - to_raw:UINTEGER_32 <-
   (
-    CONVERT[SELF,UINTEGER_32].on Self
+    CONVERT(SELF,UINTEGER_32).on Self
   );
   
 Section Public
   
-  - '>' Right 60 other:SELF :BOOLEAN <- to_raw > other.to_raw;
+  - Self:SELF '>' Right 60 other:SELF :BOOLEAN <- to_raw > other.to_raw;
   
-  - '<' Right 60 other:SELF :BOOLEAN <- to_raw < other.to_raw;
+  - Self:SELF '<' Right 60 other:SELF :BOOLEAN <- to_raw < other.to_raw;
   
-  - '>=' Right 60 other:SELF :BOOLEAN <- to_raw >= other.to_raw;
+  - Self:SELF '>=' Right 60 other:SELF :BOOLEAN <- to_raw >= other.to_raw;
   
-  - '<=' Right 60 other:SELF :BOOLEAN <- to_raw <= other.to_raw;
+  - Self:SELF '<=' Right 60 other:SELF :BOOLEAN <- to_raw <= other.to_raw;
   
   - year :UINTEGER_16 <-
   ( 
@@ -85,7 +85,7 @@ Section Public
     date := date | (m.to_uinteger_32 << 8);
     date := date | d;
     date := date | (wd << 5);
-    CONVERT[UINTEGER_32,SELF].on date
+    CONVERT(UINTEGER_32,SELF).on date
   );
   
   - to_string:STRING <-

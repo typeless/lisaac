@@ -60,7 +60,7 @@ Section Public
   
   - Self:{}.loop_without_end <-
   (
-    (`1`:BOOLEAN(TRUE,FALSE)).if {
+    (`1`:BOOLEAN{TRUE,FALSE}).if {
       value;
       loop_without_end;
     };

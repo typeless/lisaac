@@ -56,20 +56,22 @@ Section Public
     file := f;
     (read_header).if {
       result := Self;
+      pos_buffer := BMP_HEADER.object_size;
     };
     result
   );
   
-  - create_with buf:FAST_ARRAY[UINTEGER_8] :SELF <-
+  - create_with buf:FAST_ARRAY(UINTEGER_8) :SELF <-
   ( 
     clone.make_with buf
   );
 
-  - make_with buf:FAST_ARRAY[UINTEGER_8] <-
+  - make_with buf:FAST_ARRAY(UINTEGER_8) :SELF <-
   ( + result:SELF;
     buffer := buf;
     (read_header).if {
       result := Self;
+      pos_buffer := BMP_HEADER.object_size;
     };
     result
   );
@@ -85,13 +87,13 @@ Section Public
   ]
   ( + end:BOOLEAN;
     + x,y:INTEGER;
-    + line_24:BMP_LINE[PIXEL_24];    
+    + line_24:BMP_LINE(PIXEL_24);    
     + tmp_pix:PIXEL_24;
     + escape,cmd:UINTEGER_8;
     + align:UINTEGER_32;
     + pos:INTEGER;
     
-    line_24 := BMP_LINE[PIXEL_24].create (header.width);
+    line_24 := BMP_LINE(PIXEL_24).create (header.width);
     header.is_8bit.if {
       //
       // 8 Bit
@@ -173,7 +175,7 @@ Section Public
 Section Private
   
   + file:STD_FILE;
-  + buffer:FAST_ARRAY[UINTEGER_8];
+  + buffer:FAST_ARRAY(UINTEGER_8);
   + header:BMP_HEADER;
       
   - read_header:BOOLEAN <-
@@ -183,7 +185,7 @@ Section Private
       file.open;
       file.read header;
     } else {
-      header := CONVERT[NATIVE_ARRAY[UINTEGER_8],BMP_HEADER].on (buffer.storage);
+      header := CONVERT(NATIVE_ARRAY(UINTEGER_8),BMP_HEADER).on (buffer.storage);
     };
     header.is_valid
   );
@@ -193,11 +195,20 @@ Section Private
     (buffer != NULL).if {
       result := buffer.item p;
     } else {
+      `/* CUR1 */`;
+      buffer := FAST_ARRAY(UINTEGER_8).create_with_capacity (file.size);
+      `/* CUR2 */`;
+      file.set_cursor 0;
+      file.read buffer size (file.size);      
+      result := buffer.item p;
+    };
+    result
+  );
       
   
   //
   
-  - color_map:FAST_ARRAY[Expanded PIXEL_24];
+  - color_map:FAST_ARRAY(Expanded PIXEL_24);
 
   
   - init_color_map <-
@@ -213,14 +224,14 @@ Section Private
     };
     nb_colors := header.get_nb_colors;
     (color_map = NULL).if {
-      color_map := FAST_ARRAY[PIXEL_24].create 256;
+      color_map := FAST_ARRAY(PIXEL_24).create 256;
     };            
     0.to (nb_colors-1) do { j:INTEGER; 
       color_map.item j
       .make_rgb (
-	bmp_buffer.item (pos_buffer + 2),
-	bmp_buffer.item (pos_buffer + 1),
-	bmp_buffer.item pos_buffer
+	buffer_item (pos_buffer + 2),
+	buffer_item (pos_buffer + 1),
+	buffer_item pos_buffer
       );
       pos_buffer := pos_buffer + code;
     };

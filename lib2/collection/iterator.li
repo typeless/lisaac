@@ -20,12 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  + name      := ITERATOR[V];
+  + name      := ITERATOR(V);
 
   - copyright := "2008 Mildred Ki'Lya";
-  - comment   := "Iterate over TRAVERSABLE[V]";
+  - comment   := "Iterate over TRAVERSABLE(V)";
 
-  - import    := TRAVERSABLE[V], ARRAY[V], FAST_ARRAY[V];
+  - import    := TRAVERSABLE(V), ARRAY(V), FAST_ARRAY(V);
 
 Section Inherit
 
@@ -45,7 +45,7 @@ Section Public
   // Properties:
   //
 
-  + traversable :TRAVERSABLE[V];
+  + traversable :TRAVERSABLE(V);
 
   + index :INTEGER;
 
@@ -57,31 +57,31 @@ Section Public
   // Creation:
   //
 
-  - from_traversable_of_v t:TRAVERSABLE[V] :ITERATOR[V] <- create t;
-  - from_array_of_v       t:TRAVERSABLE[V] :ITERATOR[V] <- create t;
-  - from_fast_array_of_v  t:TRAVERSABLE[V] :ITERATOR[V] <- create t;
+  - from_traversable_of_v t:TRAVERSABLE(V) :ITERATOR(V) <- create t;
+  - from_array_of_v       t:TRAVERSABLE(V) :ITERATOR(V) <- create t;
+  - from_fast_array_of_v  t:TRAVERSABLE(V) :ITERATOR(V) <- create t;
 
-  - create t:TRAVERSABLE[V] :SELF <- clone.make t;
+  - create t:TRAVERSABLE(V) :SELF <- clone.make t;
 
-  - create_reverse t:TRAVERSABLE[V] :SELF <- clone.make_reverse t;
+  - create_reverse t:TRAVERSABLE(V) :SELF <- clone.make_reverse t;
 
-  - create t:TRAVERSABLE[V] index i:INTEGER :SELF <- clone.make t index i;
+  - create t:TRAVERSABLE(V) index i:INTEGER :SELF <- clone.make t index i;
 
-  - create t:TRAVERSABLE[V] increment inc:INTEGER :SELF <-
+  - create t:TRAVERSABLE(V) increment inc:INTEGER :SELF <-
     clone.make t increment inc;
 
-  - create t:TRAVERSABLE[V] index i:INTEGER increment inc:INTEGER :SELF <-
+  - create t:TRAVERSABLE(V) index i:INTEGER increment inc:INTEGER :SELF <-
     clone.make t index i increment inc;
 
-  - make_reverse t:TRAVERSABLE[V] :SELF <-
+  - make_reverse t:TRAVERSABLE(V) :SELF <-
     make t index (t.upper) increment (-1);
 
-  - make t:TRAVERSABLE[V] :SELF <- make t index (t.lower);
+  - make t:TRAVERSABLE(V) :SELF <- make t index (t.lower);
 
-  - make t:TRAVERSABLE[V] increment inc:INTEGER :SELF <-
+  - make t:TRAVERSABLE(V) increment inc:INTEGER :SELF <-
     make t index (t.lower) increment inc;
 
-  - make t:TRAVERSABLE[V] index i:INTEGER increment inc:INTEGER :SELF <-    
+  - make t:TRAVERSABLE(V) index i:INTEGER increment inc:INTEGER :SELF <-    
   [  
     -? {inc != 0};
     -? {t != NULL};
@@ -94,7 +94,7 @@ Section Public
     Self    
   );
 
-  - make t:TRAVERSABLE[V] index i:INTEGER :SELF <-
+  - make t:TRAVERSABLE(V) index i:INTEGER :SELF <-
   (
     make t index i increment 1;
   );

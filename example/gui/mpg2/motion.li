@@ -23,7 +23,7 @@ Section Inherit
 Section Public
   
   - motion_vectors (pmv:PMV,dmvector:VECTOR,
-  motion_vertical_field_select:FAST_ARRAY2[BOOLEAN],
+  motion_vertical_field_select:FAST_ARRAY2(BOOLEAN),
   s,motion_vector_count:INTEGER,mv_format:BOOLEAN,h_r_size,v_r_size:INTEGER,dmv,mvscale:BOOLEAN) <-
   // ISO/IEC 13818-2 sections 6.2.5.2, 6.3.17.2, and 7.6.3: Motion vectors   
   //  
@@ -139,7 +139,7 @@ Section Private
   
 Section Public
 
-  - dual_prime_arithmetic (dmv:FAST_ARRAY2[INTEGER],dmvector:VECTOR,mvx,mvy:INTEGER) <-
+  - dual_prime_arithmetic (dmv:FAST_ARRAY2(INTEGER),dmvector:VECTOR,mvx,mvy:INTEGER) <-
   // ISO/IEC 13818-2 section 7.6.3.6: Dual prime additional arithmetic 
   //
   // int DMV[][2];

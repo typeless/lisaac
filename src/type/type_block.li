@@ -58,6 +58,8 @@ Section TYPE_BLOCK //,PROFIL_BLOCK
   
 Section Public
   
+  - intern_name:STRING_CONSTANT <- type_block.intern_name;
+  
   - is_block:BOOLEAN := TRUE;
 
   + argument_list:FAST_ARRAY[TYPE_FULL];

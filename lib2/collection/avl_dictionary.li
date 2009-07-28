@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name := AVL_DICTIONARY[V, K];
+  + name := AVL_DICTIONARY(V, K);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -34,11 +34,11 @@ Section Header
 
 Section Insert
   
-  + parent_avl_tree:Expanded AVL_TREE[K];
+  + parent_avl_tree:Expanded AVL_TREE(K);
 
 Section Inherit
   
-  + parent_simple_dictionary:Expanded SIMPLE_DICTIONARY[V, K];
+  + parent_simple_dictionary:Expanded SIMPLE_DICTIONARY(V, K);
   
 Section Private
   
@@ -49,20 +49,20 @@ Section Public
   - capacity:INTEGER <- count;
 
   - at k:K :V <- 
-  ( + dic:AVL_DICTIONARY_NODE[V,K];
+  ( + dic:AVL_DICTIONARY_NODE(V,K);
     dic ?= root.at k;
     dic.value
   );
 
   - fast_at k:K :V <- 
-  ( + dic:AVL_DICTIONARY_NODE[V,K];
+  ( + dic:AVL_DICTIONARY_NODE(V,K);
     dic ?= root.fast_at k;
     dic.value
   );
 
   - reference_at k:K :V <-
   ( + result:V;
-    + n:AVL_DICTIONARY_NODE[V, K];
+    + n:AVL_DICTIONARY_NODE(V, K);
     
     (root != NULL).if {
       n := root.at k;
@@ -75,7 +75,7 @@ Section Public
 
   - fast_reference_at k:K :V <-
   ( + result:V;
-    + n:AVL_DICTIONARY_NODE[V, K];
+    + n:AVL_DICTIONARY_NODE(V, K);
 		
     (root != NULL).if {
       n := root.fast_at k;
@@ -137,7 +137,7 @@ Section Public
   );
 
   - item i:INTEGER :V <-
-  ( + dic:AVL_DICTIONARY_NODE[V,K];
+  ( + dic:AVL_DICTIONARY_NODE(V,K);
     (map_dirty).if {
       build_map;
     };
@@ -157,7 +157,7 @@ Section Public
   
   - make <-
   (
-    map := FAST_ARRAY[AVL_TREE_NODE[K]].create 0;
+    map := FAST_ARRAY(AVL_TREE_NODE(K)).create 0;
     // lost_nodes ::= common_lost_nodes.reference_at(generating_type)
     // if lost_nodes = NULL then
     //	create lost_nodes.set_item(NULL)
@@ -169,21 +169,21 @@ Section Private
   
   + value_memory:V;
 
-  - set_value_and_key n:AVL_TREE_NODE[K] <-
-  ( + dic:AVL_DICTIONARY_NODE[V,K];
+  - set_value_and_key n:AVL_TREE_NODE(K) <-
+  ( + dic:AVL_DICTIONARY_NODE(V,K);
     
     dic ?= n;
     dic.make (value_memory, key_memory);
   );
 
-  - set_value n:AVL_TREE_NODE[K] <-
-  ( + dic:AVL_DICTIONARY_NODE[V,K];
+  - set_value n:AVL_TREE_NODE(K) <-
+  ( + dic:AVL_DICTIONARY_NODE(V,K);
     
     dic ?= n;
     dic.set_value value_memory;
   );
 
-  - exchange_and_discard (n1, n2:AVL_TREE_NODE[K]) <-
+  - exchange_and_discard (n1, n2:AVL_TREE_NODE(K)) <-
   (
     n1.set_key (n2.key);
     n1.set_value (n2.value);
@@ -192,16 +192,16 @@ Section Private
     discard_node n2;
   );
 
-  - discard_node n:AVL_DICTIONARY_NODE[V, K] <-
+  - discard_node n:AVL_DICTIONARY_NODE(V, K) <-
   ( + v:V;
     + k:K;
 		
     n.make (v, k);
   );
 
-  - a_new_node:AVL_DICTIONARY_NODE[V, K] <-
+  - a_new_node:AVL_DICTIONARY_NODE(V, K) <-
   (
-    AVL_DICTIONARY_NODE[V, K].clone
+    AVL_DICTIONARY_NODE(V, K).clone
   );
   
   

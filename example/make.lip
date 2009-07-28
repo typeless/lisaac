@@ -1,0 +1,57 @@
+///////////////////////////////////////////////////////////////////////////////
+//                            Lisaac Installer                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+
+// Lisaac Path Directory System (by Benoit Sonntag).
+
+Section Inherit
+  
+  + parent:STRING := "../make.lip";
+
+Section Private
+  
+  - example_path <-
+  // Example path.
+  ( 
+    path (lisaac + "example/su_doku/");
+    path (lisaac + "example/tetris/");
+    path (lisaac + "example/fouronline/");
+    path (lisaac + "example/shell/");
+    path (lisaac + "example/gui/calculator/");
+    path (lisaac + "example/gui/viewer/");
+    path (lisaac + "example/gui/about/");
+    path (lisaac + "example/gui/clock/");
+    path (lisaac + "example/gui/desktop/");
+    path (lisaac + "example/gui/mpg2/");
+    path (lisaac + "example/demomaker/fire/");
+    path (lisaac + "example/demomaker/glass/");
+    path (lisaac + "example/demomaker/rotozoom/");
+  );
+    
+  //
+  // Execute function.
+  //
+  
+  - front_end <-
+  (
+    general_front_end;
+    example_path;    
+  );
+  

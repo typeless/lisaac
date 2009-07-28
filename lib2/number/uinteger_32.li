@@ -22,7 +22,7 @@ Section Header
   
   + name    := Expanded UINTEGER_32;
 
-  - export  := INTEGER, UINTEGER_64, INTEGER_64, POINTER;
+  - export  := INTEGER, UINTEGER_64, INTEGER_64;
    
   - comment := "Unsigned 32 bits integer.";
   

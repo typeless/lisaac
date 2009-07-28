@@ -70,18 +70,25 @@ Section Public
     -? {n != NULL};    
   ]
   ( + result:ITM_TYPE_SIMPLE;
-    
+        
     result := dico.fast_reference_at n;    
     (result = NULL).if {
       result := create n;      
-    };
-        
+    };            
     result
   );
   
-  - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  (    
-    TYPE.get Self
+  + to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
+  ( + result:TYPE_FULL;   
+    
+    (Self = type_null).if {
+      result := TYPE_NULL.default;
+    }.elseif {Self = type_void} then {
+      result := TYPE_VOID.default;
+    } else {
+      result := TYPE.get Self;
+    };
+    /*to_run_for :=*/ result  // BSBS: A tester pour les perfs.
   );
   
   - append_in buffer:STRING <-

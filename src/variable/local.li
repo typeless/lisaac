@@ -128,6 +128,8 @@ Section Public
   (                
     (last_seq = NULL).if {
       LOCAL_SEQ.new Self;
+      //"LOCAL:".print;
+      //intern_name.print; '\n'.print;
     };
     (
       (! PROFIL.mode_recursive) &&
@@ -176,11 +178,33 @@ Section Public
     + rd:READ;
     + l:LOCAL;
     + g:SLOT_DATA;
-        
+    /*
+    + bug:BOOLEAN;
+    
+    (intern_name == "__tmp__TC").if {
+      bug:=TRUE;
+      "0\n".print;
+      (last_seq = NULL).if {
+        "last seq NULL\n".print;
+        crash;
+      } else {
+        (last_seq.last_write = NULL).if {
+          "last_write null\n".print;
+        };
+      };
+    };
+     */ 
+    
+    
     (
       (! PROFIL.mode_recursive) && {loop_invariant = NULL} && 
       {last_seq != NULL} && {last_seq.last_write != NULL}
     ).if {      
+      /*
+      (bug).if {
+        "1\n".print;
+      };
+      */
       (
 	(is_seq_list (last_seq.last_list_current)) &&
 	{
@@ -276,11 +300,7 @@ Section Public
     name        := n;
     is_result   := r;
     intern_name := ALIAS_STR.get_intern n; 
-    
-    //(intern_name == "Result__0Y").if {
-      //crash;
-    //};
-    
+       
     ((t.is_expanded) && {! t.is_expanded_c}).if {
       type := t + TYPE_FULL.expanded_ref_bit;
     } else {

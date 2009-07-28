@@ -63,7 +63,7 @@ Section Public
   
 Section Private
   
-  - tmp:NATIVE_ARRAY[UINTEGER_8] := NATIVE_ARRAY[UINTEGER_8].create 1;
+  - tmp:NATIVE_ARRAY(UINTEGER_8) := NATIVE_ARRAY(UINTEGER_8).create 1;
   
 // kate: hl Lisaac v0.2; indent-width 2; space-indent on; replace-tabs off;
 // kate: tab-width 8; remove-trailing-space on;

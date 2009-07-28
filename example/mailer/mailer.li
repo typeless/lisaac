@@ -34,7 +34,7 @@ Section Public
   
   - buffer:STRING := STRING.create 2048;
   
-  - mail:HASHED_SET[STRING] := HASHED_SET[STRING].create;
+  - mail:HASHED_SET(STRING) := HASHED_SET(STRING).create;
   
   - extract_mail <-
   ( + idx,begin,end:INTEGER;

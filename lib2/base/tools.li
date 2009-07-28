@@ -29,7 +29,7 @@ Section Header
   
 Section Public
   
-  - unicode_to_ascii uni:FAST_ARRAY[CHAR_UNICODE] to asc:FAST_ARRAY[CHARACTER] <-
+  - unicode_to_ascii uni:FAST_ARRAY(CHAR_UNICODE) to asc:FAST_ARRAY(CHARACTER) <-
   ( + i:INTEGER;
     {uni.item i != 0}.while_do {
       asc.put ((uni.item i & 0FFh).to_uinteger_8) to i;
@@ -38,7 +38,7 @@ Section Public
     asc.put 0 to i;    
   );
 
-  - ascii_to_unicode asc:FAST_ARRAY[CHARACTER] to uni:FAST_ARRAY[CHAR_UNICODE] <-
+  - ascii_to_unicode asc:FAST_ARRAY(CHARACTER) to uni:FAST_ARRAY(CHAR_UNICODE) <-
   ( + i:INTEGER;
     {asc.item i != 0}.while_do {
       uni.put (asc.item i) to i;

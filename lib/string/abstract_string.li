@@ -26,7 +26,7 @@ Section Header
     
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
-  - comment := "Generic prototype for STRING and STRING_CONSTANT. Strings are 1 based index.";
+  - comment := "Generic prototype for STRING and STRING_CONSTANT";
   
 Section Inherit
   
@@ -213,7 +213,7 @@ Section Public
   );
   
   - last_index_of ch:CHARACTER since start_index:INTEGER :INTEGER <-
-  // Index of last occurrence of `ch' at or before `start_index',
+  // Index of first occurrence of `c' at or before `start_index',
   // 0 if none.
   ( + result:INTEGER;
     ? {start_index.in_range 0 to upper};
@@ -232,16 +232,9 @@ Section Public
   // Gives the index of the first occurrence `ch' or
   // 0 if none.
   (+ result:INTEGER;
-    result := 1 + storage.fast_index_of (ch,0) until (count - 1);
-    ? {(result != count + 1) ->> {item result = ch}};
+    result := 1 + storage.fast_index_of (ch,1) until (count - 1);    
+    ?	{(result != count + 1) ->> {item result = ch}};    
     result
-  );
-
-  - index_of ch:CHARACTER :INTEGER <-
-  // Gives the index of the first occurrence of 'ch' or
-  // 0 if none.
-  (
-    fast_index_of ch
   );
   
   - first_index_of c:CHARACTER :INTEGER <-  
@@ -540,22 +533,6 @@ Section Public
     result
   );
 
-  - is_binary :BOOLEAN <-
-  ( + result:BOOLEAN;
-    + j:INTEGER;
-
-    (is_empty).if_false {
-      j := lower;
-      { (j > upper) || {! item j.is_binary_digit} }.until_do {
-        j := j + 1;
-      };
-
-      result := j > upper;
-    };
-
-    result
-  );
-
   - to_binary :INTEGER_64 <-
   ( + result:INTEGER_64;
     ? {is_bit};
@@ -606,53 +583,54 @@ Section Public
     { (state = 5) || {i > count}}.until_do {
       cc := item i;
       ( state = 0).if {
-        cc.is_separator.if {
-        }.elseif {cc = '+'} then {
-          state := 1;
-        }.elseif {cc = '-'} then {
-          negative := TRUE;
-          state := 1;
-        }.elseif {cc.is_digit} then {
-          value_int := cc.decimal_value;
-          state := 2;
-        } else {
-          state := 5;
-        };
+	cc.is_separator.if {
+	}.elseif {cc = '+'} then {
+	  state := 1;
+	}.elseif {cc = '-'} then {
+	  negative := TRUE;
+	  state := 1;
+	}.elseif {cc.is_digit} then {
+	  value_int := cc.decimal_value;
+	  state := 2;
+	} else {
+	  state := 5;
+	};
       }.elseif { state = 1} then {
-        cc.is_digit.if {
-          value_int := cc.decimal_value;
-          state := 2;
-        } else {
-          state := 5;
-        };
+	cc.is_digit.if {
+	  value_int := cc.decimal_value;
+	  state := 2;
+	} else {
+	  state := 5;
+	};
       }.elseif { state = 2 } then {
-        cc.is_digit.if {
-          value_int := 10 * value_int + cc.decimal_value;
-          (value_int < 0).if {
-            state := 5;
-          };
-        }.elseif { cc = '.' } then {
-          state := 3;
-          value := value_int.to_real_16_16;
-        }.elseif {cc.is_separator} then {
-          state := 4;
-        } else {
-          state := 5;
-        };
+	cc.is_digit.if {
+	  value_int := 10 * value_int + cc.decimal_value;
+	  // over/underflow check here
+	  ((negative && {value_int > 0}) || { ! negative && {value_int < 0}}).if {
+	    state := 5;
+	  };
+	}.elseif { cc = '.' } then {
+	  state := 3;	
+	  value := value_int.to_real_16_16;
+	}.elseif {cc.is_separator} then {
+	  state := 4;
+	} else {
+	  state := 5;
+	};
       }.elseif { state = 3 } then {
-        cc.is_digit.if {
-          d := d * 10;
-          value := value + (cc.decimal_value.to_real_16_16) /# d;
-        }.elseif {cc.is_separator} then {
-          state := 4;
-        } else {
-          state := 5;
-        };
+	cc.is_digit.if {
+	  d := d * 10;
+	  value := value + (cc.decimal_value.to_real_16_16) /# d;
+	}.elseif {cc.is_separator} then {
+	  state := 4;
+	} else {
+	  state := 5;
+	};
       }.elseif { state = 4 } then {
-        cc.is_separator.if {
-        } else {
-          state := 5;
-        };
+	cc.is_separator.if {
+	} else {	    
+	  state := 5;
+	};
       };
       
       i := i + 1;
@@ -942,7 +920,7 @@ Section Public
   //
   
   - print <- 
-  (
+  (    
     IO.put_string Self;  
   );
 
@@ -951,8 +929,7 @@ Section Public
     IO.put_string Self;
     IO.put_string "\n";
   );
-
-  
+    
   - println <-
   [ -? {storage.item count = '\0'}; ]
   (

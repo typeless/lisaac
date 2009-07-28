@@ -182,11 +182,11 @@ Section Public
   //- main_bitstream_filename             :STRING_CONSTANT; 
   
   // buffers for multiuse purposes   
-  - clip:ARRAY[UINTEGER_8] :=
+  - clip:ARRAY(UINTEGER_8) :=
   // Clip table
-  ( + result:ARRAY[UINTEGER_8];
+  ( + result:ARRAY(UINTEGER_8);
      
-    result := ARRAY[UINTEGER_8].create (-384) to 639;    
+    result := ARRAY(UINTEGER_8).create (-384) to 639;    
     1.to 254 do { i:INTEGER;      
       result.put (i.to_uinteger_8) to i;
     };
@@ -195,15 +195,15 @@ Section Public
   );
 
   // pointers to generic picture buffers 
-  - backward_reference_frame:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]]; // [3][]
-  - forward_reference_frame :NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]]; // [3][]
-  - auxframe                :NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]]; // [3][]
-  - current_frame           :NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]]; // [3][]
+  - backward_reference_frame:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)); // [3][]
+  - forward_reference_frame :NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)); // [3][]
+  - auxframe                :NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)); // [3][]
+  - current_frame           :NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)); // [3][]
   
   // pointers to scalability picture buffers 
-  - llframe0:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]]; // [3][]
-  - llframe1:NATIVE_ARRAY[NATIVE_ARRAY[UINTEGER_8]]; // [3][]
-  - lltmp:NATIVE_ARRAY[INTEGER_16];
+  - llframe0:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)); // [3][]
+  - llframe1:NATIVE_ARRAY(NATIVE_ARRAY(UINTEGER_8)); // [3][]
+  - lltmp:NATIVE_ARRAY(INTEGER_16);
 
   // non-normative variables derived from normative elements 
   - coded_picture_width :INTEGER;
@@ -240,8 +240,8 @@ Section Public
   - backward_f_code         :INTEGER;
     
   // ISO/IEC 13818-2 section 6.2.3.1: picture_coding_extension() header 
-//  - f_code:FIXED_ARRAY2[INTEGER] := FIXED_ARRAY2[INTEGER].create 2,2;
-  - f_code:FAST_ARRAY2[INTEGER] := FAST_ARRAY2[INTEGER].create(2,2);
+//  - f_code:FIXED_ARRAY2(INTEGER) := FIXED_ARRAY2(INTEGER).create 2,2;
+  - f_code:FAST_ARRAY2(INTEGER) := FAST_ARRAY2(INTEGER).create(2,2);
   - intra_dc_precision        :INTEGER;
   - picture_structure         :INTEGER;
   - top_field_first           :BOOLEAN;

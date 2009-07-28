@@ -42,7 +42,7 @@ Section Public
     NULL
   );
   
-  - type_c:STRING_CONSTANT <- "__BLOCK";
+  - type_c:STRING_CONSTANT <- type_block.intern_name;
   
   + to_type_block:TYPE_BLOCK;
   
@@ -122,9 +122,9 @@ Section Public
     name := ALIAS_STR.get_intern (ALIAS_STR.slot_value);    
     
     // Create code.    
-    old_profil := profil;
+    old_profil := profil_current;
     old_list   := list_current;
-    profil       := Self;
+    profil_current := Self;
     list_current := LIST.create (list.position);    
     ITM_OBJECT.set_context_extern NULL;
     // Add context debug.
@@ -185,7 +185,7 @@ Section Public
     stack_local.remove_since stack_top;
     //
     NODE.set_node_list old_node_list;        
-    profil := old_profil;
+    profil_current := old_profil;
     list_current := old_list;
   );
   
@@ -195,7 +195,7 @@ Section Public
   
   - is_static:BOOLEAN <- TRUE;
   
-  - genere_handler buffer:STRING <-
+  - genere_handler_intern buffer:STRING <-
   (
     (is_context_sensitive).if {
       warning_error (code.position,
@@ -203,12 +203,14 @@ Section Public
 	\evaluation too far away from the context."
       );      
     };
-    parent_profil.genere_handler buffer;
+    parent_profil.genere_handler_intern buffer;
   );
   
   //
   // TYPE BLOCK.
   //
+  
+  - intern_name:STRING_CONSTANT <- name;
   
   - write_argument args:FAST_ARRAY[EXPR] :FAST_ARRAY[WRITE] <-
   ( + rd:READ;
@@ -225,7 +227,7 @@ Section Public
     type_block.set_late_binding;
   );
   
-  - link <-
+  - link call:CALL_SLOT <-
   ( 
     (link_count = 0).if {
       NODE.node_list.append_collection node_list;
@@ -335,6 +337,8 @@ Section Public
   
   - put_expanded_declaration buffer:STRING <-
   (    
+    // BSBS: A revoir car c'est un gros bordel entre PROFIL_BLOCK et TYPE_BLOCK!
+    buffer.append "__";
     buffer.append type_c;    
   );  
   

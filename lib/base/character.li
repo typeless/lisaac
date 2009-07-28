@@ -153,6 +153,8 @@ Section Public
   
   - '+#' other:INTEGER :CHARACTER <- (code + other).to_character;
   
+  - '-#' other:INTEGER :CHARACTER <- (code - other).to_character;
+  
   - '!==' other:CHARACTER :BOOLEAN <- (code !== other.code);
   // Comparison using `code'.
   
@@ -327,7 +329,7 @@ Section Public
   );
   
   - is_separator:BOOLEAN <-
-  // True when character is a separator (' ', '\t', '\n', '\r', '\0', '\f', '\v')?
+  // True when character is a separator.
   (
     (Self= ' ') || {Self = '\t'} || {Self='\n'} ||
     {Self='\r'} || {Self = '\0'} || {Self='\f'} || {Self='\v'}
@@ -339,6 +341,12 @@ Section Public
     result := (is_letter || {is_digit});
     ? {result = (is_letter | is_digit)};
     result
+  );
+  
+  - is_identifier:BOOLEAN <-
+  // Is it a letter or a digit or '_' ?
+  (
+    (is_letter_or_digit) || {Self = '_'}
   );
   
   - is_ascii:BOOLEAN := TRUE;
@@ -362,21 +370,7 @@ Section Public
   //
   // Conversions:
   //
-
-  - to_string:STRING <-
-  // Create a new STRING containing only this character.
-  (
-    STRING.create_filled (Self,1)
-  );
-
-  - to_string_in str:STRING <-
-  // Append this character at the end of 'str'. Thus you
-  // can save memory because no other STRING is allocated
-  // for the job.
-  (
-    str.append_character Self;
-  );
-
+  
   - to_hexadecimal:STRING <-
   // Create a new STRING giving the `code' in hexadecimal.
   // For example :

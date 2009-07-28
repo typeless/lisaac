@@ -137,7 +137,10 @@ Section Public
   
 Section Private
   
-  - basic_io_putc c:CHARACTER <- SYSTEM_IO.print_char c;
+  - basic_io_putc c:CHARACTER <- 
+  (    
+    SYSTEM_IO.print_char c;   
+  );
   
   - basic_error_putc c:CHARACTER <- SYSTEM_IO.print_error_char c;
   

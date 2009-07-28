@@ -99,7 +99,7 @@ Section Public
 	input ?= msg.source;
 	input.acknowledge;
       };      
-    }.do_while {`1`:BOOLEAN(TRUE,FALSE)}; // Infinity Loop     
+    }.loop_without_end;
   );
   
   //
@@ -142,7 +142,7 @@ Section Public
   
 Section Private
   
-  - storage_message:LINKED_LIST[EVENT] := LINKED_LIST[EVENT].create;
+  - storage_message:LINKED_LIST(EVENT) := LINKED_LIST(EVENT).create;
   
 Section Public  
   

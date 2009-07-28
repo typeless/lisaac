@@ -36,7 +36,7 @@ Section Public
 
   - main <-
   ( + button:G_BUTTON;
-    + action1:BLOCK;
+    + action1:{G_BUTTON;};
 
     VIDEO.make(150,80);
     
@@ -52,5 +52,4 @@ Section Public
       G_OUT.create "Lisaac is GREAT !!!" justify (G_OUT.center) /
       button.fix_height
     );
-    INTERFACE.run;
   );

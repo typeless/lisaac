@@ -24,14 +24,14 @@ Section Inherit
   
 Section Private
   
-  - buffer:FAST_ARRAY[UINTEGER_8] := FAST_ARRAY[UINTEGER_8].create_with_capacity (128.kb);
+  - buffer:FAST_ARRAY(UINTEGER_8) := FAST_ARRAY(UINTEGER_8).create_with_capacity (128.kb);
   
-  - list:FAST_ARRAY[ABSTRACT_STRING] := FAST_ARRAY[ABSTRACT_STRING].create_with_capacity 128;
+  - list:FAST_ARRAY(ABSTRACT_STRING) := FAST_ARRAY(ABSTRACT_STRING).create_with_capacity 128;
   
   - bitmap:ABSTRACT_BITMAP := 
   ( + result:ABSTRACT_BITMAP;
     
-    result := BITMAP[PIXEL_24].create (90,30);
+    result := BITMAP(PIXEL_24).create (90,30);
     result.color (result.red);
     result.print "No image" to (10,10);
     result

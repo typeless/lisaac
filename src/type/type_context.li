@@ -36,6 +36,8 @@ Section Public
   
   - name:STRING_CONSTANT <- ALIAS_STR.prototype_context;
   
+  - intern_name:STRING_CONSTANT <- name;
+  
   - type_c:STRING_CONSTANT <- "_____CONTEXT";
   
   //
@@ -47,6 +49,11 @@ Section Public
     dico_type.fast_put Self to name;        
     //slot_run := FAST_ARRAY[SLOT].create_with_capacity 1; // BSBS: Plus utile !
     default := TYPE_FULL.create Self with (TYPE_FULL.expanded_bit);
+  );
+
+  - genere_typedef <-
+  (
+    // Nothing.
   );
   
   - genere_struct <-

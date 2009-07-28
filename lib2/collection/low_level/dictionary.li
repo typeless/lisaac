@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  + name := DICTIONARY[V, K];
+  + name := DICTIONARY(V, K);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -36,7 +36,7 @@ Section Header
   
 Section Inherit
   
-  + parent_traversable:Expanded TRAVERSABLE[V];
+  + parent_traversable:Expanded TRAVERSABLE(V);
   
 Section Public
   
@@ -209,7 +209,7 @@ Section Public
   //
   // See also `fast_occurrences', `fast_has', `has'.
   ( + i,result:INTEGER; 
-    + safe_equal:SAFE_EQUAL[V];
+    + safe_equal:SAFE_EQUAL(V);
     
     i := 1;
     {i > count}.until_do {
@@ -251,7 +251,7 @@ Section Public
     -? {occurrences v = 1};
   ]
   ( + i:INTEGER; 
-    + safe_equal:SAFE_EQUAL[V];
+    + safe_equal:SAFE_EQUAL(V);
     
     i := 1;
     {safe_equal.test v with (item i)}.until_do {
@@ -260,7 +260,7 @@ Section Public
     key i
   )
   [ ...
-    +? {SAFE_EQUAL[V].test (at Result) with v};
+    +? {SAFE_EQUAL(V).test (at Result) with v};
   ];
 
   - fast_key_at v:V :K <-
@@ -396,7 +396,7 @@ Section Public
     +? {(at Result) = item index};
   ];
 	
-  - key_map_in buffer:COLLECTION[K] <-
+  - key_map_in buffer:COLLECTION(K) <-
   // Append in `buffer', all available keys (this may be useful to
   // speed up the traversal).
   //
@@ -416,7 +416,7 @@ Section Public
     +? {buffer.count = count + Old buffer.count};
   ];
 
-  - item_map_in buffer:COLLECTION[V] <-
+  - item_map_in buffer:COLLECTION(V) <-
   // Append in `buffer', all available items (this may be useful to
   // speed up the traversal).
   //
@@ -440,7 +440,7 @@ Section Public
   // Comparaison.
   //
   
-  - '==' other:SELF :BOOLEAN <-
+  - Self:SELF '==' other:SELF :BOOLEAN <-
   // Do both dictionaries have the same set of associations?
   // Keys are compared with `is_equal' and values are comnpared
   // with the basic = operator.
@@ -479,7 +479,7 @@ Section Public
   // See also `is_equal'.
   ( + i:INTEGER; 
     + k:K; 
-    + safe_equal:SAFE_EQUAL[V];
+    + safe_equal:SAFE_EQUAL(V);
     + result:BOOLEAN;
     
     (Self = other).if {
@@ -520,7 +520,7 @@ Section Public
   //
   
   - do_all action:BLOCK <-
-  // Apply `action' to every [V, K] associations of `Current'.
+  // Apply `action' to every (V, K) associations of `Current'.
   //
   // See also `for_all', `exist'.
   ( + i:INTEGER; 
@@ -598,7 +598,7 @@ Section Public
   );
 
   - for_all test:{(V,K); } :BOOLEAN <-
-  // Do all [V, K] associations satisfy `test'?
+  // Do all (V, K) associations satisfy `test'?
   //
   // See also `do_all', `exist'.
   ( + i:INTEGER; 
@@ -618,7 +618,7 @@ Section Public
   );
 
   - exists test:{(V,K); } :BOOLEAN <-
-  // Does at least one [V, K] association satisfy `test'?
+  // Does at least one (V, K) association satisfy `test'?
   //
   // See also `for_all', `do_all'.
   ( + i:INTEGER; 
