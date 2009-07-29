@@ -120,7 +120,26 @@ Section Public
     type.last.display buffer;    
     buffer.add_last ')';
   );
-
+  
+  - shorter_in buf:STRING <-
+  (
+    buf.add_last '(';
+    (name.lower).to (name.upper - 1) do { j:INTEGER;      
+      (name.item j = ALIAS_STR.variable_self).if {
+        put (name.item j) to buf like (ALIAS_STR.short_keyword);
+      } else {
+        put (name.item j) to buf like (ALIAS_STR.short_local);
+      };
+      buf.add_last ':';
+      type.item j.shorter_in buf;
+      buf.add_last ',';
+    };
+    put (name.last) to buf like (ALIAS_STR.short_local);
+    buf.add_last ':';
+    type.last.shorter_in buf;    
+    buf.add_last ')';
+  );
+  
   //
   // Comparaison.
   //

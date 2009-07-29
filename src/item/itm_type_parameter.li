@@ -40,3 +40,15 @@ Section Public
     result
   );
   
+  //  
+  // Display.
+  //
+  
+  - shorter_in buf:STRING <-
+  (
+    (style != NULL).if {
+      put style to buf like (ALIAS_STR.short_keyword);
+      buf.add_last ' ';
+    };    
+    put name to buf like (ALIAS_STR.short_keyprototype);
+  );

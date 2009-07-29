@@ -71,6 +71,14 @@ Section Public
   //
   
   - is_equal other:ITM_ARGUMENT <- deferred;
-
+  
+  //
+  // Display.
+  //
+  
+  - shorter_in buf:STRING <-
+  (
+    deferred;
+  );
   
   

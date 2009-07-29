@@ -15,12 +15,16 @@
   - end :=    
   "\n</body>\n\
   \</html>\n";
-    
+  
+  //
+  // Syntax.
+  //
+  
   - keyword := 
   "<strong><font color=\"#A020F0\">" + token + "</font></strong>";
 
   - keyword_section := 
-  "<br><br><strong><font color=\"#A020F0\">" + token + "</font></strong>";
+  "<dd><strong><font color=\"#A020F0\">" + token + "</font></strong></dd>";
     
   - operator :=
   "<font color=\"#B8860B\">" + token + "</font>";
@@ -36,18 +40,25 @@
   "<br><font FACE=\"Sans-serif\" color=\"#000000\"><B>" + token + "</B></font>";
 
   - comment_slot_line :=
-  "<br><em><strong><font color=\"#707070\">&nbsp &nbsp &nbsp &nbsp " + token + "</font></strong></em>";
+  "<dd>" + token + "</dd>";
       
   - slot := 
   "<strong><font color=\"#0000FF\">" + token + "</font></strong>";
   
   - slot_style :=
-  "<br><br><strong><font color=\"#FF0000\">&nbsp &nbsp " + token + "</font></strong>";
+  "<dd><strong><font color=\"#FF0000\">" + token + " </font></strong>";
+  
+  - local := token;  
+
+  - block := 
+  "<font color=\"#FF0000\">" + token + "</font>";  
+
+  - warning := 
+  "<font color=\"#FF0000\"><b>" + token + "</b></font><br>";  
   
   //
   // Java doc style.
-  //
- 
+  // 
    
   - title := "<td align=\"right\"><em><b>Lisaac<sup><font size=\"-2\">TM</font></sup>&nbsp;Platform</b></em></td><hr><h2>" + token + "</h2><hr>";
   
@@ -62,8 +73,11 @@
   
   - sub_title := "</p><table summary=\"\" width=\"100%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\"><tbody><tr class=\"TableHeadingColor\" bgcolor=\"#ccccff\"><td colspan=\"1\"><font size=\"+2\"><b>" + token + "</b></font></td></tr></tbody></table>"; 
   
-  - slot_title := "<a name=\"" + token + "\"><!-- --></a><hr><h3>" + token + "</h3>";
-
+  - slot_title := "</dl><a name=\"" + token + "\"><!-- --></a><hr><h3>" + token + "</h3><dl>";
+  
+  - subsub_title := "<dt><b><br>" + token + "</b></dt>";
+  
+  - prototype_path := "<dd><code>" + token + "</code></dd>";
   
   //
   // Recursive Option.

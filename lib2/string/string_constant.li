@@ -29,7 +29,7 @@ Section Header
   
 Section Inherit
   
-  - parent_abstract_string:ABSTRACT_STRING := ABSTRACT_STRING;
+  - inherit_abstract_string:ABSTRACT_STRING := ABSTRACT_STRING;
         
 Section Public
     

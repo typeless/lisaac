@@ -75,6 +75,13 @@ Section Public
     buffer.add_last ']';
   );
   
+  - shorter_in buf:STRING <-
+  (
+    string_tmp.clear;
+    string_tmp.add_last ('A' +# index);    
+    put string_tmp to buf like (ALIAS_STR.short_keyprototype);
+  );    
+  
   - string_tmp:STRING := STRING.create 100;
   
   - to_run:TYPE_FULL <-

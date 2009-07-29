@@ -95,7 +95,7 @@ Section Private
   \  -r               : recursive builder documentation        \n\
   \  -f <format_file> : formatting description file            \n\
   \                     (see `/lisaac/shorter/')               \n\
-  \  -d               : Lisaac doc style (no -c)               \n\
+  \  -d               : Lisaac doc style (no -c, -r)           \n\
   \                                                            \n\
   \Examples:                                                   \n\
   \  * Output format file:                                     \n\
@@ -103,6 +103,9 @@ Section Private
   \                                                            \n\
   \  * Build html documentation:                               \n\
   \    shorter -r -f html ~/lisaac/lib                         \n\
+  \                                                            \n\
+  \  * Build html documentation style JavaDoc:                 \n\
+  \    shorter -d -f javadoc ~/lisaac/lib                         \n\
   \                                                            \n\
   \Bug report:                                                 \n\
   \            post in : https://gna.org/bugs/?group=isaac     \n\

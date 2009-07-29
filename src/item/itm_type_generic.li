@@ -118,6 +118,22 @@ Section Public
     buffer.add_last ')';
   );
   
+  - shorter_in buf:STRING <-
+  (
+    (style != NULL).if {
+      put style to buf like (ALIAS_STR.short_keyword);
+      buf.add_last ' ';
+    };
+    put name to buf like (ALIAS_STR.short_prototype);
+    buf.add_last '(';
+    (list_type.lower).to (list_type.upper - 1) do { j:INTEGER;
+      list_type.item j.shorter_in buf;
+      buf.add_last ',';
+    };
+    list_type.last.shorter_in buf;
+    buf.add_last ')';
+  );
+  
   //
   // Cast.
   //

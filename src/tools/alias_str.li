@@ -178,10 +178,16 @@ Section Public
   - path_lisaac      :STRING_CONSTANT := "__PATH_LISAAC_SYSTEM__";
   - short_format     :STRING_CONSTANT := "__SHORT_LISAAC_FORMAT__";
   
+  //
+  // Shorter.
+  //
+  
   - short_type_file   :STRING_CONSTANT := "type_file";
   - short_token       :STRING_CONSTANT := "token";
   - short_begin       :STRING_CONSTANT := "begin";
   - short_end         :STRING_CONSTANT := "end";
+  
+  // Syntax
   - short_keyword     :STRING_CONSTANT := "keyword";
   - short_keyword_section:STRING_CONSTANT := "keyword_section";
   - short_integer     :STRING_CONSTANT := "integer";
@@ -199,6 +205,8 @@ Section Public
   - short_slot_style  :STRING_CONSTANT := "slot_style";
   - short_block       :STRING_CONSTANT := "block";
   - short_external    :STRING_CONSTANT := "external";
+  - short_local       :STRING_CONSTANT := "local";
+  - short_warning     :STRING_CONSTANT := "warning";
 
   - short_title       :STRING_CONSTANT := "title";
   - short_table_begin :STRING_CONSTANT := "table_begin";
@@ -208,6 +216,8 @@ Section Public
   - short_table_end   :STRING_CONSTANT := "table_end";
   - short_sub_title   :STRING_CONSTANT := "sub_title";
   - short_slot_title  :STRING_CONSTANT := "slot_title";
+  - short_subsub_title  :STRING_CONSTANT := "subsub_title";
+  - short_prototype_path:STRING_CONSTANT := "prototype_path";
   
   
   - short_index       :STRING_CONSTANT := "index";
@@ -471,6 +481,8 @@ Section Public
     list.add short_slot_style;
     list.add short_block;
     list.add short_external;
+    list.add short_local;
+    list.add short_warning;
     
     list.add short_title;
     list.add short_table_begin;
@@ -480,7 +492,8 @@ Section Public
     list.add short_table_end;
     list.add short_sub_title;
     list.add short_slot_title;
-
+    list.add short_subsub_title;
+    list.add short_prototype_path;
     
     list.add short_index;
     list.add short_default;
