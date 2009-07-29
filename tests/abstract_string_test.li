@@ -130,6 +130,7 @@ Section Public
     UNIT_TEST.test "is_real_16_16 #2" boolean ("-33.1".is_real_16_16) equals TRUE;
     UNIT_TEST.test "is_real_16_16 #3" boolean ("13FD".is_real_16_16) equals FALSE;
     UNIT_TEST.test "is_real_16_16 #4" boolean ("+100.39".is_real_16_16) equals TRUE;
+	UNIT_TEST.test "is_real_16_16 #5" boolean ("".is_real_16_16) equals FALSE;
     UNIT_TEST.test "to_real_16_16 #1" real_16_16 ("10".to_real_16_16) equals 10.0;
     UNIT_TEST.test "to_real_16_16 #2" real_16_16 ("-33.1".to_real_16_16) equals (-33.1);
 
@@ -217,11 +218,10 @@ Section Public
     UNIT_TEST.test "split_in size" integer (values.count) equals 4;
     UNIT_TEST.test "split_in val #3" string (values.item 3) equals "John";
     UNIT_TEST.test "split_in val #4" string (values.item 4) equals "Doe";
-    //TODO: This causes a compile error:
-    //UNIT_TEST.test "same_string #1" boolean (name.same_string "") equals FALSE;
-    //UNIT_TEST.test "same_string #2" boolean (name.same_string "John Doe") equals TRUE;
-    //UNIT_TEST.test "same_string #3" boolean (empty.same_string "Jim Doe") equals FALSE;
-    //UNIT_TEST.test "same_string #4" boolean (empty.same_string "") equals TRUE;
+    UNIT_TEST.test "same_string #1" boolean (name.same_string "") equals FALSE;
+    UNIT_TEST.test "same_string #2" boolean (name.same_string "John Doe") equals TRUE;
+    UNIT_TEST.test "same_string #3" boolean (empty.same_string "Jim Doe") equals FALSE;
+    UNIT_TEST.test "same_string #4" boolean (empty.same_string "") equals TRUE;
     UNIT_TEST.test "to_string #1" string (name.to_string) equals name;
     UNIT_TEST.test "to_string #2" string (empty.to_string) equals empty;
   );
