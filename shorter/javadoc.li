@@ -24,7 +24,7 @@
   "<strong><font color=\"#A020F0\">" + token + "</font></strong>";
 
   - keyword_section := 
-  "<br><br><strong><font color=\"#A020F0\">" + token + "</font></strong>";
+  "<dd><strong><font color=\"#A020F0\">" + token + "</font></strong></dd>";
     
   - operator :=
   "<font color=\"#B8860B\">" + token + "</font>";
@@ -75,9 +75,9 @@
   
   - slot_title := "</dl><a name=\"" + token + "\"><!-- --></a><hr><h3>" + token + "</h3><dl>";
   
-  - subsub_title := "<dt><b>" + token + "</b></dt>";
+  - subsub_title := "<dt><b><br>" + token + "</b></dt>";
   
-  - prototype_path := "<dd><code>" + token + "</code></dd><br>";
+  - prototype_path := "<dd><code>" + token + "</code></dd>";
   
   //
   // Recursive Option.

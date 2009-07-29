@@ -382,7 +382,7 @@ Section Public
     // Table.
     shorter_table list_tmp select { sl:ITM_SLOT; 
       sl.id_section.is_inherit_or_insert
-    } title "Inherit Summary" in buf;
+    } title "Inherit/Insert Summary" in buf;
     
     shorter_table list_tmp select { sl:ITM_SLOT; 
       sl.name.has_prefix "create"
@@ -395,7 +395,7 @@ Section Public
     // Detail.
     shorter_detail list_tmp select { sl:ITM_SLOT; 
       sl.id_section.is_inherit_or_insert
-    } title "Inherit Detail" in buf;    
+    } title "Inherit/Insert Detail" in buf;    
     
     shorter_detail list_tmp select { sl:ITM_SLOT; 
       sl.name.has_prefix "create"
@@ -441,12 +441,14 @@ Section PROTOTYPE
     
     s := first_slot;
     {s != NULL}.while_do {
-      i := lst.lower;
-      {(i <= lst.upper) && {lst.item i.name != s.name}}.while_do {
-        i := i + 1;
-      };
-      (i > lst.upper).if {
-        lst.add_last s;
+      (is_short_private || {! s.id_section.is_private}).if {
+        i := lst.lower;
+        {(i <= lst.upper) && {lst.item i.name != s.name}}.while_do {
+          i := i + 1;
+        };
+        (i > lst.upper).if {
+          lst.add_last s;
+        };
       };
       s := s.next;
     };
@@ -455,7 +457,10 @@ Section PROTOTYPE
     s := first_slot;
     {(s != NULL) && {s.id_section.is_inherit_or_insert}}.while_do {      
       ps ?= s.result_type;
-      ((ps != NULL) && {s.style = '+'} && {ps.style = ALIAS_STR.keyword_expanded}).if {
+      ((ps != NULL) && {
+          ({s.style = '+'} && {ps.style = ALIAS_STR.keyword_expanded}) ||
+          {s.name.has_prefix "inherit"} || {s.name.has_prefix "insert"}
+      }).if {
         p := NULL;
         i := prototype_list.lower;
         {(i <= prototype_list.upper) && {p = NULL}}.while_do {                              
@@ -491,11 +496,17 @@ Section PROTOTYPE
         put string_tmp2 to string_tmp like (ALIAS_STR.short_table_slot_name);
         (
           (s.id_section.is_inherit_or_insert) && 
-          {(s.style != '+') || {
-              + ts:ITM_TYPE_SIMPLE;
-              ts ?= s.result_type;
-              (ts = NULL) || {ts.style != ALIAS_STR.keyword_expanded}
-          }}
+          {
+            (
+              (s.style != '+') || {
+                + ts:ITM_TYPE_SIMPLE;
+                ts ?= s.result_type;
+                (ts = NULL) || {ts.style != ALIAS_STR.keyword_expanded}
+              }
+            ) && 
+            {! s.name.has_prefix "inherit"} && 
+            {! s.name.has_prefix "insert"}
+          }
         ).if {
           put " No developed." to string_tmp like (ALIAS_STR.short_warning);
         };
@@ -523,6 +534,7 @@ Section PROTOTYPE
           put t to buf like (ALIAS_STR.short_sub_title);
           is_first := FALSE;
         };
+        //
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
         put string_tmp2 to buf like (ALIAS_STR.short_slot_title);
@@ -530,15 +542,26 @@ Section PROTOTYPE
         string_tmp.append " line #";
         s.position.line.append_in string_tmp;
         put string_tmp to buf like (ALIAS_STR.short_prototype_path);
+        //
+        put "Section:" to buf like (ALIAS_STR.short_subsub_title);
+        string_tmp.clear;
+        s.id_section.append_in string_tmp;
+        put string_tmp to buf like (ALIAS_STR.short_keyword_section);
+        //
         put "Profile:" to buf like (ALIAS_STR.short_subsub_title);
         s.shorter_profile_in buf;
+        //
         put "Description:" to buf like (ALIAS_STR.short_subsub_title);
         string_tmp.clear;
-        get_all_comment_slot (s.name) in string_tmp;
+        get_all_comment_slot (s.name) in string_tmp;        
         put string_tmp to buf like (ALIAS_STR.short_comment_slot_line);
+        //
         put "Parameters:" to buf like (ALIAS_STR.short_subsub_title);
+        //
         put "Contracts:" to buf like (ALIAS_STR.short_subsub_title);
+        //
         put "See also:" to buf like (ALIAS_STR.short_subsub_title);        
+        //
       };      
     };
   );

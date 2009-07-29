@@ -106,11 +106,7 @@ Section Public
       put style to buf like (ALIAS_STR.short_keyword);
       buf.add_last ' ';
     };
-    (Self = type_self).if {
-      put name to buf like (ALIAS_STR.short_keyprototype);
-    } else {
-      put name to buf like (ALIAS_STR.short_prototype);
-    };    
+    put name to buf like (ALIAS_STR.short_prototype);
   );
   
   //
