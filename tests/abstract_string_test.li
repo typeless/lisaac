@@ -32,7 +32,7 @@ Section Public
   - run <-
   ( + name:ABSTRACT_STRING;
     + empty:ABSTRACT_STRING;
-    + values:ARRAY[STRING];
+    + values:ARRAY(STRING);
 
     name := "John Doe";
     empty := "";

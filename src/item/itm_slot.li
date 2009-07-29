@@ -34,6 +34,8 @@ Section Inherit
   
 Section Public
   
+  + pretty_name:STRING_CONSTANT;
+  
   + comment:STRING_CONSTANT;
   
   - set_comment str:STRING_CONSTANT <-
