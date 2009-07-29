@@ -171,6 +171,26 @@ Section Public
     {me.result_list = result_list}
   );
   
+  - is_sub_type_result other:TYPE_BLOCK :BOOLEAN <-
+  ( + result:BOOLEAN;
+    + j:INTEGER;
+    (result_list = other.result_list) ||
+    {
+      (result_list != NULL) && 
+      {other.result_list != NULL} && 
+      {result_list.count = other.result_list.count} && 
+      {
+        result := TRUE;
+        j := result_list.lower;
+        {(j <= result_list.upper) && {result}}.while_do {
+          result := result_list.item j.is_sub_type (other.result_list.item j);
+          j := j + 1;
+        };
+        result
+      }
+    }
+  );
+  
   //
   // Display.
   //

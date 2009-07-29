@@ -351,7 +351,21 @@ Section Public
   );
   */
   
-  - is_sub_type other:TYPE :BOOLEAN <- Self == other;
+  - is_sub_type other:TYPE :BOOLEAN <- 
+  ( + result:BOOLEAN;
+    + t:TYPE_BLOCK;
+        
+    result := Self == other;
+    (result).if_false {
+      t ?= other;
+      result := (
+        (t != NULL) && 
+        {t.argument_list = to_type_block.argument_list} &&
+        {to_type_block.is_sub_type_result t}
+      );
+    };
+    result
+  );
   
   //
   // Display.
