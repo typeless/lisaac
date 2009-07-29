@@ -1149,8 +1149,8 @@ Section Private
       short (ALIAS_STR.short_slot) token 
       (position-last_string.count) to position;
       
-      n := ALIAS_STR.new;
-      n.copy last_string;
+      n  := ALIAS_STR.new;            
+      n.copy last_string;      
       arg := read_loc_arg FALSE with_self FALSE;
       (arg != NULL).if {
 	list_arg.add_last arg;	
@@ -1160,8 +1160,7 @@ Section Private
 	  };	  
 	  {	    
 	    short (ALIAS_STR.short_slot) token 
-	    (position-last_string.count) to position;
-	    
+	    (position-last_string.count) to position;            
 	    n.append (ALIAS_STR.separate);
 	    n.append last_string;
 	    arg := read_loc_arg FALSE with_self FALSE;
@@ -1178,11 +1177,11 @@ Section Private
   );
   
   - read_slot_operator list_arg:FAST_ARRAY[ITM_ARGUMENT] :ITM_SLOT <-
-  ( + name:STRING_CONSTANT;    
+  ( + name,pretty_name:STRING_CONSTANT;    
     + associativity:STRING_CONSTANT;
     + priority:INTEGER;
     + arg:ITM_ARGUMENT;
-    + result:ITM_SLOT;
+    + result:ITM_SLOT_OPERATOR;
     
     (! read_operator).if {
       syntax_error (current_position,"Operator is needed.");
@@ -1192,8 +1191,8 @@ Section Private
       {last_string = ALIAS_STR.symbol_not_equal}
     ).if {
       syntax_error (current_position,"Incorrect operator.");
-    };
-    name := last_string;
+    };    
+    pretty_name := name := last_string;
     (! read_character '\'').if {
       warning_error (current_position,"Added `''.");
     };
@@ -1235,9 +1234,9 @@ Section Private
 	};
       };
     };    
-    result := ITM_SLOT.create current_position name name feature last_section;
+    result := ITM_SLOT_OPERATOR.create current_position name name feature last_section;
     result.set_associativity associativity priority priority;
-        
+    result.set_pretty_name pretty_name;    
     result
   );  // read_slot_operator
   

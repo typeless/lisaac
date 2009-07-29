@@ -33,9 +33,7 @@ Section Inherit
   + parent_named:Expanded NAMED;
   
 Section Public
-  
-  + pretty_name:STRING_CONSTANT;
-  
+      
   + comment:STRING_CONSTANT;
   
   - set_comment str:STRING_CONSTANT <-
@@ -153,31 +151,23 @@ Section Public
   //
   // Access associativity & priority level.
   //
-
-  + priority_and_level:INTEGER;
-
+  
+  - priority_and_level:INTEGER <-
+  ( 
+    crash_with_message "ITM_SLOT.priority_and_level.";
+    0
+  );
+  
   - associativity:STRING_CONSTANT <-
-  ( + result:STRING_CONSTANT;
-    (priority_and_level >= 0).if {
-      result := ALIAS_STR.keyword_left;
-    } else {
-      result := ALIAS_STR.keyword_right;
-    };
-    result
+  ( 
+    crash_with_message "ITM_SLOT.associativity.";
+    NULL
   );
   
   - priority:INTEGER <-
   (
-    priority_and_level.abs
-  );
-
-  - set_associativity p:STRING_CONSTANT priority l:INTEGER <-
-  (
-    (p = ALIAS_STR.keyword_left).if {
-      priority_and_level := l;
-    } else {
-      priority_and_level := -l;
-    };
+    crash_with_message "ITM_SLOT.priority.";
+    0
   );
 
   //
@@ -277,6 +267,22 @@ Section Public
     buffer.add_last ':';
     result_type.append_in buffer;    
   );    
+  
+  - pretty_name_in buffer:STRING <-
+  ( + j:INTEGER;
+    
+    j := name.lower;
+    {j < name.upper}.while_do {    
+      ((name.item j = '_') && {name.item (j+1) = '_'}).if {
+        buffer.add_last ' ';
+        j := j + 2;
+      } else {
+        buffer.add_last (name.item j);
+        j := j + 1;
+      };      
+    };
+    buffer.add_last (name.last);
+  );
   
 Section Private
   
