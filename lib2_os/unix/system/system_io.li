@@ -29,7 +29,9 @@ Section Header
   - external := `
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef __MINGW32__
 #include <sys/syscall.h>  
+#endif
 // Hardware 'print_char'
 void print_char(char car)
 {
