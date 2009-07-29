@@ -294,8 +294,7 @@ Section Public
     };    
     shorter_profile_intern_in buf;
     // Result.
-    (result_type != ITM_TYPE_SIMPLE.type_void).if {
-      buf.add_last ' ';      
+    (result_type != ITM_TYPE_SIMPLE.type_void).if {      
       buf.add_last ':';      
       result_type.shorter_in buf;
     };
@@ -330,6 +329,7 @@ Section ITM_SLOT
     (i <= argument_list.upper).if {
       buf.add_last ' ';
       argument_list.last.shorter_in buf;
+      buf.add_last ' ';
     };
   );
   

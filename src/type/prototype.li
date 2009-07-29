@@ -376,29 +376,32 @@ Section Public
   ( 
     put name to buf like (ALIAS_STR.short_title);
     
+    list_tmp.clear;
+    shorter_get_all_slot_in list_tmp;
+    
     // Table.
-    shorter_table { sl:ITM_SLOT; 
+    shorter_table list_tmp select { sl:ITM_SLOT; 
       sl.id_section.is_inherit_or_insert
     } title "Inherit Summary" in buf;
     
-    shorter_table { sl:ITM_SLOT; 
+    shorter_table list_tmp select { sl:ITM_SLOT; 
       sl.name.has_prefix "create"
     } title "Constructor Summary" in buf;    
     
-    shorter_table { sl:ITM_SLOT; 
+    shorter_table list_tmp select { sl:ITM_SLOT; 
       (! sl.name.has_prefix "create") && {!sl.id_section.is_inherit_or_insert}
     } title "Slot Summary" in buf;    
         
     // Detail.
-    shorter_detail { sl:ITM_SLOT; 
+    shorter_detail list_tmp select { sl:ITM_SLOT; 
       sl.id_section.is_inherit_or_insert
     } title "Inherit Detail" in buf;    
     
-    shorter_detail { sl:ITM_SLOT; 
+    shorter_detail list_tmp select { sl:ITM_SLOT; 
       sl.name.has_prefix "create"
     } title "Constructor Detail" in buf;    
     
-    shorter_detail { sl:ITM_SLOT; 
+    shorter_detail list_tmp select { sl:ITM_SLOT; 
       (! sl.name.has_prefix "create") && {!sl.id_section.is_inherit_or_insert}
     } title "Slot Detail" in buf;    
         
@@ -430,41 +433,91 @@ Section PROTOTYPE
     result     
   );
   
-  - shorter_table sel:BLOCK title t:STRING_CONSTANT in buf:STRING <-
-  ( + is_first:BOOLEAN;
-    + s:ITM_SLOT;
-  
-    is_first := TRUE;
+  - shorter_get_all_slot_in lst:FAST_ARRAY[ITM_SLOT] <-
+  ( + s:ITM_SLOT; 
+    + ps:ITM_TYPE_SIMPLE;
+    + p:PROTOTYPE;
+    + i:INTEGER;
+    
     s := first_slot;
     {s != NULL}.while_do {
+      i := lst.lower;
+      {(i <= lst.upper) && {lst.item i.name != s.name}}.while_do {
+        i := i + 1;
+      };
+      (i > lst.upper).if {
+        lst.add_last s;
+      };
+      s := s.next;
+    };
+    
+    // Parent.
+    s := first_slot;
+    {(s != NULL) && {s.id_section.is_inherit_or_insert}}.while_do {      
+      ps ?= s.result_type;
+      ((ps != NULL) && {s.style = '+'} && {ps.style = ALIAS_STR.keyword_expanded}).if {
+        p := NULL;
+        i := prototype_list.lower;
+        {(i <= prototype_list.upper) && {p = NULL}}.while_do {                              
+          (prototype_list.item i.name = ps.name).if {
+            p := prototype_list.item i;
+          };
+          i := i + 1;
+        };
+        (p != NULL).if {            
+          p.shorter_get_all_slot_in lst;
+        };
+      };      
+      s := s.next;
+    };    
+  );
+        
+  - shorter_table lst:FAST_ARRAY[ITM_SLOT] select sel:BLOCK 
+  title t:STRING_CONSTANT in buf:STRING <-
+  ( + is_first_cur:BOOLEAN;
+    + s:ITM_SLOT; 
+    
+    is_first_cur := TRUE;    
+    (lst.lower).to (lst.upper) do { i:INTEGER;
+      s := lst.item i;
       (sel.value s).if {
-        (is_first).if {
+        (is_first_cur).if {
           put t to buf like (ALIAS_STR.short_table_begin);
-          is_first := FALSE;
+          is_first_cur := FALSE;
         };
         string_tmp.clear;
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
         put string_tmp2 to string_tmp like (ALIAS_STR.short_table_slot_name);
-        string_tmp2.clear;
+        (
+          (s.id_section.is_inherit_or_insert) && 
+          {(s.style != '+') || {
+              + ts:ITM_TYPE_SIMPLE;
+              ts ?= s.result_type;
+              (ts = NULL) || {ts.style != ALIAS_STR.keyword_expanded}
+          }}
+        ).if {
+          put " No developed." to string_tmp like (ALIAS_STR.short_warning);
+        };
+        string_tmp2.clear;        
         get_all_comment_slot (s.name) in string_tmp2;
         put string_tmp2 to string_tmp like (ALIAS_STR.short_table_slot_comment);
         put string_tmp to buf like (ALIAS_STR.short_table_item);
-      };
-      s := s.next;
-    };
-    (is_first).if_false {
+      };     
+    };    
+    (is_first_cur).if_false {
       put NULL to buf like (ALIAS_STR.short_table_end);
-    };
+    };    
   );
   
-  - shorter_detail sel:BLOCK title t:STRING_CONSTANT in buf:STRING <-
+  - shorter_detail lst:FAST_ARRAY[ITM_SLOT] select sel:BLOCK 
+  title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first:BOOLEAN;
     + s:ITM_SLOT;
       
     is_first := TRUE;
-    s := first_slot;
-    {s != NULL}.while_do {
+    (lst.lower).to (lst.upper) do { i:INTEGER;
+      s := lst.item i;
       (sel.value s).if {
         (is_first).if {
           put t to buf like (ALIAS_STR.short_sub_title);
@@ -473,12 +526,20 @@ Section PROTOTYPE
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
         put string_tmp2 to buf like (ALIAS_STR.short_slot_title);
+        string_tmp.copy (s.position.prototype.filename);
+        string_tmp.append " line #";
+        s.position.line.append_in string_tmp;
+        put string_tmp to buf like (ALIAS_STR.short_prototype_path);
+        put "Profile:" to buf like (ALIAS_STR.short_subsub_title);
         s.shorter_profile_in buf;
+        put "Description:" to buf like (ALIAS_STR.short_subsub_title);
         string_tmp.clear;
         get_all_comment_slot (s.name) in string_tmp;
-        put string_tmp to buf like (ALIAS_STR.short_table_slot_comment);
-      };
-      s := s.next;
+        put string_tmp to buf like (ALIAS_STR.short_comment_slot_line);
+        put "Parameters:" to buf like (ALIAS_STR.short_subsub_title);
+        put "Contracts:" to buf like (ALIAS_STR.short_subsub_title);
+        put "See also:" to buf like (ALIAS_STR.short_subsub_title);        
+      };      
     };
   );
   
@@ -512,3 +573,5 @@ Section PROTOTYPE
       s := s.next;
     };
   );
+  
+  - list_tmp:FAST_ARRAY[ITM_SLOT] := FAST_ARRAY[ITM_SLOT].create_with_capacity 256;
