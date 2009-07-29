@@ -97,10 +97,29 @@ Section Public
       (typ_mul = NULL).if {
 	type_result.append_in buffer;
       } else {
-	typ_mul.display_row buffer;
+	typ_mul.display_raw buffer;
       };
     };
     buffer.add_last '}';
+  );
+  
+  - shorter_in buf:STRING <-
+  ( + typ_mul:ITM_TYPE_MULTI;
+    put "{" to buf like (ALIAS_STR.short_block);
+    (type_argument != NULL).if {
+      type_argument.shorter_in buf;
+      buf.add_last ';';
+      buf.add_last ' ';
+    };    
+    (type_result != NULL).if {
+      typ_mul ?= type_result;
+      (typ_mul = NULL).if {
+	type_result.shorter_in buf;
+      } else {
+	typ_mul.shorter_raw_in buf;
+      };
+    };
+    put "}" to buf like (ALIAS_STR.short_block);
   );
   
   //

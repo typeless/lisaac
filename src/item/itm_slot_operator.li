@@ -74,7 +74,7 @@ Section Public
   //
   // Display.
   //
-  
+    
   - pretty_name_in buffer:STRING <-
   ( 
     (name.has_prefix (ALIAS_STR.slot_postfix)).if {
@@ -86,4 +86,34 @@ Section Public
     };          
     buffer.append pretty_name;
     buffer.add_last '\'';
+  );
+  
+Section ITM_SLOT
+  
+  - shorter_profile_intern_in buf:STRING <-
+  ( 
+    (name.has_prefix (ALIAS_STR.slot_postfix)).if {
+      argument_list.first.shorter_in buf;
+      buf.add_last ' ';
+      buf.add_last '\'';
+      put pretty_name to buf like (ALIAS_STR.short_slot);
+      buf.add_last '\'';
+    }.elseif {name.has_prefix (ALIAS_STR.slot_infix)} then {
+      argument_list.first.shorter_in buf;
+      buf.add_last ' ';
+      buf.add_last '\'';
+      put pretty_name to buf like (ALIAS_STR.short_slot);
+      buf.add_last '\'';
+      (priority_and_level != 0).if {
+          
+      };
+      buf.add_last ' ';
+      argument_list.second.shorter_in buf;
+    } else {
+      buf.add_last '\'';
+      put pretty_name to buf like (ALIAS_STR.short_slot);
+      buf.add_last '\'';
+      buf.add_last ' ';
+      argument_list.first.shorter_in buf;
+    };    
   );

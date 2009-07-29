@@ -284,6 +284,55 @@ Section Public
     buffer.add_last (name.last);
   );
   
+  - shorter_profile_in buf:STRING <-
+  ( 
+    // style.
+    (style = '+').if {
+      put "+" to buf like (ALIAS_STR.short_slot_style);
+    } else {
+      put "-" to buf like (ALIAS_STR.short_slot_style);
+    };    
+    shorter_profile_intern_in buf;
+    // Result.
+    (result_type != ITM_TYPE_SIMPLE.type_void).if {
+      buf.add_last ' ';      
+      buf.add_last ':';      
+      result_type.shorter_in buf;
+    };
+  );
+  
+Section ITM_SLOT
+  
+  - shorter_profile_intern_in buf:STRING <-
+  ( + j,i:INTEGER;
+    // Name + arguments.
+    string_tmp.clear;
+    j := name.lower;
+    argument_list.first.shorter_in buf;
+    buf.add_last '.';
+    i := argument_list.lower+1;    
+    {j < name.upper}.while_do {    
+      ((name.item j = '_') && {name.item (j+1) = '_'}).if {
+        put string_tmp to buf like (ALIAS_STR.short_slot);
+        buf.add_last ' ';
+        argument_list.item i.shorter_in buf;
+        buf.add_last ' ';
+        string_tmp.clear;        
+        j := j + 2;
+        i := i + 1;
+      } else {
+        string_tmp.add_last (name.item j);
+        j := j + 1;
+      };      
+    };
+    string_tmp.add_last (name.last);
+    put string_tmp to buf like (ALIAS_STR.short_slot);
+    (i <= argument_list.upper).if {
+      buf.add_last ' ';
+      argument_list.last.shorter_in buf;
+    };
+  );
+  
 Section Private
   
   - default_value v:ITM_CODE in t:PROTOTYPE :ITM_CODE <-

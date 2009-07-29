@@ -100,6 +100,19 @@ Section Public
     buffer.append name;
   );
   
+  - shorter_in buf:STRING <-
+  (
+    (style != NULL).if {
+      put style to buf like (ALIAS_STR.short_keyword);
+      buf.add_last ' ';
+    };
+    (Self = type_self).if {
+      put name to buf like (ALIAS_STR.short_keyprototype);
+    } else {
+      put name to buf like (ALIAS_STR.short_prototype);
+    };    
+  );
+  
   //
   // Cast.
   //

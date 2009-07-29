@@ -391,6 +391,10 @@ Section Public
         
     // Detail.
     shorter_detail { sl:ITM_SLOT; 
+      sl.id_section.is_inherit_or_insert
+    } title "Inherit Detail" in buf;    
+    
+    shorter_detail { sl:ITM_SLOT; 
       sl.name.has_prefix "create"
     } title "Constructor Detail" in buf;    
     
@@ -469,6 +473,7 @@ Section PROTOTYPE
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
         put string_tmp2 to buf like (ALIAS_STR.short_slot_title);
+        s.shorter_profile_in buf;
         string_tmp.clear;
         get_all_comment_slot (s.name) in string_tmp;
         put string_tmp to buf like (ALIAS_STR.short_table_slot_comment);

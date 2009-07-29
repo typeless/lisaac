@@ -108,6 +108,18 @@ Section Public
     buffer.add_last ':';
     type.display buffer;    
   );
+
+  - shorter_in buf:STRING <-
+  (
+    (name = ALIAS_STR.variable_self).if {
+      put name to buf like (ALIAS_STR.short_keyword);
+    } else {
+      put name to buf like (ALIAS_STR.short_local);
+    };
+    buf.add_last ':';
+    type.shorter_in buf;    
+  );
+  
   
   //
   // Comparaison.
