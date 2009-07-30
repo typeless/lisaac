@@ -512,7 +512,9 @@ Section PROTOTYPE
         };
         string_tmp2.clear;        
         get_all_comment_slot (s.name) in string_tmp2;
-        put string_tmp2 to string_tmp like (ALIAS_STR.short_table_slot_comment);
+        string_tmp3.clear;
+        shorter_comment string_tmp2 in string_tmp3 light TRUE;        
+        put string_tmp3 to string_tmp like (ALIAS_STR.short_table_slot_comment);
         put string_tmp to buf like (ALIAS_STR.short_table_item);
       };     
     };    
@@ -550,18 +552,10 @@ Section PROTOTYPE
         //
         put "Profile:" to buf like (ALIAS_STR.short_subsub_title);
         s.shorter_profile_in buf;
-        //
-        put "Description:" to buf like (ALIAS_STR.short_subsub_title);
+        //                
         string_tmp.clear;
         get_all_comment_slot (s.name) in string_tmp;        
-        put string_tmp to buf like (ALIAS_STR.short_comment_slot_line);
-        //
-        put "Parameters:" to buf like (ALIAS_STR.short_subsub_title);
-        //
-        put "Contracts:" to buf like (ALIAS_STR.short_subsub_title);
-        //
-        put "See also:" to buf like (ALIAS_STR.short_subsub_title);        
-        //
+        shorter_comment string_tmp in buf light FALSE;        
       };      
     };
   );
@@ -598,3 +592,121 @@ Section PROTOTYPE
   );
   
   - list_tmp:FAST_ARRAY[ITM_SLOT] := FAST_ARRAY[ITM_SLOT].create_with_capacity 256;
+  
+  - str_tmp:STRING := STRING.create 512;
+  - str_tmp2:STRING := STRING.create 64;
+  - str_tmp3:STRING := STRING.create 64;
+  
+  - shorter_comment str:STRING in buf:STRING light is_light:BOOLEAN <-
+  ( + cur:INTEGER;
+    + stat,old_stat:INTEGER;
+    + car:CHARACTER;
+    + i:INTEGER;
+    + lst:LINKED_LIST[STRING_CONSTANT];
+    + code_balise:STRING_CONSTANT;
+    
+    cur := str.lower;
+    str_tmp.clear;
+    code_balise := ALIAS_STR.short_comment_slot_line;
+    {cur <= str.upper}.while_do {      
+      car := str.item cur;
+      (stat)
+      .when 0 then {        
+        // Begin.
+        (car = '*').if {
+          (str_tmp.count > 1).if {
+            (is_light).if {
+              buf.append str_tmp;
+              cur := str.upper + 1;
+            } else {              
+              put "Description:" to buf like (ALIAS_STR.short_subsub_title);
+              put str_tmp to buf like code_balise;
+            };
+          };
+          str_tmp.clear;
+          stat := 1;
+        }.elseif {car = '`'} then {
+          old_stat := stat;
+          stat := 2;          
+          str_tmp2.clear;
+        } else {
+          str_tmp.add_last car;
+        };
+      }
+      .when 1 then {
+        // Begin slot.
+        (car.to_lower.in_range 'a' to 'z').if {        
+          str_tmp.add_last (car.to_lower);
+        }.elseif {(car = ' ') && {!str_tmp.is_empty}} then {
+          str_tmp.add_last '_';          
+        }.elseif {car = ':'} then {
+          (str_tmp.count != 0).if {            
+            code_balise := ALIAS_STR.get str_tmp;
+            lst := PARSER.short_dico.fast_reference_at code_balise;
+            (lst = NULL).if {                          
+              code_balise := NULL;
+            } else {
+              str_tmp.replace_all '_' with ' ';
+              str_tmp.add_last ':';
+              str_tmp.put (str_tmp.first.to_upper) to 1;
+              put str_tmp to buf like (ALIAS_STR.short_subsub_title);
+            };
+          };
+          str_tmp.clear;
+          stat := 3;
+        };
+      }
+      .when 2 then {
+        // Begin ref.
+        (car = '\'').if {
+          (code_balise != NULL).if {
+            i := list_tmp.lower;
+            {
+              (i <= list_tmp.upper) && {
+                str_tmp3.clear;
+                list_tmp.item i.pretty_name_in str_tmp3;
+                ! (str_tmp3 == str_tmp2)
+              }
+            }.while_do {
+              i := i + 1;
+            };
+            (i <= list_tmp.upper).if {
+              put str_tmp2 to str_tmp like (ALIAS_STR.short_identifier_slot);
+            } else {
+              put str_tmp2 to str_tmp like (ALIAS_STR.short_identifier);
+            };
+          };          
+          stat := old_stat;
+        } else {
+          str_tmp2.add_last car;
+        };
+      }
+      .when 3 then {
+        // Read slot.
+        (car = '*').if {
+          (str_tmp.count > 1).if {            
+            put str_tmp to buf like code_balise;
+          };
+          str_tmp.clear;
+          stat := 1;
+        }.elseif {car = '`'} then {
+          old_stat := stat;
+          stat := 2;          
+          str_tmp2.clear;
+        } else {
+          str_tmp.add_last car;
+        };        
+      };
+      cur := cur + 1;
+    };
+    (str_tmp.count > 1).if {            
+      (is_light).if {
+        buf.append str_tmp;
+      } else {
+        (stat = 0).if {
+          put "Description:" to buf like (ALIAS_STR.short_subsub_title);
+        };
+        put str_tmp to buf like code_balise;
+      };
+    };
+  );

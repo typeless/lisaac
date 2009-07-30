@@ -32,7 +32,7 @@ Section Header
   
 Section Inherit
   
-  - parent_boolean:BOOLEAN := BOOLEAN;
+  - inherit_boolean:BOOLEAN := BOOLEAN;
   
 Section Public
   

@@ -325,6 +325,8 @@ Section Public
   
   - string_tmp2:STRING := STRING.create 256;
   
+  - string_tmp3:STRING := STRING.create 256;
+  
   //
   // Path directory and command front end.
   //

@@ -374,7 +374,23 @@ Section Public
   // `==' for comparison.
   // Answer `upper + 1' when `element' is not inside.
   //
-  // See also `fast_first_index_of', `index_of', `last_index_of', 
+  // * Parameter:
+  //    `element' : element to search.
+  // * Require: `element' not null.
+  // * Ensure: Very good fonction 
+  //
+  // * See: `fast_first_index_of', `index_of start', `last_index_of', 
+  // `reverse_index_of'.
+  // 
+  // * Description en Francais: Donne l'index de la premiere occurence de `element' 
+  // en utilisant `==' pour la comparaison.
+  // Renvoi `upper + 1' lorsque `element' est absent.
+  //
+  // * Parametre: 
+  //    `element' : L'element que l'on veut chercher.
+  // * Necessite: `element' pas null.
+  // * Garantie: c'est une bonne fonction :-)
+  // * Voir: `fast_first_index_of', `index_of', `last_index_of', 
   // `reverse_index_of'.
   ( 
     deferred;

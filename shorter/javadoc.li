@@ -66,8 +66,8 @@
   
   - table_item := "<tr class=\"TableRowColor\" bgcolor=\"white\"><td>" + token + "</td></tr>";
   
-  - table_slot_name := "<code><b><a href=\"#"+token+"\">" + token + "</a></b></code><br>";
-  - table_slot_comment := token;
+  - table_slot_name := "<code><dt><b><a href=\"#"+token+"\">" + token + "</a></b></code>";
+  - table_slot_comment := "<dd>" + token;
   
   - table_end := "</tbody></table>&nbsp;";
   
@@ -78,6 +78,20 @@
   - subsub_title := "<dt><b><br>" + token + "</b></dt>";
   
   - prototype_path := "<dd><code>" + token + "</code></dd>";
+
+  - identifier := "<em><b><font color=\"#000000\">" + token + "</font></em></b>";
+  
+  - identifier_slot := "<code><b><a href=\"#"+token+"\">" + token + "</a></b></code>";
+  
+  - parameter := "<dd>" + token + "</dd>";
+  - require := "<dd>" + token + "</dd>";
+  - ensure := "<dd>" + token + "</dd>";
+  - see := "<dd>" + token + "</dd>";
+  
+  - description_en_francais := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";
+  - necessite := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";
+  - garantie := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";
+  - voir := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";  
   
   //
   // Recursive Option.
