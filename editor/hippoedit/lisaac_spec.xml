@@ -4,7 +4,7 @@
   <FILEINFO author="Jeremy Cowgar" type="LangSpec"/>
   <SYNTAX id="eu" name="Lisaac" inherit="def_source" inherit_url="defsource_spec.xml">
     <SPECIFICATION>
-      <FilePattern mask="*.li"/>
+      <FilePattern mask="*.li;*.lip;"/>
       <CaseSensitive>true</CaseSensitive>
       <OpenClose>()[]{}''""</OpenClose>
       <EscapeChar>\</EscapeChar>
@@ -17,12 +17,13 @@
       <Bars navigation="true"/>
     </SPECIFICATION>
     <FORMAT>
-      <DefaultIndent>4</DefaultIndent>
+      <DefaultIndent>2</DefaultIndent>
     </FORMAT>
     <SCOPES>
     </SCOPES>
     <LABELS>
-      <Label group="Function" match="\s?(\-|\+)\s+(\w+)" name="\2" descr="\1 \2" scope="1" image="9"/>
+      <Label group="Function" match="^\t(\-|\+)\s+(\w+)[^\n]*<-" name="Slot \2" descr="\1 \2" scope="1" image="9"/>
+      <Label group="Variable" match="^\t(\-|\+)\s+(\w+)[ \t]*:" name="Var \2" descr="\1 \2" scope="1" image="8"/>
     </LABELS>
     <STYLES>
       <Style id="url" extend="true">
@@ -48,9 +49,53 @@
           <Block open="'" close="'"/>
         </Blocks>
       </Style>
+    <Style name="Sections" text="1" bold="0" italic="0" underline="0" clr="#CC00CC" bkclr="#FFFFFF">
+      <Keywords>
+        <Keyword text="Section" />
+        <Keyword text="Header" />
+        <Keyword text="Insert" />
+        <Keyword text="Inherit" />
+        <Keyword text="Public" />
+        <Keyword text="Private" />
+        <Keyword text="Mapping" />
+        <Keyword text="Interrput" />
+        <Keyword text="Right" />
+        <Keyword text="Left" />
+        <Keyword text="Self" />
+        <Keyword text="Old" />
+        <Keyword text="Expanded" />
+        <Keyword text="Strict" />
+    </Keywords>
+    </Style>
       <Style id="keywords" name="Keywords" image="13" bold="1" italic="0" underline="0" clr="#0000AA" bkclr="#FFFFFFFF">
         <Keywords>
+        <Keyword text="while" />
+        <Keyword text="while_do" />
+        <Keyword text="if" />
+        <Keyword text="else" />
+        <Keyword text="when" />
+        <Keyword text="elseif" />
+        <Keyword text="then" />
+        <Keyword text="self" />
+        <Keyword text="by" />
+        <Keyword text="to" />
+        <Keyword text="do" />
+        <Keyword text="or" />
+        <Keyword text="downto" />
+        <Keyword text="if" />
+        <Keyword text="if_true" />
+        <Keyword text="if_false" />
+        <Keyword text="shrink" />
         </Keywords>
+      </Style>
+      <Style id="script" name="C" include="cpp:normal" bold="0" italic="0" underline="0" clr="#66666600" bkclr="Embedded Language 2 Back" overview="1">
+        <Containers>
+          <Close id="cpp:normal"/>
+          <Close id="cpp:comment"/>
+        </Containers>
+        <Blocks>
+          <Block open="`" close="`" />
+        </Blocks>
       </Style>
       <Style name="TODOs" text="1" bold="1" italic="1" underline="0" clr="TODOs" bkclr="#FFFFFFFF">
         <Containers>
