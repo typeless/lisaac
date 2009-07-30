@@ -121,60 +121,60 @@ Section ENTRY
     {i > st.upper}.until_do {
       car := st.item i;
       (car = '/').if {
-	// Separator character.
-	stat.when 0 then {
-	  // foo/bar => foo/bar
-	  //    ^          ^
-	  stat := 1;
-	}.when 1 then {
-	  // foo//bar => /bar
-	  //     ^       ^
-	  st.remove_first (i-1);
-	  i := st.lower;
-	}.when 2 then {
-	  // foo/./bar => foo/bar
-	  //      ^          ^
-	  st.remove_between (i-1) to i;
-	  i := i - 2;
-	  stat := 1;
-	}.when 3 then {
-	  // toto/foo/../bar => toto/bar 
-	  //            ^           ^
-	  + idx:INTEGER;
-	  idx := st.last_index_of '/' since (i-4);
-	  // st.last_index_of '/' since (i-4);
-	  (idx = 0).if {
-	    st.remove_first (i-1);
-	    i := st.lower;
-	  } else {
-	    st.remove_between idx to (i-1);
-	    i := idx;
-	  };
-	  stat := 1;
-	};
+        // Separator character.
+        stat.when 0 then {
+          // foo/bar => foo/bar
+          //    ^          ^
+          stat := 1;
+        }.when 1 then {
+          // foo//bar => /bar
+          //     ^       ^
+          st.remove_first (i-1);
+          i := st.lower;
+        }.when 2 then {
+          // foo/./bar => foo/bar
+          //      ^          ^
+          st.remove_between (i-1) to i;
+          i := i - 2;
+          stat := 1;
+        }.when 3 then {
+          // toto/foo/../bar => toto/bar 
+          //            ^           ^
+          + idx:INTEGER;
+          idx := st.last_index_of '/' since (i-4);
+          // st.last_index_of '/' since (i-4);
+          (idx = 0).if {
+            st.remove_first (i-1);
+            i := st.lower;
+          } else {
+            st.remove_between idx to (i-1);
+            i := idx;
+          };
+          stat := 1;
+        };
       }.elseif {car = '.'} then {
-	// Point character.
-	(stat)
-	.when 0 then {
-	  // foo.bar => foo.bar
-	}.when 1 then {
-	  // foo/.bar => foo/.bar
-	  stat := 2;
-	}.when 2 then {
-	  // foo/..bar => foo/..bar
-	  stat := 3;
-	}.when 3 then {
-	  // foo/...bar => foo/...bar
-	  stat := 0;
-	};
+        // Point character.
+        (stat)
+        .when 0 then {
+          // foo.bar => foo.bar
+        }.when 1 then {
+          // foo/.bar => foo/.bar
+          stat := 2;
+        }.when 2 then {
+          // foo/..bar => foo/..bar
+          stat := 3;
+        }.when 3 then {
+          // foo/...bar => foo/...bar
+          stat := 0;
+        };
       }.elseif {(car = ':') && {i > 2} && 
-	{st.item (i-1).is_letter} && {st.item (i-2) = '/'}
+        {st.item (i-1).is_letter} && {st.item (i-2) = '/'}
       } then {
-	st.remove_first (i-2);
-	i := st.lower;	    
+        st.remove_first (i-2);
+        i := st.lower;            
       } else {
-	// Other character.
-	stat := 0;
+        // Other character.
+        stat := 0;
       };
       i := i + 1;
     };
@@ -196,9 +196,9 @@ Section ENTRY
       + idx:INTEGER;
       idx := st.last_index_of '/' since (i-4);
       (idx = 0).if {
-	st.clear;
+        st.clear;
       } else {
-	st.remove_between idx to (i-1);
+        st.remove_between idx to (i-1);
       };
     };
     
@@ -225,9 +225,8 @@ Section ENTRY
       tmp.copy "../";
     } else {
       tmp.keep_head (i-1);
-      (tmp.is_empty).if {	  
-	tmp.add_last '/';
+      (tmp.is_empty).if {          
+        tmp.add_last '/';
       };
     };
   );
-  
