@@ -356,7 +356,7 @@ Section Public
   - has x:V :BOOLEAN <-
   // Look for `x' using `equal' for comparison.
   // 
-  // See also `fast_has', `index_of', `fast_index_of'.
+  // See also `fast_has', `index_of start', `fast_index_of start'.
   (
     valid_index (first_index_of x)
   );
@@ -364,7 +364,7 @@ Section Public
   - fast_has x:V :BOOLEAN <-
   // Look for `x' using basic `=' for comparison.
   // 
-  // See also `has', `fast_index_of', `index_of'.
+  // See also `has', `fast_index_of start', `index_of start'.
   (
     valid_index (fast_first_index_of x)
   );

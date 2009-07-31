@@ -209,7 +209,10 @@ Section Public
   - short_warning     :STRING_CONSTANT := "warning";
   - short_identifier  :STRING_CONSTANT := "identifier";
   - short_identifier_slot:STRING_CONSTANT := "identifier_slot";
-
+  
+  - short_prototype_comment_light:STRING_CONSTANT := "prototype_comment_light";
+  - short_prototype_comment:STRING_CONSTANT := "prototype_comment";
+ 
   - short_title       :STRING_CONSTANT := "title";
   - short_table_begin :STRING_CONSTANT := "table_begin";
   - short_table_item  :STRING_CONSTANT := "table_item";
@@ -487,6 +490,9 @@ Section Public
     list.add short_warning;
     list.add short_identifier;
     list.add short_identifier_slot;
+    
+    list.add short_prototype_comment_light;
+    list.add short_prototype_comment;
     
     list.add short_title;
     list.add short_table_begin;

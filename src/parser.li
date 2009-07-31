@@ -38,9 +38,7 @@ Section Public
   //
   // Shorter Section.
   //
-  
-  - key_comment_default:STRING_CONSTANT;
-  
+    
   - is_active_short:BOOLEAN;
   
   - short_dico:HASHED_DICTIONARY[LINKED_LIST[STRING_CONSTANT],STRING_CONSTANT] :=
@@ -197,117 +195,63 @@ Section Private
   - last_string  : STRING_CONSTANT;
   - is_parameter_type:BOOLEAN;
   
-  - last_comment:STRING := STRING.create 256;
-  - is_catch_comment:BOOLEAN;
-  - catch_comment_on <-
-  (
-    is_catch_comment := TRUE;
-    last_comment.clear;
-  );
-  - catch_comment_off <-
-  (
-    is_catch_comment := FALSE;
-  );
-  
-  - read_comment:BOOLEAN <-
-  (
-    {(position > 2) && {source.item (position-1) <= ' '}}.while_do {
-      position := position - 1;
-    };
-  );
-  
+  - last_comment_extern:STRING_CONSTANT;
+  - last_comment_slot  :STRING_CONSTANT;
+  - skip_comment:BOOLEAN;
+      
   - read_space:BOOLEAN <-
-  ( + posold,pos,pos2:INTEGER;    
-    + key:STRING_CONSTANT;    
-    + short_line:INTEGER;
+  ( + posold,pos,pos2:INTEGER;     
     + level_comment:INTEGER;
+    + stat:INTEGER;
     
     pos := position;
     posold := -1;    
+    (is_shorter2).if {
+      string_tmp3.clear;
+      string_tmp4.clear;
+    };
     {posold = position}.until_do {
       posold := position;
-      
-      // BSBS: Bug que je n'ai pas trouvé !!!
-      (is_shorter).if {	
-	{(position > 2) && {source.item (position-1) <= ' '}}.while_do {
-	  position := position - 1;
-	};
-	short_line := 0;
-      };
+            
       // Skip spaces :            
       {(last_character = 0.to_character) || {last_character > ' '}}.until_do {
-	(is_shorter).if {
-	  (last_character = '\n').if {
-	    short_line := short_line + 1;	    
-	    (short_line = 2).if {
-              key_comment_default := ALIAS_STR.short_comment_line;
-              (is_shorter2).if {
-                catch_comment_off;
-              };
-	    };
-	  };
-	};
+        (is_shorter2).if {
+          (last_character = '\n').if {
+            (stat)
+            .when 0 then { stat := 1; }
+            .when 1 then { stat := 2; }
+            .when 2 then {            };      
+          };
+        };
 	position := position + 1;	
       };
       
       (position < source.upper).if {
 	// Skip C++ comment style :
-	((last_character = '/') & (source.item (position + 1) = '/')).if {	  
+	((last_character = '/') & (source.item (position + 1) = '/')).if {
 	  position := position + 2;
-          pos2 := position;
-	  (is_shorter).if {
-	    (is_active_short).if {
-	      short_remove (position-2) to (position-1);
-	      // '*' idf ':' string	      
-	      {last_character = ' '}.while_do { position := position + 1; };
-	      (last_character = '*').if {		
-		position := position + 1;
-		{last_character = ' '}.while_do { position := position + 1; };
-		(last_character.is_lower).if {		  
-		  string_tmp.clear;		
-		  {
-		    string_tmp.add_last last_character;
-		    position := position + 1;
-		  }.do_while {
-		    (last_character.is_lower) || 
-		    {last_character.is_digit} ||
-		    {last_character = '_'}
-		  };
-		  {last_character = ' '}.while_do { position := position + 1; };
-		  (last_character = ':').if {
-		    position := position + 1;
-		    key := ALIAS_STR.get string_tmp;		    
-		    short_remove (pos2+1) to position;
-		    pos2 := position;
-		  };
-		};
-	      };	 
-	    };
-          };
-          (is_catch_comment).if {
-            last_comment.add_last '\t';
-          };
+          pos2 := position;          
 	  { 
 	    (last_character = 0.to_character) || 
 	    {last_character = '\n'}
-          }.until_do {            
-            (is_catch_comment).if {                            
-              last_comment.add_last last_character;
+          }.until_do {                        
+            (is_shorter2).if {
+              (stat)
+              .when 0 or 1 then {                 
+                string_tmp3.add_last last_character;
+              }
+              .when 2 then {               
+                string_tmp4.add_last last_character;
+              };                               
             };
 	    position := position + 1;
           };
-          (is_catch_comment).if {
-            last_comment.add_last '\n';
+          (is_shorter2).if {
+            (stat)
+            .when 3 then { string_tmp3.add_last '\n'; }
+            .when 4 then { string_tmp4.add_last '\n'; };
           };
-          (key_comment_default = ALIAS_STR.short_comment_slot_line).if {
-            last_slot.set_comment (ALIAS_STR.get last_comment);
-          };
-          
-	  (key = NULL).if {
-	    short key_comment_default token pos2 to position;
-	  } else {
-	    short key token pos2 to position;
-	  };
+          position := position + 1;
 	};
       };
       (position < source.upper).if {
@@ -338,6 +282,16 @@ Section Private
 	  //position := position+2;
 	  short (ALIAS_STR.short_comment) token pos2 to position;
 	};
+      };
+    };
+    ((is_shorter2) && {! skip_comment}).if {      
+      (string_tmp3.is_empty).if {
+        last_comment_slot := NULL;
+      } else {
+        last_comment_slot := ALIAS_STR.get string_tmp3;
+      };
+      (string_tmp4.is_empty).if_false {
+        last_comment_extern := ALIAS_STR.get string_tmp4;
       };
     };
     // FALSE : Last character.
@@ -904,19 +858,13 @@ Section Private
     read_space;
     pos_sec := position;
     old_derive := short_derive;
-    
+    last_comment_extern := NULL;
     //
     // Read Section Header.
     //    
     (read_this_keyword (ALIAS_STR.keyword_section)).if_false {
       syntax_error (current_position,"`Section' is needed.");
     };
-    
-    key_comment_default := ALIAS_STR.short_comment_line;
-    (is_shorter2).if {
-      catch_comment_off;
-    };
-    
     (read_this_keyword (ALIAS_STR.section_header)).if_false {
       syntax_error (current_position,"Section `Header' is needed.");
     };    
@@ -926,10 +874,15 @@ Section Private
     {read_slot_header FALSE}.while_do {
     }; // loop
     
+    (is_shorter2).if {
+      object.set_comment_header last_comment_extern;
+    };
+        
     //
     // Read Section Other. 
     //
     {read_this_keyword (ALIAS_STR.keyword_section)}.while_do {
+      last_comment_extern := NULL;
       (read_keyword).if {
 	// Public, Private, ...
 	(ALIAS_STR.is_section last_string).if_false {
@@ -1006,12 +959,7 @@ Section Private
     (style != ' ').if {      
       //
       // Classic slot.
-      //
-      key_comment_default := ALIAS_STR.short_comment_slot_line;
-      (is_shorter2).if {
-        catch_comment_on;
-      };
-          
+      //                
       result := TRUE;
       //
       last_slot := read_type_slot;
@@ -1055,7 +1003,16 @@ Section Private
       last_slot.set_affect affect;
       
       (affect != ' ').if {
-	read_space;
+        read_space;
+        (is_shorter2).if {          
+          (last_comment_slot != NULL).if {
+            last_slot.set_comment last_comment_slot;
+          };
+          (last_comment_extern != NULL).if {
+            last_slot.set_comment_chapter last_comment_extern;
+          };
+          skip_comment := TRUE;
+        };               
 	old_pos    := position;
 	old_derive := short_derive;
 	read_def_slot;
@@ -1063,6 +1020,13 @@ Section Private
 
       (read_character ';').if_false {
 	warning_error (current_position,"Added ';'.");
+      };
+      (is_shorter2).if {
+        skip_comment := FALSE;
+        read_space;
+        ((last_slot.comment = NULL) && {last_comment_slot != NULL}).if {
+          last_slot.set_comment last_comment_slot;
+        };
       };
 	
       (is_shorter).if {
@@ -2602,7 +2566,10 @@ Section Private
 	};	
 	(read_string).if_false {
 	  syntax_error (current_position,"Incorrect string.");
-	};	
+        };	
+        (is_shorter2).if {
+          object.set_comment_slot last_string;
+        };
       } else {
 	warning_error (current_position,"Incorrect slot.");
       };
@@ -2719,8 +2686,7 @@ Section Private
       (read_identifier).if_false {
         syntax_error (current_position,"Identifier is incorrect.");
       };
-      pos := current_position;
-      catch_comment_on; 
+      pos := current_position;      
       n := last_string;
       (read_identifier).if {
         na := last_string;
@@ -2740,7 +2706,6 @@ Section Private
       (read_character '(').if_false {
         warning_error (current_position,"Added '(' is needed.");
       };      
-      catch_comment_off;
       cod := ALIAS_ARRAY[LIP_CODE].new;
       {(instr := readlip_expr) != NULL}.while_do {
         cod.add_last instr;
@@ -2755,10 +2720,10 @@ Section Private
       slot_code := LIP_SLOT_CODE.create pos section sec 
       name n argument data code cod;
       (sec = ALIAS_STR.section_public).if {
-        (last_comment.is_empty).if {
+        (last_comment_slot.is_empty).if {
           warning_error (pos,"Comment needed.");
         } else {
-          slot_code.set_comment (ALIAS_STR.get last_comment);
+          slot_code.set_comment (ALIAS_STR.get last_comment_slot);
         };
       };            
     };
@@ -3136,11 +3101,9 @@ Section Public
     pos_cur  := source.lower;
     pos_line := 1;
     pos_col  := 0;
-    catch_comment_off;
     
     (is_shorter).if {
-      is_active_short := TRUE;      
-      key_comment_default := ALIAS_STR.short_comment_header_line;
+      is_active_short := TRUE;            
       short_derive := 0;
       output_code.copy source;
       short_local := HASHED_SET[STRING_CONSTANT].create;

@@ -33,12 +33,30 @@ Section Inherit
   + parent_named:Expanded NAMED;
   
 Section Public
-      
+  
+  //
+  // Shorter information.
+  //
+  
   + comment:STRING_CONSTANT;
   
   - set_comment str:STRING_CONSTANT <-
   (
     comment := str;
+  );
+  
+  + comment_chapter:STRING_CONSTANT;
+  
+  - set_comment_chapter c:STRING_CONSTANT <-
+  (
+    comment_chapter := c;
+  );
+  
+  + stat_shorter:INTEGER_8;
+  
+  - set_stat_shorter s:INTEGER_8 <-
+  (
+    stat_shorter := s;
   );
   
   //

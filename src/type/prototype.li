@@ -372,9 +372,30 @@ Section Public
   // Shorter.
   //
   
+  + comment_slot:STRING_CONSTANT;
+  + comment_header:STRING_CONSTANT;
+  
+  - set_comment_slot t:STRING_CONSTANT <-
+  (
+    comment_slot := t;
+  );
+
+  - set_comment_header t:STRING_CONSTANT <-
+  (
+    comment_header := t;
+  );
+  
   - shorter_out buf:STRING <-
-  ( 
+  ( + title:STRING_CONSTANT;
+    + s:ITM_SLOT;
     put name to buf like (ALIAS_STR.short_title);
+    
+    (comment_slot != NULL).if {
+      put comment_slot to buf like (ALIAS_STR.short_prototype_comment_light);
+    };
+    (comment_header != NULL).if {
+      put comment_header to buf like (ALIAS_STR.short_prototype_comment);
+    };
     
     list_tmp.clear;
     shorter_get_all_slot_in list_tmp;
@@ -388,9 +409,15 @@ Section Public
       sl.name.has_prefix "create"
     } title "Constructor Summary" in buf;    
     
-    shorter_table list_tmp select { sl:ITM_SLOT; 
-      (! sl.name.has_prefix "create") && {!sl.id_section.is_inherit_or_insert}
-    } title "Slot Summary" in buf;    
+    (list_tmp.lower).to (list_tmp.upper) do { j:INTEGER;
+      s := list_tmp.item j;
+      (s.stat_shorter = 0).if {
+        title := s.comment_chapter;        
+        shorter_table list_tmp select { sl:ITM_SLOT; 
+          sl.comment_chapter = title
+        } title title in buf;    
+      };
+    };
         
     // Detail.
     shorter_detail list_tmp select { sl:ITM_SLOT; 
@@ -400,11 +427,20 @@ Section Public
     shorter_detail list_tmp select { sl:ITM_SLOT; 
       sl.name.has_prefix "create"
     } title "Constructor Detail" in buf;    
-    
-    shorter_detail list_tmp select { sl:ITM_SLOT; 
-      (! sl.name.has_prefix "create") && {!sl.id_section.is_inherit_or_insert}
-    } title "Slot Detail" in buf;    
         
+    (list_tmp.lower).to (list_tmp.upper) do { j:INTEGER;
+      s := list_tmp.item j;
+      (s.stat_shorter = 1).if {
+        title := s.comment_chapter;        
+        shorter_detail list_tmp select { sl:ITM_SLOT; 
+          sl.comment_chapter = title
+        } title title in buf;    
+      };
+    };
+    
+    (list_tmp.lower).to (list_tmp.upper) do { j:INTEGER;
+      list_tmp.item j.set_stat_shorter 0;
+    };
   );
   
 Section PROTOTYPE
@@ -463,7 +499,7 @@ Section PROTOTYPE
       }).if {
         p := NULL;
         i := prototype_list.lower;
-        {(i <= prototype_list.upper) && {p = NULL}}.while_do {                              
+        {(i <= prototype_list.upper) && {p = NULL}}.while_do {
           (prototype_list.item i.name = ps.name).if {
             p := prototype_list.item i;
           };
@@ -485,11 +521,16 @@ Section PROTOTYPE
     is_first_cur := TRUE;    
     (lst.lower).to (lst.upper) do { i:INTEGER;
       s := lst.item i;
-      (sel.value s).if {
+      ((sel.value s) && {s.stat_shorter = 0}).if {
         (is_first_cur).if {
-          put t to buf like (ALIAS_STR.short_table_begin);
+          (t = NULL).if {
+            put "Slot Summary" to buf like (ALIAS_STR.short_table_begin);
+          } else {
+            put t to buf like (ALIAS_STR.short_table_begin);
+          };
           is_first_cur := FALSE;
         };
+        s.set_stat_shorter 1;
         string_tmp.clear;
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
@@ -531,11 +572,16 @@ Section PROTOTYPE
     is_first := TRUE;
     (lst.lower).to (lst.upper) do { i:INTEGER;
       s := lst.item i;
-      (sel.value s).if {
+      ((sel.value s) && {s.stat_shorter = 1}).if {
         (is_first).if {
-          put t to buf like (ALIAS_STR.short_sub_title);
+          (t = NULL).if {
+            put "Detail slot" to buf like (ALIAS_STR.short_sub_title);
+          } else {
+            put t to buf like (ALIAS_STR.short_sub_title);
+          };
           is_first := FALSE;
         };
+        s.set_stat_shorter 2;
         //
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
@@ -543,7 +589,7 @@ Section PROTOTYPE
         string_tmp.copy (s.position.prototype.filename);
         string_tmp.append " line #";
         s.position.line.append_in string_tmp;
-        put string_tmp to buf like (ALIAS_STR.short_prototype_path);
+        put string_tmp to buf like (ALIAS_STR.short_prototype_path);                
         //
         put "Section:" to buf like (ALIAS_STR.short_subsub_title);
         string_tmp.clear;

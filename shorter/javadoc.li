@@ -71,7 +71,7 @@
   
   - table_end := "</tbody></table>&nbsp;";
   
-  - sub_title := "</p><table summary=\"\" width=\"100%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\"><tbody><tr class=\"TableHeadingColor\" bgcolor=\"#ccccff\"><td colspan=\"1\"><font size=\"+2\"><b>" + token + "</b></font></td></tr></tbody></table>"; 
+  - sub_title := "</dl></p><table summary=\"\" width=\"100%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\"><tbody><tr class=\"TableHeadingColor\" bgcolor=\"#ccccff\"><td colspan=\"1\"><font size=\"+2\"><b>" + token + "</b></font></td></tr></tbody></table>"; 
   
   - slot_title := "</dl><a name=\"" + token + "\"><!-- --></a><hr><h3>" + token + "</h3><dl>";
   
@@ -92,6 +92,10 @@
   - necessite := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";
   - garantie := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";
   - voir := "<dd><em><strong><font color=\"#707070\">" + token + "</font></strong></em></dd>";  
+  
+  - prototype_comment_light := "<strong>" + token + "</strong><hr>";
+  - prototype_comment       := "<em>" + token + "</em>";
+  
   
   //
   // Recursive Option.
