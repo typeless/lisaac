@@ -36,7 +36,7 @@ Section Public
   // Under Windows, this function also look in the system registery.
   (
     + result:STRING;
-    + p:NATIVE_ARRAY[CHARACTER];
+    + p:NATIVE_ARRAY(CHARACTER);
     ? { variable != NULL };
     
     p := basic_getenv(variable.to_external);
@@ -72,18 +72,18 @@ Section Public
   
 Section Private
 
-  - basic_getenv environment_variable:NATIVE_ARRAY[CHARACTER] :NATIVE_ARRAY[CHARACTER] <-
+  - basic_getenv environment_variable:NATIVE_ARRAY(CHARACTER) :NATIVE_ARRAY(CHARACTER) <-
   // To implement `get_environment_variable'.
   (
-    `getenv((char*)@environment_variable)`:NATIVE_ARRAY[CHARACTER]
+    `getenv((char*)@environment_variable)`:NATIVE_ARRAY(CHARACTER)
   );
   
   - basic_putenv (variable,value:ABSTRACT_STRING) <-
   // To implement `set_environment_variable'.
   (
-    + v:NATIVE_ARRAY[CHARACTER];
+    + v:NATIVE_ARRAY(CHARACTER);
     
-    v := NATIVE_ARRAY[CHARACTER].calloc (variable.count + value.count + 2);
+    v := NATIVE_ARRAY(CHARACTER).calloc (variable.count + value.count + 2);
     v.copy_from (variable.to_external) until (variable.upper);
     v.put '=' to (variable.count);
     v.copy (value.to_external) to (variable.count + 1) until (value.capacity);
@@ -91,7 +91,7 @@ Section Private
     `putenv((char*)@v)`;
   );
   
-  - basic_system_execute_command system_command_line:NATIVE_ARRAY[CHARACTER] :INTEGER <-
+  - basic_system_execute_command system_command_line:NATIVE_ARRAY(CHARACTER) :INTEGER <-
   (
     `system(((char*)(@system_command_line)))`:(INTEGER)
   );

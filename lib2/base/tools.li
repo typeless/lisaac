@@ -22,10 +22,11 @@ Section Header
   
   + name    := TOOLS;
 
-
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
     
   - comment := "Miscellaneous Tools";
+
+  - external := `#include <time.h>`;
   
 Section Public
   
@@ -45,4 +46,12 @@ Section Public
       i := i + 1;
     };
     uni.put 0 to i;    
+  );
+
+  - bench b:{} :REAL_32 <-
+  ( + ts:REAL_32;
+
+    ts := `clock()`:REAL_32;
+    b.value;
+    ((`clock()`:REAL_32 - ts) / `CLOCKS_PER_SEC`:REAL_32)
   );
