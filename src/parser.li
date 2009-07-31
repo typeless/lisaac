@@ -214,8 +214,8 @@ Section Private
       posold := position;
             
       // Skip spaces :            
-      {(last_character = 0.to_character) || {last_character > ' '}}.until_do {
-        (is_shorter2).if {
+      {(last_character = 0.to_character) || {last_character > ' '}}.until_do {        
+        ((is_shorter2) || {is_shorter}).if {
           (last_character = '\n').if {
             (stat)
             .when 0 then { stat := 1; }
@@ -228,7 +228,7 @@ Section Private
       
       (position < source.upper).if {
 	// Skip C++ comment style :
-	((last_character = '/') & (source.item (position + 1) = '/')).if {
+	((last_character = '/') && {source.item (position + 1) = '/'}).if {
 	  position := position + 2;
           pos2 := position;          
 	  { 
@@ -250,6 +250,15 @@ Section Private
             (stat)
             .when 0 or 1 then { string_tmp3.add_last '\n'; }
             .when 2      then { string_tmp4.add_last '\n'; };
+          };
+          (is_shorter).if {
+            (stat)
+            .when 0 or 1 then {
+              short (ALIAS_STR.short_comment_slot_line) token pos2 to position;
+            }
+            .when 2 then {
+              short (ALIAS_STR.short_comment_line) token pos2 to position;
+            };
           };
           position := position + 1;
 	};

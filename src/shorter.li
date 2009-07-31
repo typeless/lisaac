@@ -88,21 +88,21 @@ Section Private
   \  shorter <input_file[.li]> [Options]                       \n\
   \                                                            \n\
   \Options:                                                    \n\
-  \  -o <output>      : output file or directory               \n\
+  \  -o <output>      : output file or directory    <DEPRECATED> \n\
   \                     (default: <input_file.ext>)            \n\
   \  -p               : include `Section Private'              \n\
-  \  -c               : include code source                    \n\
-  \  -r               : recursive builder documentation        \n\
+  \  -c               : include code source         <DEPRECATED> \n\
+  \  -r               : recursive builder documentation <DEPRECATED> \n\
   \  -f <format_file> : formatting description file            \n\
   \                     (see `/lisaac/shorter/')               \n\
   \  -d               : Lisaac doc style (no -c, -r)           \n\
   \                                                            \n\
   \Examples:                                                   \n\
   \  * Output format file:                                     \n\
-  \    shorter -c -p -f latex hello_world.li                   \n\ 
+  \    shorter -c -p -f latex hello_world.li  <DEPRECATED>     \n\ 
   \                                                            \n\
   \  * Build html documentation:                               \n\
-  \    shorter -r -f html ~/lisaac/lib                         \n\
+  \    shorter -r -f html ~/lisaac/lib        <DEPRECATED>     \n\
   \                                                            \n\
   \  * Build html documentation style JavaDoc:                 \n\
   \    shorter -d -f javadoc ~/lisaac/lib                         \n\
