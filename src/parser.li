@@ -248,8 +248,8 @@ Section Private
           };
           (is_shorter2).if {
             (stat)
-            .when 3 then { string_tmp3.add_last '\n'; }
-            .when 4 then { string_tmp4.add_last '\n'; };
+            .when 0 or 1 then { string_tmp3.add_last '\n'; }
+            .when 2      then { string_tmp4.add_last '\n'; };
           };
           position := position + 1;
 	};
@@ -2702,10 +2702,12 @@ Section Private
       // 
       (read_symbol (ALIAS_STR.symbol_affect_code)).if_false {
         warning_error (current_position,"Added '<-' is needed.");
-      };      
+      };            
+      is_shorter2 := TRUE;
       (read_character '(').if_false {
         warning_error (current_position,"Added '(' is needed.");
       };      
+      is_shorter2 := FALSE;
       cod := ALIAS_ARRAY[LIP_CODE].new;
       {(instr := readlip_expr) != NULL}.while_do {
         cod.add_last instr;
@@ -2720,7 +2722,7 @@ Section Private
       slot_code := LIP_SLOT_CODE.create pos section sec 
       name n argument data code cod;
       (sec = ALIAS_STR.section_public).if {
-        (last_comment_slot.is_empty).if {
+        (last_comment_slot = NULL).if {
           warning_error (pos,"Comment needed.");
         } else {
           slot_code.set_comment (ALIAS_STR.get last_comment_slot);

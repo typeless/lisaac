@@ -203,9 +203,9 @@ Section Public
   
   //
   // Debug information.
-  //
+  // 
     
-  - no_debug <-
+  - no_debug <-  
   // No debug information.
   (
     debug_level := 0;

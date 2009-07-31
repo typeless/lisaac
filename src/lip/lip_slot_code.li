@@ -43,10 +43,19 @@ Section Public
   
   + comment:STRING_CONSTANT;
   
+  // + comment_chapter:STRING_CONSTANT;
+  
   - set_comment c:STRING_CONSTANT <-
   (
     comment := c;
   );
+  
+  /*
+  - set_comment_chapter c:STRING_CONSTANT <-
+  (
+    comment_chapter := c;
+  );
+  */
   
   //
   // Creation.
@@ -124,8 +133,14 @@ Section Public
       ">".print;
     };
     " :\n".print;
-    (comment != NULL).if {
-      comment.print;
+    (comment != NULL).if {      
+      '\t'.print;
+      (comment.lower).to (comment.upper) do { i:INTEGER;
+        comment.item i.print;
+        ((comment.item i = '\n') && {i < comment.upper}).if {
+          '\t'.print;
+        };
+      };
     } else {
       "\t Sorry, no comment (see `make.lip').\n".print;
     };
