@@ -29,15 +29,7 @@ Section Header
   - author      := "Matthieu Brehier, Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Shorter source code.";
   
-  - external := 
-`
-#include "path.h"
-struct BLOCK_struct {
-  int __id;
-  void *self;
-};
-#define BLOCK_struct BLOCK_struct_bug
-`;
+  - external := `#include "path.h"`;
   
 Section Inherit
   
@@ -105,7 +97,7 @@ Section Private
   \    shorter -r -f html ~/lisaac/lib                         \n\
   \                                                            \n\
   \  * Build html documentation style JavaDoc:                 \n\
-  \    shorter -d -f javadoc ~/lisaac/lib                         \n\
+  \    shorter -d -f belinda ~/lisaac/lib                      \n\
   \                                                            \n\
   \Bug report:                                                 \n\
   \            post in : https://gna.org/bugs/?group=isaac     \n\
@@ -237,15 +229,19 @@ Section Private
   ( + file:STD_FILE;
     + entry:ENTRY;
     
-    (output_name != NULL).if {
-      string_tmp.copy output_name;
-      ((string_tmp.last != '/') || {string_tmp.last != '\\'}).if {
-	string_tmp.add_last '/';
+    (is_short_recursive).if {
+      (output_name != NULL).if {
+        string_tmp.copy output_name;
+        ((string_tmp.last != '/') || {string_tmp.last != '\\'}).if {
+          string_tmp.add_last '/';
+        };
+      } else {
+        string_tmp.clear;
       };
+      string_tmp.append n;
     } else {
-      string_tmp.clear;
+      string_tmp.copy output_name;
     };
-    string_tmp.append n;
     entry := FILE_SYSTEM.make_file string_tmp;
     (entry = NULL).if {
       STD_ERROR.put_string "Error: File ";
@@ -451,8 +447,7 @@ Section Public
             
       (output_name = NULL).if {
 	output_name := add_ext (proto_input.name);
-      };
-      
+      };    
       save_file output_name with output_code;	
     };
     (is_shorter2).if {

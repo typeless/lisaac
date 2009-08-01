@@ -252,8 +252,11 @@ Section Private
             .when 2      then { string_tmp4.add_last '\n'; };
           };
           (is_shorter).if {
-            output_code.remove_between (pos2-2+short_derive) to (pos2-1+short_derive);
-            short_derive := short_derive - 2;
+            // BSBS: A revoir ...            
+            ((pos2-2+short_derive).in_range (output_code.lower) to (output_code.upper)).if {
+              output_code.remove_between (pos2-2+short_derive) to (pos2-1+short_derive);
+              short_derive := short_derive - 2;
+            };
             // Bug ?
             ( + nb,p:INTEGER;
               p := pos2 - 3;
