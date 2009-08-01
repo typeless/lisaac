@@ -2137,7 +2137,7 @@ __STRING_CONSTANT __string_153={__STRING_CONSTANT__,18,"directory_list_end"};
 __STRING_CONSTANT __string_154={__STRING_CONSTANT__,15,"file_list_begin"};
 __STRING_CONSTANT __string_155={__STRING_CONSTANT__,14,"file_list_item"};
 __STRING_CONSTANT __string_156={__STRING_CONSTANT__,13,"file_list_end"};
-__STRING_CONSTANT __string_157={__STRING_CONSTANT__,1989,"------------------\
+__STRING_CONSTANT __string_157={__STRING_CONSTANT__,1979,"------------------\
 ----------------------------------------------\n--                   Lisaac \
 source Shorter                    --\n--            LORIA - LSIIT - ULP - CN\
 RS - FRANCE             --\n--         Benoit SONNTAG - sonntag@icps.u-stras\
@@ -2146,25 +2146,25 @@ bg.fr         --\n--                   http://www.IsaacOS.com               \
 age:                                                      \n  shorter <input\
 _file[.li]> [Options]                       \n                              \
                               \nOptions:                                    \
-                \n  -o <output>      : output file or directory    <DEPRECAT\
-ED> \n                     (default: <input_file.ext>)            \n  -p    \
-           : include `Section Private'              \n  -c               : i\
-nclude code source         <DEPRECATED> \n  -r               : recursive bui\
-lder documentation <DEPRECATED> \n  -f <format_file> : formatting descriptio\
-n file            \n                     (see `/lisaac/shorter/')           \
-    \n  -d               : Lisaac doc style (no -c, -r)           \n        \
-                                                    \nExamples:             \
-                                      \n  * Output format file:             \
-                        \n    shorter -c -p -f latex hello_world.li  <DEPREC\
-ATED>     \n                                                            \n  \
-* Build html documentation:                               \n    shorter -r -\
-f html ~/lisaac/lib        <DEPRECATED>     \n                              \
-                              \n  * Build html documentation style JavaDoc: \
-                \n    shorter -d -f javadoc ~/lisaac/lib                    \
-     \n                                                            \nBug rep\
-ort:                                                 \n            post in :\
- https://gna.org/bugs/?group=isaac     \n            mail to : sonntag@icps.\
-u-strasbg.fr             \n"};
+                \n  -o <output>      : output file or directory             \
+  \n                     (default: <input_file.ext>)            \n  -p      \
+         : include `Section Private'              \n  -c               : inc\
+lude code source                    \n  -r               : recursive builder\
+ documentation        \n  -f <format_file> : formatting description file    \
+        \n                     (see `/lisaac/shorter/')               \n  -d\
+               : Lisaac doc style (no -c, -r)           \n                  \
+                                          \nExamples:                       \
+                            \n  * Output format file:                       \
+              \n    shorter -c -p -f latex hello_world.li                   \
+\n                                                            \n  * Build ht\
+ml documentation:                               \n    shorter -r -f html ~/l\
+isaac/lib                         \n                                        \
+                    \n  * Build html documentation style JavaDoc:           \
+      \n    shorter -d -f javadoc ~/lisaac/lib                         \n   \
+                                                         \nBug report:      \
+                                           \n            post in : https://g\
+na.org/bugs/?group=isaac     \n            mail to : sonntag@icps.u-strasbg.\
+fr             \n"};
 __STRING_CONSTANT __string_158={__STRING_CONSTANT__,8,"shorter/"};
 __STRING_CONSTANT __string_159={__STRING_CONSTANT__,3,".li"};
 __STRING_CONSTANT __string_160={__STRING_CONSTANT__,20,"Error: File format `"};

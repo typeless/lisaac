@@ -650,7 +650,7 @@ Section PROTOTYPE
     + i:INTEGER;
     + lst:LINKED_LIST[STRING_CONSTANT];
     + code_balise:STRING_CONSTANT;
-    
+        
     cur := str.lower;
     str_tmp.clear;
     code_balise := ALIAS_STR.short_comment_slot_line;
@@ -659,7 +659,7 @@ Section PROTOTYPE
       (stat)
       .when 0 then {        
         // Begin.
-        (car = '*').if {
+        (car = '*').if {          
           (str_tmp.count > 1).if {
             (is_light).if {
               buf.append str_tmp;
@@ -687,7 +687,7 @@ Section PROTOTYPE
           str_tmp.add_last '_';          
         }.elseif {car = ':'} then {
           (str_tmp.count != 0).if {            
-            code_balise := ALIAS_STR.get str_tmp;
+            code_balise := ALIAS_STR.get str_tmp;                     
             lst := PARSER.short_dico.fast_reference_at code_balise;
             (lst = NULL).if {                          
               code_balise := NULL;
@@ -734,7 +734,7 @@ Section PROTOTYPE
             put str_tmp to buf like code_balise;
           };
           str_tmp.clear;
-          stat := 1;
+          stat := 1;          
         }.elseif {car = '`'} then {
           old_stat := stat;
           stat := 2;          
