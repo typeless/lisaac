@@ -252,6 +252,21 @@ Section Private
             .when 2      then { string_tmp4.add_last '\n'; };
           };
           (is_shorter).if {
+            output_code.remove_between (pos2-2+short_derive) to (pos2-1+short_derive);
+            short_derive := short_derive - 2;
+            // Bug ?
+            ( + nb,p:INTEGER;
+              p := pos2 - 3;
+              {(p >= source.lower) && {source.item p <= ' '}}.while_do {
+                (source.item p = '\n').if {
+                  nb := nb + 1;
+                };
+                p := p - 1;
+              };
+              (nb > 1).if {
+                stat := 2;
+              };
+            );
             (stat)
             .when 0 or 1 then {
               short (ALIAS_STR.short_comment_slot_line) token pos2 to position;
@@ -864,13 +879,21 @@ Section Private
     
     result := TRUE;
     
+    pos_sec := position;
+    old_derive := short_derive;
+    
     read_space;
+    
+    (is_shorter).if {
+      output_code.remove_between (source.lower+old_derive) to (position-1+short_derive);
+      short_derive := short_derive - ((position+short_derive) - (source.lower+old_derive));
+    };    
     pos_sec := position;
     old_derive := short_derive;
     last_comment_extern := NULL;
     //
     // Read Section Header.
-    //    
+    //            
     (read_this_keyword (ALIAS_STR.keyword_section)).if_false {
       syntax_error (current_position,"`Section' is needed.");
     };

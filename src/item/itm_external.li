@@ -65,8 +65,8 @@ Section Public
         
     extern.is_integer.if {
       num := extern.to_integer;
-      (num > 15).if {
-	syntax_error (position,"Unknown external lisaac code (0..15).");
+      (num > 31).if {
+	syntax_error (position,"Unknown external lisaac code (0..31).");
       };
       num
       .when 0 then { // is_expanded_type:BOOLEAN
@@ -150,7 +150,16 @@ Section Public
         } else {
           result := PROTOTYPE_CST.create position type (type_false.default);	
         };
-      };            
+      }     
+      .when 16 then { // LIST.upper:INTEGER
+        not_yet_implemented;
+      }
+      .when 17 then { // LIST.item index:INTEGER :E
+        not_yet_implemented;
+      }
+      .when 18 to 31 then { // FREE
+        syntax_error (position,"Free external lisaac code.");
+      };
     } else {
       lst_acc := get_access;
       result  := EXTERNAL_C.create position text last_code 
