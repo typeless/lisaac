@@ -12,4 +12,11 @@ case $session in
         ;;
 esac
 
+# Kate is broken, see bug https://bugs.kde.org/show_bug.cgi?id=202210
+if [ kate = $command_name ]; then
+  command_name=kwrite
+  command_opts=()
+  session=
+fi
+
 # kate: hl Bash;
