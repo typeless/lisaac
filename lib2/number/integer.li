@@ -528,7 +528,7 @@ Section Public
   // Debug manager facility.
   //
   
-  - Self:SELF '?' blc:BLOCK <-  blc ?# Self;
+  - Self:SELF '?' blc:{BOOLEAN} <-  blc ?# Self;
   
 Section INTEGER  
   

@@ -1,0 +1,610 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Compiler                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name    := CALL_SLOT;
+
+  - copyright   := "2003-2007 Benoit Sonntag";
+
+  
+  - author  := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment := "Call slot method.";
+  
+Section Inherit
+  
+  + parent_instr:Expanded INSTR;
+  
+Section Public
+  
+  - count_no_recursive:INTEGER;
+  - count_context_sensitive:INTEGER;
+  
+  - reset_count_no_recursive <-
+  (
+    count_no_recursive := 0;
+  );
+
+  - reset_count_context_sensitive <-
+  (
+    count_context_sensitive := 0;
+  );
+    
+  + profil:PROFIL;
+  
+  - set_profil p:PROFIL <-
+  (
+    profil := p;
+  );
+  
+  - source:LIST <- profil.code;
+  
+  - is_interrupt:BOOLEAN <- profil.is_interrupt;
+  
+  - is_external:BOOLEAN  <- profil.is_external;
+  
+  //
+  // Argument.
+  //
+  
+  + argument_list:FAST_ARRAY(WRITE);
+  
+  + result_list:Expanded SLIM_ARRAY(RESULT);
+  
+  + cop_argument:EXPR;
+  
+  + is_cop_return:BOOLEAN;
+  
+  - set_args args:FAST_ARRAY(WRITE) <-
+  (
+    argument_list := args;
+  );
+  
+  - set_cop_argument arg:EXPR <-
+  (
+    cop_argument := arg;
+  );
+    
+  //
+  // Creation.
+  //
+  
+  - create p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY(WRITE) cop arg:EXPR :SELF <-
+  ( + result:SELF;
+    result := clone;
+    result.make p profil prof with l_arg cop arg;
+    result
+  );
+  
+  - make p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY(WRITE) cop arg:EXPR <-
+  ( + n:INTEGER;  
+    position := p;    
+    cop_argument := arg;
+    // Choice profil.
+    profil := prof;    
+    argument_list := l_arg;
+    profil.link Self;
+    //
+    (is_interrupt).if {
+      n := 1;
+    } else {
+      n := profil.result_list.count;
+    };
+    result_list.make_with_capacity n;        
+  );
+  
+  - my_copy:SELF <-
+  ( + result:SELF;
+    + wrt:WRITE;
+    + new_arg:FAST_ARRAY(WRITE);
+    + res:RESULT;
+    result := clone;
+        
+    new_arg := FAST_ARRAY(WRITE).create_with_capacity (argument_list.count);
+    (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
+      (argument_list.item j = NULL).if {
+	wrt := NULL;
+      } else {
+        // No Alias := Alias.
+        wrt := argument_list.item j;            
+	wrt := wrt.variable.write_direct (wrt.position) with NULL value (wrt.value.my_copy); 
+	//wrt := argument_list.item j.my_copy;
+      };
+      new_arg.add_last wrt;
+    };
+    result.set_args new_arg;
+    (cop_argument != NULL).if {
+      result.set_cop_argument (cop_argument.my_copy);
+    };
+    //
+    result.result_list.make_with_capacity (result_list.count);
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;      
+      (result_list.item j = NULL).if {
+        res := NULL;
+      } else {
+        // Alias := No Alias.
+        res := result_list.item j.my_copy;
+      };
+      result.result_list.add_last res;
+    };
+    result.profil.link result;
+    result
+  );
+
+  //
+  // Generation.
+  //
+
+  - remove <-
+  ( + e:WRITE;
+    
+    ((profil.link_count = 0) && {profil.cop_link_count = 0}).if { // BSBS: Debug...
+      "CALL_SLOT : ".print;
+      debug_display;
+    };
+    
+    profil.unlink Self;
+    (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
+      e := argument_list.item j;
+      (e != NULL).if {
+	e.remove;
+      };
+    };    
+    (cop_argument != NULL).if {
+      cop_argument.remove;
+    };
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;
+      result_list.item j.remove;
+    };
+  );
+  
+Section Private  
+  
+  - execute_inline:(BOOLEAN,INSTR) <- 
+  // Simple inlining
+  ( + result:INSTR;
+    + is_good:BOOLEAN;
+    + new_src:LIST;
+    + wrt:WRITE;
+    + old_val:EXPR;
+    + rd:READ_LOCAL;
+    + loc:LOCAL;
+  //  + prof_block:PROFIL_BLOCK;
+        
+    (source = list_current).if {
+      POSITION.put_error semantic text "Recursivity without end (call_slot).";
+      source.position.put_position;
+      position.put_position;
+      POSITION.send_error;
+    };
+        
+    (
+      (! is_interrupt) && {! is_external} && 
+      {(cop_argument = NULL) || {! profil.result_list.is_empty}}
+    ).if {
+      (profil.link_count = 1).if {      
+	// 
+	// Inlining simple.
+	//	  	  	  	  
+	(list_current.old_seq_or_and = seq_or_and).if {
+	  argument_to_assignment source index 1 alias FALSE;	  
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;                        
+            source.add_last (result_list.item j.write);
+          };
+          result := source.execute;          
+	  profil.remove_inline;	  	  
+          new_execute_pass;
+          is_good := TRUE;
+	};
+      }.elseif {profil.is_inlinable/* && {FALSE}*/} then {
+	//
+	// Inline by copy:	  
+	//
+	(list_current.old_seq_or_and = seq_or_and).if {	    	    	    
+          profil.unlink Self;	  	  	    	    
+          LOCAL.alias_on;
+          /*
+          "Write : ".print;
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;
+            result_list.item j.debug_display;
+          };
+          "Source : ".print; 
+          source.debug_display;
+          "--------------------\n".print;
+          */
+          new_src := source.my_copy;	                     
+          argument_to_assignment new_src index 1 alias TRUE;	                                
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;
+            wrt := result_list.item j.write;                        
+            old_val := wrt.value;
+            
+            rd ?= old_val;
+            loc := rd.local;
+            (loc.my_alias = NULL).if {
+              profil.slot.name.print; '\n'.print;
+              warning_error (position,"CALL_SLOT : Result bizarre!");
+              warning_error (profil.slot.position,"CALL_SLOT : Result bizarre!");              
+              crash_with_message "CALL_SLOT: Result not affect!";              
+            };
+            wrt.set_value (old_val.my_copy);	      	      
+            old_val.remove;            
+            new_src.add_last wrt;
+          };		  	                      
+          LOCAL.alias_off;          
+          /*
+          "Copy:".print;
+          new_src.debug_display;
+          "===========================FIN============================\n".print;
+          */
+          
+	  result := new_src.execute;
+          is_good := TRUE;
+	  new_execute_pass;	  	  
+	};
+      };
+    };
+    is_good,
+    result
+  );  
+  
+  - execute_normal <-
+  ( + wrt:WRITE_LOCAL;
+        
+    // Pour l'instant ne change pas le profil
+    // il faut faire une copie de l'ancien !!
+    
+    //profil := profil.update self link FALSE;
+          
+    (argument_list.lower).to (argument_list.upper) do { j:INTEGER;      
+      wrt ?= argument_list.item j;	            
+      (wrt != NULL).if {			
+	(wrt.execute_argument).if {
+	  new_execute_pass;
+          argument_list.put NULL to j;                    
+	  (wrt.ensure_count = 0).if {
+	    profil.argument_list.put NULL to j;
+	  };
+	};
+      };
+    };            	          
+    (cop_argument != NULL).if {
+      cop_argument := cop_argument.execute_link;
+      (
+        (! is_cop_return) && 
+        {profil_current != NULL} && 
+        {profil_current.cop_link_count != 0} && 
+        {profil_current.link_count = 0} &&
+        {profil_current.result_list.is_empty}
+      ).if {
+        // BSBS: Il faut produire reellement 2 versions (une COP et une non COP)
+        // Ainsi tu pourras generaliser l'optim et l'appliquer que sur la version COP.
+        is_cop_return := profil_current.i_am_the_last Self;                
+      };
+    };    
+    (profil.is_context_sensitive).if {
+      seq_call_local_and_loop := seq_call_local_and_loop + 1;
+    };
+    seq_call_and_loop   := seq_call_and_loop + 1;
+    seq_inline := seq_inline + 1;
+        
+    //
+    // Counter.
+    //    
+    (! profil.is_recursive).if {
+      count_no_recursive := count_no_recursive + 1;
+    };
+    (profil.is_context_sensitive).if {
+      count_context_sensitive := count_context_sensitive + 1;
+    };
+  );
+      
+Section Public
+  
+  - execute:INSTR <-
+  ( + result:INSTR;        
+    + is_good:BOOLEAN;    
+    
+    (profil.search_tail_recursive).if {
+      //
+      // Inline Tail recursive:
+      //	  
+      profil.remove_inline;		
+      result := to_tail_recursive;
+      result.execute;
+      new_execute_pass;
+    } else {      
+      (is_good,result) := execute_inline;
+      (! is_good).if {      
+	execute_normal;
+	(source.is_empty).if {
+	  // Suppression.	
+	  profil.unlink Self;	
+	  new_execute_pass;
+	} else {
+	  result := Self;
+	  profil.set_life;
+	};
+      };
+    };
+    
+    result
+  );
+
+  //
+  // Display.
+  //
+
+  - display_style buffer:STRING <-
+  ( + t:HASHED_SET(TYPE);
+    buffer.append (profil.name);
+    buffer.add_last '(';
+      
+    type_list.lower.to (type_list.upper) do {	 j:INTEGER;
+      t := type_list.item j;
+      t.lower.to (t.upper - 1) do { k:INTEGER;
+	buffer.append (t.item k.name);
+	buffer.add_last 'x';
+      };
+      buffer.append (t.last.name);
+      (j != type_list.upper).if {
+	buffer.add_last ',';
+      };
+    };
+    buffer.add_last ')';
+  );
+
+  - display buffer:STRING <-
+  ( + arg:WRITE;
+
+    buffer.append (profil.name);
+    display_ref buffer;
+    argument_list.is_empty.if {
+      buffer.append "()";
+    } else {
+      buffer.append "(";		
+      argument_list.lower.to (argument_list.upper) do { j:INTEGER;
+	arg := argument_list.item j;
+	(arg = NULL).if {
+	  buffer.append "<>"
+	} else {
+	  arg.value.display buffer;
+	};
+	buffer.add_last ',';
+      };		        
+      buffer.put ')' to (buffer.upper);	
+    };
+  );
+
+  - display_light <-
+  (
+    string_tmp.copy "CALL '";
+    string_tmp.append (profil.name);
+    string_tmp.append "' ";
+    string_tmp.append (position.prototype.intern_name);
+    //position.put_light_position_in(string_tmp);
+    string_tmp.append " --> ";
+    string_tmp.append (source.position.prototype.intern_name);
+    //source.position.put_light_position_in(string_tmp);
+    string_tmp.append " (Version ";
+ //   string_tmp.append (proto_self_current.intern_name);
+    string_tmp.append ")\n";
+    string_tmp.print;
+  );
+  
+  //////////////////////////////////////////////////////////////////////////
+  // CODE SLOT
+  //////////////////////////////////////////////////////////////////////////
+
+  //
+  // Generation.
+  //
+  
+  - genere buffer:STRING <-
+  ( + val:WRITE;
+    + arg:LOCAL;
+    + wrt:WRITE_LOCAL;
+    + np:INTEGER;
+    + low:INTEGER;
+    + back:INTEGER;
+    
+    (cop_argument != NULL).if {
+      (
+        (argument_list.count >=1) && 
+        {argument_list.first != NULL} && 
+        {argument_list.first.variable.name = ALIAS_STR.variable_self}
+      ).if {
+        low := 1;
+      };
+      (argument_list.count-low > 0).if {        
+        back := buffer.count;
+        buffer.append "pthread_mutex_lock (&(";
+        cop_argument.genere buffer;        
+        buffer.append "->thread.mutex));\n";                
+        (low).to (argument_list.upper) do { j:INTEGER; 
+          val := argument_list.item j;        
+          (val != NULL).if {	           
+            buffer.append indent;
+            cop_argument.genere buffer;
+            buffer.append "->param_";
+            np.append_in buffer;
+            buffer.append "=(int)";
+            val.genere_value buffer;	  
+            buffer.append ";\n";          
+            np := np + 1;
+          } else {
+            "arg null\n".print;
+          };
+        };        
+        buffer.append indent;
+        (np = 0).if {
+          buffer.keep_head back;
+        };
+      };            
+      cop_argument.genere buffer;
+      buffer.append "->thread.procedure = COP_";
+      buffer.append (profil.name);
+      buffer.append ";\n";
+      buffer.append indent;
+      (is_cop_return).if {
+        buffer.append "return";
+      } else {
+        buffer.append "run_procedure";
+      };
+      buffer.append "((lith_object *)";
+      cop_argument.genere buffer;
+      buffer.add_last ')';
+    } else {    
+      (result_list.is_empty).if_false {
+        wrt ?= result_list.first.write;
+        wrt.genere_first_result buffer;      
+      };
+      buffer.append (profil.name);
+      (is_interrupt || {is_external}).if {
+        (argument_list.first != NULL).if {
+          semantic_error (argument_list.first.position,
+          "Impossible `Self' argument for External or Interrupt slot.");
+        };
+      };
+      (! is_interrupt).if {
+        buffer.add_last '(';	
+        (argument_list.lower).to (argument_list.upper) do { j:INTEGER; 
+          val := argument_list.item j;
+          arg := profil.argument_list.item j;
+          (val != NULL).if {	 
+            (buffer.last != '(').if {
+              buffer.add_last ',';
+            };
+            val.genere_value buffer;	  
+          };
+        };
+        (result_list.count > 1).if {
+          (result_list.lower+1).to (result_list.upper) do { j:INTEGER;
+            (buffer.last != '(').if {
+              buffer.add_last ',';
+            };
+            wrt ?= result_list.item j.write;
+            wrt.genere_argument_result buffer;	  
+          };
+        };
+        buffer.add_last ')';
+      };
+    };
+  );
+    
+  //
+  // Intern routine.
+  //
+  
+Section Private  
+      
+  - to_tail_recursive:LOOP <-
+  ( + switch:SWITCH;
+    + msg_slot:CALL_SLOT;    
+    + body:LIST;     
+    + wrt:WRITE;
+    + new_val:EXPR;
+    + new_wrt:INSTR;
+    + result:LOOP;
+    
+    result := LOOP.create position name (profil.name) body source;
+    
+    //
+    // Main List.
+    //
+            
+    // Argument -> Affectation.              
+    wrt := argument_list.first;
+    (wrt != NULL).if {
+      argument_list.put NULL to 0;	
+      (! wrt.value.static_type.is_expanded).if {	
+	new_val := CAST.create (wrt.static_type) value (wrt.value);
+	wrt.set_value new_val;
+      };      
+      wrt.variable.set_style '+';
+      new_wrt := wrt.execute;
+      (new_wrt != NULL).if {	
+	list_current.insert new_wrt to (list_current.index);	
+      };
+    };
+    (argument_list.lower + 1).to (argument_list.upper) do { k:INTEGER;
+      wrt := argument_list.item k;
+      (wrt != NULL).if {	
+	argument_list.put NULL to k;	
+	wrt.variable.set_style '+';
+	new_wrt := wrt.execute;
+	(new_wrt != NULL).if {	  
+	  list_current.insert new_wrt to (list_current.index);
+	};
+      };
+    };
+        
+    (debug_level_option != 0).if {      
+      ? { + push:PUSH;      
+	push ?= source.first;
+	(push != NULL) && {push.is_first}
+      };
+      list_current.insert (source.first) to (list_current.index);      
+      source.put NOP to (source.lower);
+    };
+    
+    // Extract Switch/body:
+    switch ?= source.last;
+    (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
+      body := switch.list.item k.code;
+      (body.is_empty).if_false {	
+	msg_slot ?= body.last;
+	(msg_slot != NULL).if {	  
+	  // DEBUG
+	  (msg_slot = Self).if {
+	    semantic_error (position,"CALL_SLOT : BUG!!!!");
+	  };
+	  (msg_slot.profil != profil).if {
+	    semantic_error (position,"CALL_SLOT : BUG2!!!!");
+	  };
+	  // FIN DEBUG
+	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE;
+	  body.put (LOOP_END.create (msg_slot.position) loop result) to (body.upper);
+	};	
+      };
+    };
+    result
+  );
+  
+  - argument_to_assignment lst:LIST index idx:INTEGER alias is_alias:BOOLEAN <-
+  ( + val,new_wrt:WRITE;        
+    + loc:LOCAL;
+    
+    // Argument -> Affectation.
+    (argument_list.upper).downto (argument_list.lower) do { k:INTEGER;
+      val   := argument_list.item k;
+      (val != NULL).if {	
+	argument_list.put NULL to k;
+	(is_alias).if {
+	  loc ?= val.variable;	  
+	  new_wrt := loc.write (val.position) value (val.value);	  	  
+	  loc.unwrite val;	  
+	} else {
+	  new_wrt := val;	  
+	};
+	lst.insert new_wrt to idx;
+	new_wrt.variable.set_style '+';
+      };
+    };    
+  );
