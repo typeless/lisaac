@@ -291,25 +291,31 @@ Section Private
 
   - load_directory <-
   ( + var_lisaac:STRING_CONSTANT;
+    + path_str :STRING;
     + path:NATIVE_ARRAY[CHARACTER];
     (target=NULL).if {
       target := ALIAS_STR.section_default;
     };
-    path := `LISAAC_DIRECTORY`:NATIVE_ARRAY[CHARACTER];
-    var_lisaac := STRING_CONSTANT.new_intern path
-    count (path.fast_first_index_of '\0' until 1024);
-    //var_lisaac := ENVIRONMENT.get_environment_variable "LISAAC";
-    //(var_lisaac = NULL).if {
-    //  STD_ERROR.put_string "Unable to find `LISAAC' environment variable.\n";
-    //  STD_ERROR.put_string "Please, set the environment variable `LISAAC'\n";
-    //  STD_ERROR.put_string "with the appropriate absolute path to lisaac root directory.\n";
-    //  STD_ERROR.put_string "Example: 'set LISAAC=/lisaac/'\n";
-    //  die_with_code exit_failure_code;
-    //};
-    //
-    string_tmp.copy var_lisaac;
-    ((var_lisaac.last != '/') &&
-    {var_lisaac.last != '\\'}).if {
+    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
+    (path_str != NULL).if {
+      string_tmp.copy path_str;
+    } else {
+      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY[CHARACTER];
+      var_lisaac := STRING_CONSTANT.new_intern path
+      count (path.fast_first_index_of '\0' until 1024);
+      //var_lisaac := ENVIRONMENT.get_environment_variable "LISAAC";
+      //(var_lisaac = NULL).if {
+      //  STD_ERROR.put_string "Unable to find `LISAAC' environment variable.\n";
+      //  STD_ERROR.put_string "Please, set the environment variable `LISAAC'\n";
+      //  STD_ERROR.put_string "with the appropriate absolute path to lisaac root directory.\n";
+      //  STD_ERROR.put_string "Example: 'set LISAAC=/lisaac/'\n";
+      //  die_with_code exit_failure_code;
+      //};
+      //
+      string_tmp.copy var_lisaac;
+    };
+    ((string_tmp.last != '/') &&
+     {string_tmp.last != '\\'}).if {
       string_tmp.add_last '/';
     };
     PARSER.read_path_directory (ALIAS_STR.get string_tmp) target target 
