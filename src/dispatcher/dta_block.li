@@ -34,8 +34,6 @@ Section Inherit
   
 Section Public
   
-  + context:PROFIL;
-  
   + result_expr:EXPR;
     
   // Add.
@@ -48,7 +46,6 @@ Section Public
   
   - create mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] :SELF <-
   ( + result:SELF;
-    context := profil_current;    
     result := clone;    
     result.make mod with larg;
     result    
@@ -56,6 +53,11 @@ Section Public
   
   - make mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] <-
   (    
+    (profil_current = NULL).if {
+      context := context_main;
+    } else {
+      context := profil_current.context;
+    };    
     model         := mod;
     argument_list := larg;
     result_expr   := mod.get_expr_for (mod.position);    

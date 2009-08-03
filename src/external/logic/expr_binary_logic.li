@@ -189,7 +189,7 @@ Section Public
   
   - genere buffer:STRING <-
   (
-    buffer.add_last '(';
+    buffer.add_last '(';    
     left.genere buffer;
     buffer.add_last ' ';
     buffer.append symbol;

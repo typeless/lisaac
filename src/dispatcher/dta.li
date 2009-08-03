@@ -39,7 +39,9 @@ Section Public
   + slot:SLOT;
   
   + self_arg:EXPR;
-      
+  
+  + context:LOCAL;
+  
   //
   // Service
   //

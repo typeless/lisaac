@@ -137,7 +137,7 @@ Section Private
     + type:TYPE_FULL;
     + my_profil:PROFIL;
     + wrt_lst:FAST_ARRAY[WRITE];
-    //+ ctext:LOCAL;
+    + ctext:LOCAL;
     + new_type_self:TYPE_FULL;
     + data_rd:DTA_RD;
     + cop_arg:EXPR;
@@ -228,19 +228,16 @@ Section Private
       type := new_larg.first.static_type;            
       ? {type != NULL};
       //      
-      (debug_level_option != 0).if {	
-        not_yet_implemented;
+      (debug_level_option != 0).if {	        
         // BSBS: Poser le PUSH avant le NODE
-        /*
 	(data.context = NULL).if {
 	  ctext := context_main;
 	} else {
-	  ctext := data.context.context;
+	  ctext := data.context;
 	};
 	result.add_last (
 	  PUSH.create position context ctext first FALSE
-        );
-        */
+        );     
       };
       //
       rd ?= new_larg.first;      

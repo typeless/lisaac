@@ -76,7 +76,12 @@ Section Public
     slot          := sl;
     argument_list := args;
     result_expr   := get_expr_result;
-    is_intern     := flag;
+    is_intern     := flag;    
+    (profil_current = NULL).if {
+      context := context_main;
+    } else {
+      context := profil_current.context;
+    };
   );
   
   //

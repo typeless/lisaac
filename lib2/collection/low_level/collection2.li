@@ -130,7 +130,7 @@ Section Public
     (lower1 <= line) && { line <= upper1}
   )
   [
-    +? { Result = (lower1 <= line) && { line <= upper1 } };
+    +? { Result = ((lower1 <= line) && { line <= upper1 }) };
   ];
     
   - valid_index1 line:INTEGER :BOOLEAN <-
@@ -139,11 +139,11 @@ Section Public
   );
     
   - valid_column column:INTEGER :BOOLEAN <- 
-  (
-    (lower2 <= column) && {column <= upper2}
+  ( 
+    (lower2 <= column) && {column <= upper2}    
   )
-  [
-    +? { Result = (lower2 <= column) && {column <= upper2} };
+  [    
+    +? { Result = ((lower2 <= column) && {column <= upper2}) };
   ];
     
   - valid_index2 column:INTEGER :BOOLEAN <-
@@ -157,7 +157,7 @@ Section Public
     {lower2 <= column} && {column <= upper2}
   )
   [      
-    +? { Result = (valid_line line) && {valid_column column} };
+    +? { Result = ((valid_line line) && {valid_column column}) };
   ];
   
   //

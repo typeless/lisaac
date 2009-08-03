@@ -33,6 +33,7 @@ Section Inherit
 Section Public  
     
   - main <-
-  ( 
+  ( + t:STRING;
     "Hello world !\n".print;
+    t.print;
   );

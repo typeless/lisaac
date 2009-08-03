@@ -243,7 +243,8 @@ Section Public
     {n = prototype_integer_64 } ||
     {n = prototype_integer_32 } ||
     {n = prototype_integer_16 } ||
-    {n = prototype_integer_8  }
+    {n = prototype_integer_8  } ||
+    {n = prototype_integer    }
   );
   
   - is_section n:STRING_CONSTANT :BOOLEAN <-

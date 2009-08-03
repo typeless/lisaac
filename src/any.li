@@ -150,7 +150,7 @@ Section Public
   - stack_local:FAST_ARRAY[LOCAL]  := FAST_ARRAY[LOCAL].create_with_capacity 64;  
   
   - profil_slot:PROFIL_SLOT; // Principal slot.
-  - profil_current:PROFIL;           // Sub-profil or (profil = profil_slot)
+  - profil_current:PROFIL;   // Sub-profil or (profil = profil_slot)
      
   - display_stack_local <-
   (

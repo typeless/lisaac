@@ -352,7 +352,7 @@ Section Private
         \\n";
       } else {
         buf.append 
-        "int print_string(char *str) \n\
+        "void print_string(char *str) \n\
         \{ \n\
         \  while (*str!=0) {\n\
         \    print_char(*str); \n\
