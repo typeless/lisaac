@@ -84,8 +84,8 @@ Section Public
       variable.intern_name.print; '\n'.print;
       "style [".print; variable.style.print; "]\n".print;
       warning_error (position,"READ : Compiler BUG! (require_first = NULL) ");
-      list_current.debug_display;
-      die_with_code 0;
+      //list_current.debug_display;
+      //die_with_code 0;
       //crash_with_message "BUG READ : require_first = NULL";
     };
     

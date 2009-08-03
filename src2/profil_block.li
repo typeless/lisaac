@@ -126,7 +126,7 @@ Section Public
     old_list   := list_current;
     profil_current := Self;
     list_current := LIST.create (list.position);    
-    ITM_OBJECT.set_context_extern NULL;
+    ITM_OBJECT.clean_bottom_index;
     // Add context debug.
     (debug_level_option != 0).if {      
       context := TYPE_CONTEXT.default.new_local (list.position) 
@@ -180,7 +180,9 @@ Section Public
     result.remove; // BSBS: Il y a un petit gachi...
     r_list := ALIAS_ARRAY(TYPE_FULL).alias r_list;
     //
-    context_extern := ITM_OBJECT.context_extern;
+    (ITM_OBJECT.bottom_index <= stack_local.upper).if {
+      context_extern := ITM_OBJECT.context_extern;
+    };    
     to_type_block  := TYPE_BLOCK.get_direct a_list and_result r_list;
     stack_local.remove_since stack_top;
     //
