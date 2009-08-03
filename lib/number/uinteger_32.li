@@ -48,3 +48,5 @@ Section Public
   //
   
   - to_uinteger_32:UINTEGER_32 <- Self;
+
+  - to_uinteger_64:UINTEGER_64 <- to_raw_uinteger_64;

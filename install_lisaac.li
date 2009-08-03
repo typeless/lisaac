@@ -215,12 +215,14 @@ Section Private
   - system_unix_bash:STRING_CONSTANT := "Unix - bash";
   - system_unix_tcsh:STRING_CONSTANT := "Unix - tcsh";
   - system_unix_zsh :STRING_CONSTANT := "Unix - zsh";
+  - system_unix_bsd :STRING_CONSTANT := "Unix - BSD or Mac";
   - system_windows  :STRING_CONSTANT := "Windows - DOS";
   - system_unknown  :STRING_CONSTANT := "Unknown";
   
   - file_bashrc   :STRING_CONSTANT := "/.bashrc";
   - file_cshrc    :STRING_CONSTANT := "/.cshrc";
   - file_zshenv   :STRING_CONSTANT := "/.zshenv";
+  - file_profile  :STRING_CONSTANT := "/.profile";
   - file_autoexec :STRING_CONSTANT := "C:\\autoexec.bat";
   - file_msdos_sys:STRING_CONSTANT := "C:\\msdos.sys";
   
@@ -312,7 +314,7 @@ Section Private
         update "path.li" idf "  + target" with "  + target := UNIX;\n" confirmation FALSE;
         //
         "\n  Search path for `libX11.a' : (please wait...)\n".print;
-        ENVIRONMENT.execute_command "find /usr -name \"libX11.a\" 2> /dev/null > xlib_path.txt";
+        ENVIRONMENT.execute_command "find /usr/lib/ -name \"libX11.a\" 2> /dev/null > xlib_path.txt";
         std_file := open_read "xlib_path.txt";	
         len := file_size std_file;
         (len = 0).if {
