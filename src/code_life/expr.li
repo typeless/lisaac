@@ -133,11 +133,31 @@ Section Public
     
     ? {static_type != NULL};
     ? {t != NULL};
+
+    (static_type.raw = TYPE_VOID).if {
+      string_tmp.copy "Void expression used as ";
+      t.append_name_in string_tmp;
+      POSITION.put_error semantic text string_tmp;
+      p.put_position;
+      POSITION.send_error;
+    };
     
     (t.affect_with static_type).if {          
       result := Self;
     } else {            
       ? {list_current != NULL};
+
+      (static_type.prototype = NULL).if {
+	string_tmp.copy "EXPR Internal error: no prototype for static type: ";
+	static_type.append_name_in string_tmp;
+	string_tmp.append " (check with type: ";
+	t.append_name_in string_tmp;
+	string_tmp.append ")";
+	POSITION.put_error warning text string_tmp;
+	p.put_position;
+	POSITION.send_error;
+      };
+      ? { static_type.prototype != NULL };
 
       (static_type.is_export_to t).if {	
 	// Auto-export.	
