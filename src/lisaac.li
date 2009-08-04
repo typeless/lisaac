@@ -145,6 +145,7 @@ Section Private
           };
           string_tmp.copy cmd;
           string_tmp.remove_first 1;
+          string_tmp.replace_all '-' with '_';
           s := LIP_CODE.get_method (ALIAS_STR.get string_tmp);
           ((s = NULL) || {s.section != ALIAS_STR.section_public}).if {
             "ERROR : Option `".print;

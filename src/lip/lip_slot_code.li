@@ -126,7 +126,9 @@ Section Public
   - print <-
   (
     "  -".print;
-    name.print;
+    string_tmp.copy name;
+    string_tmp.replace_all '_' with '-';
+    string_tmp.print;
     (argument != NULL).if {
       " <".print;
       argument.print;
