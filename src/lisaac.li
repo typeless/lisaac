@@ -258,6 +258,11 @@ Section Private
     is_quiet           := LIP_CODE.get_boolean (ALIAS_STR.slot_is_quiet);
     is_library         := LIP_CODE.get_boolean (ALIAS_STR.slot_is_library);
     is_coverage        := LIP_CODE.get_boolean (ALIAS_STR.slot_is_coverage);
+    is_java.if {
+      backend := BACKEND_JAVA;
+    } else {
+      backend := BACKEND_C;
+    };
     //
     ((input_name = NULL) || {input_name.is_empty}).if {
       "ERROR: `input_file' is empty.\n".print;
