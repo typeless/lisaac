@@ -183,10 +183,9 @@ Section Private
     + is_good:BOOLEAN;
     + new_src:LIST;
     + wrt:WRITE;
-    + old_val:EXPR;
-    + rd:READ_LOCAL;
+    + old_val:EXPR;    
     + loc:LOCAL;
-  //  + prof_block:PROFIL_BLOCK;
+    + prof_block:PROFIL_BLOCK;
         
     (source = list_current).if {
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
@@ -219,41 +218,42 @@ Section Private
 	//
 	(list_current.old_seq_or_and = seq_or_and).if {	    	    	    
           profil.unlink Self;	  	  	    	    
-          LOCAL.alias_on;
-          /*
-          "Write : ".print;
-          (result_list.lower).to (result_list.upper) do { j:INTEGER;
-            result_list.item j.debug_display;
-          };
-          "Source : ".print; 
-          source.debug_display;
-          "--------------------\n".print;
-          */
+          
+          prof_block ?= profil;
+	  (prof_block != NULL).if {	    
+	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
+	      loc := profil.argument_list.item j;
+	      (loc != NULL).if {
+		loc.set_my_alias (loc.my_copy);
+	      };
+	    };
+	  } else {
+	    LOCAL.alias_on;
+	  };
+          //LOCAL.alias_on;
+          
           new_src := source.my_copy;	                     
           argument_to_assignment new_src index 1 alias TRUE;	                                
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
             wrt := result_list.item j.write;                        
-            old_val := wrt.value;
-            
-            rd ?= old_val;
-            loc := rd.local;
-            (loc.my_alias = NULL).if {
-              profil.slot.name.print; '\n'.print;
-              warning_error (position,"CALL_SLOT : Result bizarre!");
-              warning_error (profil.slot.position,"CALL_SLOT : Result bizarre!");              
-              crash_with_message "CALL_SLOT: Result not affect!";              
-            };
+            old_val := wrt.value;            
             wrt.set_value (old_val.my_copy);	      	      
             old_val.remove;            
             new_src.add_last wrt;
           };		  	                      
-          LOCAL.alias_off;          
-          /*
-          "Copy:".print;
-          new_src.debug_display;
-          "===========================FIN============================\n".print;
-          */
           
+          (prof_block != NULL).if {
+	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
+	      loc := profil.argument_list.item j;
+	      (loc != NULL).if {
+		loc.set_my_alias NULL;
+	      };
+	    };
+	  } else {
+	    LOCAL.alias_off;
+	  };	  
+          //LOCAL.alias_off;          
+                    
 	  result := new_src.execute;
           is_good := TRUE;
 	  new_execute_pass;	  	  

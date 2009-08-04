@@ -142,12 +142,7 @@ Section Public
       variable.get_type tmp_type;
       (tmp_type.first = TYPE_NULL).if {
         tmp_type.remove_first;
-      };
-      (variable.name == "storage").if {
-        variable.intern_name.print; ' '.print;
-        tmp_type.count.print; 
-        '\n'.print;
-      };
+      };      
       (tmp_type.count = 1).if {        
         variable.set_type (tmp_type.first.default.to_strict);        
       };

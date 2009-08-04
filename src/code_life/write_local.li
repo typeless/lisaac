@@ -54,7 +54,7 @@ Section Public
   (     
     position := p;
     local    := l;
-    value    := val;
+    value    := val;    
   );
     
   //

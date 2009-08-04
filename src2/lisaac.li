@@ -353,7 +353,7 @@ Section Private
         \\n";
       } else {
         buf.append 
-        "void print_string(char *str) \n\
+        "int print_string(char *str) \n\
         \{ \n\
         \  while (*str!=0) {\n\
         \    print_char(*str); \n\
@@ -689,11 +689,8 @@ Section Public
     
     // Debug source code.
     (is_java).if_false {
-      ((debug_level_option != 0) || {CALL_NULL.is_necessary}).if {
-        output_code.append "// Debug Manager\n"; 
-        output_code.append "void print_string(char *str);\n";
-      };
       (debug_level_option != 0).if {      
+        output_code.append "// Debug Manager\n"; 
         (is_ansi).if {
           output_code.append "void interrupt_signal(int sig);\n";
         };

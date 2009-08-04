@@ -135,7 +135,7 @@ Section Public
 
   - cast_type p:TYPE_FULL <-
   (
-    ? { p.raw != type_integer };
+//    ? { p.raw != type_integer };
     static_type := p;
     check_type;
   );
