@@ -443,7 +443,7 @@ Section Private
       
       buf.append 	
       "void push_first(_____CONTEXT *path,unsigned long code)\n\
-      \{ \n";
+      \{ int n; _____CONTEXT *c; static int mx=0;\n";
       (debug_level_option = 20).if {
 	buf.append 
 	"  _____CONTEXT *cur,loop;\n\
@@ -461,6 +461,10 @@ Section Private
       "  path->back  = top_context;\n\
       \  path->code  = code;\n\
       \  top_context = path;\n\
+      \ \n\
+      \ /*c = path; n=0;\n\
+      \ while (c != NULL) { n++; c = c->back; };\n\
+      \ if ((n > mx) ) { print_integer(n); print_string(\"\\n\"); mx = n; };*/ \n\
       \} \n\
       \  \n\
       \void push(_____CONTEXT *path,unsigned long code)\n\

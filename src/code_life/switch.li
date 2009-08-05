@@ -328,6 +328,24 @@ Section Public
           buffer.add_last ' ';	
           buffer.append "break;\n";
         };	
+        
+        ( + code:STRING_CONSTANT;
+          buffer.append indent;
+          buffer.append "default: ";
+          (debug_level_option != 0).if {
+            code := 
+            "stack_print(top_context); \
+            \print_string(\"Call on Twilight Zone\\n\"); \
+            \die_with_code(1);";
+          } else {
+            code := 
+            "print_string(\"Call on Twilight Zone\\n\
+            \(Use `debug' option)\\n\"); \ 
+            \die_with_code(1);";
+          };
+          buffer.append code;
+        );
+            
         buffer.append indent;
         buffer.add_last '}';
         (first_case != 0).if {

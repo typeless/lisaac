@@ -922,8 +922,6 @@ Section Public
   - print <- 
   (    
     IO.put_string Self;      
-    print_runtime_stack;
-    die_with_code 0;
   );
 
   -  printline <-

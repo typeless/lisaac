@@ -150,7 +150,13 @@ Section Public
       {result = NULL}	
     }.while_do {
       ts     ?= slot_run.item j.result_type;
-      typ    := ts.to_run_for Self.raw;
+      typ    := ts.to_run_for Self.raw;      
+      (typ.prototype = NULL).if {
+        `/* ICI BEN */`;
+        typ.print; '\n'.print;
+        `/* ICI BEN FIN */`;
+        crash_with_message "TYPE: BUG Compiler : search_require";
+      };
       result := typ.prototype.slot_list.fast_reference_at n;
       ((result = NULL) || {result.require = NULL}).if {
 	result := typ.search_require n;
