@@ -149,6 +149,15 @@ Section Public
     new_depend_pass;
     position  := p;
     expr_list := FAST_ARRAY[INSTR].create_with_capacity 2;
+    /*
+    "execute list #".print;
+    object_id.print; '\n'.print;
+    (object_id = 220500).if {
+    //  crash_with_message "BUG!!!";
+    };
+    */
+    
+    
   );
 
   - my_copy:SELF <-
@@ -205,7 +214,7 @@ Section Public
   - execute_case <-  
   ( + new_expr:INSTR; 
     + old_list_current:LIST;
-    
+        
     //
     seq_list.add_last Self; 
     seq_inline := seq_inline + 1;

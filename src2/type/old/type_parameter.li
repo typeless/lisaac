@@ -1,0 +1,80 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Compiler                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name    := TYPE_PARAMETER;
+
+  - copyright := "2003-2007 Benoit Sonntag";
+  
+  - author  := "Sonntag Benoit (bsonntag@loria.fr)";
+  - comment := "Type parameter.";
+  
+Section Inherit  
+  
+  + parent_type_full:TYPE_FULL := TYPE_FULL;
+  
+Section Public
+
+  - fix:TYPE_FULL <- parent_type_full;
+  
+  - is_parameter_type:BOOLEAN <- TRUE;
+  
+  + parameter_name:STRING_CONSTANT;
+  
+  //
+  // Creation.
+  //
+  
+  - create n:STRING_CONSTANT :SELF <-
+  ( + result:SELF;
+    
+    result := clone;
+    result.make n;
+    result
+  );
+  
+  - make n:STRING_CONSTANT <-
+  (
+    parameter_name := n;
+  );
+  
+  //
+  // Set type.
+  //
+  
+  - set_define t:TYPE_FULL <-
+  (
+    parent_type_full := t;
+  );
+  
+  //
+  // Display.
+  //
+  
+  - append_name_in buffer:STRING <-
+  (
+    buffer.append parameter_name;
+    buffer.add_last ':';
+    parent_type_full.append_name_in buffer;
+  );
+  
+
+  

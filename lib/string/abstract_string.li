@@ -921,7 +921,7 @@ Section Public
   
   - print <- 
   (    
-    IO.put_string Self;  
+    IO.put_string Self;      
   );
 
   -  printline <-

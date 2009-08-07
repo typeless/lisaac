@@ -84,7 +84,7 @@ Section Public
       variable.intern_name.print; '\n'.print;
       "style [".print; variable.style.print; "]\n".print;
       warning_error (position,"READ : Compiler BUG! (require_first = NULL) ");
-      list_current.debug_display;
+      //list_current.debug_display;
       die_with_code 0;
       //crash_with_message "BUG READ : require_first = NULL";
     };
@@ -142,12 +142,7 @@ Section Public
       variable.get_type tmp_type;
       (tmp_type.first = TYPE_NULL).if {
         tmp_type.remove_first;
-      };
-      (variable.name == "storage").if {
-        variable.intern_name.print; ' '.print;
-        tmp_type.count.print; 
-        '\n'.print;
-      };
+      };      
       (tmp_type.count = 1).if {        
         variable.set_type (tmp_type.first.default.to_strict);        
       };

@@ -1,0 +1,7 @@
+lip_integer.li:  - storage:FAST_ARRAY[LIP_INTEGER] := FAST_ARRAY[LIP_INTEGER].create_with_capacity 10;
+lip_slot_code.li:  + code:FAST_ARRAY[LIP_CODE];
+lip_slot_code.li:  code c:FAST_ARRAY[LIP_CODE] :LIP_SLOT_CODE <-
+lip_slot_code.li:      ALIAS_ARRAY[LIP_CODE].free c;
+lip_slot_code.li:  code c:FAST_ARRAY[LIP_CODE] <-
+lip_slot_data.li:  [
+lip_string.li:  - storage:FAST_ARRAY[LIP_STRING] := FAST_ARRAY[LIP_STRING].create_with_capacity 10;

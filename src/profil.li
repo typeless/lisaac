@@ -536,6 +536,11 @@ Section Private
     } else {
       buffer.append "Inlinable.";
     };
+    (is_context_sensitive).if {
+      buffer.append " Context_sensitive.";
+    } else {
+      buffer.append " No Context_sensitive.";
+    };
     buffer.add_last '\n';
   );
   
