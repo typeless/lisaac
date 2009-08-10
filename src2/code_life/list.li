@@ -322,7 +322,7 @@ Section Private
       }.do_while {(j <= upper) && {old_count = buffer.count}};      
       buffer.append ";\n";
     };        
-  );
+  );  
   
   - add_local tab:FAST_ARRAY(LOCAL) in buf:STRING <-
   ( + loc:LOCAL;
@@ -333,6 +333,7 @@ Section Private
       (tab.lower).to (tab.upper) do { j:INTEGER;
 	loc := tab.item j;	
         loc.is_result.if_false {
+          local_counter := local_counter + 1;
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {
@@ -354,4 +355,7 @@ Section Private
       tab.clear;
     };
   );
+  
+Section LISAAC
 
+  - local_counter:INTEGER;

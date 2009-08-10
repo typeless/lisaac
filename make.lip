@@ -249,13 +249,11 @@ Section Public
   - i level:INTEGER <-
   // Inlining level [1..5000] (default: 15)
   (
-    /*
     ((level < 1) | (level > 5000)).if {
       "Incorrect inlining level.\n".print;
       exit;
     };
     inline_level := level;
-    */
   );
     
   //

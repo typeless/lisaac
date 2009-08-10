@@ -781,6 +781,9 @@ Section Public
 	STD_ERROR.put_integer (POSITION.nb_warning);
 	STD_ERROR.put_string " warning(s).\n";
       };
+      STD_ERROR.put_string " Local counter : ";
+      STD_ERROR.put_integer (LIST.local_counter);
+      STD_ERROR.put_string "\n";
     };
     
     (is_statistic).if {            
