@@ -124,16 +124,16 @@ Section Public
       result := Self;
     } else {      
       typ_id := type_id_intern;      
-      //ptr := `malloc((@sz + 3)&0xFFFFFFFC)`:POINTER;                  
-      clone_allocation_size := clone_allocation_size + sz;                                       
+      //ptr := `malloc(((unsigned long)(@sz + 3)) & 0xFFFFFFFC)`:POINTER;                  
+      clone_allocation_size := clone_allocation_size + sz;      
       (typ_id = -1).if {
 	ptr := MEMORY.alloc_size sz;
       } else {        
 	ptr := MEMORY.alloc_type (typ_id.to_uinteger_32) size sz;
       };                                               
       result := CONVERT(POINTER,SELF).on ptr;            
-      //OLD MEMORY.copy to_pointer to ptr size sz;
-      copy_intern_in result;      
+      //MEMORY.copy to_pointer to ptr size (CONVERT(POINTER,UINTEGER_32).on sz);
+      copy_intern_in result;            
       (is_cop_type).if {        
         `((lith_object *)@result)->first = NULL`;
         `((lith_object *)@result)->last  = NULL`;

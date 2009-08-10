@@ -109,17 +109,28 @@ Section Public
     + base:TYPE;
     + styl:STRING_CONSTANT;    
     + proto:PROTOTYPE;
-        
+    
+    + r:TYPE;
+            
     proto := load_prototype (itm_typ.name) generic_count 0;            
     base := dico_type.fast_reference_at (proto.filename);
-    (base = NULL).if {      
+    (base = NULL).if {          
       base := TYPE.clone;
       dico_type.fast_put base to (proto.filename);
       base.make itm_typ with proto;
+      
+      (base.default.the_parent_type != base).if {      
+        "C'est ici que ca commence!!!\n".print;
+        IO.read_character;
+      };
     };
     //        
+    (base.default.the_parent_type != base).if {      
+      "Oui, il est bien bidon!!!\n".print;
+      IO.read_character;
+    };
     styl := itm_typ.style;
-    (styl = NULL).if {           
+    (styl = NULL).if {                 
       result := base.default;
     } else {
       (styl = ALIAS_STR.keyword_expanded).if {	
@@ -128,6 +139,13 @@ Section Public
 	result := base.default + TYPE_FULL.strict_bit;
       };
     };
+    
+    r := result.the_parent_type;
+    (r != base).if {
+      "the_parent_type est bidon!!!\n".print;
+      IO.read_character;
+    };    
+    
     result
   );
   
@@ -149,14 +167,17 @@ Section Public
       {slot_run.item j.id_section.is_inherit_or_insert} &&
       {result = NULL}	
     }.while_do {
-      ts     ?= slot_run.item j.result_type;
-      typ    := ts.to_run_for Self.raw;      
+      ts  ?= slot_run.item j.result_type;      
+      typ := ts.to_run_for Self.raw;                  
+      
+      /*
       (typ.prototype = NULL).if {
-        `/* ICI BEN */`;
+        
         typ.print; '\n'.print;
         `/* ICI BEN FIN */`;
         crash_with_message "TYPE: BUG Compiler : search_require";
       };
+      */
       result := typ.prototype.slot_list.fast_reference_at n;
       ((result = NULL) || {result.require = NULL}).if {
 	result := typ.search_require n;

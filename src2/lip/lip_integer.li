@@ -71,13 +71,13 @@ Section Public
   
   - name:STRING_CONSTANT <- "INTEGER";
   
-  - Self:SELF '-' :LIP_CONSTANT <-
+  - '-' Self:SELF :LIP_CONSTANT <-
   ( 
     value := - value;
     Self
   );
 
-  - Self:SELF '!' :LIP_CONSTANT <-
+  - '!' Self:SELF :LIP_CONSTANT <-
   ( 
     value := ~ value;
     Self

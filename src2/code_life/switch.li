@@ -254,7 +254,6 @@ Section Public
     + typ_first:TYPE;
     + typ_id:TYPE_ID;
     + wrt:WRITE;
-    + i:INTEGER;
     
     (
       (list.first.id = TYPE_NULL) && 
@@ -267,6 +266,7 @@ Section Public
     ).if {
       list.remove_first;
     };
+    /*
     i := list.upper;
     {i >= list.lower}.while_do {
       (list.item i.code.is_empty).if {
@@ -274,8 +274,9 @@ Section Public
       };
       i := i - 1;
     };      
+    */
     //
-    (list.is_empty).if_false {
+    //(list.is_empty).if_false {
       typ_first := list.first.id;
       typ_id ?= typ_first;    
       ((list.count <= 2) || {typ_first = TYPE_NULL}).if {
@@ -299,14 +300,16 @@ Section Public
         first_case := 1;
         //
         (list.count = 2).if {
-          lst := list.second.code;          
-          buffer.append " else ";
+          lst := list.second.code;                    
+          (! list.second.code.is_empty).if {
+            buffer.append " else ";
             
-          buffer.append "/* ";
-          buffer.append (list.second.id.name);
-          buffer.append " */ ";
+            buffer.append "/* ";
+            buffer.append (list.second.id.name);
+            buffer.append " */ ";
             
-          list.second.genere buffer;          
+            list.second.genere buffer;          
+          };
           first_case := 2;
         }.elseif {list.count > 2} then {
           buffer.append " else {\n";
@@ -320,32 +323,16 @@ Section Public
         list.item first_case.id.put_access_id expr in buffer;
         buffer.append ") {\n";
         (first_case).to (list.upper) do { j:INTEGER;
-          buffer.append indent; 
-          buffer.append "case ";
-          list.item j.id.put_id buffer;
-          buffer.append ": ";          
-          list.item j.genere buffer;        
-          buffer.add_last ' ';	
-          buffer.append "break;\n";
-        };	
-                
-        ( + code:STRING_CONSTANT;
-          buffer.append indent;
-          buffer.append "default: ";
-          (debug_level_option != 0).if {
-            code := 
-            "stack_print(top_context); \
-            \print_string(\"Call on Twilight Zone\\n\"); \
-            \die_with_code(1),";
-          } else {
-            code := 
-            "print_string(\"Call on Twilight Zone\\n\
-            \(Use `debug' option)\\n\"); \ 
-            \die_with_code(1);";
+          (! list.item j.code.is_empty).if {
+            buffer.append indent; 
+            buffer.append "case ";
+            list.item j.id.put_id buffer;
+            buffer.append ": ";          
+            list.item j.genere buffer;        
+            buffer.add_last ' ';	
+            buffer.append "break;\n";
           };
-          buffer.append code;
-        );
-                
+        };	      
         buffer.append indent;
         buffer.add_last '}';
         (first_case != 0).if {
@@ -355,7 +342,7 @@ Section Public
           buffer.add_last '}';
         };
       };
-    };
+    //};
   );
   
   //

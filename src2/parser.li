@@ -2712,7 +2712,7 @@ Section Private
         (cst = NULL).if {
           syntax_error (current_position,"Incorrect expression.");
         };
-        data.set_value cst;
+        data.set_value cst;        
         cst.free;
       };
     }.elseif {read_character '-'} then {
@@ -2771,16 +2771,16 @@ Section Private
   //// TYPE         -> 'BOOLEAN' | 'STRING' | 'INTEGER'
   ( + result:LIP_CONSTANT;
     
-    (read_cap_identifier).if {            
+    (read_cap_identifier).if {                              
       (last_string = ALIAS_STR.prototype_integer).if {
         result := LIP_INTEGER.get 0;
-      }.elseif {last_string = ALIAS_STR.prototype_string} then {
-        result := LIP_STRING.get (ALIAS_STR.get "");
-      }.elseif {last_string = ALIAS_STR.prototype_boolean} then {
+      }.elseif {last_string = ALIAS_STR.prototype_string} then {        
+        result := LIP_STRING.get (ALIAS_STR.get "");        
+      }.elseif {last_string = ALIAS_STR.prototype_boolean} then {        
         result := LIP_BOOLEAN.get FALSE;
       } else {
         syntax_error (current_position,"Incorrect type.");
-      };
+      };     
     };
     result
   );

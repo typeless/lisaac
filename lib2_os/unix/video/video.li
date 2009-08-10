@@ -25,7 +25,12 @@ Section Header
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     := "X11 Driver video - Xlib -";
-
+/*  
+  - lip      <-
+  (
+    add_lib "-lX11";
+  );
+  */
   - external := 
 `
 #include <X11/Xlib.h>

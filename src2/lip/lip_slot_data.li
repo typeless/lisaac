@@ -64,7 +64,7 @@ Section Public
     value    := v;    
     (is_arg).if_false {
       list_data.add Self to n;
-    };
+    };    
   );
   
   //
@@ -76,8 +76,8 @@ Section Public
     
     new_val := value.copy_of v;
     (new_val != NULL).if {     
-      value := new_val;      
-    }
+      value := new_val;            
+    }    
   );
     
   - get_value:LIP_CONSTANT <-

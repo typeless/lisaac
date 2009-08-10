@@ -54,17 +54,17 @@ Section Public
       result := clone;
     } else {
       result := storage.last;
-      storage.remove_last;
+      storage.remove_last;            
     };
     result.set_value str;
     result
   );
   
   - free <-
-  (
+  (    
     storage.add_last Self;
   );
-  
+    
   //
   // Operation.
   //
@@ -78,7 +78,7 @@ Section Public
   
   - print <-
   ( 
-    string_tmp.clear;
+    string_tmp.clear;    
     append_in string_tmp;
     string_tmp.print;
   );

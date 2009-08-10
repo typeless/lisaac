@@ -64,7 +64,7 @@ Section Public
     + p:POINTER;
     + result  :NATIVE_ARRAY(V);
     
-    capacity := nb_elements * element_sizeof;    
+    capacity := nb_elements * element_sizeof;                
     //p := `malloc(@capacity)`:POINTER; 
     p := MEMORY.alloc_dynamic (capacity.to_pointer);
     result := CONVERT(POINTER,NATIVE_ARRAY(V)).on p;
