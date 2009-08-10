@@ -210,26 +210,11 @@ Section Public
     };         
     
     e.set_create;
-    /*
-    (intern_name == "Self__GB").if {
-      "Creat :".print;
-      e.debug_display;
-      warning_error (e.position,"LA");
-    };
-    */
-    
     e
   );
     
   - unwrite e:WRITE <-
   ( + idx:INTEGER;
-    /*
-    (intern_name == "Self__GB").if {
-      e.debug_display;
-      warning_error (e.position,"LA");
-    };
-    */
-    
     (! e.is_create).if {
       crash;
     };
@@ -306,16 +291,6 @@ Section Public
         
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
-    /*
-    (intern_name == "Result__ID").if {
-      "VARIABLE create :".print;
-      result.debug_display;      
-      (result.object_id = 6).if {
-       // crash;
-      };
-    };
-    */
-    
     result
   );
   //[ ? {ensure_count := Old ensure_count + 1}; ];

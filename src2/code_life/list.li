@@ -334,6 +334,12 @@ Section Private
 	loc := tab.item j;	
         loc.is_result.if_false {
           local_counter := local_counter + 1;
+          /*
+          ((loc.ensure_count != 0) && {! loc.is_result}).if {
+            loc.intern_name.print;
+            warning_error (loc.position,"LIST.add_local Error!");
+          };
+          */
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {

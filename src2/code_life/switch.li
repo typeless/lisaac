@@ -254,6 +254,8 @@ Section Public
     + typ_first:TYPE;
     + typ_id:TYPE_ID;
     + wrt:WRITE;
+    + is_genered:BOOLEAN;
+    + rd:READ;
     
     (
       (list.first.id = TYPE_NULL) && 
@@ -265,84 +267,80 @@ Section Public
       }
     ).if {
       list.remove_first;
-    };
-    /*
-    i := list.upper;
-    {i >= list.lower}.while_do {
-      (list.item i.code.is_empty).if {
-        list.remove i;
-      };
-      i := i - 1;
-    };      
-    */
-    //
-    //(list.is_empty).if_false {
-      typ_first := list.first.id;
-      typ_id ?= typ_first;    
-      ((list.count <= 2) || {typ_first = TYPE_NULL}).if {
-        buffer.append "if (";
-        //                        
-        ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {
-          expr.genere buffer;	
-          buffer.append ".__id==0";
+    };        
+    typ_first := list.first.id;
+    typ_id ?= typ_first;    
+    ((list.count <= 2) || {typ_first = TYPE_NULL}).if {
+      buffer.append "if (";
+      //                        
+      ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {        
+        expr.genere buffer;
+        is_genered := TRUE;
+        buffer.append ".__id==0";
+      } else {        
+        typ_first.put_access_id expr in buffer;      
+        is_genered := TRUE;
+        (expr.static_type.raw != type_boolean).if {
+          buffer.append "==";
+          typ_first.put_id buffer;	
         } else {
-          typ_first.put_access_id expr in buffer;      
-          (expr.static_type.raw != type_boolean).if {
-            buffer.append "==";
-            typ_first.put_id buffer;	
-          } else {
-            ? {typ_first.name = ALIAS_STR.prototype_true};
-          };
-        };
-        buffer.append ") ";
-        //
-        list.first.genere buffer;             
-        first_case := 1;
-        //
-        (list.count = 2).if {
-          lst := list.second.code;                    
-          (! list.second.code.is_empty).if {
-            buffer.append " else ";
-            
-            buffer.append "/* ";
-            buffer.append (list.second.id.name);
-            buffer.append " */ ";
-            
-            list.second.genere buffer;          
-          };
-          first_case := 2;
-        }.elseif {list.count > 2} then {
-          buffer.append " else {\n";
-          indent.append "  ";
-          buffer.append indent;          
+          ? {typ_first.name = ALIAS_STR.prototype_true};
         };
       };
-      (first_case <= list.upper).if {
-        polymorphic_counter := polymorphic_counter + 1;            
-        buffer.append "switch (";      
-        list.item first_case.id.put_access_id expr in buffer;
-        buffer.append ") {\n";
-        (first_case).to (list.upper) do { j:INTEGER;
-          (! list.item j.code.is_empty).if {
-            buffer.append indent; 
-            buffer.append "case ";
-            list.item j.id.put_id buffer;
-            buffer.append ": ";          
-            list.item j.genere buffer;        
-            buffer.add_last ' ';	
-            buffer.append "break;\n";
-          };
-        };	      
+      buffer.append ") ";
+      //
+      list.first.genere buffer;             
+      first_case := 1;
+      //
+      (list.count = 2).if {
+        lst := list.second.code;                    
+        (! list.second.code.is_empty).if {
+          buffer.append " else ";          
+          buffer.append "/* ";
+          buffer.append (list.second.id.name);
+          buffer.append " */ ";          
+          list.second.genere buffer;          
+        };
+        first_case := 2;
+      }.elseif {list.count > 2} then {
+        buffer.append " else {\n";
+        indent.append "  ";
+        buffer.append indent;          
+      };
+    };
+    (first_case <= list.upper).if {
+      polymorphic_counter := polymorphic_counter + 1;            
+      buffer.append "switch (";      
+      (is_genered).if {
+        rd ?= expr;
+        (rd = NULL).if {
+          crash_with_message "SWITCH.genere ";
+        } else {
+          rd.variable.set_ensure_count (rd.variable.ensure_count + 1);
+        };
+      };
+      list.item first_case.id.put_access_id expr in buffer;
+      buffer.append ") {\n";
+      (first_case).to (list.upper) do { j:INTEGER;
+        (! list.item j.code.is_empty).if {
+          buffer.append indent; 
+          buffer.append "case ";
+          list.item j.id.put_id buffer;
+          buffer.append ": ";          
+          list.item j.genere buffer;        
+          buffer.add_last ' ';	
+          buffer.append "break;\n";
+        };
+      };	      
+      buffer.append indent;
+      buffer.add_last '}';
+      (first_case != 0).if {
+        buffer.add_last '\n';
+        indent.remove_last 2;    
         buffer.append indent;
         buffer.add_last '}';
-        (first_case != 0).if {
-          buffer.add_last '\n';
-          indent.remove_last 2;    
-          buffer.append indent;
-          buffer.add_last '}';
-        };
       };
-    //};
+    };
   );
   
   //

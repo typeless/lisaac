@@ -80,11 +80,22 @@ Section Public
   //
   // Genere
   //
-  
+    
   - genere buffer:STRING <-
   ( + tb:PROFIL_BLOCK;
+
     (variable.ensure_count = -1).if {
       buffer.add_last '*';
+    } else {
+      (variable.style = '+').if {        
+        variable.set_ensure_count (variable.ensure_count - 1);
+        (variable.ensure_count < 0).if {
+          variable.intern_name.print; '\n'.print;
+          warning_error (variable.position,"READ_LOCAL.genere : Bug local !\n");
+          variable.set_ensure_count 0;
+          buffer.append "/* BUG READ_LOCAL !*/";
+        };        
+      };
     };
     buffer.append (variable.intern_name);     
     //
