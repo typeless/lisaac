@@ -72,13 +72,19 @@ Section Public
 
   - read rd:READ_LOCAL :STRING_CONSTANT <-
   ( + loc,loc2:LOCAL;
+    + result:STRING_CONSTANT;
     
     loc := rd.local;
-    loc.unread rd;
     loc2 := loc.my_alias;
-    ((loc.ensure_count = 0) && {current_list_level <= loc.list_level}).if {
-      free.add_last loc2;
+    (loc2 = NULL).if {
+      result := loc.intern_name;
+    } else {      
+      loc.unread rd;    
+      ((loc.ensure_count = 0) && {current_list_level <= loc.list_level}).if {
+        free.add_last loc2;
+      };
+      result := loc2.intern_name;
     };
-    loc2.intern_name
+    result
   );
   
