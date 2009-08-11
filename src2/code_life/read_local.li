@@ -82,19 +82,21 @@ Section Public
   //
     
   - genere buffer:STRING <-
-  ( + tb:PROFIL_BLOCK;
+  ( //+ tb:PROFIL_BLOCK;
     + idf:STRING_CONSTANT;
     
-    idf := ALIASER_LOCAL.read local;
+    idf := ALIASER_LOCAL.read Self;
     (variable.ensure_count = -1).if {
       buffer.add_last '*';
     };
     buffer.append idf;
     //
+    /*
     tb ?= local.type.raw;    
     (tb != NULL).if {
       add_var_size local;
     };
+    */
   );
   
 

@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := LOCAL_USE;
+  + name      := ALIASER_LOCAL;
 
   - copyright := "2003-2009 Sonntag Benoit";
 
@@ -33,53 +33,52 @@ Section Inherit
   
 Section Private
   
-  - free:FAST_ARRAY[LOCAL_USE] := FAST_ARRAY[LOCAL_USE].create_with_capacity 128;
-  
-  - list:FAST_ARRAY[LOCAL_USE] := FAST_ARRAY[LOCAL_USE].create_with_capacity 128;
-  
-  + local:LOCAL;
-  
-  + level:INTEGER;
-  
-  - is_free:BOOLEAN <-
-  (
+  - free:FAST_ARRAY(LOCAL) := FAST_ARRAY(LOCAL).create_with_capacity 128;
     
-  );
-  
-  - set_local loc:LOCAL <-
-  (
-    local := loc;
-    level := current_list_level;
-  );
-  
 Section Public
   
-  - write loc:LOCAL :STRING_CONSTANT <-
-  // True, if alias found.
-  [ -? {loc.my_alias = NULL}; ]
+  - reset <-
+  (
+    free.clear;
+  );
+  
+  - write wr:WRITE_LOCAL :STRING_CONSTANT <-
   ( + tab:FAST_ARRAY(LOCAL);    
     + t:TYPE_FULL;
+    + loc,loc2:LOCAL;
+    + j:INTEGER;
     
-
-    (v.my_alias = NULL).if {
-      (ALIASER_LOCAL.new_alias v).if_false {              
-        t := v.type;
-        tab := var_size.item (v.type.size);
-        tab.add_last v;
+    loc  := wr.local;
+    loc2 := loc.my_alias;
+    (loc2 = NULL).if {
+      j := free.lower;
+      {(j <= free.upper) && {free.item j.type != loc.type}}.while_do {
+        j := j + 1;
       };
+      (j > free.upper).if {        
+        t := loc.type;
+        tab := var_size.item (loc.type.size);
+        tab.add_last loc;
+        loc2 := loc;        
+      } else {
+        loc2 := free.item j;
+        free.remove j;
+      };
+      loc.set_list_level current_list_level;
+      loc.set_my_alias loc2;
     };
-    v.my_alias.intern_name
-    
-    + elt:LOCAL_USE;
-    (free.is_empty).if {
-      elt := clone;
-    } else {
-      elt := free.last;
-      free.remove_last;
-    };
-    elt.set_local loc;
-    list.add_last elt;
-  )
-  [ -? {loc.my_alias != NULL}; ];
+    loc2.intern_name
+  );
 
-  - read loc:LOCAL :STRING_CONSTANT <-
+  - read rd:READ_LOCAL :STRING_CONSTANT <-
+  ( + loc,loc2:LOCAL;
+    
+    loc := rd.local;
+    loc.unread rd;
+    loc2 := loc.my_alias;
+    ((loc.ensure_count = 0) && {current_list_level <= loc.list_level}).if {
+      free.add_last loc2;
+    };
+    loc2.intern_name
+  );
+  

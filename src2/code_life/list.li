@@ -257,7 +257,11 @@ Section Public
     buffer.append "{\n";
     indent.append "  ";
     
+    current_list_level := current_list_level + 1;
+    
     genere_body buffer;
+    
+    current_list_level := current_list_level - 1;
     
     indent.remove_last 2;    
     buffer.append indent;
@@ -270,6 +274,8 @@ Section Public
     // Local.    
     pos_local := buffer.count+1;
     stack_local.clear;
+    
+    current_list_level := 0;
     
     genere_body buffer;
     

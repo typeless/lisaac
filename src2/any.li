@@ -146,7 +146,9 @@ Section Public
   - context_main:LOCAL;
   
   - list_current:LIST;
-    
+  
+  - current_list_level:INTEGER;
+  
   - stack_local:FAST_ARRAY(LOCAL)  := FAST_ARRAY(LOCAL).create_with_capacity 64;  
   
   - profil_slot:PROFIL_SLOT; // Principal slot.

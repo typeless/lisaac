@@ -105,7 +105,7 @@ Section Public
   - genere buffer:STRING <-
   ( + idf:STRING_CONSTANT;
     
-    idf := ALIASER_LOCAL.write local;        
+    idf := ALIASER_LOCAL.write Self;        
     (quiet_generation).if_false {
       (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
         buffer.add_last '*';
@@ -124,7 +124,7 @@ Section Public
   - genere_first_result buffer:STRING <-
   ( + idf:STRING_CONSTANT;
     
-    idf := ALIASER_LOCAL.write local;        
+    idf := ALIASER_LOCAL.write Self;        
     (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
       buffer.add_last '*';
     };
@@ -136,7 +136,7 @@ Section Public
   - genere_argument_result buffer:STRING <-
   ( + idf:STRING_CONSTANT;
     
-    idf := ALIASER_LOCAL.write local;
+    idf := ALIASER_LOCAL.write Self;
     buffer.add_last '&';
     buffer.append idf; 
   );

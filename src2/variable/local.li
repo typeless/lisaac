@@ -81,6 +81,13 @@ Section Public
   (
     my_alias := new_loc;
   );
+  
+  + list_level:INTEGER;
+  
+  - set_list_level lev:INTEGER <-
+  (
+    list_level := lev;
+  );
     
   - write p:POSITION with r:EXPR value val:EXPR :WRITE <-
   ( + result:WRITE;

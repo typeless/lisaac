@@ -122,10 +122,13 @@ Section Public
     
   - genere buffer:STRING <-
   ( + id:UINTEGER_32;
-    add_var_size context;
+    //+ idf:STRING_CONSTANT;
+    not_yet_implemented;    
     (is_first).if {      
+      //idf := ALIASER_LOCAL.write context;
       buffer.append "push_first(&";
     } else {
+      //idf := ALIASER_LOCAL.read context;
       buffer.append "push(&";
     };
     buffer.append (context.intern_name);
