@@ -275,7 +275,7 @@ Section Public
     pos_local := buffer.count+1;
     stack_local.clear;
     
-    current_list_level := 0;
+    ALIASER_LOCAL.reset;
     
     genere_body buffer;
     
