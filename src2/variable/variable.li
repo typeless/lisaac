@@ -77,7 +77,7 @@ Section Public
 
   - set_ensure_count c:INTEGER <-
   // Necessary for `context' local, `External' argument slot and `BLOCK' manager.
-  (
+  (        
     ensure_count := c;
   );
   
@@ -291,21 +291,37 @@ Section Public
         
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
+    /*
+    (intern_name == "Self__GMKU").if {
+      "Create : ".print;
+      result.object_id.print;
+      '\n'.print;
+      //crash;
+      IO.read_character;
+    };
+    */
     result
   );
   //[ ? {ensure_count := Old ensure_count + 1}; ];
   
   - unread e:READ <-
   (    
-        
+    /*
+    (intern_name == "Self__AJIU").if {
+      "Delete : ".print;
+      e.object_id.print;
+      '\n'.print;
+      IO.read_character;
+    };
+    */    
     ensure_count := ensure_count - 1;
     (ensure_count < 0).if {
       "C'est : ".print;
       e.debug_display;
       "\n dans :\n".print;
-      list_current.debug_display;
+      //list_current.debug_display;
       '\n'.print;
-      crash;
+      //crash;
     };
   /*  
     (intern_name == "Result__ID").if {
@@ -314,7 +330,7 @@ Section Public
     };
 */
     
-    ? {ensure_count >= 0};
+//    ? {ensure_count >= 0};
   );
     
   //

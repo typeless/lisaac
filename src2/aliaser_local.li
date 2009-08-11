@@ -20,70 +20,66 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := ITM_WRITE_CAST;
+  + name      := LOCAL_USE;
 
-  - copyright   := "2003-2007 Benoit Sonntag";
+  - copyright := "2003-2009 Sonntag Benoit";
 
-  
-  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment     := "Assignment slot `?=' style";
-  
+  - author    := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
+  - comment   := "The main prototype";
+
 Section Inherit
+
+  - parent_any:ANY := ANY;
   
-  + parent_itm_write:Expanded ITM_WRITE;
+Section Private
+  
+  - free:FAST_ARRAY[LOCAL_USE] := FAST_ARRAY[LOCAL_USE].create_with_capacity 128;
+  
+  - list:FAST_ARRAY[LOCAL_USE] := FAST_ARRAY[LOCAL_USE].create_with_capacity 128;
+  
+  + local:LOCAL;
+  
+  + level:INTEGER;
+  
+  - is_free:BOOLEAN <-
+  (
+    
+  );
+  
+  - set_local loc:LOCAL <-
+  (
+    local := loc;
+    level := current_list_level;
+  );
   
 Section Public
-
-  - type:STRING_CONSTANT <- "?=";
-
-  //
-  // Runnable 
-  //
-
-  - to_run_expr:EXPR <-
-  ( + val:EXPR;
-    + loc:LOCAL;
-    + node:NODE; 
-    + nm:STRING_CONSTANT;
-    + typ_cast:TYPE_FULL;
-    + slot:SLOT;
-    + ts:ITM_TYPE_SIMPLE;
+  
+  - write loc:LOCAL :STRING_CONSTANT <-
+  // True, if alias found.
+  [ -? {loc.my_alias = NULL}; ]
+  ( + tab:FAST_ARRAY(LOCAL);    
+    + t:TYPE_FULL;
     
-    // Value -> local.
-    val := value.to_run_expr;
-    loc := val.static_type.get_temporary position;    
-    list_current.add_last (loc.write position value val);
-    val := loc.read position;
-    // Assign.
-    nm  := get_simple_name;
-    loc := lookup nm;
-    (loc != NULL).if {
-      typ_cast := loc.type;
+
+    (v.my_alias = NULL).if {
+      (ALIASER_LOCAL.new_alias v).if_false {              
+        t := v.type;
+        tab := var_size.item (v.type.size);
+        tab.add_last v;
+      };
+    };
+    v.my_alias.intern_name
+    
+    + elt:LOCAL_USE;
+    (free.is_empty).if {
+      elt := clone;
     } else {
-      slot := profil_slot.type_self.get_slot nm; 
-      (slot = NULL).if {
-	string_tmp.copy "Slot `";
-	string_tmp.append nm;
-	string_tmp.append "' not found in static type ";
-	profil_slot.type_self.append_name_in string_tmp;
-	string_tmp.add_last '.';
-	semantic_error (position,string_tmp);
-      };
-      ts ?= slot.result_type;
-      typ_cast := ts.to_run_for profil_slot; 
+      elt := free.last;
+      free.remove_last;
     };
-    (verify).if {
-      (typ_cast.affect_with (val.static_type)).if {
-	warning_error (position,"`?=' is not necessary, use `:='.");
-      };
-    };
-    // Dispatch case.
-    node := NODE.new_cast position type typ_cast with val;
-    list_current.add_last node;    
-    // Assignment result.
-    affect nm with (node.result_expr)
-    // Value result.
-    //assign.to_run_expr
-  );
+    elt.set_local loc;
+    list.add_last elt;
+  )
+  [ -? {loc.my_alias != NULL}; ];
 
-
+  - read loc:LOCAL :STRING_CONSTANT <-

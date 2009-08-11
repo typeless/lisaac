@@ -328,18 +328,32 @@ Section Private
   ( + loc:LOCAL;
     + t:TYPE_FULL;
     + cur:INTEGER;
+    + i:INTEGER;
     
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
 	loc := tab.item j;	
         loc.is_result.if_false {
           local_counter := local_counter + 1;
-          /*
-          ((loc.ensure_count != 0) && {! loc.is_result}).if {
-            loc.intern_name.print;
-            warning_error (loc.position,"LIST.add_local Error!");
+          
+          (loc.ensure_count != 0).if {
+            i := profil_current.result_list.lower;
+            {
+              (i <= profil_current.result_list.upper) && 
+              {profil_current.result_list.item i != loc}
+            }.while_do {
+              i := i + 1;
+            };
+            (i > profil_current.result_list.upper).if {
+              
+              loc.intern_name.print;
+              ' '.print;
+              loc.ensure_count.print; 
+              '\n'.print;
+              
+            };
           };
-          */
+          
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {

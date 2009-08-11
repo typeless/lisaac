@@ -394,6 +394,7 @@ Section Public
     + np:INTEGER;
     + low:INTEGER;
     
+    profil_current := Self;
     ((link_count != 0) || {result_list.count != 0}).if {
       ((cop_link_count != 0) && {result_list.count = 0}).if {
         // COP link.

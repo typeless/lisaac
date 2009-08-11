@@ -175,38 +175,7 @@ Section Public
     };
     result
   );
-  
-  - add_var_size v:LOCAL <-
-  ( + tab:FAST_ARRAY(LOCAL);
-    + j:INTEGER;
-    + t:TYPE_FULL;
     
-    ? {v.style = '+'};
-    
-    (v.style != '+').if {
-      v.intern_name.print; " style [".print; v.style.print; "] ".print;
-      '\n'.print;
-      warning_error (v.position,"BUG ANY.add_var_size Error");
-    };
-    // BSBS: C'est pas top, avec des HASHED_SET ce serait mieux...
-    t := v.type;
-    tab := var_size.item (v.type.size);
-    j := tab.lower;    
-    {(j <= tab.upper) && {tab.item j.type != t}}.while_do {
-      j := j + 1;
-    };
-    (j > tab.upper).if {
-      tab.add_last v;
-    } else {
-      {(j <= tab.upper) && {tab.item j != v} && {tab.item j.type = t}}.while_do {
-	j := j + 1;
-      };
-      ((j > tab.upper) || {tab.item j != v}).if {
-	tab.add v to j;	
-      };
-    };
-  );
-  
   - output_decl:STRING := STRING.create 60000;
   - output_glob:STRING := STRING.create 10000;
   - output_code:STRING := STRING.create 4000000;
