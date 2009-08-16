@@ -32,7 +32,7 @@ Section Private
   + input_file:STRING;  // is input file name value without extension (auto-loading, if possible).
     
   // Debug information.
-  + debug_level:INTEGER := 0; //15;
+  + debug_level:INTEGER := 15;
   + debug_with_code:BOOLEAN := TRUE; 
   + is_all_warning:BOOLEAN;
     

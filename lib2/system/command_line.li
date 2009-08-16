@@ -43,12 +43,12 @@ Section Private
     + str:STRING;
     
     result := FAST_ARRAY(STRING).create_with_capacity c_count;
-    0.to (c_count - 1) do { j:INTEGER;
+    0.to (c_count - 1) do { j:INTEGER;     
       arg := c_item j;
       str := STRING.create (arg.fast_first_index_of '\0' until 1024);
       str.from_external_copy arg;
-      result.add_last str;
-    };
+      result.add_last str;      
+    };    
     result
   );
   

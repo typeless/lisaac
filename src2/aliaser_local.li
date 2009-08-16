@@ -34,14 +34,17 @@ Section Inherit
 Section Private
   
   - free:FAST_ARRAY(LOCAL) := FAST_ARRAY(LOCAL).create_with_capacity 128;
+  
+  - free_context:FAST_ARRAY(LOCAL) := FAST_ARRAY(LOCAL).create_with_capacity 64;
     
 Section Public
   
-  - is_on:BOOLEAN := FALSE;
+  - is_on:BOOLEAN := TRUE;
   
   - reset <-
   (
     free.clear;
+    free_context.clear;
     current_list_level := 0;
   );
   
@@ -76,6 +79,10 @@ Section Public
         } else {
           loc2 := free.item j;
           free.remove j;
+          /*
+          loc.intern_name.print; " -> ".print;
+          loc2.intern_name.print; '\n'.print;
+          */
         };
         loc.set_list_level current_list_level;
         loc.set_my_alias loc2;
@@ -94,19 +101,66 @@ Section Public
     
     loc := rd.local;
     loc2 := loc.my_alias;
+    loc.unread rd;        
     ((loc2 = NULL) || {! is_on}).if {
       result := loc.intern_name;
-    } else {      
-      loc.unread rd;    
+    } else {                  
       ((loc.ensure_count = 0) && {current_list_level <= loc.list_level}).if {
-        free.add_last loc2;
+        free.add_last loc2;        
       };
       result := loc2.intern_name;
     };
     result
   );
   
-Section Private
+  - push p:PUSH :STRING_CONSTANT <-
+  ( + tab:FAST_ARRAY(LOCAL);    
+    + t:TYPE_FULL;
+    + loc,loc2:LOCAL;
+    + j:INTEGER;
+    + result:STRING_CONSTANT;
+    
+    loc  := p.context;
+    (is_on).if {      
+      (loc.my_alias = NULL).if {  // BSBS: .is_first devrait marcher => pb!!!
+        j := free_context.lower;
+        {
+          (j <= free_context.upper) && 
+          {free_context.item j.list_level <= current_list_level}
+        }.while_do {
+          j := j + 1;
+        };
+        (j > free_context.upper).if {        
+          t := loc.type;
+          tab := var_size.item (loc.type.size);
+          j := tab.lower;    
+          {(j <= tab.upper) && {tab.item j.type != t}}.while_do {
+            j := j + 1;
+          };
+          (j > tab.upper).if {
+            tab.add_last loc;
+          } else {          
+            tab.add loc to j;	
+          };
+          loc2 := loc;        
+          free_context.add_last loc;          
+        } else {
+          loc2 := free_context.item j;                    
+        };
+        loc2.set_list_level current_list_level;
+        loc.set_my_alias loc2;
+      };
+      result := loc.my_alias.intern_name;
+    } else {
+      //(p.is_first).if {  // BSBS: SUPER LOUCHE !
+        add_var_size loc;
+      //};
+      result := loc.intern_name;
+    };
+    result
+  );
+  
+Section ALIASER_LOCAL, READ_LOCAL
   
   - add_var_size v:LOCAL <-
   ( + tab:FAST_ARRAY(LOCAL);

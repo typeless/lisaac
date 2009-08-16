@@ -369,7 +369,7 @@ Section Public
     // Results.      
     (result_list.lower + 1).to (result_list.upper) do { j:INTEGER;
       v := result_list.item j;
-      v.set_ensure_count (-1);
+      //v.set_ensure_count (-100);
       v.set_result TRUE;
       genere v result TRUE in buffer;
       buffer.add_last ',';
@@ -393,6 +393,7 @@ Section Public
     + v:LOCAL;
     + np:INTEGER;
     + low:INTEGER;
+    + idf:STRING_CONSTANT;
     
     profil_current := Self;
     ((link_count != 0) || {result_list.count != 0}).if {
@@ -435,7 +436,12 @@ Section Public
         ).if {
           buffer.add_last '&';
         };	
-        buffer.append (loc.intern_name);
+        (loc.my_alias = NULL).if {
+          idf := loc.intern_name;
+        } else {
+          idf := loc.my_alias.intern_name;
+        };
+        buffer.append idf;
         buffer.append ");\n";    
       };
       // End.
