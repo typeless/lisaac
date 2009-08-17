@@ -28,15 +28,15 @@ Section Header
   - comment     :=" General purpose resizable ARRAYs .";
   
   // General purpose resizable ARRAYs as they are define in the Eiffel language definition.
-  // The `lower' bound can be any arbitrary value, even a negative one.
+  // The `lower' bound can be any arbitrary value, even a negative one.<br/> <br/>
   //
   // This implementation uses only one chunk of memory, the `storage' area which is a 
   // NATIVE_ARRAY. One must keep in mind that this internal `storage' area is always kept 
   // left align. Thus, you can expect good performances while using an ARRAY to modelize a
-  // stack behavior with `add_last' / `last' / `remove_last'.
+  // stack behavior with `add_last' / `last' / `remove_last'.<br/>
   // Conversely `add_first' and `remove_first' are likely to slow down your program if 
   // they are too often used. If the fact that `lower' is always stuck to 0 is not a 
-  // problem for you, also consider FAST_ARRAY to get better performances.
+  // problem for you, also consider FAST_ARRAY to get better performances.<br/>
   
 Section Inherit
     
@@ -65,6 +65,10 @@ Section Public
   // Prepare the array to hold values for indexes in range
   // [`min_index' .. `max_index']. Set all values to default.
   // When `max_index' = `min_index' - 1, the array `is_empty'.
+  // * Require: `min_index' inferior or equal to `max_index' + 1
+  // * Ensure: `lower' is equal to `min_index'
+  // * Ensure: `upper' is equal to `max_index'
+  // * Ensure: all values are in default
   [ ...
     {min_index <= max_index + 1} -? "Valid bounds.";
   ]
@@ -105,6 +109,8 @@ Section Public
 Section Public
   
   - ensure_capacity needed_capacity:INTEGER and_bounds low:INTEGER to up:INTEGER <-
+  // Extend needed capacity and bouds if necessary
+  // * Require: `up' superior or equal to `low' - 1
   [ ...
     -? { up >= low - 1 };
     -? { needed_capacity >= up - low + 1 };
@@ -133,6 +139,9 @@ Section Public
   // item whose index is in both [`lower' .. `upper'] and
   // [`min_index' .. `max_index']. New positions if any are
   // initialized with the appropriate default value.
+  // * Require: `min_index' inferior or equal to `max_index' + 1
+  // * Ensure: `lower' is equal to `min_index'
+  // * Ensure: `upper' is equal to `max_index'
   [ ...
     -? { min_index <= max_index + 1 };
   ]
@@ -184,6 +193,8 @@ Section Public
   - reindex new_lower:INTEGER <-
   // Change indexing to take in account the expected `new_lower'
   // index. The `upper' index is translated accordingly.
+  // * Ensure: `lower' is equal to `new_lower'
+  // * Ensure: `count' is equal to `count' before
   ( + i:INTEGER;
     
     i := new_lower - lower;
@@ -192,7 +203,7 @@ Section Public
   )
   [ ...
     +? { lower = new_lower };
-    +? { count = old count };
+    +? { count = Old count };
   ];
   
   //
@@ -200,6 +211,8 @@ Section Public
   //
   
   - subarray min:INTEGER to max:INTEGER :SELF <-
+  // Return the subarray between `min' to `max'
+  // * Ensure: `Result.lower' is equal to `min' before
   ( + result:SELF;    
 
     result := slice min to max;
@@ -210,21 +223,32 @@ Section Public
     +? { Result.lower = min };
   ];
   
-  - is_empty:BOOLEAN <- ( upper < lower );
+  - is_empty:BOOLEAN <-
+  // Is Self empty ?
+  ( upper < lower );
   
-  - count:INTEGER <- ( upper - lower + 1 );
+  - count:INTEGER <- 
+  //Size of current 
+  ( upper - lower + 1 );
   
   - item i:INTEGER :V <-
+  // Item at the corresponding index `i'.
+  // * Description en Francais : Item à l'index `i'
+  // * See: `lower', `upper', `valid_index', `put', `swap'
   ( 
     storage.item (i - lower)
   );
   
   - put element:V to i:INTEGER <-
+  // Make `element' the item at index `i'.
+  // * See: `lower', `upper', `valid_index', `item', `swap', `force'.
   ( 
     storage.put element to (i - lower);    
   );
     
   - force element:V to index:INTEGER <-
+  // Make `element' the item at index `i', reindexing array if necessary.
+  // * See: `lower', `upper', `valid_index', `item', `swap', `force'.
   (     
     (upper < index).if {
       (index = upper + 1).if {
@@ -245,6 +269,7 @@ Section Public
   ];
   
   - copy other:SELF <-
+  // Copy `other' into Self
   ( +  needed_capacity:INTEGER;
     
     lower := other.lower;
@@ -260,11 +285,14 @@ Section Public
   );
   
   - set_all_with v:V <-
+  // Set all element with `v' 
   ( 
     storage.set_all_with v until (upper - lower);    
   );
   
   - remove_first <-
+  // Remove the first `element'
+  // * Ensure: `upper' has same value before and after
   ( 
     storage.remove_first (upper - lower);
     lower := lower + 1;
@@ -274,6 +302,8 @@ Section Public
   ];
   
   - remove_head n:INTEGER <-
+  // Remove the n firsts `element'
+  // * Ensure: `upper' has same value before and after
   (
     storage.move (n - lower + 1) to (upper - lower) by (-n);
     lower := lower + n;
@@ -283,12 +313,16 @@ Section Public
   ];
   
   - remove index:INTEGER <-
+  // Remove the nth `element'
+
   ( 
     storage.remove (index - lower) until (upper - lower);
     upper := upper - 1;        
   );
   
   - clear <-
+  // Clear the array
+  // * Ensure: `capacity' has same value before and after
   (
     upper := lower - 1;    
   )
@@ -297,6 +331,10 @@ Section Public
   ];
   
   - add_first element:V <-
+  // Add a new item in first position : `count' is increased by
+  // one and all other items are shifted right.
+  //
+  // * See: `add_last', `first', `last', `add'.
   ( 
     (upper < lower).if {
       add_last element;
@@ -308,6 +346,9 @@ Section Public
   );
   
   - add_last element:V <-
+  // Add a new item at the end : `count' is increased by one.
+  //
+  // * See: `add_first', `last', `first', `add'.
   ( + new_capacity:INTEGER;
     
     ( capacity < count + 1 ).if {
@@ -326,6 +367,7 @@ Section Public
   );
   
   - from_collection model:COLLECTION(V) <-
+  // Initialize the current object with the contents of `model'
   (
     with_capacity ((model.count),(model.lower));    
     upper := modele.upper;    
