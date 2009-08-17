@@ -30,25 +30,25 @@
   "<font color=\"#B8860B\">" + token + "</font>";
   
   - keyprototype :=
-  "<font color=\"#008000\">"+token+"</font>";
+  "&nbsp;<font color=\"#008000\">"+token+"</font>";
 
   - prototype :=
-  "<a href=\"" + token + ".html\">\
+  "&nbsp;<a href=\"" + token + ".html\">\
   \<font color=\"#008000\">"+token+"</font></a>";
     
   - comment_line :=
-  "<br><font FACE=\"Sans-serif\" color=\"#000000\"><B>" + token + "</B></font>";
+  "<br><font FACE=\"Helvetica\" color=\"#000000\"><B>" + token + "</B></font>";
 
   - comment_slot_line :=
   "<dd>" + token + "</dd>";
       
   - slot := 
-  "<strong><font color=\"#0000FF\">" + token + "</font></strong>";
+  "&nbsp;<strong><font color=\"#0000FF\">" + token + "</font></strong>&nbsp;";
   
   - slot_style :=
   "<dd><strong><font color=\"#FF0000\">" + token + " </font></strong>";
   
-  - local := token;  
+  - local := "&nbsp;"+token+"&nbsp;";  
 
   - block := 
   "<font color=\"#FF0000\">" + token + "</font>";  
