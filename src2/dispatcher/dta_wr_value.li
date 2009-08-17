@@ -59,6 +59,11 @@ Section Public
     self_arg    := arg;
     result_expr := v.my_copy; 
     value       := v;
+    (profil_current = NULL).if {
+      context := context_main;
+    } else {
+      context := profil_current.context;
+    };
   );
 
   //
@@ -90,7 +95,7 @@ Section NODE_TYPE, DTA
     
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {
-      TYPE_NULL.product_error position in result;
+      TYPE_NULL.product_error position in result with context;
     } else {
       lookup t with e in result;
     };

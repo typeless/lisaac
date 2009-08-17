@@ -26,11 +26,11 @@ Section Header
 
   
   - bibliography:= "http://IsaacOS.com";
-  - author      := "Matthieu Brehier, Sonntag Benoit (bsonntag@loria.fr)";
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Shorter source code.";
   
   - external := `#include "path.h"`;
-  
+    
 Section Inherit
   
   - parent_any:ANY := ANY;

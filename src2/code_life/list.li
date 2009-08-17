@@ -342,7 +342,11 @@ Section Private
         loc.is_result.if_false {
           local_counter := local_counter + 1;
           
-          (loc.ensure_count != 0).if {
+          (
+            (loc.ensure_count != 0) && 
+            {profil_current != NULL} && 
+            {loc.type.raw != TYPE_CONTEXT}
+          ).if {            
             i := profil_current.result_list.lower;
             {
               (i <= profil_current.result_list.upper) && 

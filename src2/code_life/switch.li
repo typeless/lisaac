@@ -278,7 +278,7 @@ Section Public
         is_genered := TRUE;
         buffer.append ".__id==0";
       } else {        
-        typ_first.put_access_id expr in buffer;      
+        typ_first.put_access_id expr in buffer;        
         is_genered := TRUE;
         (expr.static_type.raw != type_boolean).if {
           buffer.append "==";
@@ -312,12 +312,14 @@ Section Public
       polymorphic_counter := polymorphic_counter + 1;            
       buffer.append "switch (";      
       (is_genered).if {
-        rd ?= expr;
+        //expr := expr.my_copy;
+         rd ?= expr;
         (rd = NULL).if {
           crash_with_message "SWITCH.genere ";
         } else {
           rd.variable.set_ensure_count (rd.variable.ensure_count + 1);
         };
+        
       };
       list.item first_case.id.put_access_id expr in buffer;
       buffer.append ") {\n";

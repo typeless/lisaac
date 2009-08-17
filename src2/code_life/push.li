@@ -123,7 +123,7 @@ Section Public
   - genere buffer:STRING <-
   ( + id:UINTEGER_32;
     + idf:STRING_CONSTANT;
-    
+        
     idf := ALIASER_LOCAL.push Self; 
     (is_first).if {      
       buffer.append "push_first(&";
@@ -146,7 +146,6 @@ Section Public
     position.line.append_in buffer;
     buffer.add_last ' ';
     buffer.append (position.prototype.name);    
-    
   );
 
   //

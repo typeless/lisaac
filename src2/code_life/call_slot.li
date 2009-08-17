@@ -518,6 +518,7 @@ Section Private
     + new_val:EXPR;
     + new_wrt:INSTR;
     + result:LOOP;
+    + push:PUSH;
     
     result := LOOP.create position name (profil.name) body source;
     
@@ -552,12 +553,9 @@ Section Private
     };
         
     (debug_level_option != 0).if {      
-      ? { + push:PUSH;      
-	push ?= source.first;
-	(push != NULL) && {push.is_first}
-      };
-      list_current.insert (source.first) to (list_current.index);      
-      source.put NOP to (source.lower);
+      push ?= source.first;
+      list_current.insert (push.my_copy) to (list_current.index);      
+      push.set_first FALSE;
     };
     
     // Extract Switch/body:

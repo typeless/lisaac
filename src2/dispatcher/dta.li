@@ -68,7 +68,7 @@ Section NODE_TYPE, DTA
         
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {                  
-      TYPE_NULL.product_error position in result;            
+      TYPE_NULL.product_error position in result with context;            
       ? {result.count != 0};
     } else {
       lookup t with e in result;

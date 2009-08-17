@@ -292,12 +292,14 @@ Section Public
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
     /*
-    (intern_name == "Self__GMKU").if {
+    (intern_name == "k__ELZH").if {
       "Create : ".print;
       result.object_id.print;
-      '\n'.print;
-      //crash;
-      IO.read_character;
+      '\n'.print;      
+      //(result.object_id = 1).if {
+        crash;
+      //};
+      IO.read_character;      
     };
     */
     result
@@ -307,7 +309,7 @@ Section Public
   - unread e:READ <-
   (    
     /*
-    (intern_name == "Self__AJIU").if {
+    (intern_name == "k__ELZH").if {
       "Delete : ".print;
       e.object_id.print;
       '\n'.print;

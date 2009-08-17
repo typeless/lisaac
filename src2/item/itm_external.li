@@ -73,9 +73,9 @@ Section Public
 	exp1 := profil_slot.argument_list.first.read position;
 	result := IS_EXPANDED.create position receiver exp1;
       }
-      .when 1 then { // type_id_intern:INTEGER
-	exp1 := profil_slot.argument_list.first.read position;
-	result := GET_TYPE_ID.create position receiver exp1;
+      .when 1 then { // type_id_intern:INTEGER	
+        result := GET_TYPE_ID.create position receiver
+        (profil_slot.argument_list.first.type);
       }
       .when 2 then { // INTEGER > INTEGER -> BOOLEAN.
 	left   := profil_slot.argument_list.first .read position;
@@ -127,8 +127,8 @@ Section Public
 	result := INTEGER_CST.create position value debug_level_option type (type_integer.default);
       }
       .when 12 then { // object_size -> INTEGER.	
-	exp1 := profil_slot.argument_list.first.read position;
-	result := SIZE_OF.create position receiver exp1;
+        result := SIZE_OF.create position receiver 
+        (profil_slot.argument_list.first.type);
       }
       .when 13 then { // CONVERT SRC TO DST.on src:SRC :DST.
         type := profil_slot.result_list.first.type;        

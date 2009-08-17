@@ -230,11 +230,15 @@ Section Private
       //      
       (debug_level_option != 0).if {	        
         // BSBS: Poser le PUSH avant le NODE
-	(data.context = NULL).if {
-	  ctext := context_main;
-	} else {
-	  ctext := data.context;
-	};
+	//(data.context = NULL).if {
+	//  ctext := context_main;
+        //} else {
+        (data.context = NULL).if {
+          crash_with_message "NODE_STYLE : data.context = NULL!\n";
+        };
+        
+        ctext := data.context;
+	//};
 	result.add_last (
 	  PUSH.create position context ctext first FALSE
         );     
