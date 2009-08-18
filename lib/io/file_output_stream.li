@@ -28,7 +28,7 @@ Section Header
 
 Section Inherit
 
-  - parent_output_stream :OUTPUT_STREAM := OUTPUT_STREAM;
+  - inherit_output_stream :OUTPUT_STREAM := OUTPUT_STREAM;
 
 Section Public
 
@@ -54,6 +54,7 @@ Section Public
 Section Public
 
   - put_character c:CHARACTER <-
+  // Put `c' on stream
   ( 
     tmp.put c to 0;
     file.physical_write tmp size 1;

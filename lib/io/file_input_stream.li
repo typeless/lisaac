@@ -28,7 +28,7 @@ Section Header
 
 Section Inherit
 
-  - parent_input_stream :INPUT_STREAM := INPUT_STREAM;
+  - inherit_input_stream :INPUT_STREAM := INPUT_STREAM;
 
 Section Public
 
@@ -71,6 +71,7 @@ Section Private
 Section Public
 
   - read_character <-
+  // Return last character from stream
   ( + result:INTEGER;
     
     push_back_flag.if {
@@ -96,6 +97,7 @@ Section Public
   );
 
   - read_line_in buffer:STRING <-
+  // Return line from stream
   (
     read_character;
     ((! end_of_input) && {last_character != '\n'}).if {

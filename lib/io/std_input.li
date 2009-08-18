@@ -29,7 +29,7 @@ Section Header
       
 Section Inherit
   
-  - parent_input_stream:INPUT_STREAM := INPUT_STREAM;
+  - inherit_input_stream:INPUT_STREAM := INPUT_STREAM;
   
 Section Private
 
@@ -41,6 +41,7 @@ Section Public
   - is_connected:BOOLEAN := TRUE;
   
   - read_character:CHARACTER<-
+  // Read character from stdin
   (
     push_back_flag.if {
       push_back_flag := FALSE;
@@ -58,12 +59,14 @@ Section Public
   
   
   - last_character:CHARACTER <-
+  // Return last character from stdin
   (
     memory
   );
   
   
   - end_of_input:BOOLEAN <-
+  // Return TRUE if end of input
   (
     + result:BOOLEAN;
     (! push_back_flag).if {
@@ -73,6 +76,7 @@ Section Public
   );
   
   - read_line_in str:STRING <-
+  // Real all character until \n (so read a line)
   (
     + mem:CHARACTER;
     read_character;

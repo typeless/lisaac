@@ -29,13 +29,14 @@ Section Header
   
 Section Inherit
   
-  - parent_output_stream:OUTPUT_STREAM := OUTPUT_STREAM;
+  - inherit_output_stream:OUTPUT_STREAM := OUTPUT_STREAM;
   
 Section Public
   
   - is_connected:BOOLEAN := TRUE;
   
   - put_character c:CHARACTER <- basic_io_putc c;
+  // Put `c' on stdout
 
 
   

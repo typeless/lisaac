@@ -29,9 +29,9 @@ Section Header
   
 Section Inherit
   
-  - parent_input_stream:INPUT_STREAM := INPUT_STREAM;
+  - inherit_input_stream:INPUT_STREAM := INPUT_STREAM;
 
-  - parent_output_stream:OUTPUT_STREAM := OUTPUT_STREAM;
+  - inherit_output_stream:OUTPUT_STREAM := OUTPUT_STREAM;
   
 Section Public
 
