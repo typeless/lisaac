@@ -32,7 +32,7 @@ Section Private
   + input_file:STRING;  // is input file name value without extension (auto-loading, if possible).
     
   // Debug information.
-  + debug_level:INTEGER := 0; //15;
+  + debug_level:INTEGER := 15;
   + debug_with_code:BOOLEAN := TRUE; 
   + is_all_warning:BOOLEAN;
     
@@ -64,7 +64,7 @@ Section Private
   - standard_path <-
   // Standard library.
   ( 
-    path (lisaac + "lib2/*");    
+    path (lisaac + "lib/*");    
   );
   
   //
@@ -73,31 +73,31 @@ Section Private
   
   - unix_target <-
   (
-    path (lisaac + "lib2_os/unix/system/");
-    path (lisaac + "lib2_os/unix/file_system/");
-    path (lisaac + "lib2_os/unix/video/");
+    path (lisaac + "lib_os/unix/system/");
+    path (lisaac + "lib_os/unix/file_system/");
+    path (lisaac + "lib_os/unix/video/");
   );
   
   - windows_target <-
   (
-    path (lisaac + "lib2_os/unix/system/");
-    path (lisaac + "lib2_os/windows/file_system/");
-    path (lisaac + "lib2_os/unix/file_system/");  // BSBS: ??
-    path (lisaac + "lib2_os/windows/video/");
+    path (lisaac + "lib_os/unix/system/");
+    path (lisaac + "lib_os/windows/file_system/");
+    path (lisaac + "lib_os/unix/file_system/");  // BSBS: ??
+    path (lisaac + "lib_os/windows/video/");
   );
 
   - dos_target <-
   (
-    path (lisaac + "lib2_os/unix/system/");
-    path (lisaac + "lib2_os/unix/file_system/"); // BSBS: ??    
-    path (lisaac + "lib2_os/dos/file_system/");
-    path (lisaac + "lib2_os/dos/video/");
+    path (lisaac + "lib_os/unix/system/");
+    path (lisaac + "lib_os/unix/file_system/"); // BSBS: ??    
+    path (lisaac + "lib_os/dos/file_system/");
+    path (lisaac + "lib_os/dos/video/");
   );
   
   - java_target <-
   (
-    path (lisaac + "lib2_os/java/system/");
-    path (lisaac + "lib2_os/java/file_system/");
+    path (lisaac + "lib_os/java/system/");
+    path (lisaac + "lib_os/java/file_system/");
   );
   
   - get_target <-

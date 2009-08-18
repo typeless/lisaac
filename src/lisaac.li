@@ -92,8 +92,8 @@ Section Private
   - end_usage:STRING_CONSTANT :=
   "                                                                \n\
   \Bug report:                                                     \n\
-  \\t post in : https://gna.org/bugs/?group=isaac         \n\
-  \\t mail to : sonntag@icps.u-strasbg.fr                 \n";
+  \\t post in : https://alioth.debian.org/projects/lisaac/         \n\
+  \\t mail to : sonntag@icps.u-strasbg.fr                          \n";
 
   - display_usage <-
   (
@@ -782,12 +782,14 @@ Section Public
 	STD_ERROR.put_integer (POSITION.nb_warning);
 	STD_ERROR.put_string " warning(s).\n";
       };
-      STD_ERROR.put_string " Local   counter : ";
-      STD_ERROR.put_integer (LIST.local_counter);
-      STD_ERROR.put_string "\n";
-      STD_ERROR.put_string " Context counter : ";
-      STD_ERROR.put_integer (LIST.context_counter);
-      STD_ERROR.put_string "\n";
+      (is_statistic).if {
+        STD_ERROR.put_string " Local   counter : ";
+        STD_ERROR.put_integer (LIST.local_counter);
+        STD_ERROR.put_string "\n";
+        STD_ERROR.put_string " Context counter : ";
+        STD_ERROR.put_integer (LIST.context_counter);
+        STD_ERROR.put_string "\n";
+      };
     };
     
     (is_statistic).if {            
