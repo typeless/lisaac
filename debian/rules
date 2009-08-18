@@ -1,0 +1,97 @@
+#!/usr/bin/make -f
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+CFLAGS = -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: patch build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp: configure-stamp 
+	gcc $(CFLAGS) bin/lisaac.c -o bin/lisaac
+	gcc $(CFLAGS) bin/shorter.c -o bin/shorter
+	gcc $(CFLAGS) bin/shorter_local.c -o bin/shorter_local
+	touch build-arch-stamp
+
+build-indep: build-indep-stamp
+build-indep-stamp: configure-stamp 
+	mkdir lib_html
+	bin/shorter_local -r -f html lib -o lib_html
+	touch build-indep-stamp
+
+clean: clean-patched unpatch
+clean-patched:
+	dh_testdir
+	dh_testroot
+	rm -f configure-stamp
+	rm -f build-arch-stamp build-indep-stamp
+	rm -f bin/lisaac bin/shorter bin/shorter_local
+	rm -rf lib_html
+	dh_clean 
+
+patch: patch-stamp
+patch-stamp:
+	dpatch apply-all
+	touch patch-stamp
+
+unpatch:
+	dpatch deapply-all
+	rm -rf patch-stamp debian/patched
+
+install: install-indep install-arch
+install-indep:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -i 
+	dh_installdirs -i
+	dh_install -i
+
+install-arch:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -s 
+	dh_installdirs -s
+	dh_installman debian/lisaac.1 debian/shorter.1
+	install -m 755 $(CURDIR)/bin/lisaac $(CURDIR)/debian/lisaac/usr/bin/lisaac
+	install -m 755 $(CURDIR)/bin/shorter $(CURDIR)/debian/lisaac/usr/bin/shorter
+	dh_install -s
+
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+	dh_installemacsen
+	dh_installexamples
+	dh_installman
+	dh_link
+	dh_strip
+	dh_compress 
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-indep: build-indep install-indep
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+binary-arch: build-arch install-arch
+	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure
