@@ -138,14 +138,10 @@ Section Private
     (! is_quiet).if {
       "run `".print;
       cmd.print;
-      "' ".print;
+      "'\n".print;
     };
-    (run cmd = 0).if {
-      (! is_quiet).if {
-        "OK\n".print;
-      };
-    } else {
-      "Failure!\n".print;
+    (run cmd != 0).if {
+      "FAILURE!\n".print;
     };
   );
   

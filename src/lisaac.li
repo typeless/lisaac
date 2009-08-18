@@ -782,17 +782,15 @@ Section Public
 	STD_ERROR.put_integer (POSITION.nb_warning);
 	STD_ERROR.put_string " warning(s).\n";
       };
-      (is_statistic).if {
-        STD_ERROR.put_string " Local   counter : ";
-        STD_ERROR.put_integer (LIST.local_counter);
-        STD_ERROR.put_string "\n";
-        STD_ERROR.put_string " Context counter : ";
-        STD_ERROR.put_integer (LIST.context_counter);
-        STD_ERROR.put_string "\n";
-      };
     };
     
     (is_statistic).if {            
+      STD_ERROR.put_string "  Local counter        : ";
+      STD_ERROR.put_integer (LIST.local_counter);
+      STD_ERROR.put_string "\n";
+      STD_ERROR.put_string "  Context counter      : ";
+      STD_ERROR.put_integer (LIST.context_counter);
+      STD_ERROR.put_string "\n";
       print "  Null call score      : " stat null_counter for late_binding_counter;            
       print "  Polymorphic call     : " stat polymorphic_counter for late_binding_counter;
       (is_optimization).if {
