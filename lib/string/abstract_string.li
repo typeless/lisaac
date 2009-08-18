@@ -37,16 +37,20 @@ Section Inherit
 Section Public  //ABSTRACT_STRING, ABSTRACT_ENTRY
   
   + storage:NATIVE_ARRAY(CHARACTER);
+  // Collection containing characters
   
 Section Public
   
   + count:INTEGER;
+  // size
   
-  - lower:INTEGER := 1;
+  - lower:INTEGER := 1; 
   
   - upper:INTEGER <- count;
+  // size
   
   - capacity:INTEGER <- count;
+  // size
   
   //
   // Access.
@@ -54,6 +58,7 @@ Section Public
   
   - item index:INTEGER :CHARACTER <-
   // Character at position `index'.
+  // * Require: index is valid
   [
     -? {valid_index index};
   ]
@@ -72,18 +77,21 @@ Section Public
   //
   
   - when value:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
+  // When `Self' equal `value', execute `block'
   (
     (Self == value).if block;
     Self
   );
 
   - when value1:ABSTRACT_STRING or value2:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
+  // When `Self' equal `value1' or `value2', execute `block'
   (
     ((Self == value1) || {Self == value2}).if block;
     Self
   );
 
   - case value:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
+  // * See: `when_then'
   ( + result :ABSTRACT_STRING;
     
     ((Self != ABSTRACT_STRING) && {Self == value}).if {
@@ -96,6 +104,7 @@ Section Public
   );
 
   - case_if test:{BOOLEAN} then block:{} :ABSTRACT_STRING <-
+  // If `test' is true then `block'
   ( + result :ABSTRACT_STRING;
     
     ((Self != ABSTRACT_STRING) && test).if {
@@ -108,6 +117,7 @@ Section Public
   );
 
   - case_else block:{} <-
+  // otherwise, execute `block'
   (
     (Self != ABSTRACT_STRING).if block;
   );
@@ -121,8 +131,10 @@ Section Public
   ( index.in_range lower to count );
   
   - is_empty : BOOLEAN <- count == 0;
+
   
   - hash_code: INTEGER <-
+  // Return a hashcode
   ( + result:INTEGER;
     
     1.to count do { i:INTEGER;
@@ -155,6 +167,7 @@ Section Public
   );
   
   - compare other:ABSTRACT_STRING :INTEGER <-
+  // Compare alphabetically `Self' to `other'
   ( + i: INTEGER;
     + result:INTEGER;
     i := 1;
