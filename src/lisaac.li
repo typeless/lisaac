@@ -134,6 +134,9 @@ Section Private
           }
           .when 'p' then {
             is_path_list := TRUE;
+          }
+          .when 'r' then {
+            is_readable := TRUE;
           };
         } else {
           (lip_ok).if_false {

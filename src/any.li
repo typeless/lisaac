@@ -89,7 +89,9 @@ Section Public
      
   - verbose_level:INTEGER;
   - is_verbose:BOOLEAN <- (verbose_level != 0);
-
+  
+  - is_readable:BOOLEAN;
+  
   //
   // Other flags.
   //

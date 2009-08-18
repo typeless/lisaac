@@ -280,8 +280,12 @@ Section Public
   ( + result:STRING_CONSTANT;
     + v,m:INTEGER;
     
-    tmp_name.copy str;    
-    tmp_name.append "__";    
+    (is_readable).if {
+      tmp_name.copy str;    
+      tmp_name.append "__";    
+    } else {
+      tmp_name.copy "__";
+    };
     count_variable := count_variable + 1;
     v:=count_variable;
     { v = 0 }.until_do {
