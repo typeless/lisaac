@@ -142,27 +142,36 @@ Section Public
   //
   
   - kb:SELF <- Self << 10;
-  
+  // Self in Kilobyte (ie. 1kb = 1024 bytes)
+
   - mb:SELF <- Self << 20;
-  
+  // Self in megabytes
+
   - gb:SELF <- Self << 30;
-  
+  // Self in gigabytes
+
   - tb:SELF <- Self << 40;
-  
+  // Self in terabytes
+
   //
   // Logic Operator
   //
       
   - Self:SELF '&'  Left 100 other:SELF :SELF <- `6`;
-  
+  // AND operator
+
   - Self:SELF '|'  Left 80  other:SELF :SELF <- ~(~Self & ~other);
-  
+  // OR operator
+
   - Self:SELF '^'  Left 80  other:SELF :SELF <- (~Self & other) | (Self & ~other);
+  // XOR operator
 
   - Self:SELF '>>' Left 100 other:INTEGER :SELF <- `7`;
+  // Shift right
 
   - Self:SELF '<<' Left 100 other:INTEGER :SELF <- `8`;
-  
+  // Shift left
+
   //
   // Unary operator
   //
@@ -184,6 +193,7 @@ Section Public
   );
   
   - is_power_2:BOOLEAN <-
+  // TRUE is Self is power of 2
   ( + val:SELF;
     + result:BOOLEAN;
     
@@ -202,6 +212,7 @@ Section Public
   //
   
   - sqrt:SELF <-
+  // Square root
   ( + r,x:SELF;
     
     x:=(Self + 1) >> 1;
@@ -213,8 +224,11 @@ Section Public
   );
   
   - Self:SELF '!' :SELF <- factorial;
+  // Factorial. Use it like "45!;" or "bar!.print;"
   
   - factorial:SELF <-
+  // Factorial. 
+  // * Require: Self >= 0
   [
     -? {Self >= 0};
   ]
@@ -230,6 +244,8 @@ Section Public
   );
   
   - fibonacci:SELF <-
+  // Fibonacci
+  // * Require: Self >= 0
   [
     -? {Self >= 0};
   ]
@@ -382,7 +398,7 @@ Section Public
   // Convert the hexadecimal view of `self' into a new allocated
   // STRING. For example, if `self' is -1 the new STRING is
   // "FFFFFFFF" on a 32 bit machine.
-  // Note: see also `to_hexadecimal_in' to save memory.
+  // * See:  `to_hexadecimal_in' to save memory.
   ( + result:STRING;
     
     result := STRING.create 8;
@@ -394,7 +410,7 @@ Section Public
   // Convert the hexadecimal view of `self' into a new allocated
   // STRING. For example, if `self' is -1 the new STRING is
   // "FFFFFFFF" on a 32 bit machine.
-  // Note: see also `to_hexadecimal_in' to save memory.
+  // * See:  `to_hexadecimal_in' to save memory.
   ( + result:STRING;
     
     result := STRING.create 8;

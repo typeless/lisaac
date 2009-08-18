@@ -126,20 +126,27 @@ Section Public
   //
     
   - when value:SELF then block:{} :SELF <-
+  // when `value' equals `Self', execute `block'
+  // You can chain "when ... then ..." between them like : <br/>
+  // bar.when 1 then { // code }.when 2 then { // code 2 }
   (
     (Self = value).if block;
     Self
   );
   
   - when value1:SELF or value2:SELF then block:{} :SELF <-
+  // when `value1' or `value2' equal `Self', execute `block'
   (
     ((Self = value1) || {Self = value2}).if block;
     Self
   );
   
   - when first_value:SELF to last_value:SELF then block:{} :SELF <-
-  ( ? {first_value <= last_value};
-    
+  // Execute `block' when  `Self' is in range of `first_value' to `last_value'
+  [ 
+	?- {first_value <= last_value}; //PAPA: debug manager ou contrat ?
+  ]
+  ( 
     ((Self >= first_value) && {Self <= last_value}).if block;
     Self
   );
@@ -149,6 +156,7 @@ Section Public
   //
     
   - to limit_up:SELF do blc:{SELF;} <-
+  // Classical loop from `Self' to `limit_up'
   (
     (Self <= limit_up).if {
       blc.value Self;
@@ -157,6 +165,7 @@ Section Public
   );
   
   - downto limit_down:SELF do blc:{SELF;} <-
+  // Classical backward loop from `Self' to `limit_up'
   (
     (Self >= limit_down).if {
       blc.value Self;
@@ -165,6 +174,7 @@ Section Public
   );
   
   - to limit_up:SELF by step:SELF do blc:{SELF;} <-
+  // Classical loop from `Self' to `limit_up' stepping `step'
   (
     (Self <= limit_up).if {
       blc.value Self;
@@ -173,6 +183,7 @@ Section Public
   );
   
   - downto limit_down:SELF by step:SELF do blc:{SELF;} <-
+  // Classical backward loop from `Self' to `limit_up' stepping `step'
   (
     (Self >= limit_down).if {
       blc.value Self;
@@ -185,7 +196,7 @@ Section Public
   //
   
   - abs:SELF <- 
-  // Absolute value of `self'.
+  // Absolute value of `Self'.
   ( + result:SELF;
     
     (Self < 0).if {
@@ -197,6 +208,7 @@ Section Public
   );
   
   - min other:SELF :SELF <-
+  // Minimum between value of `Self' and `other'
   ( + result:SELF;
     
     (Self > other).if {
@@ -208,6 +220,7 @@ Section Public
   );
   
   - max other:SELF :SELF <-
+  // Maximum between value of `Self' and `other'
   ( + result:SELF;
     
     (Self > other).if {
@@ -225,7 +238,7 @@ Section Public
   - to_string:STRING <-
   // Convert the decimal view of `self' into a new allocated STRING.
   // For example, if `self' is -1 the new STRING is -1.
-  // Note: see also `append_in' to save memory.
+  // * See:  `append_in' to save memory.
   ( + result:STRING;
     
     result := STRING.create 11;
@@ -233,7 +246,9 @@ Section Public
     result
   );
   
-  - to_boolean:BOOLEAN <- Self != 0;
+  - to_boolean:BOOLEAN <- 
+  // TRUE if `Self' not zero
+  Self != 0;
   
   - append_in buffer:STRING <- deferred;
   // Append in the `buffer' the equivalent of `to_string'. No new STRING
@@ -242,7 +257,9 @@ Section Public
   - to_string_format s:SELF :STRING <- 
   // Same as `to_string' but the result is on `s' character and the
   // number is right aligned.
-  // Note: see `append_in_format' to save memory.
+  // * Require: s size large enough for `Self'
+  // * Ensure: `s' >= of size of stringed `Self'
+  // * See:  `append_in_format' to save memory.
   [
     -? {to_string.count <= s};
   ]
@@ -269,6 +286,9 @@ Section Public
   // Append the equivalent of `to_string_format' at the end of
   // `str'. Thus you can save memory because no other
   // STRING is allocate for the job.
+  // * Require: str not null
+  // * Require: `s' >= of size of stringed `Self'
+  // * Ensure: size of `str' is equal to former `str' size plus `s'
   [
     -? {str != NULL};
     -? {to_string.count <= s};
@@ -288,6 +308,7 @@ Section Public
   //
   
   - print <-
+  // Print
   (
     string_tmp.clear;
     append_in string_tmp;
@@ -295,6 +316,7 @@ Section Public
   );
   
   - print_format s:SELF <-
+ // Print with format size `s' 
   (
     string_tmp.clear;
     append_in string_tmp format s;
@@ -302,6 +324,7 @@ Section Public
   );
     
   - print_format s:SELF with c:CHARACTER <-
+  // Print with format size `s' replacing blank character by `c'
   (
     string_tmp.clear;
     append_in string_tmp format s with c;

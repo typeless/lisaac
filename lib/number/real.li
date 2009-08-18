@@ -35,7 +35,7 @@ Section Header
 
 Section Insert
   
-  - parent_numeric:NUMERIC := NUMERIC;
+  - inherit_numeric:NUMERIC := NUMERIC;
   
 Section Public
   
@@ -47,25 +47,34 @@ Section Public
   );
   
   - pi   :SELF <- 3.14159265358979323846;
+  // Pi number
 
   - atan :SELF <- `atan(@Self)`:SELF;
+  // Arctangent
 
   - sqrt :SELF <- `sqrt(@Self)`:SELF;
+  // Square root
 
   - log  :SELF <- `log(@Self)`:SELF;
+  // Logarithm
 
   - sin  :SELF <- `sin(@Self)`:SELF;
+  // Sinus
 
   - cos  :SELF <- `cos(@Self)`:SELF;
+  // Cosinus
 
   - pow exp:SELF :SELF <- `pow(@Self,@exp)`:SELF;
+  // Power
 
   - Self:SELF '**' Right 120 exp:SELF :SELF <-
+  // Power
   (
     Self.pow exp
   );
 
   - Self:SELF '^' Right 120 exp:SELF :SELF <- 
+  // Power
   (
     Self.pow exp
   );
@@ -100,6 +109,7 @@ Section Public
   //
   
   - Self:SELF '~=' other:SELF :BOOLEAN <-
+  // Equal, close to 0.001
   (
     (Self - other).abs < 0.001
   );
@@ -113,13 +123,14 @@ Section Public
   //
   
   - append_in buffer:STRING <-
+  // Append `Self' decimal representation in `buffer' with 4 decimal
   (
     append_in buffer decimal 4;
   );
 
   - to_string : STRING <-
-  // *French, Slot, Description : Renvoi une chaÃ®ne reprÃ©sentant le nombre en base 10
-  // *English, Slot, Description : String of the number in base 10
+  // * French: Renvoi une chaîne représentant le nombre en base 10
+  // String of the number in base 10
   ( + result : STRING;
     result := STRING.create 0;
     append_in result;
@@ -132,6 +143,7 @@ Section Public
   );
   
   - append_in buffer:STRING format n:INTEGER with c:CHARACTER decimal d:INTEGER <-
+  // String of the number in base 10 with `c' replacing blanck 
   [ 
     -? {n >= 3};
   ]
@@ -143,6 +155,7 @@ Section Public
   );
   
   - append_in buffer:STRING decimal n:INTEGER <-
+  // String of the number in base 10 with 4 decimal
   ( + val:SELF;
     + val_10:INTEGER;    
     + char:CHARACTER;
@@ -191,6 +204,7 @@ Section Public
   );
   
   - scientific_append_in buffer:STRING <- 
+ // Scientific number representation
   ( + val:SELF;
     + val_10:INTEGER;
     + exp_10:INTEGER;
@@ -253,6 +267,7 @@ Section Public
   );    
   
   - print_decimal s:INTEGER <-
+  // print with `s' decimal
   (
     string_tmp.clear;
     append_in string_tmp decimal s;
