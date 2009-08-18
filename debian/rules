@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+include /usr/share/quilt/quilt.make
+
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
@@ -20,35 +22,28 @@ build: patch build-arch build-indep
 
 build-arch: build-arch-stamp
 build-arch-stamp: configure-stamp 
-	gcc $(CFLAGS) bin/lisaac.c -o bin/lisaac
-	gcc $(CFLAGS) bin/shorter.c -o bin/shorter
-	gcc $(CFLAGS) bin/shorter_local.c -o bin/shorter_local
+ifeq (,$(filter $(shell dpkg-architecture -qDEB_BUILD_ARCH), alpha amd64 ia64))
+	$(MAKE) CFLAGS="$(CFLAGS)"
+else
+	@echo "************************************************************************" >&2
+	@echo "* Sorry, this package is not supposed to work on 64-bit architectures! *" >&2
+	@echo "************************************************************************" >&2
+	@false
+endif
 	touch build-arch-stamp
 
 build-indep: build-indep-stamp
 build-indep-stamp: configure-stamp 
-	mkdir lib_html
-	bin/shorter_local -r -f html lib -o lib_html
 	touch build-indep-stamp
 
 clean: clean-patched unpatch
 clean-patched:
 	dh_testdir
 	dh_testroot
-	rm -f configure-stamp
-	rm -f build-arch-stamp build-indep-stamp
-	rm -f bin/lisaac bin/shorter bin/shorter_local
-	rm -rf lib_html
+	$(MAKE) clean DESTDIR=$(CURDIR)/debian/tmp
+	rm -f build-arch-stamp
+	rm -f build-indep-stamp
 	dh_clean 
-
-patch: patch-stamp
-patch-stamp:
-	dpatch apply-all
-	touch patch-stamp
-
-unpatch:
-	dpatch deapply-all
-	rm -rf patch-stamp debian/patched
 
 install: install-indep install-arch
 install-indep:
@@ -56,17 +51,20 @@ install-indep:
 	dh_testroot
 	dh_clean -k -i 
 	dh_installdirs -i
-	dh_install -i
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	[ ! -f $(CURDIR)/debian/tmp/usr/share/lisaac/lib/clean  ] || rm  --verbose $(CURDIR)/debian/tmp/usr/share/lisaac/lib/clean
+	[ ! -f $(CURDIR)/debian/tmp/usr/share/lisaac/lib_os/clean  ] || rm  --verbose $(CURDIR)/debian/tmp/usr/share/lisaac/lib_os/clean
+	[ ! -f $(CURDIR)/debian/tmp/usr/share/lisaac/lib/number/essai  ] || rm --verbose $(CURDIR)/debian/tmp/usr/share/lisaac/lib/number/essai
+	dh_install -i --sourcedir=debian/tmp
 
 install-arch:
 	dh_testdir
 	dh_testroot
 	dh_clean -k -s 
 	dh_installdirs -s
-	dh_installman debian/lisaac.1 debian/shorter.1
-	install -m 755 $(CURDIR)/bin/lisaac $(CURDIR)/debian/lisaac/usr/bin/lisaac
-	install -m 755 $(CURDIR)/bin/shorter $(CURDIR)/debian/lisaac/usr/bin/shorter
-	dh_install -s
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	dh_install -s --sourcedir=debian/tmp
+	dh_installman
 
 binary-common:
 	dh_testdir
@@ -75,7 +73,6 @@ binary-common:
 	dh_installdocs
 	dh_installemacsen
 	dh_installexamples
-	dh_installman
 	dh_link
 	dh_strip
 	dh_compress 

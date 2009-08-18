@@ -1,21 +1,33 @@
-lisaac (1:0.13-1) unstable; urgency=low
+lisaac (1:0.13.1-2) unstable; urgency=low
 
-  [ Xavier Oswald ]
-  * Update copyright
+  * Add myself to Uploaders with the team's agreement.
+  * Bump Standards-Version to 3.8.0.
+  * Switch to quilt.
+  * Add the DM-Upload-Allowed field for Xavier.
+  * Pass Debian CFLAGS to upstream Makefile.
+  * Move lisaac-mode from Recommends to Suggests for lisaac,
+    as not all people want the whole emacs stuff pulled by default.
+  * FTBFS with purpose on alpha, amd64, and ia64,
+    as upstream does not support 64-bit architectures yet.
+
+ -- Aurélien GÉRÔME <ag@debian.org>  Sat, 02 Aug 2008 09:45:45 +0200
+
+lisaac (1:0.13.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Update copyright, new copyright is GPLv3
   * add manpage for shorter
   * update lisaac manpage
-  * add Vcs-Svn field in the control file
-  * add Vcs-Browser field in the control file
-
-  [Frederic Picca]
-  * New upstream release
   * add an epoch due to a error in my previous version numbering
   * Fix the build-depends on a new gcc version (closes: #440426, #463065)
   * Fix the dependacy on the new emacs version (closes: #434920)
+  * Fix the debian/watch, fail to report upstream's version (closes: #450198)
   * Update the package description
-  * Standards-Version: 3.7.3 - no changes required.
+  * Standards-Version: 3.7.3 
+  * remove 01 -> 04 patches, no more relevant
+  * add the 05_Makefile
 
- -- Xavier Oswald <x.oswald@free.fr>  Wed, 30 Jan 2008 15:21:47 +0100
+ -- Xavier Oswald <x.oswald@free.fr>  Tue, 26 Feb 2008 00:22:08 +0100
 
 lisaac (0.84-3) unstable; urgency=low
 
