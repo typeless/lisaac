@@ -1,0 +1,38 @@
+   -------------------------------------------------
+        Mode Eclipse for LISAAC language     
+   -------------------------------------------------
+
+How to get started?
+===================
+    
+  * Plugin Installation :
+     -------------------
+ 
+    - Use the Eclipse Update Manager to install the Lisaac plugin. Add the compiler/editor/eclipse/update-site/ directory in the manager, select Lisaac feature and click 'Install'.
+    (recommended for updates checking and uninstallation)
+        or
+    - Copy the "update-site/plugins/org.lisaac.ldt_1.1.4.jar" plugin jar file into your "eclipse/plugins/" directory.
+   
+Quick Start into the Lisaac Mode.
+===================
+ 
+   * General overview:
+      -----------------------
+ 
+   The Lisaac plugin define features for the user:
+     - Open a Lisaac perspective. 
+     - Create a new Lisaac Project.
+     - Create a new Prototype.
+     - Syntax highlighting, customizable in Lisaac preferences (in Window->preferences menu).
+     - Code completion with Ctrl+space key binding.
+     - Auto-indentation with F2 key binding.
+     - Code navigation with Ctrl+click and mouse hover.
+     - Outline view for prototypes. (Window->Show view->outline menu).
+     - [NEW] Slot & section folding at the left of editor.
+     - [NEW] Run the compiler & the program with the 'Run' menu.
+     - [NEW] Section Header refactor & rename prototype refactor ('Refactor' menu).
+      
+   --
+   Best regards,
+    Damien Bouvarel <Damien.Bouvarel@bvra.e.ujf-grenoble.fr>
+    The Lisaac team.
