@@ -225,6 +225,10 @@ Section Public
 	list.first .set_code (list.second.code);
 	list.second.set_code lst;
       };
+      /*
+      seq_or_and := seq_or_and + 1;
+      seq_inline := seq_inline + 1;
+      */
       expr := expr.execute_link;      
       
       CALL_SLOT.reset_count_no_recursive;
@@ -248,6 +252,8 @@ Section Public
   // Genere.
   //
   
+  - bug_count:INTEGER;
+  
   - genere buffer:STRING <-
   ( + lst:LIST;
     + first_case:INTEGER;
@@ -255,8 +261,7 @@ Section Public
     + typ_id:TYPE_ID;
     + wrt:WRITE;
     + is_genered:BOOLEAN;
-    + rd:READ;
-    
+        
     (
       (list.first.id = TYPE_NULL) && 
       {debug_level_option = 0} && 
@@ -310,16 +315,17 @@ Section Public
     };
     (first_case <= list.upper).if {
       polymorphic_counter := polymorphic_counter + 1;            
+      /*
+      (is_genered).if {
+        buffer.append "printf(\"";
+        bug_count.append_in buffer;
+        buffer.append "\\n\");\n";
+        bug_count := bug_count + 1;
+      };
+      */
       buffer.append "switch (";      
       (is_genered).if {
-        //expr := expr.my_copy;
-         rd ?= expr;
-        (rd = NULL).if {
-          crash_with_message "SWITCH.genere ";
-        } else {
-          rd.variable.set_ensure_count (rd.variable.ensure_count + 1);
-        };
-        
+        expr := expr.my_copy;        
       };
       list.item first_case.id.put_access_id expr in buffer;
       buffer.append ") {\n";

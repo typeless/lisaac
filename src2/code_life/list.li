@@ -281,10 +281,10 @@ Section Public
     
     // Local.    
     string_tmp.clear;        
-    add_local (var_size.item 3) in string_tmp; // 64 bits
-    add_local (var_size.item 2) in string_tmp; // 32 bits
-    add_local (var_size.item 1) in string_tmp; // 16 bits
-    add_local (var_size.item 0) in string_tmp; //  8 bits
+    add_local (ALIASER_LOCAL.var_size.item 3) in string_tmp; // 64 bits
+    add_local (ALIASER_LOCAL.var_size.item 2) in string_tmp; // 32 bits
+    add_local (ALIASER_LOCAL.var_size.item 1) in string_tmp; // 16 bits
+    add_local (ALIASER_LOCAL.var_size.item 0) in string_tmp; //  8 bits
     buffer.insert_string string_tmp to pos_local;          
   );
   
@@ -334,14 +334,18 @@ Section Private
   ( + loc:LOCAL;
     + t:TYPE_FULL;
     + cur:INTEGER;
-    + i:INTEGER;
+    //+ i:INTEGER;
     
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
 	loc := tab.item j;	
         loc.is_result.if_false {
-          local_counter := local_counter + 1;
-          
+          (loc.type.raw = TYPE_CONTEXT).if {
+            context_counter := context_counter + 1;
+          } else {
+            local_counter := local_counter + 1;
+          };
+          /*
           (
             (loc.ensure_count != 0) && 
             {profil_current != NULL} && 
@@ -363,7 +367,7 @@ Section Private
               
             };
           };
-          
+          */
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {
@@ -381,11 +385,12 @@ Section Private
           buf.append (loc.intern_name);
         };
       };
-      buf.append ";\n";
-      tab.clear;
+      buf.append ";\n";     
     };
   );
   
 Section LISAAC
 
   - local_counter:INTEGER;
+  
+  - context_counter:INTEGER;

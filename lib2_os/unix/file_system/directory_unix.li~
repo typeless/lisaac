@@ -52,14 +52,14 @@ Section Public
   //
       
   - open:BOOLEAN <-
-  ( + p,n:NATIVE_ARRAY[CHARACTER];
+  ( + p,n:NATIVE_ARRAY(CHARACTER);
     + dir,dirent:POINTER;
     + new_entry:ENTRY;
     + result:BOOLEAN;
     + i:INTEGER;
     
     (list = NULL).if {
-      list := LINKED_LIST[ENTRY].create;
+      list := LINKED_LIST(ENTRY).create;
     } else {
       list.clear;
     };
@@ -71,7 +71,7 @@ Section Public
 
 	dirent := `readdir(@dir)`:POINTER;
 	(dirent != NULL).if {
-	  n := `((struct dirent *)@dirent)->d_name`:NATIVE_ARRAY[CHARACTER];	
+	  n := `((struct dirent *)@dirent)->d_name`:NATIVE_ARRAY(CHARACTER);	
 	  string_tmp.clear;
 	  i := 0;
 	  {n.item i = '\0'}.until_do { 
@@ -101,7 +101,7 @@ Section Public
 Section DIRECTORY
   
   - physical_get_entry new_path:ABSTRACT_STRING :ENTRY <-
-  ( + pe:NATIVE_ARRAY[CHARACTER];
+  ( + pe:NATIVE_ARRAY(CHARACTER);
     + result:ENTRY;
         
     pe := new_path.to_external;
@@ -123,13 +123,13 @@ Section DIRECTORY
   );
   
   - physical_make_directory new_path:ABSTRACT_STRING :BOOLEAN <-
-  ( + pa:NATIVE_ARRAY[CHARACTER];
+  ( + pa:NATIVE_ARRAY(CHARACTER);
     pa := new_path.to_external;
     `mkdir(@pa,S_IRWXU)`:(INTEGER) = 0
   );
 
   - physical_make_file new_path:ABSTRACT_STRING :BOOLEAN <-
-  ( + pa:NATIVE_ARRAY[CHARACTER];
+  ( + pa:NATIVE_ARRAY(CHARACTER);
     + stream:POINTER;
     + result:BOOLEAN;
     
@@ -142,13 +142,13 @@ Section DIRECTORY
   );
 
   - physical_remove p:ABSTRACT_STRING :BOOLEAN <-
-  ( + pa:NATIVE_ARRAY[CHARACTER];
+  ( + pa:NATIVE_ARRAY(CHARACTER);
     pa := p.to_external;
     `remove(@pa)`:(INTEGER) = 0
   );
       
   - physical_move old_path:ABSTRACT_STRING to new_path:ABSTRACT_STRING :BOOLEAN <-
-  ( + old_p,new_p:NATIVE_ARRAY[CHARACTER];
+  ( + old_p,new_p:NATIVE_ARRAY(CHARACTER);
     old_p := old_path.to_external;
     new_p := new_path.to_external;
     `rename(@old_p,@new_p)`:(INTEGER) = 0

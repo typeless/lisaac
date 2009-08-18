@@ -167,17 +167,7 @@ Section Public
   //
   // Output Buffer and service.
   //
-  
-  - var_size:FAST_ARRAY(FAST_ARRAY(LOCAL)) :=
-  ( + result:FAST_ARRAY(FAST_ARRAY(LOCAL));
-    
-    result := FAST_ARRAY(FAST_ARRAY(LOCAL)).create_with_capacity 4;
-    0.to 3 do { j:INTEGER;
-      result.add_last (FAST_ARRAY(LOCAL).create_with_capacity 32);
-    };
-    result
-  );
-    
+      
   - output_decl:STRING := STRING.create 60000;
   - output_glob:STRING := STRING.create 10000;
   - output_code:STRING := STRING.create 4000000;

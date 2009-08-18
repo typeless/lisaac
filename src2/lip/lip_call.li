@@ -170,7 +170,7 @@ Section Public
     
     entry := FILE_SYSTEM.get_entry path;         
     ((entry != NULL) && {entry.is_directory} && {entry.open}).if {
-      dir ?= entry;
+      dir ?= entry;           
       (dir.lower).to (dir.upper) do { j:INTEGER;
         entry := dir.item j;
         (entry.name.has_suffix ".li").if {
