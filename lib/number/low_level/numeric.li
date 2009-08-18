@@ -143,10 +143,8 @@ Section Public
   
   - when first_value:SELF to last_value:SELF then block:{} :SELF <-
   // Execute `block' when  `Self' is in range of `first_value' to `last_value'
-  [ 
-	?- {first_value <= last_value}; //PAPA: debug manager ou contrat ?
-  ]
   ( 
+    ? {first_value <= last_value};
     ((Self >= first_value) && {Self <= last_value}).if block;
     Self
   );
