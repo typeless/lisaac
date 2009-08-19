@@ -261,6 +261,9 @@ Section Public
     + typ_id:TYPE_ID;
     + wrt:WRITE;
     + is_genered:BOOLEAN;
+    + c1,c2:CASE;
+    + lst_case:FAST_ARRAY(CASE);
+    + cases:FAST_ARRAY(FAST_ARRAY(CASE));
         
     (
       (list.first.id = TYPE_NULL) && 
@@ -314,34 +317,51 @@ Section Public
       };
     };
     (first_case <= list.upper).if {
-      polymorphic_counter := polymorphic_counter + 1;            
-      /*
-      (is_genered).if {
-        buffer.append "printf(\"";
-        bug_count.append_in buffer;
-        buffer.append "\\n\");\n";
-        bug_count := bug_count + 1;
-      };
-      */
-      buffer.append "switch (";      
       (is_genered).if {
         expr := expr.my_copy;        
       };
-      list.item first_case.id.put_access_id expr in buffer;
-      buffer.append ") {\n";
-      (first_case).to (list.upper) do { j:INTEGER;
-        (! list.item j.code.is_empty).if {
-          buffer.append indent; 
-          buffer.append "case ";
-          list.item j.id.put_id buffer;
-          buffer.append ": ";          
-          list.item j.genere buffer;        
-          buffer.add_last ' ';	
-          buffer.append "break;\n";
+      cases := case_fusion first_case;
+      (cases.count = 2).if {
+        (cases.first.count = 1).if {
+          c1 := cases.first.first;
+          c2 := cases.second.first;          
+        }.elseif {cases.second.count = 1} then {
+          c1 := cases.second.first;
+          c2 := cases.first.first;          
         };
-      };	      
-      buffer.append indent;
-      buffer.add_last '}';
+      };
+      (c1 != NULL).if {
+        buffer.append "if (";          
+        c1.id.put_access_id expr in buffer;
+        buffer.append "==";
+        c1.id.put_id buffer;
+        buffer.append ") ";
+        c1.genere buffer;
+        buffer.append " else /* Other types */ ";
+        c2.genere buffer;
+      } else {
+        polymorphic_counter := polymorphic_counter + 1;            
+        buffer.append "switch (";            
+        list.item first_case.id.put_access_id expr in buffer;
+        buffer.append ") {\n";
+        (cases.lower).to (cases.upper) do { j:INTEGER;
+          lst_case := cases.item j;
+          (! lst_case.first.code.is_empty).if {
+            (lst_case.lower).to (lst_case.upper) do { i:INTEGER;              
+              buffer.append indent; 
+              buffer.append "case ";
+              lst_case.item i.id.put_id buffer;
+              buffer.append ": \n";          
+            };
+            buffer.remove_last 1;              
+            lst_case.first.genere buffer;                    
+            buffer.append " break;\n";
+          };
+        };	      
+        buffer.append indent;
+        buffer.add_last '}';
+      };
+      free_list_cases cases;
       (first_case != 0).if {
         buffer.add_last '\n';
         indent.remove_last 2;    
@@ -531,4 +551,75 @@ Section Private
       code.add_last (other_list.item j.code);
     };
     new_execute_pass;
+  );
+  
+  //
+  // Case fusion manager.
+  //
+  
+  - store_list_cases:FAST_ARRAY(FAST_ARRAY(FAST_ARRAY(CASE))) := 
+  FAST_ARRAY(FAST_ARRAY(FAST_ARRAY(CASE))).create_with_capacity 32;
+  
+  - store_cases:FAST_ARRAY(FAST_ARRAY(CASE)) := 
+  FAST_ARRAY(FAST_ARRAY(CASE)).create_with_capacity 32;
+  
+  - new_cases:FAST_ARRAY(CASE) <-
+  ( + result:FAST_ARRAY(CASE);
+    (store_cases.is_empty).if {
+      result := FAST_ARRAY(CASE).create_with_capacity 32;
+    } else {
+      result := store_cases.last;
+      store_cases.remove_last;
+    };
+    result
+  );
+  
+  - new_list_cases:FAST_ARRAY(FAST_ARRAY(CASE)) <-
+  ( + result:FAST_ARRAY(FAST_ARRAY(CASE));
+    (store_list_cases.is_empty).if {
+      result := FAST_ARRAY(FAST_ARRAY(CASE)).create_with_capacity 32;
+    } else {
+      result := store_list_cases.last;
+      store_list_cases.remove_last;
+    };
+    result    
+  );
+  
+  - free_list_cases l:FAST_ARRAY(FAST_ARRAY(CASE)) <-
+  ( + lst:FAST_ARRAY(CASE);
+    (l.lower).to (l.upper) do { i:INTEGER;
+      lst := l.item i;
+      lst.clear;
+      store_cases.add_last lst;      
+    };
+    l.clear;
+    store_list_cases.add_last l;
+  );
+  
+  - case_fusion low:INTEGER :FAST_ARRAY(FAST_ARRAY(CASE)) <-
+  ( + c1,c2:CASE;
+    + lst:FAST_ARRAY(CASE);
+    + j:INTEGER;    
+    + result:FAST_ARRAY(FAST_ARRAY(CASE));
+    
+    result := new_list_cases;
+    (low).to (list.upper) do { i:INTEGER;
+      c1 := list.item i;            
+      lst := NULL;
+      j := result.lower;      
+      {(j <= result.upper) && {lst = NULL}}.while_do {
+        c2 := result.item j.first;
+        (c1 == c2).if {
+          lst := result.item j;
+          c1.code.remove;
+        };
+        j := j + 1;
+      };
+      (lst = NULL).if {
+        lst := new_cases;
+        result.add_last lst;                
+      };
+      lst.add_last c1;
+    };
+    result
   );

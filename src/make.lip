@@ -23,7 +23,9 @@ Section Inherit
   + parent:STRING;
 
 Section Private
-    
+  
+  + is_valid:BOOLEAN;
+  
   - src_path <-
   ( 
     path (lisaac + "src/");
@@ -61,12 +63,24 @@ Section Private
   
   - front_end <-
   (    
-    general_front_end;    
+    general_front_end;        
     ((input_file = "") | (input_file = "lisaac")).if {    
       compiler_path;
-    };         
+      (is_valid).if {
+        boost;
+      };
+    };                 
   );
-    
+  
+  - back_end <-
+  (
+    general_back_end;
+    (is_valid).if {
+      execute "cp lisaac.c ../bin/.";
+      execute "cp lisaac ../bin/.";
+    };
+  );
+  
 Section Public
   
   - compiler <-
@@ -81,6 +95,11 @@ Section Public
     shorter_path;
   );
   
-  
+  - valid <-
+  // Compile the Lisaac compiler with `-boost' option and 
+  // update your `/bin' compiler version.
+  (
+    is_valid := TRUE;    
+  );
   
   
