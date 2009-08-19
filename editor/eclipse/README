@@ -19,22 +19,35 @@
    
 How to get started?
 ===================
+   
+  - Install lastest Lisaac Compiler 0.14.
     
   * Plugin Installation :
      -------------------
  
-    - Use the Eclipse Update Manager to install the Lisaac plugin. Add the compiler/editor/eclipse/update-site/ directory in the manager, select Lisaac feature and click 'Install'.
-    (recommended for updates checking and uninstallation)
-        or
-    - Copy the "update-site/plugins/org.lisaac.ldt_1.1.4.jar" plugin jar file into your "eclipse/plugins/" directory.
-   
-   
+    - Use the Eclipse Update Manager to install the Lisaac plugin.  Add the http://isaacproject.u-strasbg.fr/eclipse/update/  site in the manager, select Lisaac feature and click 'Install'.
+       or
+    - Open the Eclisaac project as described below, export it into a .jar file, copy the jar into your 'eclipse/plugins' directory.
+    
    * Plugin Development and Bug Report :
    ------------------------------------------------
    
-     - clone the lisaac/eclisaac.git repository to get the sources and the plugin project.
+    - Install latest Eclipse SDK (3.5 Galileo)  see http://www.eclipse.org/downloads.
+    
+    - Copy the 'editor/eclipse' directory to your Eclipse workspace.
+    - Launch Eclipse, create a Project (File->New->Project, select General->Project).
+    - Enter project name: 'eclipse'  and click on the finish button.
+        or
+    - Select your own workspace and create a project with 'eclipse' lisaac plugin location.
+        or 
+    - Import the 'eclipse' project (File->Import then select 'Existing Projects into Workspace').
+    
+    - First Run : open META-INF/MANIFEST.MF and click on the link 'Launch an Eclipse application'.
+    - Other Run :   Green toolbar button  Run or Run->Run As->EclipseApplication
+    
+    - export the plugin project to a suitable .jar file. (optional)
   
-   
+  
 Quick Start into the Lisaac Mode.
 ===================
  
@@ -54,6 +67,46 @@ Quick Start into the Lisaac Mode.
      - [NEW] Run the compiler & the program with the 'Run' menu.
      - [NEW] Section Header refactor & rename prototype refactor ('Refactor' menu).
       
+      
+       
+Quick Start into Source Code.
+===================
+ 
+   * General overview:
+      -----------------------
+      
+   - META-INF/MANIFEST.MF               Main file for Plugin general settings -  edit within eclipse only.
+   - plugin.xml                         Define Extensions Points that the plugin implements - edit within eclipse only.
+   - build.properties                   Define Plugin classpath for compilation - edit within eclipse only.
+   
+   - .project & .classpath & .settings  Eclipse files associated with the project - you may erase or replace them.       
+   
+   - src/                               Java implementation.
+   - help/                              Help files used inside lisaac plugin, html doc (Help->Help contents) and sheetcheats (Help->Cheat Sheets...)
+   - icons/                             Icons used in lisaac plugin.
+   - bin/                               Java binary files (removed in git repository) This is automatically placed in jar file while releasing.
+   
+   * Java Packages overview
+     -------------------------------
+     
+     - lisaac/                          Main package, contain plugin activator, LisaacPlugin.java, this object follows plugin lifecycle.
+     - lisaac/actions                   Plugin menus actions, which implements IActionDelegate interface.
+     - lisaac/builder                   Incremental project builder - Handle calls to create & update Lisaac Models for each lisaac project.
+     - lisaac/editors                   Lisaac and Lip Editor. Handle syntax coloring, completion, hyperlinks...
+     - lisaac/launch                    Interface to call Lisaac Compiler and lisaac tools - Manage Lisaac Run Configuration (Run->Run configurations...)
+     - lisaac/model                     Manage and Parse Lisaac Models - Used by completion, colorer, hyperlinks, run...
+     - lisaac/model/items               Parsing element of lisaac syntax tree. 
+     - lisaac/model/lip                 Parsing element of lip syntax tree. 
+     - lisaac/model/types               Parsing types of lisaac syntax tree.
+     - lisaac/outline                   Elements displayed in Lisaac Outline view.
+     - lisaac/perspectives              Define Lisaac Perspective.
+     - lisaac/preferences               Add menus to Window->Preferences Menu in Lisaac section. 
+     - lisaac/properties                Add menus to right-click Properties Menu for lisaac resources.
+     - lisaac/templates                 Support for Editor Templates.
+     - lisaac/views                     Define Lisaac Views, Console, Outline view, ...
+     - lisaac/wizards                   Define Lisaac Wizards, New Lisaac Project, New Prototype, ...
+     - lisaac/refactor                   Define Lisaac refactorings.
+ 
    --
    Best regards,
     Damien Bouvarel <Damien.Bouvarel@bvra.e.ujf-grenoble.fr>

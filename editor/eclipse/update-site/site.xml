@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/lisaac_1.1.4.jar" id="lisaac" version="1.1.4">
-      <category name="Lisaac"/>
-   </feature>
-   <category-def name="Lisaac" label="org.lisaac.ldt.category"/>
-</site>
