@@ -513,7 +513,7 @@ Section PROTOTYPE
     };    
   );
         
-  - shorter_table lst:FAST_ARRAY(ITM_SLOT) select sel:BLOCK 
+  - shorter_table lst:FAST_ARRAY(ITM_SLOT) select sel:{ITM_SLOT; BOOLEAN}
   title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first_cur:BOOLEAN;
     + s:ITM_SLOT; 
@@ -564,7 +564,7 @@ Section PROTOTYPE
     };    
   );
   
-  - shorter_detail lst:FAST_ARRAY(ITM_SLOT) select sel:BLOCK 
+  - shorter_detail lst:FAST_ARRAY(ITM_SLOT) select sel:{ITM_SLOT; BOOLEAN}
   title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first:BOOLEAN;
     + s:ITM_SLOT;

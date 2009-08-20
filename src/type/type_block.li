@@ -57,6 +57,11 @@ Section TYPE_BLOCK //,PROFIL_BLOCK
   );
   
 Section Public
+
+  - set_late_binding <-
+  (    
+    type_block.set_late_binding;
+  );
   
   - intern_name:STRING_CONSTANT <- type_block.intern_name;
   

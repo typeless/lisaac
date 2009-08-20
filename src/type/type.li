@@ -390,7 +390,7 @@ Section Public
     + tg:TYPE_GENERIC;
     + count_slot:SLOT_DATA;
     + storage_slot:SLOT_DATA;
-        
+    
     ((slot_run.is_empty) || {slot_run.first != NULL}).if {                        
       (detect_recursivity_generation).if {
         string_tmp.copy "Compiler limit: Cyclic depending structure definition for ";
@@ -510,7 +510,7 @@ Section Public
             output_decl.append intern_name;
             output_decl.append "__ ";
           };
-	  string_tmp.clear;
+          string_tmp.clear;                    
 	  (is_late_binding).if {	  
 	    id_counter_with_type.append_in output_decl;	  
             id_counter_with_type := id_counter_with_type + 1;
@@ -553,7 +553,7 @@ Section Public
 	    tab.clear;
 	  };            
 	  	  
-	  (Self = type_block).if {
+          (Self = type_block).if {            
 	    string_tmp.append "  void *self;\n";
 	  };
 	  

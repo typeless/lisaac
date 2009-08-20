@@ -1,8 +1,14 @@
 package org.lisaac.ldt.model.items;
 
+import java.util.ArrayList;
+
+import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
 import org.lisaac.ldt.model.Position;
 import org.lisaac.ldt.model.types.IType;
 import org.lisaac.ldt.model.types.TypeMulti;
+import org.lisaac.ldt.outline.OutlineImages;
 
 public class ITMArgs implements IArgument {
 
@@ -91,6 +97,24 @@ public class ITMArgs implements IArgument {
 
 	public Position getPosition() {
 		return position;
+	}
+
+	public void getMatchProposals(String n,
+			ArrayList<ICompletionProposal> matchList, int offset, int length) {
+		
+		for (int i=0; i<name.length; i++) {
+			if (name[i].startsWith(n)) {
+				String match = name[i];
+				if (Slot.checkUnicity(matchList, match)) {
+					Image image = OutlineImages.PRIVATE_NONSHARED;// TODO new image for args
+					
+					String partialMatch = match.substring(n.length());
+					matchList.add(new CompletionProposal(partialMatch, offset, length,
+							partialMatch.length(), image, match, null,
+							null));
+				}
+			}
+		}	
 	}
 }
 	

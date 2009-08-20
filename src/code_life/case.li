@@ -109,7 +109,7 @@ Section Public
   //
   
   - execute <-
-  (             
+  (                 
     id.set_late_binding;
     code.execute_case;
   );

@@ -234,7 +234,10 @@ Section Public
       CALL_SLOT.reset_count_no_recursive;
       ((list.first.id = TYPE_NULL) && {list.count = 2}).if { 	
 	list.first .code.execute_case;
-	list.second.code.execute_case;		
+        list.second.code.execute_case;		
+        ((list.second.id.is_block) && {debug_level_option != 0}).if {
+          list.second.id.set_late_binding;
+        };
       } else {		
 	(list.lower).to (list.upper) do { j:INTEGER;
           list.item j.execute;	          

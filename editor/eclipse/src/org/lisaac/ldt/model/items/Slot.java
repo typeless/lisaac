@@ -11,6 +11,7 @@ import org.eclipse.text.edits.TextEdit;
 import org.lisaac.ldt.model.LisaacParser;
 	import org.lisaac.ldt.model.Position;
 	import org.lisaac.ldt.model.types.IType;
+import org.lisaac.ldt.outline.OutlineImages;
 import org.lisaac.ldt.outline.OutlineSlot;
 
 	public class Slot {
@@ -315,8 +316,6 @@ import org.lisaac.ldt.outline.OutlineSlot;
 
 			Image image = new OutlineSlot(this).getImage();
 			String displayString = getSignature(true);
-
-			
 			
 			if (checkUnicity(proposals,displayString)) {
 				proposals.add(new CompletionProposal(displayString, offset, length,
@@ -339,8 +338,54 @@ import org.lisaac.ldt.outline.OutlineSlot;
 					null));
 			}
 		}
+		
+		public void getArgumentMatchProposals(String n,
+				ArrayList<ICompletionProposal> matchList, int offset, int length) {
+			
+			if (argumentList != null) {
+				for (int i = 0; i < argumentList.length; i++) {
+					argumentList[i].getMatchProposals(n,matchList, offset, length);
+				}
+			}
+		}
+		
+		public void getLocalMatchProposals(String n,
+				ArrayList<ICompletionProposal> matchList, int offset, int length) {
+			
+			ITMList list;
+			if (subLists != null) {
+				for (int i = 0; i < subLists.size(); i++) {
+					ICode c = subLists.get(i);
 
-		private boolean checkUnicity(ArrayList<ICompletionProposal> proposals, String str) {
+					if (c instanceof ITMList) {
+						list = (ITMList) c;
+						if (list != null && list.isInside(offset)) {
+							// list variable
+							String match = list.getLocalMatch(n);
+							if (match != null && checkUnicity(matchList, match)) {
+								Image image = OutlineImages.PRIVATE_NONSHARED;// TODO '+' or '-' local..
+								
+								String partialMatch = match.substring(n.length());
+								matchList.add(new CompletionProposal(partialMatch, offset, length,
+										partialMatch.length(), image, match, null,
+										null));
+							}
+						}
+					} else if (c instanceof ITMBlock) {
+						list = ((ITMBlock) c).list;
+						IArgument arg = ((ITMBlock) c).argument;
+
+						if (list != null && arg != null
+								&& list.isInside(offset)) {
+							// block argument
+							arg.getMatchProposals(n, matchList, offset, length);
+						}
+					}
+				}
+			}
+		}
+
+		public static boolean checkUnicity(ArrayList<ICompletionProposal> proposals, String str) {
 			for (int i=0; i<proposals.size(); i++) {
 				if (proposals.get(i).getDisplayString().compareTo(str) == 0) {
 					return false;
