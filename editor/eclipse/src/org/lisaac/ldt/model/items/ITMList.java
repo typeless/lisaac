@@ -68,6 +68,24 @@ public class ITMList implements ICode {
 		return null;
 	}
 	
+	public String getLocalMatch(String n) {
+		if (localList != null) {
+			for (int i=0; i<localList.length; i++) {
+				if (localList[i].name.startsWith(n)) {
+					return localList[i].name;
+				}
+			}
+		}
+		if (staticList != null) {
+			for (int i=0; i<staticList.length; i++) {
+				if (staticList[i].name.startsWith(n)) {
+					return staticList[i].name;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public IType getType(Slot slot, Prototype prototype) {
 		if (code != null && code.length > 0) {
 			return code[code.length-1].getType(slot, prototype); // FIXME list type

@@ -11,7 +11,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.lisaac.ldt.LisaacPlugin;
 import org.lisaac.ldt.editors.LisaacEditor;
+import org.lisaac.ldt.model.items.IArgument;
 import org.lisaac.ldt.model.items.ICode;
+import org.lisaac.ldt.model.items.ITMArgs;
+import org.lisaac.ldt.model.items.ITMList;
+import org.lisaac.ldt.model.items.ITMLocal;
 import org.lisaac.ldt.model.items.ITMRead;
 import org.lisaac.ldt.model.items.Prototype;
 import org.lisaac.ldt.model.items.Slot;
@@ -65,6 +69,7 @@ public class LisaacCompletionParser extends LisaacParser {
 			}
 			return;
 		}
+		setPosition(0);
 		
 		// slot match
 		ICode code = readExpr();
@@ -87,13 +92,20 @@ public class LisaacCompletionParser extends LisaacParser {
 					model.getPathManager().getPathMatch(prefix, proposals, baseOffset);
 				}
 			} else {
-				// partial slot name (first keyword)
+				// partial name, search for matches
 				if (code instanceof ITMRead) {
 					String prefix = ((ITMRead) code).getName();
+					
+					// partial local name
+					if (currentSlot != null) {
+						currentSlot.getArgumentMatchProposals(prefix, proposals, baseOffset, 0);
+						currentSlot.getLocalMatchProposals(prefix, proposals, baseOffset, 0);
+					}
+					// partial slot name (first keyword)
 					currentPrototype.lookupSlotMatch(prefix, proposals, baseOffset, 0);
 				}
 			}
-		}
+		} 
 	}
 
 	//++ EXPR_MESSAGE -> EXPR_BASE { '.' SEND_MSG }
