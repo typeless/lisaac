@@ -198,11 +198,35 @@ Section Private
   - last_comment_extern:STRING_CONSTANT;
   - last_comment_slot  :STRING_CONSTANT;
   - skip_comment:BOOLEAN;
-      
+  
+  - put_new_line_comment str:STRING with cmt:STRING_CONSTANT <- 
+  ( + lst:LINKED_LIST(STRING_CONSTANT);
+    + idx,idx_beg:INTEGER;
+    lst := PARSER.short_dico.fast_reference_at cmt;
+    (lst != NULL).if {
+      {(idx := str.index_of '\n' since (idx+1)) < str.upper}.while_do {
+        idx_beg := idx;
+        idx := idx + 1;
+        {
+          (idx <= str.upper) && 
+          {str.item idx <= ' ' } && 
+          {str.item idx != '\n'}
+        }.while_do {
+          idx := idx + 1;
+        };            
+        (str.item idx = '\n').if {
+          str.replace_substring (lst.first) from idx_beg to (idx-1);
+          idx := idx_beg + (lst.first.count)-1;
+        };
+      };
+    };      
+  );
+  
   - read_space:BOOLEAN <-
   ( + posold,pos,pos2:INTEGER;     
     + level_comment:INTEGER;
     + stat:INTEGER;
+    
     
     pos := position;
     posold := -1;    
@@ -249,7 +273,7 @@ Section Private
           (is_shorter2).if {
             (stat)
             .when 0 or 1 then { string_tmp3.add_last '\n'; }
-            .when 2      then { string_tmp4.add_last '\n'; };
+            .when 2      then { string_tmp4.add_last '\n'; };            
           };
           (is_shorter).if {
             // BSBS: A revoir ...            
@@ -315,9 +339,11 @@ Section Private
       (string_tmp3.is_empty).if {
         last_comment_slot := NULL;
       } else {
-        last_comment_slot := ALIAS_STR.get string_tmp3;
+        put_new_line_comment string_tmp3 with (ALIAS_STR.short_comment_new_line_slot);        
+        last_comment_slot := ALIAS_STR.get string_tmp3;        
       };
       (string_tmp4.is_empty).if_false {
+        put_new_line_comment string_tmp4 with (ALIAS_STR.short_comment_new_line_extern);
         last_comment_extern := ALIAS_STR.get string_tmp4;
       };
     };

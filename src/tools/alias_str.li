@@ -199,6 +199,8 @@ Section Public
   - short_comment_line       :STRING_CONSTANT := "comment_line";
   - short_comment_slot_line  :STRING_CONSTANT := "comment_slot_line";
   - short_comment_header_line:STRING_CONSTANT := "comment_header_line";
+  - short_comment_new_line_slot  :STRING_CONSTANT := "comment_new_line_slot";
+  - short_comment_new_line_extern:STRING_CONSTANT := "comment_new_line_extern";
   - short_comment     :STRING_CONSTANT := "comment";
   - short_slot        :STRING_CONSTANT := "slot";
   - short_slot_call   :STRING_CONSTANT := "slot_call";
@@ -485,6 +487,8 @@ Section Public
     list.add short_comment_line;
     list.add short_comment_slot_line;
     list.add short_comment_header_line;
+    list.add short_comment_new_line_slot;
+    list.add short_comment_new_line_extern;
     list.add short_comment;
     list.add short_slot;
     list.add short_slot_call;

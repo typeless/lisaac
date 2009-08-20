@@ -41,7 +41,11 @@
 
   - comment_slot_line :=
   "<dd>" + token + "</dd>";
-      
+  
+  - comment_new_line_extern := "<br>";
+
+  - comment_new_line_slot := "<br>";
+  
   - slot := 
   "&nbsp;<strong><font color=\"#0000FF\">" + token + "</font></strong>&nbsp;";
   
