@@ -1,13 +1,18 @@
 package org.lisaac.ldt.model.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.text.contentassist.CompletionProposal;
+import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.lisaac.ldt.model.LisaacParser;
 import org.lisaac.ldt.model.Position;
 import org.lisaac.ldt.model.types.IType;
+import org.lisaac.ldt.outline.OutlineImages;
 
 public class ITMList implements ICode {
 	protected ICode[] code;
@@ -68,22 +73,40 @@ public class ITMList implements ICode {
 		return null;
 	}
 	
-	public String getLocalMatch(String n) {
+	private List<String> getLocalMatches(String n) {
+		List<String> result = new ArrayList<String>();
 		if (localList != null) {
 			for (int i=0; i<localList.length; i++) {
 				if (localList[i].name.startsWith(n)) {
-					return localList[i].name;
+					result.add(localList[i].name);
 				}
 			}
 		}
 		if (staticList != null) {
 			for (int i=0; i<staticList.length; i++) {
 				if (staticList[i].name.startsWith(n)) {
-					return staticList[i].name;
+					result.add(staticList[i].name);
 				}
 			}
 		}
-		return null;
+		return result;
+	}
+	
+	public void getMatchProposals(String n,
+			ArrayList<ICompletionProposal> matchList, int offset, int length) {
+		List<String> matches = getLocalMatches(n);
+		
+		for (int i=0; i<matches.size(); i++) {
+			String match = matches.get(i);
+			if (Slot.checkUnicity(matchList, match)) {
+				Image image = OutlineImages.PRIVATE_NONSHARED;// TODO '+' or '-' local..
+				
+				String partialMatch = match.substring(n.length());
+				matchList.add(new CompletionProposal(partialMatch, offset, length,
+						partialMatch.length(), image, match, null,
+						null));
+			}
+		}
 	}
 	
 	public IType getType(Slot slot, Prototype prototype) {
