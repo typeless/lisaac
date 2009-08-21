@@ -11,7 +11,6 @@ import org.eclipse.text.edits.TextEdit;
 import org.lisaac.ldt.model.LisaacParser;
 	import org.lisaac.ldt.model.Position;
 	import org.lisaac.ldt.model.types.IType;
-import org.lisaac.ldt.outline.OutlineImages;
 import org.lisaac.ldt.outline.OutlineSlot;
 
 	public class Slot {
@@ -361,15 +360,7 @@ import org.lisaac.ldt.outline.OutlineSlot;
 						list = (ITMList) c;
 						if (list != null && list.isInside(offset)) {
 							// list variable
-							String match = list.getLocalMatch(n);
-							if (match != null && checkUnicity(matchList, match)) {
-								Image image = OutlineImages.PRIVATE_NONSHARED;// TODO '+' or '-' local..
-								
-								String partialMatch = match.substring(n.length());
-								matchList.add(new CompletionProposal(partialMatch, offset, length,
-										partialMatch.length(), image, match, null,
-										null));
-							}
+							list.getMatchProposals(n, matchList, offset, length);
 						}
 					} else if (c instanceof ITMBlock) {
 						list = ((ITMBlock) c).list;
