@@ -382,6 +382,63 @@ Section Public
   
   + detect_recursivity_generation:BOOLEAN;
   
+  //
+  // Detect Alias.
+  //
+
+  + alias_slot:SLOT_DATA;
+  
+  - alias_type:TYPE <- alias_slot.type.raw;
+  
+  - detect_alias <-
+  (
+    (dico_type.lower).to (dico_type.upper) do { j:INTEGER;
+      dico_type.item j.detect_alias_struct;
+    };      
+  );
+
+  - detect_alias_struct <-
+  ( + slot:SLOT;    
+    + i,nb:INTEGER;
+    + action:{SLOT_DATA; };    
+    
+    (alias_slot = NULL).if {
+      
+      action := { s:SLOT_DATA;       
+        ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
+          (nb = 0).if {
+            ((s.type.is_expanded) && {s.type.raw.type_c = NULL}).if {
+              alias_slot := s;
+            };
+          } else {
+            alias_slot := NULL;
+          };
+          nb := nb + 1;          
+        };
+      };
+      
+      i := slot_run.lower;
+      {(i <= slot_run.upper) && {nb < 2}}.while_do {    
+        slot := slot_run.item i;
+        ((slot.style = '+') && {slot.lower_style = 0}).if {
+          (slot.slot_data_list != NULL).if {
+            (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
+              action.value (slot.slot_data_list.item k);
+            };
+          };
+          action.value (slot.slot_data);      
+        };
+        i := i + 1;
+      };   
+    };
+    (
+      (alias_slot != NULL) &&       
+      {! (is_late_binding -> alias_slot.type.raw.is_late_binding)}  
+    ).if {
+      alias_slot := NULL;
+    };          
+  );
+  
   - genere_struct <-
   ( + slot_data:SLOT_DATA;    
     + slot:SLOT;
@@ -399,6 +456,7 @@ Section Public
         semantic_error (position,string_tmp);
       };
       detect_recursivity_generation := TRUE;
+            
       // Depending.
       (slot_run.lower).to (slot_run.upper) do { j:INTEGER;
 	slot := slot_run.item j;
@@ -685,11 +743,16 @@ Section Public
       } else {
         output_decl.append "struct ";
         output_decl.append intern_name;
-        output_decl.append "_struct";
+        output_decl.append "_struct";        
       };
       output_decl.append " __";
       output_decl.append intern_name;	  
-      output_decl.append ";\n";      
+      output_decl.add_last ';';      
+      ((type_c = NULL) && {alias_slot != NULL}).if {
+        output_decl.append " // ALIAS with ";
+        output_decl.append (alias_type.intern_name);
+      };
+      output_decl.add_last '\n';
     };    
   );
     

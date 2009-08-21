@@ -141,6 +141,8 @@ Section Public
   
   - execute_pass <-
   ( 
+    TYPE.detect_alias;
+    TYPE_GENERIC.detect_alias;
     VARIABLE.update;
     life_limit := 0;
     profil_slot := NULL;

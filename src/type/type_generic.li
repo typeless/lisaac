@@ -60,7 +60,19 @@ Section Public
     };
     result
   );
+  
+  //
+  // Detect Alias.
+  //  
+  
+  - detect_alias <-
+  (
+    (dicog_type.lower).to (dicog_type.upper) do { j:INTEGER;
+      dicog_type.item j.detect_alias_struct;
+    };      
+  );
 
+  
   //
   // Import / Export
   //

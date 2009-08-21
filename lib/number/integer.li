@@ -305,7 +305,6 @@ Section Public
     +? {result == other.gcd self};
   ];
 
-
   - is_prime : BOOLEAN <-
   // TRUE if `Self' is prime
   ( + diviseur : INTEGER;
