@@ -481,6 +481,93 @@ Section Public
     result
   );
   
+  - is_integer_64:BOOLEAN <-
+  // Does self represent an INTEGER_64?
+  // `Result' is true if and only if the following two conditions hold:
+  //
+  // 1. In the following BNF grammar, the value of self can be
+  // produced by "Integer_literal", if leading and trailing
+  // separators are ignored:
+  //
+  // Integer_literal = [Sign] Integer
+  // Sign            = "+" | "-"
+  // Integer         = Digit | Digit Integer
+  // Digit           = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"
+  //
+  // 2. The numerical value represented by self is within the
+  // range that can be represented by an instance of type INTEGER_64.
+  (
+    + i, state: INTEGER;
+    + value:INTEGER_64;
+    + negative: BOOLEAN;
+    + result:BOOLEAN;
+    + cc: CHARACTER;
+    
+    // state 0: nothing read.
+    // state 1: "+" or "-" read.
+    // state 2: in the number.
+    // state 3: after the number.
+    // state 4: error.
+    
+    i := 1;
+    
+    { (state = 4) || {i > count}}.until_do {
+      cc := item i;
+      ( state = 0).if {
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        }.elseif {cc.is_digit} then {
+          value := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 4;
+        };
+      }.elseif { state = 1} then {
+        cc.is_digit.if {
+          value := cc.decimal_value;
+          negative.if {
+            value := - value;
+          };
+          state := 2;
+        } else {
+          state := 4;
+        };
+      }.elseif { state = 2 } then {
+        cc.is_digit.if {
+          negative.if {
+            value := value * 10 - cc.decimal_value;
+          } else {
+            value := value * 10 + cc.decimal_value;
+          };
+          // over/underflow check here
+          ((negative && {value > 0}) || { ! negative && {value < 0}}).if {
+            state := 4;
+          };
+        }.elseif {cc.is_separator} then {
+          state := 3;
+        } else {
+          state := 4;
+        };
+      }.elseif { state = 3 } then {
+        cc.is_separator.if {
+        } else {            
+          state := 4;
+        };
+      };
+      
+      i := i + 1;
+    };
+    ( (state != 0) && { state != 4}).if {
+      result := TRUE;
+    };
+    
+    result
+  );
+  
   - to_integer:INTEGER <-
   // self must look like an INTEGER.
   (
@@ -524,6 +611,64 @@ Section Public
             result := 10 * result - cc.decimal_value;
           } else {
             result := 10 * result + cc.decimal_value;
+          };
+        } else { // cc.is_separator
+          state := 3;
+        };
+      }.elseif { state = 3 } then {
+        // cc.is_separator
+        i := count; // terminate the loop
+      };
+      
+      i := i + 1;
+    };
+    
+    result
+  );
+  
+  - to_integer_64:INTEGER_64 <-
+  // self must look like an INTEGER.
+  (
+    + i, state:INTEGER;
+    + cc: CHARACTER;
+    + negative: BOOLEAN;
+    + result:INTEGER_64;
+    
+    ? { is_integer };
+    // state 0: nothing read.
+    // state 1: "+" or "-" read.
+    // state 2: in the number.
+    // state 3: after the number.
+
+    i := 1;
+
+    { i > count }.until_do {
+      cc := item i;
+
+      (state = 0).if {
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        } else { // cc.is_digit
+          result := cc.decimal_value;
+          state := 2;
+        };
+      }.elseif { state = 1 } then {
+        // cc.is_digit
+        result := cc.decimal_value;
+        negative.if {
+          result := - result;
+        };
+        state := 2;
+      }.elseif { state = 2} then {
+        cc.is_digit.if {
+          negative.if {
+            result := result * 10 - cc.decimal_value;
+          } else {
+            result := result * 10 + cc.decimal_value;
           };
         } else { // cc.is_separator
           state := 3;

@@ -606,10 +606,10 @@ Section Private
 	  (last_character='d').if {	    
 	    position := position+1;
 	  };
-	  (! string_tmp.is_integer).if {
+	  (! string_tmp.is_integer_64).if {
 	    syntax_error (current_position,"Incorrect decimal number.");
 	  };
-	  last_integer := string_tmp.to_integer;          
+	  last_integer := string_tmp.to_integer_64;          
 	};
       };
     };
