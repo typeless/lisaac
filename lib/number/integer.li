@@ -312,13 +312,12 @@ Section Public
     + sqrt_s : INTEGER;
     + result : BOOLEAN;
 
-    sqrt_s := Self.sqrt;
-    ((Self % 2 = 0) && {Self % 3 = 0}).if_false {
-    result := TRUE;
-    1.to ((sqrt_s+1)/6) until {(Self % diviseur) = 0} do { cpt : INTEGER;
-        diviseur := 6*cpt - ((cpt & 1) << 1) + 1;
-          };
-     result := (diviseur.in_range (sqrt_s -6) to (sqrt_s+6));
+    sqrt_s := sqrt;
+    ((Self % 2 != 0) || {Self % 3 != 0}).if {
+      1.to ((sqrt_s+1)/6) until {(Self % diviseur) = 0} do { cpt : INTEGER;
+        diviseur := 6 * cpt - ((cpt & 1) << 1) + 1;
+      };
+      result := diviseur.in_range (sqrt_s - 6) to (sqrt_s + 6);
     };
     result
   );

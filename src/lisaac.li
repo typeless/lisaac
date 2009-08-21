@@ -32,7 +32,7 @@ Section Header
   // Top 5 memory record :
   // 1 - LOCAL         (>20MB) (il fo Aliaser les tmp !)
   // 2 - READ_LOCAL    (15MB)
-  // 3 - LIST          (13MB) (En baisse => a retester!!)
+  // 3 - LIST          (13MB) (En baisse => a retester.)
   // 4 - PROTOTYPE_CST (10MB)
   // 5 - WRITE_LOCAL   (10MB)
   
