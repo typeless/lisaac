@@ -251,7 +251,7 @@ Section Private
     string_tmp.append " '";
     string_tmp.append op;
     string_tmp.append "' not found in ";
-    string_tmp.append (t.intern_name);
+    string_tmp.append (t.name);
     string_tmp.add_last '.';    
     semantic_error (p,string_tmp);
   );

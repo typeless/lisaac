@@ -482,7 +482,7 @@ Section Public
 	    tab := slot_size.item j;
 	    // BSBS: A tester sont utilité !
 	    (! tab.is_empty).if {
-	      semantic_error ((tab.first.position),"Slot is not possible with a type C");
+	      semantic_error (tab.first.position,"Slot is not possible with a type C");
 	    };	  
           };
           (is_java).if_false {            
@@ -494,7 +494,7 @@ Section Public
               output_decl.add_last ((name = ALIAS_STR.prototype_true).to_character);
               output_decl.add_last '\n';            
             }.elseif {is_late_binding} then {	    
-              semantic_error ((tab.first.position),"Late binding is not possible with a type C");
+              semantic_error (tab.first.position,"Late binding is not possible with a type C");
             };            
           };
         } else {	  
@@ -518,7 +518,7 @@ Section Public
               string_tmp.append "  unsigned long __id;\n";
             };
 	    (prototype.is_mapping).if {	    
-	      semantic_error ((prototype.position),	    
+	      semantic_error (prototype.position,	    
 	      "Late binding is not possible with `mapping' object.");
 	    };
 	  } else {	  

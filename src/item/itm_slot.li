@@ -286,6 +286,12 @@ Section Public
     result_type.append_in buffer;    
   );    
   
+  - pretty_name:STRING_CONSTANT <-
+  (
+    crash_with_message "ITM_SLOT.pretty_name.";
+    NULL
+  );
+  
   - pretty_name_in buffer:STRING <-
   ( + j:INTEGER;
     

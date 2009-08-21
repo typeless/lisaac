@@ -453,10 +453,10 @@ Section PROTOTYPE
     {  
       ((s.id_section.is_public) && {s.name = ALIAS_STR.slot_main}).if {	
 	(s.result_type != ITM_TYPE_SIMPLE.type_void).if {
-	  semantic_error ((s.position),"Unix mode: Not value return.");
+	  semantic_error (s.position,"Unix mode: Not value return.");
 	};
 	(s.argument_count != 1).if {
-	  semantic_error ((s.position),"Unix mode: Not argument list.");
+	  semantic_error (s.position,"Unix mode: Not argument list.");
 	};	
 	result := type_input.get_slot (s.name);
       };

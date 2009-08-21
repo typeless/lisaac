@@ -245,20 +245,20 @@ Section Public
     index_count  := index_count + 1;
     //
     string_tmp.copy (itm_typ.name);
-    string_tmp.add_last '[';    
+    string_tmp.add_last '(';    
     (gen.lower).to (gen.upper - 1) do { j:INTEGER;      
       gen.item j.append_name_in string_tmp;
       string_tmp.add_last ',';
     };    
     gen.last.append_name_in string_tmp;
-    string_tmp.add_last ']';            
+    string_tmp.add_last ')';            
     name := ALIAS_STR.get string_tmp;
     key := k;
     generic_list := gen;
     string_tmp.copy name;
     string_tmp.replace_all ',' with 'x';
-    string_tmp.replace_all '[' with 'o';
-    string_tmp.replace_all ']' with 'o';
+    string_tmp.replace_all '(' with 'o';
+    string_tmp.replace_all ')' with 'o';
     string_tmp.replace_all ' ' with '_';
     string_tmp.replace_all '.' with '_';
     intern_name := ALIAS_STR.get_intern string_tmp;

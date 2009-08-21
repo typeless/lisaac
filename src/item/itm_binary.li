@@ -236,10 +236,10 @@ Section Private
   
   - error_slot p:POSITION name s:STRING_CONSTANT in t:TYPE list st:TYPES_TMP <-
   (
-    string_tmp.copy "Slot '";
+    string_tmp.copy "Slot '";    
     string_tmp.append s;
     string_tmp.append "' not found in ";
-    string_tmp.append (t.intern_name);
+    string_tmp.append (t.name);
     string_tmp.append ". ( ";
     (st.lower).to (st.upper-1) do { j:INTEGER;
       st.item j.append_name_in string_tmp;

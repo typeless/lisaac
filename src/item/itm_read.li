@@ -234,7 +234,7 @@ Section ITM_READ, SLOT_DATA
       
       ((verify) && {is_all_warning} && {name == "deferred"}).if {
 	string_tmp.copy "Deferred in `";
-	string_tmp.append (profil_slot.slot.name);
+	profil_slot.slot.pretty_name_in string_tmp;
 	string_tmp.append "' for ";
 	rec.static_type.append_name_in string_tmp;	
 	warning_error (position,string_tmp);

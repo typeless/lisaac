@@ -152,7 +152,7 @@ Section Private
       string_tmp.copy "Slot `";
       string_tmp.append name;
       string_tmp.append "' not found in static type ";
-      string_tmp.append (type.intern_name);
+      type.append_name_in string_tmp;
       string_tmp.add_last '.';
       semantic_error (position,string_tmp);
     };

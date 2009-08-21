@@ -109,7 +109,7 @@ Section Public
 	  //semantic_error p,string_tmp;
 	};	
 	(slot_msg.argument_count != 1).if {	  
-	  semantic_error ((slot_msg.position),"No argument for this slot.");
+	  semantic_error (slot_msg.position,"No argument for this slot.");
 	};
         ts ?= slot_msg.result_type;               
 	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
@@ -154,7 +154,7 @@ Section Public
 	  //semantic_error p,string_tmp;
 	};		
 	(slot_msg.argument_count != 2).if {
-	  semantic_error ((slot_msg.position),"Incorrect argument for this slot.");
+	  semantic_error (slot_msg.position,"Incorrect argument for this slot.");
 	};
 	ts ?= slot_msg.result_type;
 	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
