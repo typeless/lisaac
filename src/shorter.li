@@ -454,7 +454,9 @@ Section Public
       (PROTOTYPE.prototype_list.lower).to (PROTOTYPE.prototype_list.upper) do { j:INTEGER;
         p := PROTOTYPE.prototype_list.item j;
         output_code.clear;
+        put "" to output_code like (ALIAS_STR.short_begin);
         p.shorter_out output_code;
+        put "" to output_code like (ALIAS_STR.short_end);
         save_file (add_ext (p.name)) with output_code;        
       };
     };
