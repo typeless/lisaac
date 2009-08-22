@@ -79,7 +79,7 @@ Section Public
     + val:EXPR;   
     + req_list:FAST_ARRAY(WRITE);
     //? { variable.require_first != NULL };
-    
+    /* BSBS: A REVOIR
     ((variable.require_first = NULL) && {!variable.type.is_expanded}).if {
       variable.intern_name.print; '\n'.print;
       "style [".print; variable.style.print; "]\n".print;
@@ -88,7 +88,7 @@ Section Public
       //die_with_code 0;
       //crash_with_message "BUG READ : require_first = NULL";
     };
-    
+    */
     (variable.require_first != NULL).if {
       val := variable.require_first.value;
       (val.is_constant).if {

@@ -117,18 +117,9 @@ Section Public
     (base = NULL).if {          
       base := TYPE.clone;
       dico_type.fast_put base to (proto.filename);
-      base.make itm_typ with proto;
-      
-      (base.default.the_parent_type != base).if {      
-        "C'est ici que ca commence!!!\n".print;
-        IO.read_character;
-      };
+      base.make itm_typ with proto;      
     };
-    //        
-    (base.default.the_parent_type != base).if {      
-      "Oui, il est bien bidon!!!\n".print;
-      IO.read_character;
-    };
+    //            
     styl := itm_typ.style;
     (styl = NULL).if {                 
       result := base.default;
@@ -140,12 +131,7 @@ Section Public
       };
     };
     
-    r := result.the_parent_type;
-    (r != base).if {
-      "the_parent_type est bidon!!!\n".print;
-      IO.read_character;
-    };    
-    
+    r := result.the_parent_type;    
     result
   );
   
@@ -402,7 +388,7 @@ Section Public
     + i,nb:INTEGER;
     + action:{SLOT_DATA; };    
     
-    (alias_slot = NULL).if {
+    ((alias_slot = NULL) && {slot_run != NULL}).if {
       
       action := { s:SLOT_DATA;       
         ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
