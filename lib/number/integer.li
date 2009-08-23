@@ -305,21 +305,30 @@ Section Public
     +? {result == other.gcd self};
   ];
 
+
   - is_prime : BOOLEAN <-
   // TRUE if `Self' is prime
   ( + diviseur : INTEGER;
     + sqrt_s : INTEGER;
     + result : BOOLEAN;
-
-    sqrt_s := sqrt;
-    ((Self % 2 != 0) || {Self % 3 != 0}).if {
-      1.to ((sqrt_s+1)/6) until {(Self % diviseur) = 0} do { cpt : INTEGER;
-        diviseur := 6 * cpt - ((cpt & 1) << 1) + 1;
-      };
-      result := diviseur.in_range (sqrt_s - 6) to (sqrt_s + 6);
-    };
-    result
+    //"debut test primalité".println; 
+    diviseur := 5;
+    sqrt_s := Self.sqrt;
+    result := FALSE;
+    ((Self % 2 = 0) || {Self % 3 = 0}).if_false {
+     result := TRUE;
+     //sqrt_s.println;"--".println;
+     1.to sqrt_s until {(Self % diviseur) = 0} do { cpt : INTEGER;
+       //"Boucle:  cpt,diviseur = ".print;((cpt-1) & 1).println;
+       diviseur := diviseur + 2 + (((cpt-1) & 1) << 1);
+       //diviseur.println;
+     };
+     result := result  && {!((Self % diviseur) = 0)};
+  };
+  result
   );
+
+
 
   //
   // Random
