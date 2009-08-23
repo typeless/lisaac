@@ -115,6 +115,7 @@ Section Public
     
     (is_java).if {
       receiver.genere buffer;
+      not_yet_implemented;
       buffer.add_last '.';
       buffer.append (variable.intern_name);
     } else {    
@@ -131,10 +132,8 @@ Section Public
         tf := receiver.static_type;    
         ((tf.is_strict) || {tf.is_expanded_ref}).if {
           receiver.genere buffer;
-          buffer.append "->";
         }.elseif {tf.is_expanded} then {      
           receiver.genere buffer;
-          buffer.add_last '.';          
         } else {          
           buffer.append "((";
           t := slot.receiver_type;
@@ -143,9 +142,16 @@ Section Public
           t.put_reference_star_declaration buffer;	
           buffer.add_last ')';
           receiver.genere buffer;
-          buffer.append ")->";
+          buffer.add_last ')';          
         };
-        buffer.append (variable.intern_name);
+        ((tf.raw.alias_slot = NULL) || {! TYPE.is_alias_struct}).if {
+          ((tf.is_expanded) && {! tf.is_expanded_ref} && {! tf.is_strict}).if {
+            buffer.add_last '.';
+          } else {
+            buffer.append "->";
+          };        
+          buffer.append (variable.intern_name);
+        };
       };    
     };
   );

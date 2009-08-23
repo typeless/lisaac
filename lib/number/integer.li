@@ -313,13 +313,14 @@ Section Public
     + result : BOOLEAN;
     diviseur := 5;
     sqrt_s := sqrt;
+    result := TRUE;
     ((Self % 2 = 0) || {Self % 3 = 0}).if_false {
-     1.to sqrt_s until {(Self % diviseur) = 0} do { cpt : INTEGER;
-       diviseur := diviseur + 2 + (((cpt-1) & 1) << 1);
-     };
-     result := result  && {!((Self % diviseur) = 0)};
-  };
-  result
+      1.to sqrt_s until {(Self % diviseur) = 0} do { cpt : INTEGER;
+        diviseur := diviseur + 2 + (((cpt-1) & 1) << 1);
+      };
+      result := result  && {!((Self % diviseur) = 0)};
+    };
+    result
   );
 
 
