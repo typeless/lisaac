@@ -311,17 +311,11 @@ Section Public
   ( + diviseur : INTEGER;
     + sqrt_s : INTEGER;
     + result : BOOLEAN;
-    //"debut test primalité".println; 
     diviseur := 5;
-    sqrt_s := Self.sqrt;
-    result := FALSE;
+    sqrt_s := sqrt;
     ((Self % 2 = 0) || {Self % 3 = 0}).if_false {
-     result := TRUE;
-     //sqrt_s.println;"--".println;
      1.to sqrt_s until {(Self % diviseur) = 0} do { cpt : INTEGER;
-       //"Boucle:  cpt,diviseur = ".print;((cpt-1) & 1).println;
        diviseur := diviseur + 2 + (((cpt-1) & 1) << 1);
-       //diviseur.println;
      };
      result := result  && {!((Self % diviseur) = 0)};
   };
