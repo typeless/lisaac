@@ -663,7 +663,7 @@ Section Public
               output_decl.append "super();\n";
             };
             output_decl.append "  };\n};\n";  
-          }.elseif {(alias_slot = NULL) && {is_alias_struct}} then {                        
+          }.elseif {(alias_slot = NULL) || {! is_alias_struct}} then {                        
             output_decl.append "struct ";
             output_decl.append intern_name;
             output_decl.append "_struct {\n";
@@ -730,7 +730,7 @@ Section Public
         output_decl.append type_c;
       } else {
         output_decl.append "struct ";
-        (alias_slot != NULL).if {
+        ((alias_slot != NULL) && {is_alias_struct}).if {
           output_decl.append (alias_type.intern_name);
         } else {
           output_decl.append intern_name;
