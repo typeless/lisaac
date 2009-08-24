@@ -31,7 +31,7 @@ Section Header
 Section Inherit  
   
   + parent_directory:DIRECTORY <-
-  ( + cwd:NATIVE_ARRAY[CHARACTER];    
+  ( + cwd:NATIVE_ARRAY(CHARACTER);    
     + result:DIRECTORY;
     
     DIRECTORY.string_tmp.clear;

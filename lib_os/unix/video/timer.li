@@ -46,7 +46,7 @@ Section Private
   
   - timer_count:UINTEGER_32;
   
-  - buffer_event:FAST_ARRAY[EVENT_TIMER];
+  - buffer_event:FAST_ARRAY(EVENT_TIMER);
   
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
   
@@ -75,9 +75,7 @@ Section Interrupt
 	`XFlush(display)`;
       };
     };
-    
     `ualarm(50000,0)`;    
-    
   );
   
 Section Public
@@ -90,7 +88,7 @@ Section Public
     //
     // Software configuration.
     //
-    buffer_event := FAST_ARRAY[EVENT_TIMER].create 4;
+    buffer_event := FAST_ARRAY(EVENT_TIMER).create 4;
     0.to 3 do { j:INTEGER;
       new_event := EVENT_TIMER.clone;
       buffer_event.put new_event to j;
@@ -113,20 +111,15 @@ Section Public
   - get_event <-
   ( + p:INTEGER;
     + evt:EVENT_TIMER;
+    
     p := p_beg;
-    ( p != p_end ).if { //}.while_do {
-      evt := buffer_event.item p;      
+    { p != p_end }.while_do {
+      evt := buffer_event.item p;
       (list_client.lower).to (list_client.upper) do { j:INTEGER;
-        buffer_event.item p.set_destination NULL;        
 	list_client.item j.receive (buffer_event.item p);
       };      
       p := (p + 1) & 03h;
     };    
-  );
-
-  - clear <-
-  (
-    p_beg := p_end;
   );
 
 

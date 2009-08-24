@@ -40,7 +40,7 @@ Section Public
 
   + type:ITM_TYPE_MONO;
 
-  + type_list:FAST_ARRAY[ITM_TYPE_MONO];
+  + type_list:FAST_ARRAY(ITM_TYPE_MONO);
 
   + is_persistant:BOOLEAN;
 
@@ -71,7 +71,7 @@ Section Public
     type := t;
   );
 
-  - set_type_list t:FAST_ARRAY[ITM_TYPE_MONO] <-
+  - set_type_list t:FAST_ARRAY(ITM_TYPE_MONO) <-
   (
     type_list := t;
   );
@@ -83,7 +83,7 @@ Section Public
   - to_run_expr:EXPR <- 
   ( + e:EXTERNAL_C;
     + lt:TYPES_TMP;
-    + lst_acc:FAST_ARRAY[EXPR];
+    + lst_acc:FAST_ARRAY(EXPR);
     + typ:TYPE;
     + tmp:VARIABLE;   
 

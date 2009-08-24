@@ -40,20 +40,20 @@ Section Public
   // Data
   //
 
-  + value_list   :FAST_ARRAY[ITM_CODE];
+  + value_list   :FAST_ARRAY(ITM_CODE);
 
   //
   // Constructor
   //  
 
-  - create v:FAST_ARRAY[ITM_CODE] :SELF <-
+  - create v:FAST_ARRAY(ITM_CODE) :SELF <-
   ( + result:SELF;
     result := clone;
     result.make v;
     result
   );
   
-  - make v:FAST_ARRAY[ITM_CODE] <-
+  - make v:FAST_ARRAY(ITM_CODE) <-
   (   
     value_list    := v;
   );
@@ -68,7 +68,7 @@ Section Public
     + max_pri  :STRING_CONSTANT;
     + left,right:EXPR;
     + instr:INSTR;
-    + val_list:FAST_ARRAY[INSTR];
+    + val_list:FAST_ARRAY(INSTR);
     + val:EXPR;    
     + typ:TYPE;
     + slo:SLOT;
@@ -77,11 +77,11 @@ Section Public
     + n_t:NODE_TYPE;
     + extern:EXPR_BINARY_CMP;
     + loc:VARIABLE;
-    + l_arg:FAST_ARRAY[EXPR];
+    + l_arg:FAST_ARRAY(EXPR);
     + result:EXPR;
     + itm_op:ITM_OPERATOR;
         
-    val_list := ALIAS_ARRAY[INSTR].new;
+    val_list := ALIAS_ARRAY(INSTR).new;
     // Search unary message.
     idx := -1;    
     low := value_list.lower;
@@ -207,7 +207,7 @@ Section Public
 	val := loc.read (instr.position);
       } else {
 	// SW_READ.
-	l_arg := FAST_ARRAY[EXPR].create_with_capacity 2;
+	l_arg := FAST_ARRAY(EXPR).create_with_capacity 2;
 	l_arg.add_last left;
         l_arg.add_last right;
         slo := left.static_type.raw.get_slot (n_t.data.slot.name);
@@ -226,7 +226,7 @@ Section Public
     result ?= val_list.first;
     
     // Free Array Temporary.    
-    ALIAS_ARRAY[INSTR].free val_list;
+    ALIAS_ARRAY(INSTR).free val_list;
     
     result
   );
@@ -251,7 +251,7 @@ Section Private
     string_tmp.append " '";
     string_tmp.append op;
     string_tmp.append "' not found in ";
-    string_tmp.append (t.intern_name);
+    string_tmp.append (t.name);
     string_tmp.add_last '.';    
     semantic_error (p,string_tmp);
   );

@@ -135,8 +135,13 @@ Section Public
       res := ENVIRONMENT.execute_command string_tmp; 
       result := LIP_INTEGER.get res;
     }.elseif {name = ALIAS_STR.slot_get_integer} then {
-      IO.read_integer;
-      result := LIP_INTEGER.get (IO.last_integer);      
+      {
+        IO.read_line;
+        (IO.last_string.is_integer).if_false {
+          "Error INTEGER needed.\n".print;
+        };
+      }.do_until {IO.last_string.is_integer};      
+      result := LIP_INTEGER.get (IO.last_string.to_integer);      
     }.elseif {name = ALIAS_STR.slot_get_string} then {
       IO.read_line;
       result := LIP_STRING.get (ALIAS_STR.get (IO.last_string));
@@ -165,7 +170,7 @@ Section Public
     
     entry := FILE_SYSTEM.get_entry path;         
     ((entry != NULL) && {entry.is_directory} && {entry.open}).if {
-      dir ?= entry;
+      dir ?= entry;           
       (dir.lower).to (dir.upper) do { j:INTEGER;
         entry := dir.item j;
         (entry.name.has_suffix ".li").if {

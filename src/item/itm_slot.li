@@ -74,7 +74,7 @@ Section Public
     result
   );
       
-  + argument_list:FAST_ARRAY[ITM_ARGUMENT];
+  + argument_list:FAST_ARRAY(ITM_ARGUMENT);
 
   + result_type:ITM_TYPE;
   
@@ -105,7 +105,7 @@ Section Public
     result_type := t;
   );
   
-  - set_argument_list p:FAST_ARRAY[ITM_ARGUMENT] <-
+  - set_argument_list p:FAST_ARRAY(ITM_ARGUMENT) <-
   ( 
     ((p.count > 1) || {p.first.count > 1}).if {    
       (id_section.is_interrupt).if {
@@ -260,7 +260,7 @@ Section Public
     result
   );
   
-  - check_argument_type larg:FAST_ARRAY[EXPR] for p:PARAMETER_TO_TYPE <-  
+  - check_argument_type larg:FAST_ARRAY(EXPR) for p:PARAMETER_TO_TYPE <-  
   ( + idx:INTEGER;
     + a:ITM_ARGUMENT;
     
@@ -285,6 +285,12 @@ Section Public
     buffer.add_last ':';
     result_type.append_in buffer;    
   );    
+  
+  - pretty_name:STRING_CONSTANT <-
+  (
+    crash_with_message "ITM_SLOT.pretty_name.";
+    NULL
+  );
   
   - pretty_name_in buffer:STRING <-
   ( + j:INTEGER;
@@ -358,7 +364,7 @@ Section Private
     + s:ITM_SLOT;
     + n:STRING_CONSTANT;
     + sec:SECTION_;
-    + larg:FAST_ARRAY[ITM_ARGUMENT];
+    + larg:FAST_ARRAY(ITM_ARGUMENT);
     + a:ITM_CODE;
         
     // Add function for init.
@@ -366,7 +372,7 @@ Section Private
     string_tmp.append name;
     n := ALIAS_STR.get string_tmp;
     sec := SECTION_.get_name (ALIAS_STR.section_public);
-    larg := FAST_ARRAY[ITM_ARGUMENT].create_with_capacity 1;
+    larg := FAST_ARRAY(ITM_ARGUMENT).create_with_capacity 1;
     larg.add_last (
       ITM_ARG.create (v.position)
       name (ALIAS_STR.variable_self) 

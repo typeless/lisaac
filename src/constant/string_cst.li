@@ -75,7 +75,7 @@ Section Public
   // Comparaison.
   //
   
-  - '==' Right 60 other:EXPR :BOOLEAN <-  
+  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <-  
   ( + p:STRING_CST;
     p ?= other;
     (p != NULL) && {string = p.string}
@@ -172,8 +172,8 @@ Section Public
   
 Section Private  
   
-  - dico_string:HASHED_DICTIONARY[INTEGER,STRING_CONSTANT] := 
-  HASHED_DICTIONARY[INTEGER,STRING_CONSTANT].create;
+  - dico_string:HASHED_DICTIONARY(INTEGER,STRING_CONSTANT) := 
+  HASHED_DICTIONARY(INTEGER,STRING_CONSTANT).create;
 
 
 

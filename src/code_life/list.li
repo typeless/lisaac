@@ -34,7 +34,7 @@ Section Inherit
   
 Section Private  
   
-  + expr_list:FAST_ARRAY[INSTR];
+  + expr_list:FAST_ARRAY(INSTR);
     
 Section Public  
   
@@ -148,16 +148,7 @@ Section Public
   (
     new_depend_pass;
     position  := p;
-    expr_list := FAST_ARRAY[INSTR].create_with_capacity 2;
-    /*
-    "execute list #".print;
-    object_id.print; '\n'.print;
-    (object_id = 220500).if {
-    //  crash_with_message "BUG!!!";
-    };
-    */
-    
-    
+    expr_list := FAST_ARRAY(INSTR).create_with_capacity 2;
   );
 
   - my_copy:SELF <-
@@ -214,7 +205,7 @@ Section Public
   - execute_case <-  
   ( + new_expr:INSTR; 
     + old_list_current:LIST;
-        
+    
     //
     seq_list.add_last Self; 
     seq_inline := seq_inline + 1;
@@ -266,7 +257,11 @@ Section Public
     buffer.append "{\n";
     indent.append "  ";
     
+    current_list_level := current_list_level + 1;
+    
     genere_body buffer;
+    
+    current_list_level := current_list_level - 1;
     
     indent.remove_last 2;    
     buffer.append indent;
@@ -280,14 +275,16 @@ Section Public
     pos_local := buffer.count+1;
     stack_local.clear;
     
+    ALIASER_LOCAL.reset;
+    
     genere_body buffer;
     
     // Local.    
     string_tmp.clear;        
-    add_local (var_size.item 3) in string_tmp; // 64 bits
-    add_local (var_size.item 2) in string_tmp; // 32 bits
-    add_local (var_size.item 1) in string_tmp; // 16 bits
-    add_local (var_size.item 0) in string_tmp; //  8 bits
+    add_local (ALIASER_LOCAL.var_size.item 3) in string_tmp; // 64 bits
+    add_local (ALIASER_LOCAL.var_size.item 2) in string_tmp; // 32 bits
+    add_local (ALIASER_LOCAL.var_size.item 1) in string_tmp; // 16 bits
+    add_local (ALIASER_LOCAL.var_size.item 0) in string_tmp; //  8 bits
     buffer.insert_string string_tmp to pos_local;          
   );
   
@@ -331,17 +328,46 @@ Section Private
       }.do_while {(j <= upper) && {old_count = buffer.count}};      
       buffer.append ";\n";
     };        
-  );
+  );  
   
-  - add_local tab:FAST_ARRAY[LOCAL] in buf:STRING <-
+  - add_local tab:FAST_ARRAY(LOCAL) in buf:STRING <-
   ( + loc:LOCAL;
     + t:TYPE_FULL;
     + cur:INTEGER;
+    //+ i:INTEGER;
     
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
 	loc := tab.item j;	
         loc.is_result.if_false {
+          (loc.type.raw = TYPE_CONTEXT).if {
+            context_counter := context_counter + 1;
+          } else {
+            local_counter := local_counter + 1;
+          };
+          /*
+          (
+            (loc.ensure_count != 0) && 
+            {profil_current != NULL} && 
+            {loc.type.raw != TYPE_CONTEXT}
+          ).if {            
+            i := profil_current.result_list.lower;
+            {
+              (i <= profil_current.result_list.upper) && 
+              {profil_current.result_list.item i != loc}
+            }.while_do {
+              i := i + 1;
+            };
+            (i > profil_current.result_list.upper).if {
+              
+              loc.intern_name.print;
+              ' '.print;
+              loc.ensure_count.print; 
+              '\n'.print;
+              
+            };
+          };
+          */
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {
@@ -359,8 +385,12 @@ Section Private
           buf.append (loc.intern_name);
         };
       };
-      buf.append ";\n";
-      tab.clear;
+      buf.append ";\n";     
     };
   );
+  
+Section LISAAC
 
+  - local_counter:INTEGER;
+  
+  - context_counter:INTEGER;

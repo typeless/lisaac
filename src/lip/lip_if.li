@@ -35,24 +35,24 @@ Section Public
   
   + condition:LIP_CODE;
   
-  + then:FAST_ARRAY[LIP_CODE];
+  + then:FAST_ARRAY(LIP_CODE);
   
-  + else:FAST_ARRAY[LIP_CODE];
+  + else:FAST_ARRAY(LIP_CODE);
   
   //
   // Creation.
   //
 
-  - create p:POSITION if rec:LIP_CODE then the:FAST_ARRAY[LIP_CODE] 
-  else els:FAST_ARRAY[LIP_CODE] :SELF <-
+  - create p:POSITION if rec:LIP_CODE then the:FAST_ARRAY(LIP_CODE) 
+  else els:FAST_ARRAY(LIP_CODE) :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p if rec then the else els;
     result
   );
 
-  - make p:POSITION if rec:LIP_CODE then the:FAST_ARRAY[LIP_CODE] 
-  else els:FAST_ARRAY[LIP_CODE] <-
+  - make p:POSITION if rec:LIP_CODE then the:FAST_ARRAY(LIP_CODE) 
+  else els:FAST_ARRAY(LIP_CODE) <-
   ( 
     position := p;
     condition := rec;

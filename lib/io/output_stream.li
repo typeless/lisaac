@@ -44,10 +44,10 @@ Section Public
   // Output `s' to current output device.
   ( ? {is_connected};
     ? {s!=NULL};
-    
+        
     (s.lower).to (s.count) do {i:INTEGER;
       put_character (s.item i);
-    };
+    };    
   );
   
   - put_integer i:INTEGER <-
@@ -137,10 +137,7 @@ Section Public
   
 Section Private
   
-  - basic_io_putc c:CHARACTER <- 
-  (    
-    SYSTEM_IO.print_char c;   
-  );
+  - basic_io_putc c:CHARACTER <- SYSTEM_IO.print_char c;
   
   - basic_error_putc c:CHARACTER <- SYSTEM_IO.print_error_char c;
   

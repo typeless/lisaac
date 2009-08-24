@@ -38,7 +38,10 @@ Section Public
   
   + is_result :BOOLEAN := FALSE;
 
-  - set_result r:BOOLEAN <- is_result := r;
+  - set_result r:BOOLEAN <- 
+  (
+    is_result := r;
+  );
   
   //
   // Copy alias manager.
@@ -60,7 +63,7 @@ Section Public
     is_alias := FALSE;
   );
   
-  - list_alias:FAST_ARRAY[LOCAL] := FAST_ARRAY[LOCAL].create_with_capacity 64;
+  - list_alias:FAST_ARRAY(LOCAL) := FAST_ARRAY(LOCAL).create_with_capacity 64;
   
   - get_alias:LOCAL <-
   (
@@ -77,6 +80,13 @@ Section Public
   - set_my_alias new_loc:LOCAL <-
   (
     my_alias := new_loc;
+  );
+  
+  + list_level:INTEGER;
+  
+  - set_list_level lev:INTEGER <-
+  (
+    list_level := lev;
   );
     
   - write p:POSITION with r:EXPR value val:EXPR :WRITE <-
@@ -97,8 +107,9 @@ Section Public
         
     (my_alias != NULL).if {      
       result := my_alias.read_direct p with NULL;
-    }.elseif {is_alias} then { // BSBS: voir Mildred
-      result := get_alias.read_direct p with NULL; // BSBS: cas impossible !!!
+    }.elseif {is_alias} then { 
+      // Case : Argument function (see CALL_SLOT)
+      result := get_alias.read_direct p with NULL; 
     } else {
       //? {! is_alias};
       result := read_direct p with NULL;
@@ -300,7 +311,7 @@ Section Public
     name        := n;
     is_result   := r;
     intern_name := ALIAS_STR.get_intern n; 
-       
+           
     ((t.is_expanded) && {! t.is_expanded_c}).if {
       type := t + TYPE_FULL.expanded_ref_bit;
     } else {
@@ -368,7 +379,7 @@ Section VARIABLE
   
   - new_read p:POSITION with r:EXPR :READ <- 
   [ -? {r = NULL}; ]
-  (
+  (             
     READ_LOCAL.create p with Self
   );
   

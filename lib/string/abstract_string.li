@@ -36,17 +36,21 @@ Section Inherit
   
 Section Public  //ABSTRACT_STRING, ABSTRACT_ENTRY
   
-  + storage:NATIVE_ARRAY[CHARACTER];
+  + storage:NATIVE_ARRAY(CHARACTER);
+  // Collection containing characters
   
 Section Public
   
   + count:INTEGER;
+  // size
   
-  - lower:INTEGER := 1;
+  - lower:INTEGER := 1; 
   
   - upper:INTEGER <- count;
+  // size
   
   - capacity:INTEGER <- count;
+  // size
   
   //
   // Access.
@@ -54,12 +58,15 @@ Section Public
   
   - item index:INTEGER :CHARACTER <-
   // Character at position `index'.
-  ( ? {valid_index index};
-        
+  // * Require: index is valid
+  [
+    -? {valid_index index};
+  ]
+  (         
     storage.item (index - 1)
   );
   
-  - '@' Left 1 index:INTEGER :CHARACTER <-
+  - Self:SELF '@' Left 1 index:INTEGER :CHARACTER <-
   // Character at position `index'.
   (
     item index
@@ -69,16 +76,50 @@ Section Public
   // Switch case :
   //
   
-  - when value:ABSTRACT_STRING then block:BLOCK :ABSTRACT_STRING <-
+  - when value:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
+  // When `Self' equal `value', execute `block'
   (
-    (Self = value).if block;
+    (Self == value).if block;
     Self
   );
 
-  - when value1:ABSTRACT_STRING or value2:ABSTRACT_STRING then block:BLOCK :ABSTRACT_STRING <-
+  - when value1:ABSTRACT_STRING or value2:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
+  // When `Self' equal `value1' or `value2', execute `block'
   (
-    ((Self = value1) || {Self = value2}).if block;
+    ((Self == value1) || {Self == value2}).if block;
     Self
+  );
+
+  - case value:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
+  // * See: `when_then'
+  ( + result :ABSTRACT_STRING;
+    
+    ((Self != ABSTRACT_STRING) && {Self == value}).if {
+      block.value;
+      result := ABSTRACT_STRING;
+    } else {
+      result := Self;
+    };
+    result
+  );
+
+  - case_if test:{BOOLEAN} then block:{} :ABSTRACT_STRING <-
+  // If `test' is true then `block'
+  ( + result :ABSTRACT_STRING;
+    
+    ((Self != ABSTRACT_STRING) && test).if {
+      block.value;
+      result := ABSTRACT_STRING;
+    } else {
+      result := Self;
+    };
+    result
+  );
+
+  - case_else block:{} <-
+  // otherwise, execute `block'
+  (
+    (Self != ABSTRACT_STRING).if block;
   );
 
   //
@@ -90,8 +131,10 @@ Section Public
   ( index.in_range lower to count );
   
   - is_empty : BOOLEAN <- count == 0;
+
   
   - hash_code: INTEGER <-
+  // Return a hashcode
   ( + result:INTEGER;
     
     1.to count do { i:INTEGER;
@@ -103,7 +146,7 @@ Section Public
     result
   );
   
-  - '<' other:ABSTRACT_STRING :BOOLEAN <-
+  - Self:SELF '<' other:ABSTRACT_STRING :BOOLEAN <-
   // Is Current less than `other' ?
   ( + i: INTEGER;
     + result: BOOLEAN;
@@ -116,7 +159,7 @@ Section Public
       result := other.count >= i;
     } else {
       (other.count < i).if {
-	result := FALSE;
+        result := FALSE;
       };
       result := item i < other.item i;
     };
@@ -124,6 +167,7 @@ Section Public
   );
   
   - compare other:ABSTRACT_STRING :INTEGER <-
+  // Compare alphabetically `Self' to `other'
   ( + i: INTEGER;
     + result:INTEGER;
     i := 1;
@@ -132,19 +176,19 @@ Section Public
     };
     (count < i).if {
       (other.count < i).if {
-	result := 0;
+        result := 0;
       } else {
-	result := -1;
+        result := -1;
       };
     } else {
       (other.count < i).if {
-	result := 1;
+        result := 1;
       } else {
-	(item i < other.item i).if {
-	  result := -1;
-	} else {
-	  result := 1;
-	};
+        (item i < other.item i).if {
+          result := -1;
+        } else {
+          result := 1;
+        };
       };
     };
     
@@ -153,7 +197,7 @@ Section Public
   
   - same_as other:ABSTRACT_STRING :BOOLEAN <-
   // Case insensitive `=='.
-  ( + s1, s2:NATIVE_ARRAY[CHARACTER];
+  ( + s1, s2:NATIVE_ARRAY(CHARACTER);
     + i:INTEGER;
     + result:BOOLEAN;
     ? {other != NULL};
@@ -161,30 +205,30 @@ Section Public
     i := count;
     (i = other.count).if {
       (storage.fast_memcmp (other.storage) until i).if {
-	result:=TRUE;
+        result:=TRUE;
       } else {
-	i := i - 1;
-	s1 := storage;
-	s2 := other.storage;
-	result:=TRUE;
-	{(i!=0) && {result}}.while_do {
-	  result:=s1.item i.same_as (s2.item i);
-	  i:=i-1;
-	};
+        i := i - 1;
+        s1 := storage;
+        s2 := other.storage;
+        result:=TRUE;
+        {(i!=0) && {result}}.while_do {
+          result:=s1.item i.same_as (s2.item i);
+          i:=i-1;
+        };
       };
     };
     result
   );
   
-  - '==' Left 40 other:ABSTRACT_STRING :BOOLEAN <-
+  - Self:SELF '==' Left 40 other:ABSTRACT_STRING :BOOLEAN <-
   // Has Current the same text as `other' ?
   ( + result:BOOLEAN;
     ? {other != NULL};
     (count = other.count).if {
       (count = 0).if {
-	result := TRUE;
+        result := TRUE;
       } else {
-	result:=storage.fast_memcmp (other.storage) until count;
+        result:=storage.fast_memcmp (other.storage) until count;
       };
     };
     result
@@ -232,11 +276,18 @@ Section Public
   // Gives the index of the first occurrence `ch' or
   // 0 if none.
   (+ result:INTEGER;
-    result := 1 + storage.fast_index_of (ch,1) until (count - 1);    
-    ?	{(result != count + 1) ->> {item result = ch}};    
+    result := 1 + storage.fast_index_of (ch,0) until (count - 1);
+    ? {(result != count + 1) ->> {item result = ch}};
     result
   );
   
+  - index_of ch:CHARACTER :INTEGER <-
+  // Gives the index of the first occurrence of 'ch' or
+  // 0 if none.
+  (
+    fast_index_of ch
+  );
+
   - first_index_of c:CHARACTER :INTEGER <-  
   // Index of first occurrence of `c' at index 1 or after index 1.
   (
@@ -272,7 +323,7 @@ Section Public
     storage.fast_occurrences c until (count - 1)
   );
   
-  -  has_suffix s:ABSTRACT_STRING :BOOLEAN <-
+  - has_suffix s:ABSTRACT_STRING :BOOLEAN <-
   // True if suffix of `Current' is `s'.
   (
     + result:BOOLEAN;
@@ -284,8 +335,8 @@ Section Public
       i1 := count - s.count + 1;
       i2 := 1;
       { (i1 > count) || { i2 > s.count} || { item i1 != s.item i2}}.until_do {
-	i1 := i1 + 1;
-	i2 := i2 + 1;
+        i1 := i1 + 1;
+        i2 := i2 + 1;
       };
       result := i1 > count;
     };
@@ -304,7 +355,7 @@ Section Public
     ( p.count <= count ).if {
       i := p.count;
       { (i == 0) || { item i != p.item i}}.until_do {
-	i := i - 1;
+        i := i - 1;
       };
       result := i == 0;
     };
@@ -338,7 +389,7 @@ Section Public
     result := TRUE;
     { (! result) || { i = 0}}.until_do {
       result := item i.is_bit;
-      i := i - 1
+      i := i - 1;
     };
     ? {result = (count = occurrences '0' + occurrences '1')};
     result
@@ -376,49 +427,136 @@ Section Public
     { (state = 4) || {i > count}}.until_do {
       cc := item i;
       ( state = 0).if {
-	cc.is_separator.if {
-	}.elseif {cc = '+'} then {
-	  state := 1;
-	}.elseif {cc = '-'} then {
-	  negative := TRUE;
-	  state := 1;
-	}.elseif {cc.is_digit} then {
-	  value := cc.decimal_value;
-	  state := 2;
-	} else {
-	  state := 4;
-	};
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        }.elseif {cc.is_digit} then {
+          value := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 4;
+        };
       }.elseif { state = 1} then {
-	cc.is_digit.if {
-	  value := cc.decimal_value;
-	  negative.if {
-	    value := - value;
-	  };
-	  state := 2;
-	} else {
-	  state := 4;
-	};
+        cc.is_digit.if {
+          value := cc.decimal_value;
+          negative.if {
+            value := - value;
+          };
+          state := 2;
+        } else {
+          state := 4;
+        };
       }.elseif { state = 2 } then {
-	cc.is_digit.if {
-	  negative.if {
-	    value := 10 * value - cc.decimal_value;
-	  } else {
-	    value := 10 * value + cc.decimal_value;
-	  };
-	  // over/underflow check here
-	  ((negative && {value > 0}) || { ! negative && {value < 0}}).if {
-	    state := 4;
-	  };
-	}.elseif {cc.is_separator} then {
-	  state := 3;
-	} else {
-	  state := 4;
-	};
+        cc.is_digit.if {
+          negative.if {
+            value := 10 * value - cc.decimal_value;
+          } else {
+            value := 10 * value + cc.decimal_value;
+          };
+          // over/underflow check here
+          ((negative && {value > 0}) || { ! negative && {value < 0}}).if {
+            state := 4;
+          };
+        }.elseif {cc.is_separator} then {
+          state := 3;
+        } else {
+          state := 4;
+        };
       }.elseif { state = 3 } then {
-	cc.is_separator.if {
-	} else {	    
-	  state := 4;
-	};
+        cc.is_separator.if {
+        } else {            
+          state := 4;
+        };
+      };
+      
+      i := i + 1;
+    };
+    ( (state != 0) && { state != 4}).if {
+      result := TRUE;
+    };
+    
+    result
+  );
+  
+  - is_integer_64:BOOLEAN <-
+  // Does self represent an INTEGER_64?
+  // `Result' is true if and only if the following two conditions hold:
+  //
+  // 1. In the following BNF grammar, the value of self can be
+  // produced by "Integer_literal", if leading and trailing
+  // separators are ignored:
+  //
+  // Integer_literal = [Sign] Integer
+  // Sign            = "+" | "-"
+  // Integer         = Digit | Digit Integer
+  // Digit           = "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"
+  //
+  // 2. The numerical value represented by self is within the
+  // range that can be represented by an instance of type INTEGER_64.
+  (
+    + i, state: INTEGER;
+    + value:INTEGER_64;
+    + negative: BOOLEAN;
+    + result:BOOLEAN;
+    + cc: CHARACTER;
+    
+    // state 0: nothing read.
+    // state 1: "+" or "-" read.
+    // state 2: in the number.
+    // state 3: after the number.
+    // state 4: error.
+    
+    i := 1;
+    
+    { (state = 4) || {i > count}}.until_do {
+      cc := item i;
+      ( state = 0).if {
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        }.elseif {cc.is_digit} then {
+          value := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 4;
+        };
+      }.elseif { state = 1} then {
+        cc.is_digit.if {
+          value := cc.decimal_value;
+          negative.if {
+            value := - value;
+          };
+          state := 2;
+        } else {
+          state := 4;
+        };
+      }.elseif { state = 2 } then {
+        cc.is_digit.if {
+          negative.if {
+            value := value * 10 - cc.decimal_value;
+          } else {
+            value := value * 10 + cc.decimal_value;
+          };
+          // over/underflow check here
+          ((negative && {value > 0}) || { ! negative && {value < 0}}).if {
+            state := 4;
+          };
+        }.elseif {cc.is_separator} then {
+          state := 3;
+        } else {
+          state := 4;
+        };
+      }.elseif { state = 3 } then {
+        cc.is_separator.if {
+        } else {            
+          state := 4;
+        };
       };
       
       i := i + 1;
@@ -450,36 +588,94 @@ Section Public
       cc := item i;
 
       (state = 0).if {
-	cc.is_separator.if {
-	}.elseif {cc = '+'} then {
-	  state := 1;
-	}.elseif {cc = '-'} then {
-	  negative := TRUE;
-	  state := 1;
-	} else { // cc.is_digit
-	  result := cc.decimal_value;
-	  state := 2;
-	};
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        } else { // cc.is_digit
+          result := cc.decimal_value;
+          state := 2;
+        };
       }.elseif { state = 1 } then {
-	// cc.is_digit
-	result := cc.decimal_value;
-	negative.if {
-	  result := - result
-	};
-	state := 2;
+        // cc.is_digit
+        result := cc.decimal_value;
+        negative.if {
+          result := - result;
+        };
+        state := 2;
       }.elseif { state = 2} then {
-	cc.is_digit.if {
-	  negative.if {
-	    result := 10 * result - cc.decimal_value;
-	  } else {
-	    result := 10 * result + cc.decimal_value;
-	  };
-	} else { // cc.is_separator
-	  state := 3;
-	};
+        cc.is_digit.if {
+          negative.if {
+            result := 10 * result - cc.decimal_value;
+          } else {
+            result := 10 * result + cc.decimal_value;
+          };
+        } else { // cc.is_separator
+          state := 3;
+        };
       }.elseif { state = 3 } then {
-	// cc.is_separator
-	i := count; // terminate the loop
+        // cc.is_separator
+        i := count; // terminate the loop
+      };
+      
+      i := i + 1;
+    };
+    
+    result
+  );
+  
+  - to_integer_64:INTEGER_64 <-
+  // self must look like an INTEGER.
+  (
+    + i, state:INTEGER;
+    + cc: CHARACTER;
+    + negative: BOOLEAN;
+    + result:INTEGER_64;
+    
+    ? { is_integer };
+    // state 0: nothing read.
+    // state 1: "+" or "-" read.
+    // state 2: in the number.
+    // state 3: after the number.
+
+    i := 1;
+
+    { i > count }.until_do {
+      cc := item i;
+
+      (state = 0).if {
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        } else { // cc.is_digit
+          result := cc.decimal_value;
+          state := 2;
+        };
+      }.elseif { state = 1 } then {
+        // cc.is_digit
+        result := cc.decimal_value;
+        negative.if {
+          result := - result;
+        };
+        state := 2;
+      }.elseif { state = 2} then {
+        cc.is_digit.if {
+          negative.if {
+            result := result * 10 - cc.decimal_value;
+          } else {
+            result := result * 10 + cc.decimal_value;
+          };
+        } else { // cc.is_separator
+          state := 3;
+        };
+      }.elseif { state = 3 } then {
+        // cc.is_separator
+        i := count; // terminate the loop
       };
       
       i := i + 1;
@@ -494,7 +690,7 @@ Section Public
     (is_empty).if_false {
       j := lower;
       {(j > upper) || {! item j.is_hexadecimal_digit}}.until_do {
-	j:=j+1;
+        j:=j+1;
       };
       result := j > upper;
     };
@@ -516,7 +712,7 @@ Section Public
     (is_empty).if_false {        
       j := lower;
       {(j > upper) || {! item j.is_octal_digit}}.until_do {
-	j:=j+1;
+        j:=j+1;
       };
       result:= j > upper;
     };
@@ -533,6 +729,22 @@ Section Public
     result
   );
 
+  - is_binary :BOOLEAN <-
+  ( + result:BOOLEAN;
+    + j:INTEGER;
+
+    (is_empty).if_false {
+      j := lower;
+      { (j > upper) || {! item j.is_binary_digit} }.until_do {
+        j := j + 1;
+      };
+
+      result := j > upper;
+    };
+
+    result
+  );
+
   - to_binary :INTEGER_64 <-
   ( + result:INTEGER_64;
     ? {is_bit};
@@ -540,7 +752,7 @@ Section Public
     lower.to upper do { j:INTEGER;
       result := result << 1;
       (item j = '1').if {
-	result := result | 1;
+        result := result | 1;
       };
     };
     result
@@ -583,54 +795,53 @@ Section Public
     { (state = 5) || {i > count}}.until_do {
       cc := item i;
       ( state = 0).if {
-	cc.is_separator.if {
-	}.elseif {cc = '+'} then {
-	  state := 1;
-	}.elseif {cc = '-'} then {
-	  negative := TRUE;
-	  state := 1;
-	}.elseif {cc.is_digit} then {
-	  value_int := cc.decimal_value;
-	  state := 2;
-	} else {
-	  state := 5;
-	};
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        }.elseif {cc.is_digit} then {
+          value_int := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 1} then {
-	cc.is_digit.if {
-	  value_int := cc.decimal_value;
-	  state := 2;
-	} else {
-	  state := 5;
-	};
+        cc.is_digit.if {
+          value_int := cc.decimal_value;
+          state := 2;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 2 } then {
-	cc.is_digit.if {
-	  value_int := 10 * value_int + cc.decimal_value;
-	  // over/underflow check here
-	  ((negative && {value_int > 0}) || { ! negative && {value_int < 0}}).if {
-	    state := 5;
-	  };
-	}.elseif { cc = '.' } then {
-	  state := 3;	
-	  value := value_int.to_real_16_16;
-	}.elseif {cc.is_separator} then {
-	  state := 4;
-	} else {
-	  state := 5;
-	};
+        cc.is_digit.if {
+          value_int := 10 * value_int + cc.decimal_value;
+          (value_int < 0).if {
+            state := 5;
+          };
+        }.elseif { cc = '.' } then {
+          state := 3;
+          value := value_int.to_real_16_16;
+        }.elseif {cc.is_separator} then {
+          state := 4;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 3 } then {
-	cc.is_digit.if {
-	  d := d * 10;
-	  value := value + (cc.decimal_value.to_real_16_16) /# d;
-	}.elseif {cc.is_separator} then {
-	  state := 4;
-	} else {
-	  state := 5;
-	};
+        cc.is_digit.if {
+          d := d * 10;
+          value := value + (cc.decimal_value.to_real_16_16) /# d;
+        }.elseif {cc.is_separator} then {
+          state := 4;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 4 } then {
-	cc.is_separator.if {
-	} else {	    
-	  state := 5;
-	};
+        cc.is_separator.if {
+        } else {
+          state := 5;
+        };
       };
       
       i := i + 1;
@@ -665,41 +876,41 @@ Section Public
     {i > count}.until_do {
       cc := item i;
       ( state = 0).if {
-	cc.is_separator.if {
-	}.elseif {cc = '+'} then {
-	  state := 1;
-	}.elseif {cc = '-'} then {
-	  negative := TRUE;
-	  state := 1;
-	}.elseif {cc.is_digit} then {
-	  value_int := cc.decimal_value;
-	  state := 2;
-	};
+        cc.is_separator.if {
+        }.elseif {cc = '+'} then {
+          state := 1;
+        }.elseif {cc = '-'} then {
+          negative := TRUE;
+          state := 1;
+        }.elseif {cc.is_digit} then {
+          value_int := cc.decimal_value;
+          state := 2;
+        };
       }.elseif { state = 1} then {
-	cc.is_digit.if {
-	  value_int := cc.decimal_value;
-	  state := 2;
-	};
+        cc.is_digit.if {
+          value_int := cc.decimal_value;
+          state := 2;
+        };
       }.elseif { state = 2 } then {
-	cc.is_digit.if {
-	  value_int := value_int * 10 + cc.decimal_value;
-	}.elseif { cc = '.' } then {
-	  state := 3;	
-	  value := value_int.to_real_16_16;
-	} else {  // cc is separator
-	  value := value_int.to_real_16_16;
-	  state := 4;
-	};
+        cc.is_digit.if {
+          value_int := value_int * 10 + cc.decimal_value;
+        }.elseif { cc = '.' } then {
+          state := 3;        
+          value := value_int.to_real_16_16;
+        } else {  // cc is separator
+          value := value_int.to_real_16_16;
+          state := 4;
+        };
       }.elseif { state = 3 } then {
-	cc.is_digit.if {
-	  d := d * 10;
-	  value := value + (cc.decimal_value.to_real_16_16) /# d;
-	} else { // cc is separator
-	  state := 4;
-	};
+        cc.is_digit.if {
+          d := d * 10;
+          value := value + (cc.decimal_value.to_real_16_16) /# d;
+        } else { // cc is separator
+          state := 4;
+        };
       }.elseif { state = 4 } then {
-	// cc is separator
-	i := count;  // terminate the loop
+        // cc is separator
+        i := count;  // terminate the loop
       };
       
       i := i + 1;
@@ -720,7 +931,7 @@ Section Public
   // Modification:
   //
   
-  - '+' other:ABSTRACT_STRING :STRING <-
+  - Self:SELF '+' other:ABSTRACT_STRING :STRING <-
   // Create a new STRING which is the concatenation of
   // `self' and `other'.
   ( + result:STRING;
@@ -782,23 +993,41 @@ Section Public
     
   - substring start_index:INTEGER to end_index:INTEGER :STRING <-
   // New string consisting of items [`start_index'.. `end_index'].
-  (
-    + c:INTEGER;
+  [
+    -? { start_index >= 1 };
+    -? { end_index <= count };
+    -? { start_index <= end_index + 1 };
+  ]
+  ( + c:INTEGER;
     + result:STRING;
-    
-    ? { start_index >= 1 };
-    ? { end_index <= count };
-    ? { start_index <= end_index + 1 };
+
     
     c := end_index - start_index + 1;
     result := STRING.create c;
     result.set_count c;
     result.storage.slice_copy storage to 0 from (start_index - 1) to (end_index - 1);
-
-    ? { result.count == end_index - start_index + 1 };
-    result
-  );
     
+    result
+  )
+  [
+    +? { Result.count = end_index - start_index + 1 };
+  ];
+  
+  - substring_begin start:INTEGER to_begin end:INTEGER :STRING <- 
+  (
+    substring start to end
+  );
+  
+  - substring_begin start:INTEGER to_end end:INTEGER :STRING <-
+  (
+    substring start to (upper-end-1)
+  );
+  
+  - substring_end start:INTEGER to_end end:INTEGER :STRING <-
+  (
+    substring (upper-start-1) to (upper-end-1)
+  );
+  
   - substring_index (other:ABSTRACT_STRING,start_index:INTEGER) :INTEGER <-
   // Position of the first occurrence of `other' at or after 1
   // or 0 f none.
@@ -811,13 +1040,13 @@ Section Public
     {(result != 0) || {(s + other.count - 1) > count }}.until_do {
       i := 1;
       {(i > other.count) || {item (s + i - 1) != other.item i}}.until_do {
-	i := i + 1;
+        i := i + 1;
       };
       
       (i > other.count).if {
-	result := s;
+        result := s;
       } else {
-	s := s + 1;
+        s := s + 1;
       };
     };
     
@@ -832,22 +1061,91 @@ Section Public
     
     substring_index (other,1)
   );
-  
+
   //
   // Splitting a STRING:
   //
   
-  - split:ARRAY[STRING] <-
+  - partition sep:ABSTRACT_STRING from start_index:INTEGER :(STRING, STRING, STRING) <-
+  [
+    -? {sep != NULL};
+    -? {valid_index start_index};
+  ]
+  ( + i, j:INTEGER;
+    + head, sep, tail :STRING;
+    i := substring_index (sep, start_index);
+    (i = 0).if {
+      // Not found
+      head := to_string;
+    } else {
+      // Found
+      j := i + sep.count;
+      (i > lower).if {
+        head := substring lower to (i-1);
+      };
+      sep  := substring i to j;
+      (j < upper).if {
+        tail := substring (j+1) to upper;
+      };
+    };
+    head, sep, tail
+  );
+
+  - partition sep:ABSTRACT_STRING :(STRING, STRING, STRING) <-
+  (
+    partition sep from lower
+  );
+
+  - split_str sep:ABSTRACT_STRING :ARRAY(STRING) <-
+  [
+    -? {sep != NULL};
+  ]
+  ( + result:ARRAY(STRING);
+    ( count > 0 ).if {
+      split_buffer.clear;
+      split_str sep in split_buffer;
+      (! split_buffer.is_empty).if {
+        result := ARRAY(STRING).create (split_buffer.lower) to (split_buffer.upper);
+        result.copy split_buffer;
+      };
+    };
+    
+    result
+  )
+  [
+    +? { (Result != NULL) ->> { ! Result.is_empty }};
+  ];
+  
+  - split_str sep:ABSTRACT_STRING in words:COLLECTION(STRING) <-
+  // Same jobs as `split_str' but result is appended in `words'.
+  [
+    -? {words != NULL};
+    -? {sep != NULL};
+  ]
+  ( + i, j:INTEGER;
+    // i    first character of the next word
+    // j-1  last character of the next word
+    // j    first character of the next separator
+    
+    i := 1;
+    { j := substring_index(sep, i); j != 0 }.while_do {
+      words.add_last (substring i to (j-1));
+      i := j + sep.count;
+    };
+    words.add_last (substring i to upper);
+  );
+
+  - split:ARRAY(STRING) <-
   // Split the string into an array of words. Uses `is_separator' of
   // CHARACTER to find words. Gives Void or a non empty array.
   (
-    + result:ARRAY[STRING];
+    + result:ARRAY(STRING);
     ( count > 0 ).if {
       split_buffer.clear;
       split_in split_buffer;
       (! split_buffer.is_empty).if {
-	result := ARRAY[STRING].create (split_buffer.lower) to (split_buffer.upper);
-	result.copy split_buffer;
+        result := ARRAY(STRING).create (split_buffer.lower) to (split_buffer.upper);
+        result.copy split_buffer;
       };
     };
     ? { (result != NULL) ->> { ! result.is_empty }};
@@ -855,7 +1153,7 @@ Section Public
     result
   );
   
-  - split_in words:COLLECTION[STRING] <-
+  - split_in words:COLLECTION(STRING) <-
   // Same jobs as `split' but result is appended in `words'.
   (
     + state,old_count: INTEGER;
@@ -867,33 +1165,88 @@ Section Public
     old_count := words.count;
     (count > 0).if {
       1.to upper do { i:INTEGER;
-	c := item i;
-	(state = 0).if {
-	  (! c.is_separator).if {
-	    string_buffer.clear;
-	    string_buffer.append_character c;
-	    state := 1;
-	  };
-	} else {
-	  (! c.is_separator).if {
-	    string_buffer.append_character c;
-	  } else {
-	    words.add_last (string_buffer.twin);	    
-	    state := 0;
-	  };
-	};
+        c := item i;
+        (state = 0).if {
+          (! c.is_separator).if {
+            string_buffer.clear;
+            string_buffer.append_character c;
+            state := 1;
+          };
+        } else {
+          (! c.is_separator).if {
+            string_buffer.append_character c;
+          } else {
+            words.add_last (string_buffer.twin);            
+            state := 0;
+          };
+        };
       };
       ( state == 1).if {
-	words.add_last (string_buffer.twin);
+        words.add_last (string_buffer.twin);
       };
     };
     
     ? { (words.count) >= old_count };
   );
   
-  - get_new_iterator:ITERATOR[CHARACTER] <-
+  - split_at sep:CHARACTER :ARRAY(STRING) <-
+  // Split the string at characters `c' into an array of words.
   (
-    ITERATOR_ON_STRING[CHARACTER].create Self
+    + result:ARRAY(STRING);
+    ( count > 0 ).if {
+      split_buffer.clear;
+      split_at sep in split_buffer;
+      (! split_buffer.is_empty).if {
+        result := ARRAY(STRING).create (split_buffer.lower) to (split_buffer.upper);
+        result.copy split_buffer;
+      };
+    };
+       
+    result
+  )
+  [
+    +? { (Result != NULL) ->> { ! Result.is_empty }};
+  ];
+  
+  - split_at sep:CHARACTER in words:COLLECTION(STRING) <-
+  // Same jobs as `split' but result is appended in `words'.
+  (
+    + state,old_count: INTEGER;
+    // state = 0: waiting next word.
+    // state = 1: inside a new word.
+    + c: CHARACTER;
+    
+    ? { words != NULL};
+    old_count := words.count;
+    (count > 0).if {
+      1.to upper do { i:INTEGER;
+        c := item i;
+        (state = 0).if {
+          (c != sep).if {
+            string_buffer.clear;
+            string_buffer.append_character c;
+            state := 1;
+          };
+        } else {
+          (c != sep).if {
+            string_buffer.append_character c;
+          } else {
+            words.add_last (string_buffer.twin);            
+            state := 0;
+          };
+        };
+      };
+      ( state == 1).if {
+        words.add_last (string_buffer.twin);
+      };
+    };
+    
+    ? { (words.count) >= old_count };
+  );
+  
+  - get_new_iterator:ITERATOR(CHARACTER) <-
+  (
+    ITERATOR_ON_STRING(CHARACTER).create Self
   );
   
   - same_string other:ABSTRACT_STRING :BOOLEAN <-
@@ -901,7 +1254,7 @@ Section Public
   // Useful in proper descendants of STRING.
   (
     ? { other != NULL };
-    string == other.to_string
+    Self == other.to_string
   );
   
   - to_string:Strict STRING <-
@@ -913,7 +1266,7 @@ Section Public
   
   - string_buffer:STRING := STRING.create 256; // Private, temporary once buffer.
   
-  - split_buffer:ARRAY[STRING] := ARRAY[STRING].create_with_capacity 4 lower 1;
+  - split_buffer:ARRAY(STRING) := ARRAY(STRING).create_with_capacity 4 lower 1;
     
   //
   // Display.
@@ -929,19 +1282,23 @@ Section Public
     IO.put_string Self;
     IO.put_string "\n";
   );
-    
+  
+  - fast_print <-
+  (
+    SYSTEM_IO.print_string Self;
+  );
+  
   - println <-
   [ -? {storage.item count = '\0'}; ]
   (
     to_external.println;
   );
-                                   
-
+  
   //
   // The guru section
   //
   
-  - to_external:NATIVE_ARRAY[CHARACTER] <- 
+  - to_external:NATIVE_ARRAY(CHARACTER) <- 
   // Gives C access to the internal `storage' (may be dangerous).
   // To be compatible with C, a null character is added at the end
   // of the internal `storage'. This extra null character is not

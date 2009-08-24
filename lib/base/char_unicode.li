@@ -20,8 +20,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := Expanded CHAR_UNICODE -> UINTEGER_16;
+  + name    := Expanded CHAR_UNICODE;
 
+  - export := UINTEGER_16;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
@@ -108,26 +109,26 @@ Section Public
   // Binary operator :
   //
   
-  - '+' other:CHAR_UNICODE :CHAR_UNICODE <- (code+other.code).to_character;
+  - Self:SELF '+' other:CHAR_UNICODE :CHAR_UNICODE <- (code+other.code).to_character;
   
-  - '-' other:CHAR_UNICODE :CHAR_UNICODE <- (code-other.code).to_character;
+  - Self:SELF '-' other:CHAR_UNICODE :CHAR_UNICODE <- (code-other.code).to_character;
   
-  - '!==' other:CHAR_UNICODE :BOOLEAN <- (code !== other.code);
+  - Self:SELF '!==' other:CHAR_UNICODE :BOOLEAN <- (code !== other.code);
   // Comparison using `code'.
   
-  - '==' other:CHAR_UNICODE :BOOLEAN <- (code == other.code);
+  - Self:SELF '==' other:CHAR_UNICODE :BOOLEAN <- (code == other.code);
   // Comparison using `code'.
   
-  - '<' other:CHAR_UNICODE :BOOLEAN <- ( code < other.code );
+  - Self:SELF '<' other:CHAR_UNICODE :BOOLEAN <- ( code < other.code );
   // Comparison using `code'.
   
-  - '<=' other:CHAR_UNICODE :BOOLEAN <- ( code <= other.code );
+  - Self:SELF '<=' other:CHAR_UNICODE :BOOLEAN <- ( code <= other.code );
   // Comparison using `code'.
   
-  - '>' other:CHAR_UNICODE :BOOLEAN <- ( code > other.code );
+  - Self:SELF '>' other:CHAR_UNICODE :BOOLEAN <- ( code > other.code );
   // Comparison using `code'.
   
-  - '>=' other:CHAR_UNICODE :BOOLEAN <- ( code >= other.code );
+  - Self:SELF '>=' other:CHAR_UNICODE :BOOLEAN <- ( code >= other.code );
   // Comparison using `code'.
   
   - decimal_value:INTEGER <-

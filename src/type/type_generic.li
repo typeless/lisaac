@@ -37,8 +37,8 @@ Section Private
   // BSBS: Vu que les ITM_TYPE sont aliaser, il n'est pas necessary d'aliaser les TYPE !
   // Mais attention au pb des TYPE_GENERIC et de leur alias de slot_run...
   
-  - dicog_type:HASHED_DICTIONARY[TYPE_GENERIC,STRING_CONSTANT] := 
-  HASHED_DICTIONARY[TYPE_GENERIC,STRING_CONSTANT].create;
+  - dicog_type:HASHED_DICTIONARY(TYPE_GENERIC,STRING_CONSTANT) := 
+  HASHED_DICTIONARY(TYPE_GENERIC,STRING_CONSTANT).create;
     
 Section Public
   
@@ -46,11 +46,11 @@ Section Public
   
   + key:STRING_CONSTANT;
   
-  + generic_list:FAST_ARRAY[TYPE_FULL];  
+  + generic_list:FAST_ARRAY(TYPE_FULL);  
   
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + idx:INTEGER;
-    + tab:FAST_ARRAY[ITM_TYPE_PARAMETER];
+    + tab:FAST_ARRAY(ITM_TYPE_PARAMETER);
     + result:TYPE_FULL;
         
     tab := prototype.idf_generic_list;
@@ -60,7 +60,19 @@ Section Public
     };
     result
   );
+  
+  //
+  // Detect Alias.
+  //  
+  
+  - detect_alias <-
+  (
+    (dicog_type.lower).to (dicog_type.upper) do { j:INTEGER;
+      dicog_type.item j.detect_alias_struct;
+    };      
+  );
 
+  
   //
   // Import / Export
   //
@@ -77,12 +89,12 @@ Section Public
   
 Section Private
   
-  + export_list:FAST_ARRAY[TYPE_FULL];
-  + import_list:FAST_ARRAY[TYPE_FULL];
+  + export_list:FAST_ARRAY(TYPE_FULL);
+  + import_list:FAST_ARRAY(TYPE_FULL);
   
   - is_cast t:TYPE_FULL with msg:STRING_CONSTANT 
-  on  lst:FAST_ARRAY[TYPE_FULL] 
-  and lstp:FAST_ARRAY[ITM_TYPE_MONO] :BOOLEAN <-
+  on  lst:FAST_ARRAY(TYPE_FULL) 
+  and lstp:FAST_ARRAY(ITM_TYPE_MONO) :BOOLEAN <-
   ( + result:BOOLEAN; 
     + j:INTEGER;
             
@@ -109,7 +121,7 @@ Section Public
     NULL
   );
   
-  - get itm_typ:ITM_TYPE_SIMPLE with gen:FAST_ARRAY[TYPE_FULL] :TYPE_FULL <-
+  - get itm_typ:ITM_TYPE_SIMPLE with gen:FAST_ARRAY(TYPE_FULL) :TYPE_FULL <-
   ( + base:TYPE_GENERIC;    
     + result,t:TYPE_FULL;
     + styl,k:STRING_CONSTANT;
@@ -152,12 +164,12 @@ Section Public
   // il faudrai plutot stocker ca ailleurs... ou? chépa!
   //
   
-  + put_to_list:FAST_ARRAY[PUT_TO];
+  + put_to_list:FAST_ARRAY(PUT_TO);
   
   - add_put_to n:PUT_TO <-
   (    
     (put_to_list = NULL).if {
-      put_to_list := FAST_ARRAY[PUT_TO].create_with_capacity 16;
+      put_to_list := FAST_ARRAY(PUT_TO).create_with_capacity 16;
     };
     put_to_list.add_last n;
   );
@@ -238,34 +250,34 @@ Section Public
   );
 
   - make itm_typ:ITM_TYPE_SIMPLE with proto:PROTOTYPE 
-  generic gen:FAST_ARRAY[TYPE_FULL] key k:STRING_CONSTANT <-
+  generic gen:FAST_ARRAY(TYPE_FULL) key k:STRING_CONSTANT <-
   ( + mask_bit:UINTEGER_8;    
     
     index        := index_count;
     index_count  := index_count + 1;
     //
     string_tmp.copy (itm_typ.name);
-    string_tmp.add_last '[';    
+    string_tmp.add_last '(';    
     (gen.lower).to (gen.upper - 1) do { j:INTEGER;      
       gen.item j.append_name_in string_tmp;
       string_tmp.add_last ',';
     };    
     gen.last.append_name_in string_tmp;
-    string_tmp.add_last ']';            
+    string_tmp.add_last ')';            
     name := ALIAS_STR.get string_tmp;
     key := k;
     generic_list := gen;
     string_tmp.copy name;
     string_tmp.replace_all ',' with 'x';
-    string_tmp.replace_all '[' with 'o';
-    string_tmp.replace_all ']' with 'o';
+    string_tmp.replace_all '(' with 'o';
+    string_tmp.replace_all ')' with 'o';
     string_tmp.replace_all ' ' with '_';
     string_tmp.replace_all '.' with '_';
     intern_name := ALIAS_STR.get_intern string_tmp;
     //
     prototype   := proto;
     itm_type    := itm_typ;    
-    slot_run    := FAST_ARRAY[SLOT].create_with_capacity 10; // BSBS: A voir.    
+    slot_run    := FAST_ARRAY(SLOT).create_with_capacity 10; // BSBS: A voir.    
     (prototype.type_style = ALIAS_STR.keyword_expanded).if {
       // Expanded.
       mask_bit := TYPE_FULL.expanded_bit | TYPE_FULL.default_expanded_bit;
@@ -276,20 +288,20 @@ Section Public
     default := TYPE_FULL.create Self with mask_bit;
     prototype.init_slot_for Self;    
     //
-    subtype_list := HASHED_SET[TYPE].create;
+    subtype_list := HASHED_SET(TYPE).create;
     subtype_list.fast_add TYPE_NULL;
     add_subtype Self;
     // BSBS: Size ???
     
     // Import / Export.
     (prototype.export_list != NULL).if {
-      export_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.export_list.count);
+      export_list := FAST_ARRAY(TYPE_FULL).create_with_capacity (prototype.export_list.count);
       (prototype.export_list.lower).to (prototype.export_list.upper) do { j:INTEGER;
         export_list.add_last (prototype.export_list.item j.to_run_for Self);
       };
     };
     (prototype.import_list != NULL).if {
-      import_list := FAST_ARRAY[TYPE_FULL].create_with_capacity (prototype.import_list.count);
+      import_list := FAST_ARRAY(TYPE_FULL).create_with_capacity (prototype.import_list.count);
       (prototype.import_list.lower).to (prototype.import_list.upper) do { j:INTEGER;
         import_list.add_last (prototype.import_list.item j.to_run_for Self);
       };

@@ -40,7 +40,7 @@ Section Public
   
   + stat:INTEGER_8;
   
-  + action:BLOCK := 
+  + action:{G_BUTTON;} := 
   { b:G_BUTTON; 
     // Nothing.
   };
@@ -63,7 +63,7 @@ Section Public
     auto_action := a;
   );
   
-  - create elt:G_EXPR action b:BLOCK :SELF <-
+  - create elt:G_EXPR action b:{G_BUTTON;} :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -71,7 +71,7 @@ Section Public
     result
   );
   
-  - make elt:G_EXPR action b:BLOCK <-
+  - make elt:G_EXPR action b:{G_BUTTON;} <-
   (
     make elt;
     action := b;

@@ -48,7 +48,7 @@ Section Public
   - representation:STRING_CONSTANT := "None";
   - operator:CHARACTER <- (deferred; NULL);
   - priority:INTEGER_8 <- (deferred; NULL);
-  - list:LINKED_LIST[INODE] <- ( deferred; NULL);
+  - list:LINKED_LIST(INODE) <- ( deferred; NULL);
 //  - action:BLOCK <- { root:INODE; };
   - content:G_EXPR <- ( deferred; NULL);
   - win_out:G_WIN_OUT <- (deferred; NULL);
@@ -60,7 +60,7 @@ Section Public
   - type:INTEGER <- (deferred; 0);
   - depth:INTEGER <- (deferred; 0);
   - parent:INTERNAL_INODE <- (deferred; NULL);
-  - dimensions:LINKED_LIST[DIMENSION];
+  - dimensions:LINKED_LIST(DIMENSION);
   - screen_width:INTEGER <- (deferred;0);
   - screen_height:INTEGER <- (deferred;0);
   - connector_width:INTEGER <- (deferred;0);
@@ -85,7 +85,7 @@ Section Public
   //
   // Added.
   //
-  - '+' other:INODE :INODE <- deferred;
+  - Self:SELF '+' other:INODE :INODE <- deferred;
   
   //
   // Method.
@@ -122,7 +122,7 @@ Section Public
   - browse_group_group tst:BLOCK :BOOLEAN <-
   [ ? {! list.is_empty}; ]
   ( + i,j:INTEGER;
-    + lst:LINKED_LIST[INODE];
+    + lst:LINKED_LIST(INODE);
     + result:BOOLEAN;
 
     i := list.lower;

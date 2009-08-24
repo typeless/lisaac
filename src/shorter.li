@@ -26,11 +26,11 @@ Section Header
 
   
   - bibliography:= "http://IsaacOS.com";
-  - author      := "Matthieu Brehier, Sonntag Benoit (bsonntag@loria.fr)";
+  - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Shorter source code.";
   
   - external := `#include "path.h"`;
-  
+    
 Section Inherit
   
   - parent_any:ANY := ANY;
@@ -117,7 +117,7 @@ Section Private
   ( + cmd:STRING;
     + j:INTEGER;
     + var_lisaac:STRING_CONSTANT;
-    + path:NATIVE_ARRAY[CHARACTER];
+    + path:NATIVE_ARRAY(CHARACTER);
     
     // Read argument.
     is_shorter := TRUE;
@@ -172,7 +172,7 @@ Section Private
     };
     
     (format_name != NULL).if {
-      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY[CHARACTER];
+      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
       var_lisaac := STRING_CONSTANT.new_intern path
       count (path.fast_first_index_of '\0' until 1024);
       //var_lisaac := ENVIRONMENT.get_environment_variable "LISAAC";
@@ -263,7 +263,7 @@ Section Private
   - check_in entry:ENTRY begin n:INTEGER <-
   ( + name:STRING_CONSTANT;
     + tok:STRING_CONSTANT;
-    + tok_lst:LINKED_LIST[STRING_CONSTANT];
+    + tok_lst:LINKED_LIST(STRING_CONSTANT);
     + dir:DIRECTORY;    
 
     (! entry.open).if {
@@ -454,7 +454,9 @@ Section Public
       (PROTOTYPE.prototype_list.lower).to (PROTOTYPE.prototype_list.upper) do { j:INTEGER;
         p := PROTOTYPE.prototype_list.item j;
         output_code.clear;
+        put "" to output_code like (ALIAS_STR.short_begin);
         p.shorter_out output_code;
+        put "" to output_code like (ALIAS_STR.short_end);
         save_file (add_ext (p.name)) with output_code;        
       };
     };

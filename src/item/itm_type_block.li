@@ -34,7 +34,7 @@ Section Inherit
   
 Section ITM_TYPE_SIMPLE, ITM_TYPE_SELF
   
-  - dico:FAST_ARRAY[ITM_TYPE_BLOCK] := FAST_ARRAY[ITM_TYPE_BLOCK].create_with_capacity 32;
+  - dico:FAST_ARRAY(ITM_TYPE_BLOCK) := FAST_ARRAY(ITM_TYPE_BLOCK).create_with_capacity 32;
   
 Section Private 
   

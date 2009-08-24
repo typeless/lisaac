@@ -33,14 +33,14 @@ Section Inherit
 
 Section Public
   
-  - list_parent:FAST_ARRAY[STRING_CONSTANT] := FAST_ARRAY[STRING_CONSTANT].create_with_capacity 1;
+  - list_parent:FAST_ARRAY(STRING_CONSTANT) := FAST_ARRAY(STRING_CONSTANT).create_with_capacity 1;
   
-  - list_method:FAST_ARRAY[LIP_SLOT_CODE] := FAST_ARRAY[LIP_SLOT_CODE].create_with_capacity 32;  
+  - list_method:FAST_ARRAY(LIP_SLOT_CODE) := FAST_ARRAY(LIP_SLOT_CODE).create_with_capacity 32;  
   
-  - list_data:HASHED_DICTIONARY[LIP_SLOT_DATA,STRING_CONSTANT] :=
-  HASHED_DICTIONARY[LIP_SLOT_DATA,STRING_CONSTANT].create;
+  - list_data:HASHED_DICTIONARY(LIP_SLOT_DATA,STRING_CONSTANT) :=
+  HASHED_DICTIONARY(LIP_SLOT_DATA,STRING_CONSTANT).create;
   
-  - stack:FAST_ARRAY[LIP_SLOT_DATA] := FAST_ARRAY[LIP_SLOT_DATA].create_with_capacity 8;
+  - stack:FAST_ARRAY(LIP_SLOT_DATA) := FAST_ARRAY(LIP_SLOT_DATA).create_with_capacity 8;
   
   - get_data n:STRING_CONSTANT :LIP_SLOT_DATA <-
   (

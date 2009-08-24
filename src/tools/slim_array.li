@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := SLIM_ARRAY[E]; // BSBS: A mettre en Expanded.
+  + name      := SLIM_ARRAY(E); // BSBS: A mettre en Expanded.
 
   - copyright := "2003-2008 Sonntag Benoit";
 
@@ -33,7 +33,7 @@ Section Insert
   
 Section Private
   
-  + list:FAST_ARRAY[E];
+  + list:FAST_ARRAY(E);
   
 Section Public
   
@@ -91,7 +91,7 @@ Section Public
       first := e;
     } else {
       (list = NULL).if {
-        list := FAST_ARRAY[E].create_with_capacity 4;
+        list := FAST_ARRAY(E).create_with_capacity 4;
       };
       list.add_last e;
     };
@@ -101,7 +101,7 @@ Section Public
   (
     first := NULL;
     (n > 1).if {
-      list := FAST_ARRAY[E].create_with_capacity (n-1);
+      list := FAST_ARRAY(E).create_with_capacity (n-1);
     };
   );
   

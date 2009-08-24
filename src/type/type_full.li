@@ -31,29 +31,29 @@ Section Inherit
   
   - parent_any:ANY := ANY;
   
-Section Private
+Section TYPE, TYPE_FULL // Private after fuck bug 
     
-  + parent_type:TYPE; // BSBS: Passer en héritage + Insert mode.
+  + the_parent_type:TYPE; // BSBS: Passer en héritage + Insert mode.
   
 Section TYPE, TYPE_FULL
   
-  - get_with flg:UINTEGER_8 :TYPE_FULL <- parent_type.get_with flg;
+  - get_with flg:UINTEGER_8 :TYPE_FULL <- the_parent_type.get_with flg;
   
 Section Public  
   
-  - get_slot n:STRING_CONSTANT :SLOT <- parent_type.get_slot n;
+  - get_slot n:STRING_CONSTANT :SLOT <- the_parent_type.get_slot n;
     
   - hash_code:INTEGER <- raw.name.hash_code;
   
-  - size:INTEGER <- parent_type.size;
+  - size:INTEGER <- the_parent_type.size;
   
-  - prototype:PROTOTYPE <- parent_type.prototype;
+  - prototype:PROTOTYPE <- the_parent_type.prototype;
   
-  - is_sub_type other:TYPE_FULL :BOOLEAN <- parent_type.is_sub_type (other.raw);
+  - is_sub_type other:TYPE_FULL :BOOLEAN <- the_parent_type.is_sub_type (other.raw);
       
-  - slot_run:FAST_ARRAY[SLOT] <- parent_type.slot_run;
+  - slot_run:FAST_ARRAY(SLOT) <- the_parent_type.slot_run;
   
-  - is_late_binding:BOOLEAN <- parent_type.is_late_binding;
+  - is_late_binding:BOOLEAN <- the_parent_type.is_late_binding;
 
 Section TYPE
       
@@ -83,7 +83,7 @@ Section TYPE
   
   - make typ:TYPE with code:UINTEGER_8 <-
   (
-    parent_type := typ;
+    the_parent_type := typ;
     flag := code;       
     ((raw != NULL) && {raw.name != NULL} && {raw.name == "INTEGER"} && {! is_expanded}).if {
       crash;
@@ -95,7 +95,7 @@ Section Public
   
   - is_parameter_type:BOOLEAN <- FALSE;
   
-  - raw:TYPE <- parent_type;
+  - raw:TYPE <- the_parent_type;
    
   //
   // Set.
@@ -115,18 +115,18 @@ Section Public
   - is_expanded          :BOOLEAN <- (flag & expanded_bit        ) != 0;
   - is_default_expanded  :BOOLEAN <- (flag & default_expanded_bit) != 0;
   - is_strict            :BOOLEAN <- (flag & strict_bit          ) != 0;
-  - is_default_strict    :BOOLEAN <- (flag & default_expanded_bit) != 0;
+  - is_default_strict    :BOOLEAN <- (flag & default_strict_bit  ) != 0;
   - is_expanded_ref      :BOOLEAN <- (flag & expanded_ref_bit    ) != 0;
   - is_generic           :BOOLEAN <- (flag & generic_bit         ) != 0;
   
   - is_expanded_c:BOOLEAN <- (is_expanded) && {raw.type_c != NULL};
   
-  - '==' Right 60 other:TYPE_FULL :BOOLEAN <-
+  - Self:SELF '==' Right 60 other:TYPE_FULL :BOOLEAN <-
   (
     (Self = other) || {(raw = other.raw) && {(flag & 01111b) = (other.flag & 01111b)}}
   );
   
-  - '!==' Right 60 other:TYPE_FULL :BOOLEAN <- ! (Self == other);
+  - Self:SELF '!==' Right 60 other:TYPE_FULL :BOOLEAN <- ! (Self == other);
   
   - append_name_in buffer:STRING <-
   (
@@ -144,9 +144,9 @@ Section Public
   // Operation.
   //
   
-  - '+' other:UINTEGER_8 :TYPE_FULL <- get_with (flag | other);
+  - Self:SELF '+' other:UINTEGER_8 :TYPE_FULL <- get_with (flag | other);
   
-  - '-' other:UINTEGER_8 :TYPE_FULL <- get_with (flag & ~other);
+  - Self:SELF '-' other:UINTEGER_8 :TYPE_FULL <- get_with (flag & ~other);
   
   - to_strict:TYPE_FULL <-
   ( + result:TYPE_FULL;

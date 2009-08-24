@@ -35,20 +35,20 @@ Section Public
   
   - pos_buffer:INTEGER;
 
-  - bmp_buffer:FAST_ARRAY[UINTEGER_8];
+  - bmp_buffer:FAST_ARRAY(UINTEGER_8);
   
   //
   
   - header:BMP_HEADER;
 
-  - color_map:FAST_ARRAY[Expanded PIXEL_24];
+  - color_map:FAST_ARRAY(Expanded PIXEL_24);
   
   //
   
   - read_header <-
   (     
     (bmp_buffer = NULL).if {
-      bmp_buffer := FAST_ARRAY[UINTEGER_8].create_with_capacity size;
+      bmp_buffer := FAST_ARRAY(UINTEGER_8).create_with_capacity size;
     }.elseif {bmp_buffer.capacity < size.to_integer} then {
       bmp_buffer.set_capacity (size.to_integer);
       bmp_buffer.clear;
@@ -56,7 +56,7 @@ Section Public
       bmp_buffer.clear;
     };
     read bmp_buffer size size;    
-    header := CONVERT[NATIVE_ARRAY[UINTEGER_8],BMP_HEADER].on (bmp_buffer.storage);
+    header := CONVERT(NATIVE_ARRAY(UINTEGER_8),BMP_HEADER).on (bmp_buffer.storage);
     pos_buffer := BMP_HEADER.object_size;
   );
 
@@ -73,7 +73,7 @@ Section Public
     };
     nb_colors := header.get_nb_colors;
     (color_map = NULL).if {
-      color_map := FAST_ARRAY[PIXEL_24].create 256;
+      color_map := FAST_ARRAY(PIXEL_24).create 256;
     };            
     0.to (nb_colors-1) do { j:INTEGER; 
       color_map.item j
@@ -97,7 +97,7 @@ Section Public
   - fill_bitmap b:ABSTRACT_BITMAP <-
   ( + end:BOOLEAN;
     + x,y:INTEGER;
-    + line_24:BMP_LINE[PIXEL_24];
+    + line_24:BMP_LINE(PIXEL_24);
     //+ line_ascii:BMP_LINE_ASCII;
     + tmp_pix:PIXEL_24;
     + escape,cmd:UINTEGER_8;
@@ -112,7 +112,7 @@ Section Public
 	//
 	// 8 Bit
 	// 	  
-	line_24 := BMP_LINE[PIXEL_24].create (header.width);
+	line_24 := BMP_LINE(PIXEL_24).create (header.width);
 	init_color_map;
 	
 	header.is_rle8_compressed.if {	  
@@ -160,7 +160,7 @@ Section Public
 	//
 	// 24 Bit
 	//	
-	line_24 := BMP_LINE[PIXEL_24].create_with_capacity (header.width);
+	line_24 := BMP_LINE(PIXEL_24).create_with_capacity (header.width);
 	align   := ((header.width * -3) & 011b).to_uinteger_32;
 	set_cursor (header.bitmap_offset);
 	// No compression

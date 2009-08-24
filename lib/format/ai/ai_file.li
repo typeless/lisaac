@@ -29,7 +29,7 @@ Section Header
     
 Section Inherit
   
-  - parent_object:OBJECT := OBJECT;
+  + parent_std_file:Expanded STD_FILE;
 
 Section Public
 
@@ -38,10 +38,10 @@ Section Public
   + height:INTEGER;
 
   - fill_bitmap f:STD_FILE in b:ABSTRACT_BITMAP scale s:REAL_16_16 <-
-  ( + tmp_buf:FAST_ARRAY[CHARACTER];
+  ( + tmp_buf:FAST_ARRAY(CHARACTER);
     + ai_parser:AI_PARSER;
     
-    tmp_buf := FAST_ARRAY[CHARACTER].create_with_capacity (f.size);
+    tmp_buf := FAST_ARRAY(CHARACTER).create_with_capacity (f.size);
     f.read tmp_buf size (f.size);
     ai_parser := AI_PARSER.create tmp_buf;
     width  := ai_parser.width;

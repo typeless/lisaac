@@ -128,7 +128,7 @@ Section Public
       result := 1;
     } else {
       (slot_code_list = NULL).if {
-	slot_code_list := FAST_ARRAY[SLOT_CODE].create_with_capacity 1;
+	slot_code_list := FAST_ARRAY(SLOT_CODE).create_with_capacity 1;
       };
       slot_code_list.add_last slot;
       (slot_id = NULL).if {
@@ -156,8 +156,8 @@ Section Public
   + slot_data_intern:SLOT_DATA; // Index 0
   + slot_code_intern:SLOT_CODE; // Index 1
   
-  + slot_code_list:FAST_ARRAY[SLOT_CODE]; // Index x+2
-  + slot_data_list:FAST_ARRAY[SLOT_DATA]; // Vector data slot  
+  + slot_code_list:FAST_ARRAY(SLOT_CODE); // Index x+2
+  + slot_data_list:FAST_ARRAY(SLOT_DATA); // Vector data slot  
   
   - create_slot_data <-
   ( + typ:TYPE_FULL;
@@ -166,7 +166,7 @@ Section Public
     
     tm ?= result_type;    
     (tm != NULL).if {            
-      slot_data_list := FAST_ARRAY[SLOT_DATA].create_with_capacity (tm.count-1);
+      slot_data_list := FAST_ARRAY(SLOT_DATA).create_with_capacity (tm.count-1);
       (tm.lower).to (tm.upper-1) do { k:INTEGER;	
 	typ := tm.item k.to_run_for receiver_type;
 	slot_data_list.add_last (

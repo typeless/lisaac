@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private
   
-  - storage:FAST_ARRAY[LIP_STRING] := FAST_ARRAY[LIP_STRING].create_with_capacity 10;
+  - storage:FAST_ARRAY(LIP_STRING) := FAST_ARRAY(LIP_STRING).create_with_capacity 10;
     
 Section Public
   
@@ -54,17 +54,17 @@ Section Public
       result := clone;
     } else {
       result := storage.last;
-      storage.remove_last;
+      storage.remove_last;            
     };
     result.set_value str;
     result
   );
   
   - free <-
-  (
+  (    
     storage.add_last Self;
   );
-  
+    
   //
   // Operation.
   //
@@ -78,7 +78,7 @@ Section Public
   
   - print <-
   ( 
-    string_tmp.clear;
+    string_tmp.clear;    
     append_in string_tmp;
     string_tmp.print;
   );
@@ -124,21 +124,21 @@ Section LIP_CONSTANT
     Self
   );
   
-  - '=#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '=#'  other:SELF :LIP_CONSTANT <- 
   ( 
     other.free;
     free;
     LIP_BOOLEAN.get (value = other.value)
   );
   
-  - '!=#' other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '!=#' other:SELF :LIP_CONSTANT <- 
   (   
     other.free;
     free;
     LIP_BOOLEAN.get (value != other.value)
   );
   
-  - '+#'  other:SELF :LIP_CONSTANT <-
+  - Self:SELF '+#'  other:SELF :LIP_CONSTANT <-
   (         
     string_tmp.copy value;
     string_tmp.append (other.value);

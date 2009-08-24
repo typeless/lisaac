@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private
   
-  - storage:FAST_ARRAY[LIP_INTEGER] := FAST_ARRAY[LIP_INTEGER].create_with_capacity 10;
+  - storage:FAST_ARRAY(LIP_INTEGER) := FAST_ARRAY(LIP_INTEGER).create_with_capacity 10;
   
   - set_value v:INTEGER <-
   (
@@ -71,13 +71,13 @@ Section Public
   
   - name:STRING_CONSTANT <- "INTEGER";
   
-  - '-' :LIP_CONSTANT <-
+  - '-' Self:SELF :LIP_CONSTANT <-
   ( 
     value := - value;
     Self
   );
 
-  - '!' :LIP_CONSTANT <-
+  - '!' Self:SELF :LIP_CONSTANT <-
   ( 
     value := ~ value;
     Self
@@ -101,70 +101,70 @@ Section LIP_CONSTANT
     Self
   );
     
-  - '|#'  other:SELF :LIP_CONSTANT <-
+  - Self:SELF '|#'  other:SELF :LIP_CONSTANT <-
   ( 
     value := value | other.value;
     other.free;
     Self
   );
       
-  - '&#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '&#'  other:SELF :LIP_CONSTANT <- 
   ( 
     value := value & other.value;
     other.free;
     Self
   );
   
-  - '+#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '+#'  other:SELF :LIP_CONSTANT <- 
   ( 
     value := value + other.value;
     other.free;
     Self    
   );
   
-  - '-#'  other:SELF :LIP_CONSTANT <-
+  - Self:SELF '-#'  other:SELF :LIP_CONSTANT <-
   ( 
     value := value - other.value;
     other.free;
     Self
   );
   
-  - '>#'  other:SELF :LIP_CONSTANT <-
+  - Self:SELF '>#'  other:SELF :LIP_CONSTANT <-
   ( 
     other.free;
     free;
     LIP_BOOLEAN.get (value > other.value)
   );
   
-  - '<#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '<#'  other:SELF :LIP_CONSTANT <- 
   ( 
     other.free;
     free;
     LIP_BOOLEAN.get (value < other.value)
   );
   
-  - '=#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '=#'  other:SELF :LIP_CONSTANT <- 
   ( 
     other.free;
     free;
     LIP_BOOLEAN.get (value = other.value)
   );
   
-  - '>=#' other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '>=#' other:SELF :LIP_CONSTANT <- 
   ( 
     other.free;
     free;
     LIP_BOOLEAN.get (value >= other.value)
   );
   
-  - '<=#' other:SELF :LIP_CONSTANT <-
+  - Self:SELF '<=#' other:SELF :LIP_CONSTANT <-
   ( 
     other.free;
     free;
     LIP_BOOLEAN.get (value <= other.value)
   );
   
-  - '!=#' other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '!=#' other:SELF :LIP_CONSTANT <- 
   ( 
     other.free;
     free;

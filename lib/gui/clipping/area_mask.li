@@ -35,7 +35,7 @@ Section Inherit
     
 Section Public  
 
-  + mask:FAST_ARRAY[FAST_ARRAY[UINTEGER_16]];
+  + mask:FAST_ARRAY(FAST_ARRAY(UINTEGER_16));
   
   - clear_mask <-
   ( 
@@ -50,9 +50,9 @@ Section Public
   
   - make father:AREA from (x0,y0:INTEGER) size (w,h:INTEGER) <-
   (
-    mask := FAST_ARRAY[FAST_ARRAY[UINTEGER_16]].create_with_capacity h;
+    mask := FAST_ARRAY(FAST_ARRAY(UINTEGER_16)).create_with_capacity h;
     0.to (h-1) do { y:INTEGER;
-      mask.add_last (FAST_ARRAY[UINTEGER_16].create_with_capacity 2);
+      mask.add_last (FAST_ARRAY(UINTEGER_16).create_with_capacity 2);
     };
     parent_area.make father from (x0,y0) size (w,h);    
   );
@@ -61,7 +61,7 @@ Section Public
   (
     mask.resize ly;
     height.to (ly-1) do { y:INTEGER;
-      mask.put (FAST_ARRAY[UINTEGER_16].create_with_capacity 2) to y;
+      mask.put (FAST_ARRAY(UINTEGER_16).create_with_capacity 2) to y;
     };
     parent_area.resize (lx,ly);
   );
@@ -95,7 +95,7 @@ Section Public
   //
 
   - slave_pixel_hard (x,y:INTEGER) color col:UINTEGER_32 <- 
-  ( + line:FAST_ARRAY[UINTEGER_16];
+  ( + line:FAST_ARRAY(UINTEGER_16);
     + idx:INTEGER;
     
     line := mask.item y;
@@ -110,7 +110,7 @@ Section Public
   );
   
   - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER color col:UINTEGER_32 <- 
-  ( + line:FAST_ARRAY[UINTEGER_16];
+  ( + line:FAST_ARRAY(UINTEGER_16);
     + idx,xb,xe,xx2:INTEGER;
         
     line := mask.item y;
@@ -148,7 +148,7 @@ Section Public
 
   - slave_line_h_hard (x1,y:INTEGER) until x2:INTEGER 
   image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
-  ( + l:FAST_ARRAY[UINTEGER_16];
+  ( + l:FAST_ARRAY(UINTEGER_16);
     + idx,xb,xe,xx2:INTEGER;
     
     l := mask.item y;
@@ -187,7 +187,7 @@ Section Public
   );
   
   - mask_draw (x0,y0:INTEGER) to (x1,y1:INTEGER) color col:UINTEGER_32 <-
-  ( + line:FAST_ARRAY[UINTEGER_16];
+  ( + line:FAST_ARRAY(UINTEGER_16);
     + xb,xe,lower,upper,idx:INTEGER;
     + xx0,xx1:UINTEGER_16;
     
@@ -237,7 +237,7 @@ Section Public
 Section Private
   
   - add_mask (x_beg,y:INTEGER) until x_end:INTEGER <-
-  ( + line:FAST_ARRAY[UINTEGER_16];
+  ( + line:FAST_ARRAY(UINTEGER_16);
     + i1,i2:INTEGER;
     + x1,x2:UINTEGER_16;
     + is_right,is_left:BOOLEAN;
@@ -321,7 +321,7 @@ Section Private
   // Debug.
   //
   
-  - print_line line:FAST_ARRAY[UINTEGER_16] <-
+  - print_line line:FAST_ARRAY(UINTEGER_16) <-
   (
     0.to (line.upper) by 2 do { j:INTEGER;
       '['.print;
@@ -335,7 +335,7 @@ Section Private
   );
   
   - check_mask <-
-  ( + line:FAST_ARRAY[UINTEGER_16];
+  ( + line:FAST_ARRAY(UINTEGER_16);
     (mask.lower).to (mask.upper) do { y:INTEGER;
       line := mask.item y;
       (! line.is_empty).if {
@@ -376,7 +376,7 @@ Section Private
   );
   
   - display_mask <-
-  ( + line:FAST_ARRAY[UINTEGER_16];
+  ( + line:FAST_ARRAY(UINTEGER_16);
     + x1,x2:UINTEGER_16;
     parent.parent.clipping_off;
     parent.parent.rectangle_fill (0,0) to (width,height) color black;
@@ -403,7 +403,7 @@ Section Private
   // Sub routine
   //
     
-  - search x:UINTEGER_16 in line:FAST_ARRAY[UINTEGER_16] low l:INTEGER :INTEGER <-
+  - search x:UINTEGER_16 in line:FAST_ARRAY(UINTEGER_16) low l:INTEGER :INTEGER <-
   ( + low,up:INTEGER;
     + med,result:INTEGER;
     low := l; 

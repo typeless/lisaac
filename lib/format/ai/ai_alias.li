@@ -35,7 +35,7 @@ Section Inherit
   
 Section Public
   
-  - list:HASHED_SET[ABSTRACT_STRING];
+  - list:HASHED_SET(ABSTRACT_STRING);
   
   //
   // Aliases keywords
@@ -91,7 +91,7 @@ Section Public
   
   - make <-
   (
-    list := HASHED_SET[ABSTRACT_STRING].create;
+    list := HASHED_SET(ABSTRACT_STRING).create;
     // Symbol    
     list.add start_comment;      
     list.add start_comment_more; 

@@ -35,16 +35,3 @@ Section Insert
 
   - parent_float_real:FLOAT_REAL := FLOAT_REAL;
   
-Section Public
-  
-  - atan :SELF <- FLOAT_PROCESSOR.atan_32 Self;
-
-  - sqrt :SELF <- FLOAT_PROCESSOR.sqrt_32 Self;
-
-  - log  :SELF <- FLOAT_PROCESSOR.log_32 Self;
-
-  - sin  :SELF <- FLOAT_PROCESSOR.sin_32 Self;
-
-  - cos  :SELF <- FLOAT_PROCESSOR.cos_32 Self;
-
-  - pow exp:SELF :SELF <- FLOAT_PROCESSOR.pow_32 Self;

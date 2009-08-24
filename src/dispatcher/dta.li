@@ -68,7 +68,7 @@ Section NODE_TYPE, DTA
         
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {                  
-      TYPE_NULL.product_error position in result;            
+      TYPE_NULL.product_error position in result with context;            
       ? {result.count != 0};
     } else {
       lookup t with e in result;
@@ -104,10 +104,10 @@ Section NODE_TYPE, DTA
   
 Section NODE_STYLE, SELF  
   
-  - get_argument:FAST_ARRAY[EXPR] <-  
-  ( + result:FAST_ARRAY[EXPR];
+  - get_argument:FAST_ARRAY(EXPR) <-  
+  ( + result:FAST_ARRAY(EXPR);
     
-    result := FAST_ARRAY[EXPR].create_with_capacity 1;
+    result := FAST_ARRAY(EXPR).create_with_capacity 1;
     result.add_last (self_arg.my_copy);
     result
   );

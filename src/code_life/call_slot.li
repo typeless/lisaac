@@ -64,15 +64,15 @@ Section Public
   // Argument.
   //
   
-  + argument_list:FAST_ARRAY[WRITE];
+  + argument_list:FAST_ARRAY(WRITE);
   
-  + result_list:Expanded SLIM_ARRAY[RESULT];
+  + result_list:Expanded SLIM_ARRAY(RESULT); // BSBS: utiliter de RESULT ? => WRITE_LOCAL
   
   + cop_argument:EXPR;
   
   + is_cop_return:BOOLEAN;
   
-  - set_args args:FAST_ARRAY[WRITE] <-
+  - set_args args:FAST_ARRAY(WRITE) <-
   (
     argument_list := args;
   );
@@ -86,14 +86,14 @@ Section Public
   // Creation.
   //
   
-  - create p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY[WRITE] cop arg:EXPR :SELF <-
+  - create p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY(WRITE) cop arg:EXPR :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p profil prof with l_arg cop arg;
     result
   );
   
-  - make p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY[WRITE] cop arg:EXPR <-
+  - make p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY(WRITE) cop arg:EXPR <-
   ( + n:INTEGER;  
     position := p;    
     cop_argument := arg;
@@ -113,11 +113,11 @@ Section Public
   - my_copy:SELF <-
   ( + result:SELF;
     + wrt:WRITE;
-    + new_arg:FAST_ARRAY[WRITE];
+    + new_arg:FAST_ARRAY(WRITE);
     + res:RESULT;
     result := clone;
         
-    new_arg := FAST_ARRAY[WRITE].create_with_capacity (argument_list.count);
+    new_arg := FAST_ARRAY(WRITE).create_with_capacity (argument_list.count);
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       (argument_list.item j = NULL).if {
 	wrt := NULL;
@@ -183,8 +183,7 @@ Section Private
     + is_good:BOOLEAN;
     + new_src:LIST;
     + wrt:WRITE;
-    + old_val:EXPR;
-    //+ rd:READ_LOCAL;
+    + old_val:EXPR;    
     + loc:LOCAL;
     + prof_block:PROFIL_BLOCK;
         
@@ -198,7 +197,7 @@ Section Private
     (
       (! is_interrupt) && {! is_external} && 
       {(cop_argument = NULL) || {! profil.result_list.is_empty}}
-    ).if {          
+    ).if {
       (profil.link_count = 1).if {      
 	// 
 	// Inlining simple.
@@ -234,19 +233,10 @@ Section Private
           //LOCAL.alias_on;
           
           new_src := source.my_copy;	                     
-          argument_to_assignment new_src index 1 alias TRUE; 
+          argument_to_assignment new_src index 1 alias TRUE;	                                
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
             wrt := result_list.item j.write;                        
-            old_val := wrt.value;
-            /*
-            rd ?= old_val;
-            loc := rd.local;
-            (loc.my_alias = NULL).if {
-              profil.slot.name.print; '\n'.print;
-              warning_error (position,"CALL_SLOT : Result bizarre!");
-              warning_error (profil.slot.position,"CALL_SLOT : Result bizarre!");              
-              crash_with_message "CALL_SLOT: Result not affect!";              
-            };*/
+            old_val := wrt.value;            
             wrt.set_value (old_val.my_copy);	      	      
             old_val.remove;            
             new_src.add_last wrt;
@@ -261,8 +251,7 @@ Section Private
 	    };
 	  } else {
 	    LOCAL.alias_off;
-	  };
-	  
+	  };	  
           //LOCAL.alias_off;          
                     
 	  result := new_src.execute;
@@ -363,7 +352,7 @@ Section Public
   //
 
   - display_style buffer:STRING <-
-  ( + t:HASHED_SET[TYPE];
+  ( + t:HASHED_SET(TYPE);
     buffer.append (profil.name);
     buffer.add_last '(';
       
@@ -418,10 +407,6 @@ Section Public
     string_tmp.append ")\n";
     string_tmp.print;
   );
-  
-  //////////////////////////////////////////////////////////////////////////
-  // CODE SLOT
-  //////////////////////////////////////////////////////////////////////////
 
   //
   // Generation.
@@ -533,6 +518,7 @@ Section Private
     + new_val:EXPR;
     + new_wrt:INSTR;
     + result:LOOP;
+    + push:PUSH;
     
     result := LOOP.create position name (profil.name) body source;
     
@@ -567,12 +553,9 @@ Section Private
     };
         
     (debug_level_option != 0).if {      
-      ? { + push:PUSH;      
-	push ?= source.first;
-	(push != NULL) && {push.is_first}
-      };
-      list_current.insert (source.first) to (list_current.index);      
-      source.put NOP to (source.lower);
+      push ?= source.first;
+      list_current.insert (push.my_copy) to (list_current.index);      
+      push.set_first FALSE;
     };
     
     // Extract Switch/body:
@@ -610,7 +593,7 @@ Section Private
 	(is_alias).if {
 	  loc ?= val.variable;	  
 	  new_wrt := loc.write (val.position) value (val.value);	  	  
-          loc.unwrite val;	            
+	  loc.unwrite val;	  
 	} else {
 	  new_wrt := val;	  
 	};

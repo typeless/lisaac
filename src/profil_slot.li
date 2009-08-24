@@ -57,7 +57,7 @@ Section Public
   // Creation.
   //
   
-  - arg_type_tmp:FAST_ARRAY[EXPR];
+  - arg_type_tmp:FAST_ARRAY(EXPR);
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + idx:INTEGER;
     + result:TYPE_FULL;
@@ -81,15 +81,15 @@ Section Public
   );
   
   - make s:SLOT_CODE 
-  with (typ_self:TYPE_FULL,call_lst:FAST_ARRAY[EXPR]) 
-  verify is_first:BOOLEAN :FAST_ARRAY[WRITE] <-
+  with (typ_self:TYPE_FULL,call_lst:FAST_ARRAY(EXPR)) 
+  verify is_first:BOOLEAN :FAST_ARRAY(WRITE) <-
   [ 
     -? {typ_self != NULL};
   ]
   ( + loc:LOCAL;
     + typ:TYPE_FULL;
-    + item_lst:FAST_ARRAY[ITM_ARGUMENT];         
-    + result:FAST_ARRAY[WRITE];
+    + item_lst:FAST_ARRAY(ITM_ARGUMENT);         
+    + result:FAST_ARRAY(WRITE);
     + tm:ITM_TYPE_MULTI;
     + ts:ITM_TYPE_MONO;
     
@@ -119,7 +119,7 @@ Section Public
     //
     // Arguments.    
     item_lst := s.argument_list;    
-    argument_list := FAST_ARRAY[LOCAL].create_with_capacity (s.argument_count); 
+    argument_list := FAST_ARRAY(LOCAL).create_with_capacity (s.argument_count); 
     (item_lst.lower).to (item_lst.upper) do { j:INTEGER;
       item_lst.item j.to_run_in argument_list for Self;
     };

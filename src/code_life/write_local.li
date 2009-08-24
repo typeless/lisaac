@@ -54,7 +54,7 @@ Section Public
   (     
     position := p;
     local    := l;
-    value    := val;    
+    value    := val;
   );
     
   //
@@ -103,13 +103,14 @@ Section Public
   //
   
   - genere buffer:STRING <-
-  ( 
-    add_var_size local;        
+  ( + idf:STRING_CONSTANT;
+    
+    idf := ALIASER_LOCAL.write Self;        
     (quiet_generation).if_false {
       (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
         buffer.add_last '*';
       };    
-      buffer.append (variable.intern_name);     
+      buffer.append idf; 
       //
       ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
         buffer.append ".__id=0";
@@ -121,22 +122,23 @@ Section Public
   );
   
   - genere_first_result buffer:STRING <-
-  (
-    add_var_size local;        
+  ( + idf:STRING_CONSTANT;
+    
+    idf := ALIASER_LOCAL.write Self;        
     (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
       buffer.add_last '*';
     };
-    buffer.append (variable.intern_name);     
+    buffer.append idf;
     //    
     buffer.add_last '=';    
   );
   
   - genere_argument_result buffer:STRING <-
-  ( 
+  ( + idf:STRING_CONSTANT;
+    
+    idf := ALIASER_LOCAL.write Self;
     buffer.add_last '&';
-    buffer.append (variable.intern_name);    
-    local.set_ensure_count 1; // BSBS: Bidouille !
-    add_var_size local;
+    buffer.append idf; 
   );
   
 

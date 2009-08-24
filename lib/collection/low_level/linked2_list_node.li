@@ -20,12 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := LINKED2_LIST_NODE[V];
+  + name    := LINKED2_LIST_NODE(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
-  - comment := "To implement LINKED2_LIST[V].";
+  - comment := "To implement LINKED2_LIST(V).";
     
 Section Inherit
   
@@ -35,9 +35,9 @@ Section Public
   
   + item:V;
   
-  + previous:LINKED2_LIST_NODE[V];
+  + previous:LINKED2_LIST_NODE(V);
   
-  + next:LINKED2_LIST_NODE[V];
+  + next:LINKED2_LIST_NODE(V);
 
 Section LINKED2_LIST
   

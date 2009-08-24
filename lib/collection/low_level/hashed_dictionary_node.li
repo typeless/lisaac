@@ -20,12 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := HASHED_DICTIONARY_NODE[V,K];
+  + name    := HASHED_DICTIONARY_NODE(V,K);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
-  - comment :="Auxilliary class to implement DICTIONARY[V,K].";
+  - comment :="Auxilliary class to implement DICTIONARY(V,K).";
     
 Section Inherit
   
@@ -37,7 +37,7 @@ Section Public
   
   + key:K;
   
-  + next:HASHED_DICTIONARY_NODE[V,K];
+  + next:HASHED_DICTIONARY_NODE(V,K);
   // The `next' one when some clash occurs.
   
   - set_item i:V <-
@@ -48,7 +48,7 @@ Section Public
     +? {item = i};
   ];
     
-  - set_next n:HASHED_DICTIONARY_NODE[V,K] <-
+  - set_next n:HASHED_DICTIONARY_NODE(V,K) <-
   (
     next := n;
   )
@@ -56,7 +56,7 @@ Section Public
     +? {next = n};
   ];  
   
-  - create i:V to k:K next n:HASHED_DICTIONARY_NODE[V,K] :SELF<-
+  - create i:V to k:K next n:HASHED_DICTIONARY_NODE(V,K) :SELF<-
   ( + result:SELF;
     
     result := clone;
@@ -64,7 +64,7 @@ Section Public
     result
   );
   
-  - make i:V to k:K next n:HASHED_DICTIONARY_NODE[V,K] <-
+  - make i:V to k:K next n:HASHED_DICTIONARY_NODE(V,K) <-
   (
     item := i;
     key  := k;

@@ -37,7 +37,7 @@ Section Inherit
   
 Section Private
   
-  - stack:FAST_ARRAY[CONTEXT] := FAST_ARRAY[CONTEXT].create_with_capacity 16;
+  - stack:FAST_ARRAY(CONTEXT) := FAST_ARRAY(CONTEXT).create_with_capacity 16;
   
   - top:INTEGER := -1;
   

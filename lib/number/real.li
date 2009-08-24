@@ -35,11 +35,11 @@ Section Header
 
 Section Insert
   
-  - parent_numeric:NUMERIC := NUMERIC;
+  - inherit_numeric:NUMERIC := NUMERIC;
   
 Section Public
   
-  - '+'  Left 80  other:SELF :SELF <- `@Self + @other`:SELF;
+  - Self:SELF '+'  Left 80  other:SELF :SELF <- `@Self + @other`:SELF;
 
   - bound_test low:INTEGER_64 to up:UINTEGER_64 :BOOLEAN <-  
   (
@@ -47,25 +47,34 @@ Section Public
   );
   
   - pi   :SELF <- 3.14159265358979323846;
+  // Pi number
 
-  - atan :SELF <- FLOAT_PROCESSOR.atan Self;
+  - atan :SELF <- `atan(@Self)`:SELF;
+  // Arctangent
 
-  - sqrt :SELF <- FLOAT_PROCESSOR.sqrt Self;
+  - sqrt :SELF <- `sqrt(@Self)`:SELF;
+  // Square root
 
-  - log  :SELF <- FLOAT_PROCESSOR.log Self;
+  - log  :SELF <- `log(@Self)`:SELF;
+  // Logarithm
 
-  - sin  :SELF <- FLOAT_PROCESSOR.sin Self;
+  - sin  :SELF <- `sin(@Self)`:SELF;
+  // Sinus
 
-  - cos  :SELF <- FLOAT_PROCESSOR.cos Self;
+  - cos  :SELF <- `cos(@Self)`:SELF;
+  // Cosinus
 
-  - pow exp:SELF :SELF <- FLOAT_PROCESSOR.pow Self;
+  - pow exp:SELF :SELF <- `pow(@Self,@exp)`:SELF;
+  // Power
 
-  - '**' Right 120 exp:SELF :SELF <-
+  - Self:SELF '**' Right 120 exp:SELF :SELF <-
+  // Power
   (
     Self.pow exp
   );
 
-  - '^' Right 120 exp:SELF :SELF <- 
+  - Self:SELF '^' Right 120 exp:SELF :SELF <- 
+  // Power
   (
     Self.pow exp
   );
@@ -99,7 +108,8 @@ Section Public
   // Comparaison.
   //
   
-  - '~=' other:SELF :BOOLEAN <-
+  - Self:SELF '~=' other:SELF :BOOLEAN <-
+  // Equal, close to 0.001
   (
     (Self - other).abs < 0.001
   );
@@ -113,27 +123,27 @@ Section Public
   //
   
   - append_in buffer:STRING <-
+  // Append `Self' decimal representation in `buffer' with 4 decimal
   (
     append_in buffer decimal 4;
   );
 
-
-   // *French, Slot, Description : Renvoi une chaÃ®ne reprÃ©sentant le nombre en base 10
-   // *English, Slot, Description : String of the number in base 10
-   - to_string : STRING <-
-   ( + result : STRING;
-     result := STRING.create 0;
-     append_in result;
-     result
-   );
+  - to_string : STRING <-
+  // * French: Renvoi une chaîne représentant le nombre en base 10
+  // String of the number in base 10
+  ( + result : STRING;
+    result := STRING.create 0;
+    append_in result;
+    result
+  );
  
-
   - append_in buffer:STRING format n:INTEGER decimal d:INTEGER <-
   (
     append_in buffer format n with ' ' decimal d;
   );
   
   - append_in buffer:STRING format n:INTEGER with c:CHARACTER decimal d:INTEGER <-
+  // String of the number in base 10 with `c' replacing blanck 
   [ 
     -? {n >= 3};
   ]
@@ -145,6 +155,7 @@ Section Public
   );
   
   - append_in buffer:STRING decimal n:INTEGER <-
+  // String of the number in base 10 with 4 decimal
   ( + val:SELF;
     + val_10:INTEGER;    
     + char:CHARACTER;
@@ -193,6 +204,7 @@ Section Public
   );
   
   - scientific_append_in buffer:STRING <- 
+ // Scientific number representation
   ( + val:SELF;
     + val_10:INTEGER;
     + exp_10:INTEGER;
@@ -243,7 +255,7 @@ Section Public
   );
   
   - append_in buffer:STRING format_c fmt:ABSTRACT_STRING <-
-  ( + nc_buf,nc_fmt:NATIVE_ARRAY[CHARACTER];    
+  ( + nc_buf,nc_fmt:NATIVE_ARRAY(CHARACTER);    
     + old_count,cap:INTEGER;
     
     old_count := buffer.count;
@@ -255,6 +267,7 @@ Section Public
   );    
   
   - print_decimal s:INTEGER <-
+  // print with `s' decimal
   (
     string_tmp.clear;
     append_in string_tmp decimal s;

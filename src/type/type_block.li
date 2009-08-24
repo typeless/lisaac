@@ -34,7 +34,7 @@ Section Inherit
   
 Section Private   
   
-  - dico:FAST_ARRAY[TYPE_BLOCK] := FAST_ARRAY[TYPE_BLOCK].create_with_capacity 2048;
+  - dico:FAST_ARRAY(TYPE_BLOCK) := FAST_ARRAY(TYPE_BLOCK).create_with_capacity 2048;
   
 Section TYPE_BLOCK //,PROFIL_BLOCK
     
@@ -42,14 +42,14 @@ Section TYPE_BLOCK //,PROFIL_BLOCK
   // Creation.
   //
 
-  - create a_list:FAST_ARRAY[TYPE_FULL] and_result r_list:FAST_ARRAY[TYPE_FULL] :SELF <-
+  - create a_list:FAST_ARRAY(TYPE_FULL) and_result r_list:FAST_ARRAY(TYPE_FULL) :SELF <-
   ( + result:SELF;
     result := clone;
     result.make a_list and_result r_list;
     result
   );
   
-  - make a_list:FAST_ARRAY[TYPE_FULL] and_result r_list:FAST_ARRAY[TYPE_FULL] <-
+  - make a_list:FAST_ARRAY(TYPE_FULL) and_result r_list:FAST_ARRAY(TYPE_FULL) <-
   ( 
     argument_list := a_list;
     result_list   := r_list;
@@ -57,20 +57,25 @@ Section TYPE_BLOCK //,PROFIL_BLOCK
   );
   
 Section Public
+
+  - set_late_binding <-
+  (    
+    type_block.set_late_binding;
+  );
   
   - intern_name:STRING_CONSTANT <- type_block.intern_name;
   
   - is_block:BOOLEAN := TRUE;
 
-  + argument_list:FAST_ARRAY[TYPE_FULL];
-  + result_list:FAST_ARRAY[TYPE_FULL];  
+  + argument_list:FAST_ARRAY(TYPE_FULL);
+  + result_list:FAST_ARRAY(TYPE_FULL);  
   
   - get_expr_for p:POSITION :EXPR <- 
   ( + result:EXPR;
-    + lst:FAST_ARRAY[EXPR];
+    + lst:FAST_ARRAY(EXPR);
     
     (result_list.count > 1).if {
-      lst := FAST_ARRAY[EXPR].create_with_capacity (result_list.count);
+      lst := FAST_ARRAY(EXPR).create_with_capacity (result_list.count);
       (result_list.lower).to (result_list.upper) do { j:INTEGER;
         lst.add_last (result_list.item j.get_temporary_expr p);
       };
@@ -84,26 +89,26 @@ Section Public
   );        
   
   - get t:ITM_TYPE_BLOCK with p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  ( + a_list:FAST_ARRAY[TYPE_FULL];
-    + r_list:FAST_ARRAY[TYPE_FULL];
+  ( + a_list:FAST_ARRAY(TYPE_FULL);
+    + r_list:FAST_ARRAY(TYPE_FULL);
         
     // Argument.    
-    a_list := ALIAS_ARRAY[TYPE_FULL].new;
+    a_list := ALIAS_ARRAY(TYPE_FULL).new;
     (t.type_argument != NULL).if {
       t.type_argument.to_run_in a_list for p;
     };
-    a_list := ALIAS_ARRAY[TYPE_FULL].alias a_list;
+    a_list := ALIAS_ARRAY(TYPE_FULL).alias a_list;
     // Result.
-    r_list := ALIAS_ARRAY[TYPE_FULL].new;
+    r_list := ALIAS_ARRAY(TYPE_FULL).new;
     (t.type_result != NULL).if {      
       t.type_result.to_run_in r_list for p;
     };    
-    r_list := ALIAS_ARRAY[TYPE_FULL].alias r_list;
+    r_list := ALIAS_ARRAY(TYPE_FULL).alias r_list;
     //    
     get_direct a_list and_result r_list.default
   );
     
-  - get_direct a_list:FAST_ARRAY[TYPE_FULL] and_result r_list:FAST_ARRAY[TYPE_FULL] :TYPE_BLOCK <-
+  - get_direct a_list:FAST_ARRAY(TYPE_FULL) and_result r_list:FAST_ARRAY(TYPE_FULL) :TYPE_BLOCK <-
   ( + idx:INTEGER;
     + result:TYPE_BLOCK;
     

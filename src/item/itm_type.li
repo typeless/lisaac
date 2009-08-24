@@ -45,7 +45,7 @@ Section Public
   
   - shorter_in buf:STRING <- deferred;
   
-  - to_run_in lst:FAST_ARRAY[TYPE_FULL] for p:PARAMETER_TO_TYPE <-
+  - to_run_in lst:FAST_ARRAY(TYPE_FULL) for p:PARAMETER_TO_TYPE <-
   (
     deferred;
   );

@@ -177,6 +177,9 @@ Section Public
   - genere buffer:STRING <-
   (         
     (! genere_while buffer).if {
+      
+      current_list_level := current_list_level + link_count;        
+      
       buffer.append name;
       buffer.append ":\n";
       buffer.append indent;
@@ -208,7 +211,10 @@ Section Public
 	  lst := lst_true;
 	  lst_true := lst_false;
 	  lst_false := lst;
-	};
+        };
+        
+        current_list_level := current_list_level + 1;        
+        
 	(body.count = 1).if {
 	  //
 	  // While (...) do {...}.
@@ -240,7 +246,10 @@ Section Public
 	  //
 	  switch.expr.genere buffer;
 	  buffer.add_last ')';
-	};	
+        };	
+        
+        current_list_level := current_list_level - 1;        
+        
       };
     };
     result

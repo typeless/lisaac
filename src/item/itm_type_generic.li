@@ -33,9 +33,9 @@ Section Inherit
   
 Section Private
   
-  - dico:FAST_ARRAY[ITM_TYPE_GENERIC] := FAST_ARRAY[ITM_TYPE_GENERIC].create_with_capacity 32;
+  - dico:FAST_ARRAY(ITM_TYPE_GENERIC) := FAST_ARRAY(ITM_TYPE_GENERIC).create_with_capacity 32;
 
-  - create n:STRING_CONSTANT style s:STRING_CONSTANT with lt:FAST_ARRAY[ITM_TYPE_MONO] :SELF <-
+  - create n:STRING_CONSTANT style s:STRING_CONSTANT with lt:FAST_ARRAY(ITM_TYPE_MONO) :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -43,7 +43,7 @@ Section Private
     result
   );
   
-  - make n:STRING_CONSTANT style s:STRING_CONSTANT with lt:FAST_ARRAY[ITM_TYPE_MONO] <-
+  - make n:STRING_CONSTANT style s:STRING_CONSTANT with lt:FAST_ARRAY(ITM_TYPE_MONO) <-
   (
     name      := n;
     style     := s;
@@ -54,10 +54,10 @@ Section Public
   
   - hash_code:INTEGER <- name.hash_code; 
 
-  + list_type:FAST_ARRAY[ITM_TYPE_MONO];
+  + list_type:FAST_ARRAY(ITM_TYPE_MONO);
   
   - get n:STRING_CONSTANT style s:STRING_CONSTANT 
-  with lt:FAST_ARRAY[ITM_TYPE_MONO] :SELF <-
+  with lt:FAST_ARRAY(ITM_TYPE_MONO) :SELF <-
   ( + result:SELF;
     + idx:INTEGER;
     
@@ -81,12 +81,12 @@ Section Public
   );
   
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  ( + lst:FAST_ARRAY[TYPE_FULL];
+  ( + lst:FAST_ARRAY(TYPE_FULL);
     + t:TYPE_FULL;
     + j:INTEGER;    
     + result:TYPE_FULL;
     
-    lst := ALIAS_ARRAY[TYPE_FULL].new;
+    lst := ALIAS_ARRAY(TYPE_FULL).new;
     j := list_type.lower;    
     {
       t := list_type.item j.to_run_for p;                  
@@ -94,9 +94,9 @@ Section Public
       j := j + 1;
     }.do_while {(j <= list_type.upper) && {t != NULL}};
     (t = NULL).if {
-      ALIAS_ARRAY[TYPE_FULL].free lst;
+      ALIAS_ARRAY(TYPE_FULL).free lst;
     } else {            
-      lst := ALIAS_ARRAY[TYPE_FULL].alias lst;      
+      lst := ALIAS_ARRAY(TYPE_FULL).alias lst;      
       result := TYPE_GENERIC.get Self with lst;
     };
     result

@@ -73,6 +73,8 @@ Section Public
 	{left.static_type.is_expanded}  &&
 	{left.static_type.raw != type_pointer}
       ).if {
+        left .remove;
+        right.remove;
 	result := PROTOTYPE_CST.create position type (type_true.default);	
       };
     };    

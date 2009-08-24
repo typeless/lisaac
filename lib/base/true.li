@@ -32,7 +32,7 @@ Section Header
   
 Section Inherit
   
-  - parent_boolean:BOOLEAN := BOOLEAN;
+  - inherit_boolean:BOOLEAN := BOOLEAN;
   
 Section Public
   
@@ -40,61 +40,61 @@ Section Public
   // Conditional :
   //
   
-  - if_true block:BLOCK  <-
+  - if_true block:{}  <-
   (
     block.value;
   );
   
-  - if_false block:BLOCK;
+  - if_false block:{};
   
-  - if true_block:BLOCK else false_block:BLOCK <-
+  - if true_block:{} else false_block:{} <-
   (
     true_block.value;
   );
   
-  - if_true true_block:BLOCK else false_block:BLOCK <-
+  - if_true true_block:{} else false_block:{} <-
   (
     true_block.value;
   );
   
-  - if_false true_block:BLOCK else false_block:BLOCK <- 
+  - if_false true_block:{} else false_block:{} <- 
   (
     false_block.value;
   );
   
-  - if true_block:BLOCK :BOOLEAN <-
+  - if true_block:{} :BOOLEAN <-
   (
     true_block.value;
     TRUE
   );
   
-  - elseif cond:BLOCK then block:BLOCK :BOOLEAN <- TRUE;
+  - elseif cond:{BOOLEAN} then block:{} :BOOLEAN <- TRUE;
   
-  - elseif cond:BLOCK then block:BLOCK else block_else:BLOCK;
+  - elseif cond:{BOOLEAN} then block:{} else block_else:{};
   
   //
   // Binary operator :
   //
   
-  - '=='  Right 60 other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '=='  Right 60 other:BOOLEAN :BOOLEAN <- other;
   
-  - '!==' Right 60 other:BOOLEAN :BOOLEAN <- ! other;
+  - Self:SELF '!==' Right 60 other:BOOLEAN :BOOLEAN <- ! other;
   
-  - '||'  Left 10  other:BLOCK   :BOOLEAN <- TRUE;   // or else
+  - Self:SELF '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- TRUE;   // or else
   
-  - '&&'  Left 20  other:BLOCK   :BOOLEAN <- other.value;  // and then
+  - Self:SELF '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- other.value;  // and then
   
-  - '|'   Left 10  other:BOOLEAN :BOOLEAN <- TRUE;  // or
+  - Self:SELF '|'   Left 10  other:BOOLEAN :BOOLEAN <- TRUE;  // or
   
-  - '&'   Left 20  other:BOOLEAN :BOOLEAN <- other; // and
+  - Self:SELF '&'   Left 20  other:BOOLEAN :BOOLEAN <- other; // and
   
-  - '^'  Left 10  other:BOOLEAN :BOOLEAN <- ! other;
+  - Self:SELF '^'  Left 10  other:BOOLEAN :BOOLEAN <- ! other;
   
-  - '->'  Right 25 other:BOOLEAN :BOOLEAN <- other;
+  - Self:SELF '->'  Right 25 other:BOOLEAN :BOOLEAN <- other;
 
-  - '->>' Right 25 other:BLOCK  :BOOLEAN <- other.value;
+  - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- other.value;
   
-  - '=>' s:ABSTRACT_STRING <-
+  - Self:SELF '=>' s:ABSTRACT_STRING <-
   (
     s.print;
     `while (1)`;
@@ -104,7 +104,7 @@ Section Public
   // Prefix operator
   //
   
-  - '!':BOOLEAN <- FALSE;
+  - '!' Self:SELF :BOOLEAN <- FALSE;
   
   //
   // Conversion
@@ -115,12 +115,15 @@ Section Public
   - to_integer:INTEGER     <- 1;
   
   - to_character:CHARACTER <- '1';
-  
+
   //
-  // Print.
+  // Output.
   //
   
-  - print <- "TRUE".print;
+  - print <-
+  (
+    "TRUE".print;
+  );
 
 
 

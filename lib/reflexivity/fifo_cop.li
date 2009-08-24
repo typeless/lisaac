@@ -34,7 +34,7 @@ Section Inherit
   
 Section Private
   
-  - storage:FAST_ARRAY[INTEGER_32] := FAST_ARRAY[INTEGER_32].create 8;
+  - storage:FAST_ARRAY(INTEGER_32) := FAST_ARRAY(INTEGER_32).create 8;
   // WARNING: Always power 2 for storage capacity.
   
   - first:INTEGER;

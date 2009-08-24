@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
  
-  + name        := Strict NATIVE_ARRAY[V];
+  + name        := Strict NATIVE_ARRAY(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -33,7 +33,7 @@ Section Header
     
 Section Inherit
   
-  - parent_safe_equal:SAFE_EQUAL[V] := SAFE_EQUAL[V];
+  - parent_safe_equal:SAFE_EQUAL(V) := SAFE_EQUAL(V);
   
 Section Public  
   
@@ -54,7 +54,7 @@ Section Public
     result
   );
   
-  - calloc_intern nb_elements:INTEGER :NATIVE_ARRAY[V] <-
+  - calloc_intern nb_elements:INTEGER :NATIVE_ARRAY(V) <-
   // Allocate a new array of 'nb_elements' of type `E'.
   // The new array is initialized with default values.
   [ ...
@@ -62,25 +62,25 @@ Section Public
   ]
   ( + capacity:INTEGER;
     + p:POINTER;
-    + result  :NATIVE_ARRAY[V];
+    + result  :NATIVE_ARRAY(V);
     
-    capacity := nb_elements * element_sizeof;    
+    capacity := nb_elements * element_sizeof;                
     //p := `malloc(@capacity)`:POINTER; 
-    p := SYSTEM.memory.alloc_dynamic (capacity.to_uinteger_32);
-    result := CONVERT[POINTER,NATIVE_ARRAY[V]].on p;
+    p := MEMORY.alloc_dynamic (capacity.to_pointer);
+    result := CONVERT(POINTER,NATIVE_ARRAY(V)).on p;
     result
   )
   [ ...
     +? {Result != NULL};
   ];
   
-  - create nb_elements:INTEGER :NATIVE_ARRAY[V] <-
+  - create nb_elements:INTEGER :NATIVE_ARRAY(V) <-
   // Allocate a new array of `nb_elements' of type `E'.
   // The new array is initialized with default values.
   [ ...
     -? {nb_elements > 0};
   ]
-  ( + result:NATIVE_ARRAY[V];
+  ( + result:NATIVE_ARRAY(V);
    
     result:=calloc_intern nb_elements;
     result.clear_all (nb_elements-1); 
@@ -90,7 +90,7 @@ Section Public
     +? {Result.all_default (nb_elements-1)};
   ];
   
-  - realloc old_nb_elts:INTEGER with new_nb_elts:INTEGER :NATIVE_ARRAY[V] <-
+  - realloc old_nb_elts:INTEGER with new_nb_elts:INTEGER :NATIVE_ARRAY(V) <-
   // Assume Current is a valid NATIVE_ARRAY in range
   // [0 .. `old_nb_elts'-1]. Allocate a bigger new array in
   // range [0 .. `new_nb_elts'-1].
@@ -101,17 +101,17 @@ Section Public
     -? {old_nb_elts > 0};
     -? {old_nb_elts < new_nb_elts};
   ]
-  ( + new:NATIVE_ARRAY[V];
+  ( + new:NATIVE_ARRAY(V);
     + old_ptr,new_ptr:POINTER;
     + new_cap:INTEGER;
     
-    old_ptr := CONVERT[NATIVE_ARRAY[V],POINTER].on Self; 
+    old_ptr := CONVERT(NATIVE_ARRAY(V),POINTER).on Self; 
     new_cap := new_nb_elts * element_sizeof;
     //new_ptr := `realloc(@old_ptr,@new_cap)`:POINTER;
-    new_ptr := SYSTEM.memory.realloc_dynamic old_ptr 
+    new_ptr := MEMORY.realloc_dynamic old_ptr 
     old_size ((old_nb_elts * element_sizeof).to_uinteger_32) 
     new_size (new_cap.to_uinteger_32);
-    new := CONVERT[POINTER,NATIVE_ARRAY[V]].on new_ptr;
+    new := CONVERT(POINTER,NATIVE_ARRAY(V)).on new_ptr;
     new.clear old_nb_elts to (new_nb_elts - 1);
     new
   )
@@ -145,25 +145,25 @@ Section Public
   [ ...
     +? {element = item index}; 
   ];
-  
+    
   //
   // Displacement
   //
   
-  - '+' Left 80 other:INTEGER :NATIVE_ARRAY[V] <- 
+  - Self:SELF '+' Left 80 other:INTEGER :NATIVE_ARRAY(V) <- 
   // other is in element index
   ( + ptr:POINTER;
     
     ptr := to_pointer;
     ptr := ptr + other * element_sizeof;
-    CONVERT[POINTER, NATIVE_ARRAY[V]].on ptr
+    CONVERT(POINTER, NATIVE_ARRAY(V)).on ptr
   );
   
   //
   // Comparison:
   //
   
-  - memcmp other:NATIVE_ARRAY[V] until capacity:INTEGER :BOOLEAN <-
+  - memcmp other:NATIVE_ARRAY(V) until capacity:INTEGER :BOOLEAN <-
   // True if all elements in range [0..capacity-1] are
   // identical using `equal'. Assume Current and `other'
   // are big enough.
@@ -180,7 +180,7 @@ Section Public
     i < 0
   );
   
-  - slice_memcmp (at:INTEGER,other:NATIVE_ARRAY[V],other_lower,other_upper:INTEGER) :BOOLEAN <-
+  - slice_memcmp (at:INTEGER,other:NATIVE_ARRAY(V),other_lower,other_upper:INTEGER) :BOOLEAN <-
   // True if all elements in range [0 .. `other_upper' - `other_lower'] are identical
   // to the elements in range [`other_lower' .. `other_upper'] of `other' using
   // `is_equal'. Assume `Current' and `other' are big enough.
@@ -200,7 +200,7 @@ Section Public
     i < 0
   );
   
-  - fast_memcmp other:NATIVE_ARRAY[V] until capacity:INTEGER :BOOLEAN <-
+  - fast_memcmp other:NATIVE_ARRAY(V) until capacity:INTEGER :BOOLEAN <-
   // Same jobs as `memcmp' but uses infix `=' instead `equal'.
   [ ...
     -? {(capacity > 0) ->> {other.is_not_null}};
@@ -214,7 +214,7 @@ Section Public
     i < 0
   );
   
-  - slice_fast_memcmp (at:INTEGER, other:NATIVE_ARRAY[V], other_lower,other_upper:INTEGER) :BOOLEAN <-
+  - slice_fast_memcmp (at:INTEGER, other:NATIVE_ARRAY(V), other_lower,other_upper:INTEGER) :BOOLEAN <-
   // Same jobs as `slice_memcmp' but uses infix "=" instead of `is_equal'.
   [ ...
     -? {at >= 0};
@@ -231,7 +231,7 @@ Section Public
     i < 0
   );
 			
-  - deep_memcmp other:NATIVE_ARRAY[V] until capacity:INTEGER :BOOLEAN <-
+  - deep_memcmp other:NATIVE_ARRAY(V) until capacity:INTEGER :BOOLEAN <-
   // Same jobs as `memcmp' but uses `is_deep_equal' instead `equal'.
   [ ...
     -? {(capacity > 0) ->> {other.is_not_null}};
@@ -259,7 +259,7 @@ Section Public
     result
   );
   
-  - slice_deep_memcmp (at:INTEGER,other:NATIVE_ARRAY[V],other_lower,other_upper:INTEGER) :BOOLEAN <-
+  - slice_deep_memcmp (at:INTEGER,other:NATIVE_ARRAY(V),other_lower,other_upper:INTEGER) :BOOLEAN <-
   // Same jobs as `slice_memcmp' but uses `is_deep_equal' instead of `is_equal'.
   [ ...
     -? {at >= 0};
@@ -517,7 +517,7 @@ Section Public
   // Adding:
   //
     
-  - copy src:NATIVE_ARRAY[V] to dest:INTEGER until src_capacity:INTEGER <-
+  - copy src:NATIVE_ARRAY(V) to dest:INTEGER until src_capacity:INTEGER <-
   // Copy range [0 .. `src_capacity - 1'] of `src' to range
   // [`dest' .. `dest + src_capacity - 1'] of `Self'.
   // No subscript checking.
@@ -535,7 +535,7 @@ Section Public
     };
   );
   
-  - slice_copy src:NATIVE_ARRAY[V] to dest:INTEGER from src_min:INTEGER to src_max:INTEGER <-
+  - slice_copy src:NATIVE_ARRAY(V) to dest:INTEGER from src_min:INTEGER to src_max:INTEGER <-
   // Copy range [`src_min' .. `src_max'] of `src' to range
   // [`at' .. `at + src_max - src_min - 1'] of `Current'.
   // No subscript checking.
@@ -613,7 +613,7 @@ Section Public
     };
   );
   
-  - copy_from model:NATIVE_ARRAY[V] until upper:INTEGER <-
+  - copy_from model:NATIVE_ARRAY(V) until upper:INTEGER <-
   // Assume `upper' is a valid index both in Current and `model'.
   [ ...
     -? {upper >= -1};
@@ -624,7 +624,7 @@ Section Public
     };
   );
   
-  - deep_twin_from capacity:INTEGER :NATIVE_ARRAY[V] <-
+  - deep_twin_from capacity:INTEGER :NATIVE_ARRAY(V) <-
   // To implement `deep_twin'. Allocate a new array of
   // `capacity' initialized with `deep_twin'.
   // Assume `capacity' is valid both in Current and `model'.
@@ -632,7 +632,7 @@ Section Public
     -? {capacity >= 0};
   ]
   ( + element:V;
-    + result:NATIVE_ARRAY[V];
+    + result:NATIVE_ARRAY(V);
        
     (capacity > 0).if {
       result := calloc capacity;

@@ -44,14 +44,14 @@ Section Public
   // Creation.
   //
   
-  - create mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] :SELF <-
+  - create mod:TYPE_BLOCK with larg:FAST_ARRAY(EXPR) :SELF <-
   ( + result:SELF;
     result := clone;    
     result.make mod with larg;
     result    
   );
   
-  - make mod:TYPE_BLOCK with larg:FAST_ARRAY[EXPR] <-
+  - make mod:TYPE_BLOCK with larg:FAST_ARRAY(EXPR) <-
   (    
     (profil_current = NULL).if {
       context := context_main;
@@ -74,11 +74,11 @@ Section Public
 
 Section NODE_STYLE, SELF  
   
-  - get_argument:FAST_ARRAY[EXPR] <-  
-  ( + result:FAST_ARRAY[EXPR];
+  - get_argument:FAST_ARRAY(EXPR) <-  
+  ( + result:FAST_ARRAY(EXPR);
     + rd:READ_SLOT;
     (copy_argument).if {
-      result := FAST_ARRAY[EXPR].create_with_capacity (argument_list.count);            
+      result := FAST_ARRAY(EXPR).create_with_capacity (argument_list.count);            
       rd ?= argument_list.first;
       result.add_last (rd.receiver.my_copy);
       (argument_list.lower+1).to (argument_list.upper) do { j:INTEGER;		
@@ -97,7 +97,7 @@ Section NODE_TYPE, DTA
   ( + result:LIST;
     + t_block:PROFIL_BLOCK;
     + wrt:WRITE;  
-    + wrt_larg:FAST_ARRAY[WRITE];
+    + wrt_larg:FAST_ARRAY(WRITE);
     + call:CALL_SLOT;
     + em:EXPR_MULTIPLE;
     + rd:READ;
@@ -105,7 +105,7 @@ Section NODE_TYPE, DTA
     
     result := LIST.create (e.position);
     (t = TYPE_NULL).if {                 
-      TYPE_NULL.product_error (e.position) in result;
+      TYPE_NULL.product_error (e.position) in result with context;
     } else {            
       t_block ?= t;                  
       

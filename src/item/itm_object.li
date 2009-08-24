@@ -36,16 +36,16 @@ Section Inherit
   
 Section Public
   
+  - context_extern:LOCAL;
+  
   - bottom_index:INTEGER;
   
   - clean_bottom_index <-
   (
     bottom_index := stack_local.upper + 1;
     context_extern := NULL;
-  );
+  );      
   
-  - context_extern:LOCAL;
-      
   - lookup n:STRING_CONSTANT :LOCAL <-
   ( + result:LOCAL;
     + j:INTEGER;
@@ -57,12 +57,12 @@ Section Public
     };
     (j >= stack_local.lower).if {
       result := stack_local.item j;
-            
+      
       ((j < bottom_index) && {result.style != '-'}).if {
         bottom_index := j;
         context_extern := result;
       };
-      
+
     }.elseif {profil_slot != NULL} then {
       result := profil_slot.lookup n;            
       ((result != NULL) && {result.name != ALIAS_STR.variable_self}).if {

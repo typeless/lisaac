@@ -37,17 +37,17 @@ Section Public
   // Conditional :
   //
   
-  - '||' Left 10 other:BLOCK :BOOLEAN <-
+  - Self:{BOOLEAN} '||' Left 10 other:{BOOLEAN} :BOOLEAN <-
   (
     value || other
   );
   
-  - '&&' Left 20 other:BLOCK :BOOLEAN <-
+  - Self:{BOOLEAN} '&&' Left 20 other:{BOOLEAN} :BOOLEAN <-
   (
     value && other
   );
   
-  - if test:BOOLEAN <-
+  - Self:{}.if test:BOOLEAN <-
   (
     test.if_true {
       value;
@@ -58,15 +58,15 @@ Section Public
   // Loop :
   //
   
-  - loop_infinitely <-
+  - Self:{}.loop_without_end <-
   (
-    (`(1)`:BOOLEAN(TRUE,FALSE)).if {
+    (`1`:BOOLEAN{TRUE,FALSE}).if {
       value;
-      loop_infinitely;
+      loop_without_end;
     };
   );
   
-  - while_do body:BLOCK <-
+  - Self:{BOOLEAN}.while_do body:{} <-
   ( //? {body!=NULL};
     
     value.if {
@@ -75,7 +75,7 @@ Section Public
     };
   );
   
-  - do_while test:BLOCK <-
+  - Self:{}.do_while test:{BOOLEAN} <-
   ( //? {test!=NULL};
     
     value;
@@ -84,7 +84,7 @@ Section Public
     };
   );
   
-  - until_do body:BLOCK <-
+  - Self:{BOOLEAN}.until_do body:{} <-
   ( // ? {body!=NULL};
     
     (! value).if {
@@ -93,7 +93,7 @@ Section Public
     };
   );
   
-  - do_until test:BLOCK <-
+  - Self:{}.do_until test:{BOOLEAN} <-
   ( //? {test!=NULL};
     
     value;
@@ -102,7 +102,7 @@ Section Public
     };
   );
   
-  - while_do body:BLOCK ensure test:BLOCK <-
+  - Self:{BOOLEAN}.while_do body:{} ensure test:{BOOLEAN} <-
   // Mix loop version beetween `while_do' and `do_while'
   (
     value.if {
@@ -129,7 +129,7 @@ Section Public
   // Debug: Require / Ensure / Check
   //
   
-  - '?' msg:STRING_CONSTANT <-
+  - Self:{BOOLEAN} '?' msg:STRING_CONSTANT <-
   // User assertion with message.
   ( + ptr:POINTER;
     
@@ -139,7 +139,7 @@ Section Public
     };
   );
   
-  - '?' <-
+  - '?' Self:{BOOLEAN} <-
   // User assertion without message.
   ( + ptr:POINTER;
     
@@ -149,7 +149,7 @@ Section Public
     };
   );
   
-  - '-?' msg:STRING_CONSTANT <-
+  - Self:{BOOLEAN} '-?' msg:STRING_CONSTANT <-
   // Require assertion with message.
   ( + ptr:POINTER;
     
@@ -159,7 +159,7 @@ Section Public
     };
   );
   
-  - '-?' <-
+  - '-?' Self:{BOOLEAN} <-
   // Require assertion without message.
   ( + ptr:POINTER;
     
@@ -169,7 +169,7 @@ Section Public
     };
   );
   
-  - '+?' msg:STRING_CONSTANT <-
+  - Self:{BOOLEAN} '+?' msg:STRING_CONSTANT <-
   // Ensure assertion with message.
   ( + ptr:POINTER;
     
@@ -179,7 +179,7 @@ Section Public
     };
   );
   
-  - '+?' <-
+  - '+?' Self:{BOOLEAN} <-
   // Require assertion without message.
   ( + ptr:POINTER;
     
@@ -189,7 +189,7 @@ Section Public
     };
   );
 
-  - '?#' val:INTEGER <-
+  - Self:{BOOLEAN} '?#' val:INTEGER <-
   // Other assertion without message.
   ( + ptr:POINTER;
     
@@ -203,7 +203,7 @@ Section Public
   // Code debug.
   //
   
-  - '!' <-
+  - '!' Self:{BOOLEAN} <-
   (
     (debug_level >=10).if { 
       value; 

@@ -107,7 +107,7 @@ Section Private
   ( + typ_f:TYPE_FULL;
     + typ:TYPE;
     + lst_typ:TYPES_TMP;
-    + list:FAST_ARRAY[CASE];
+    + list:FAST_ARRAY(CASE);
     + case:CASE;
     + result:BOOLEAN;
                 
@@ -168,7 +168,7 @@ Section Private
   
   - update_depth self_type:TYPE_FULL :BOOLEAN <- 
   ( + result:BOOLEAN;
-    + list:FAST_ARRAY[CASE];
+    + list:FAST_ARRAY(CASE);
     + new_type_self:TYPE_FULL;
         
     (switch = NULL).if {
@@ -205,7 +205,7 @@ Section Private
   
 Section Private 
   
-  - stack_type:FAST_ARRAY[TYPE] := FAST_ARRAY[TYPE].create_with_capacity 16;
+  - stack_type:FAST_ARRAY(TYPE) := FAST_ARRAY(TYPE).create_with_capacity 16;
   
   - add_stack_type t:TYPE <-
   (

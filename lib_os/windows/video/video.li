@@ -36,7 +36,6 @@ Section Header
 
 #define lstat stat
 
-HDC screen;
 HWND hwnd_glob;
 MSG msg_glob;
 WNDCLASS wc_glob;
@@ -68,11 +67,6 @@ Section Public
   - line_tmp:ABSTRACT_BMP_LINE;  
   
 Section Public
-  
-  - screen_width:INTEGER  := 1280; // BSBS: A revoir!!!
-  - screen_height:INTEGER := 1024; // BSBS: A revoir!!!
-  
-  - type:STRING_CONSTANT := "windows";
   
   - message str:ABSTRACT_STRING <-
   ( + msg:NATIVE_ARRAY[CHARACTER];
@@ -201,24 +195,6 @@ Section Public
   (
     not_yet_implemented;
   );
-  
-  //
-  // Frame buffer.
-  //
-  
-  - open_frame_buffer <-
-  (
-    `screen = CreateDC("DISPLAY", "", "", NULL)`;
-  );
-  
-  - get_pixel_screen (x,y:INTEGER) :UINTEGER_32 <-
-  ( + result:UINTEGER_32;
-    result := `GetPixel(screen,@x,@y)`:UINTEGER_32;
-    (result >> 16) | (result & 00FF00h) | ((result & 0FFh) << 16)
-  );
 
-  - set_pixel_screen (x,y:INTEGER) color col:UINTEGER_32 <-
-  ( + c:UINTEGER_32;
-    c := (col >> 16) | (col & 00FF00h) | ((col & 0FFh) << 16);
-    `SetPixel(screen,@x,@y,@c)`;
-  );
+
+

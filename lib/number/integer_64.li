@@ -38,7 +38,7 @@ Section Public
   - object_size:INTEGER := 8;
   
     
-  - '-' :SELF <- zero - Self;
+  - '-' Self:SELF :SELF <- zero - Self;
   
   //
   // Range

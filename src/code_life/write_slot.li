@@ -68,6 +68,9 @@ Section Public
     
     new_val := value.my_copy;
     result ?= variable.write position with (receiver.my_copy) value new_val;
+    (quiet_generation).if {
+      result.set_quiet_generation;
+    };
     result
   );
   
@@ -100,10 +103,16 @@ Section Public
   - genere buffer:STRING <-
   ( + tf:TYPE_FULL;
     + t:TYPE;
-                   
-    slot.receiver_type.add_genere_list;    
-    (quiet_generation).if_false {
-      // Receiver.
+    
+    t := slot.receiver_type;
+    t.add_genere_list;            
+    ((! quiet_generation) && {t.alias_slot != variable}).if {
+      // Receiver.      
+      (quiet_generation).if {
+        buffer.append "/* WRTOK */";
+      } else {
+        buffer.append "/* WRTNO */";
+      };
       (is_java).if {
         receiver.genere buffer;
         buffer.add_last '.';          
@@ -133,7 +142,7 @@ Section Public
         buffer.append ".__id=0";
       } else {
         buffer.add_last '=';    
-        genere_value buffer;
+        genere_value buffer;        
       };
     };
   );

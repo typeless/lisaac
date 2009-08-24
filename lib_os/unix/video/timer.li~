@@ -59,8 +59,6 @@ Section Interrupt
     
     timer_count := timer_count + 1;
     
-    "T".print;
-    
     tmp:=(p_end+1)&003h;
     buffer_event.item p_end.make timer_count; 
     (((tmp+2)&3)!=p_beg).if {
@@ -77,9 +75,7 @@ Section Interrupt
 	`XFlush(display)`;
       };
     };
-    
     `ualarm(50000,0)`;    
-    
   );
   
 Section Public
@@ -109,31 +105,23 @@ Section Public
 
   - acknowledge <-
   (
-    "A".print;
     p_beg := (p_beg+1) & 03h;
   );
 
   - get_event <-
   ( + p:INTEGER;
     + evt:EVENT_TIMER;
-    "TIMER".print;
+    
     p := p_beg;
-    ( p != p_end ).if { //}.while_do {
-      'D'.print;
-      evt := buffer_event.item p;      
+    { p != p_end }.while_do {
+      evt := buffer_event.item p;
       (list_client.lower).to (list_client.upper) do { j:INTEGER;
-        buffer_event.item p.set_destination NULL;        
 	list_client.item j.receive (buffer_event.item p);
       };      
       p := (p + 1) & 03h;
     };    
   );
-  /*
-  - clear <-
-  (
-    p_beg := p_end;
-  );
-  */
+
 
 /* 
 //Other solution :

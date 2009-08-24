@@ -329,6 +329,7 @@ Section Public
     + wrt:WRITE;    
     + old_list:LIST;
     + rd:ITM_READ_ARG1;
+    + old_profil_current:PROFIL;
    /* 
     string_tmp.copy "init : ";
     string_tmp.append name; 
@@ -337,6 +338,8 @@ Section Public
     ((value_init = NULL) && {(affect != '<') || {Self = slot_id}}).if {
       // Context.      
       old_list := list_current;
+      old_profil_current := profil_current;
+      profil_current := NULL;
       value_init := list_current := LIST.create position;      
       
       (Self = slot_id).if {
@@ -361,11 +364,13 @@ Section Public
       } else {
         rec := NULL;
       };
+      
       (debug_level_option != 0).if {
         list_current.add_last (
           PUSH.create position context context_main first FALSE 
         );
       };
+      
       wrt := write position with rec value val;
       (is_zero val).if {
         wrt.set_quiet_generation;
@@ -374,6 +379,7 @@ Section Public
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS:Alias
       
       list_current := old_list;
+      profil_current := old_profil_current;
     };
   );
   
@@ -382,7 +388,7 @@ Section Public
   //
   
   - execute <-
-  ( + lst:FAST_ARRAY[SLOT];
+  ( + lst:FAST_ARRAY(SLOT);
     + slot:SLOT_DATA;
     + s:SLOT;
     + val:LIST;

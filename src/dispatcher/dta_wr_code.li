@@ -57,6 +57,11 @@ Section Public
     self_arg    := arg;
     result_expr := PROTOTYPE_CST.create (v.position) type (TYPE_VOID.default);
     code        := v;
+    (profil_current = NULL).if {
+      context := context_main;
+    } else {
+      context := profil_current.context;
+    };
   );
 
   //

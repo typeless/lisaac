@@ -80,27 +80,28 @@ Section Public
   
   - get_begin_memory:POINTER;
   
-  - get_memory_capacity:UINTEGER_64 <- 
-  ( + cap:UINTEGER_64;
-    + mem:POINTER;
+  - get_memory_capacity:POINTER <- 
+  ( + cap:POINTER;
+    + mem,new_mem:POINTER;
     cap := 32.mb;
     {
       cap := cap * 2;
-      mem := `malloc(@cap)`:POINTER;    
-      (mem != NULL).if { 
+      mem := new_mem;
+      new_mem := `realloc(@mem,(unsigned int)@cap)`:POINTER;    
+      /*(mem != NULL).if { 
 	`free(@mem)`;
-      };      
-    }.do_until {(mem = NULL) || {cap = `2048LU << 20`:UINTEGER_64}}; // BSBS: BUG COMPILO 0.13
-    (mem = NULL).if {
+      };*/      
+    }.do_until {(new_mem = NULL) || {cap = `(void *)(2048LU << 20)`:POINTER}}; // BSBS: BUG COMPILO 0.13
+    (new_mem = NULL).if {
       cap := cap / 2;
     };
-    get_begin_memory := `malloc(@cap)`:POINTER;
+    get_begin_memory := mem;
     //
     cap
   );
   
 Section SYSTEM,MEMORY
-  
+  /*
   - realloc_c (beg:UINTEGER_32,nb:INTEGER) :UINTEGER_32 <-
   ( + result:UINTEGER_32;
     result := `(unsigned long)realloc((void *)@beg,@nb+15)`:UINTEGER_32;
@@ -115,7 +116,7 @@ Section SYSTEM,MEMORY
     ? {result != 0};
     result
   );
-  
+  */
 Section ISAAC  
   
   - make <-

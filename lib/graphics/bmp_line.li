@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := BMP_LINE[E];
+  + name    := BMP_LINE(E);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private
   
-  + storage:NATIVE_ARRAY[E];
+  + storage:NATIVE_ARRAY(E);
   
 Section Public
   
@@ -57,7 +57,7 @@ Section Public
   (
     (n > capacity).if {
       capacity := n;      
-      storage := NATIVE_ARRAY[E].create n;
+      storage := NATIVE_ARRAY(E).create n;
     };
     upper := n - 1;
   );
@@ -77,7 +77,7 @@ Section Public
   - make_with_capacity n:INTEGER <-
   (
     (n > capacity).if {
-      storage := NATIVE_ARRAY[E].create n;
+      storage := NATIVE_ARRAY(E).create n;
       capacity := n;
     };
     upper := -1;
@@ -99,7 +99,7 @@ Section Public
   ( 
     capacity := n;
     upper    := n - 1;    
-    storage  := CONVERT[UINTEGER_32,NATIVE_ARRAY[E]].on offset;    
+    storage  := CONVERT(UINTEGER_32,NATIVE_ARRAY(E)).on offset;    
   );
   
   - pixel_geometry:E;
@@ -128,7 +128,7 @@ Section Public
     ? {idx_begin <= idx_end};
     ? {idx_begin >= 0};
     ? {idx_end.in_range 0 to upper};
-    ? {ofs >= 0};    
+    ? {ofs >= 0};
     ? {(ofs + (idx_end - idx_begin)) <= bmp.upper}; 
         
     offset := ofs;
@@ -174,8 +174,8 @@ Section Public
   // Arrayed consideration.
   //
   
-  - get_storage:NATIVE_ARRAY[UINTEGER_8] <- 
-  CONVERT[NATIVE_ARRAY[E],NATIVE_ARRAY[UINTEGER_8]].on storage;
+  - get_storage:NATIVE_ARRAY(UINTEGER_8) <- 
+  CONVERT(NATIVE_ARRAY(E),NATIVE_ARRAY(UINTEGER_8)).on storage;
   
   - element_sizeof:INTEGER <- pixel_geometry.object_size;
 
@@ -183,7 +183,7 @@ Section Public
   
   + ofs_buf:INTEGER;
   
-  - add_last_buffer buf:FAST_ARRAY[UINTEGER_8] from beg:INTEGER to end:INTEGER <-
+  - add_last_buffer buf:FAST_ARRAY(UINTEGER_8) from beg:INTEGER to end:INTEGER <-
   ( + pos:INTEGER;
     
     // BSBS: Peu faire mieux directement avec les storages...

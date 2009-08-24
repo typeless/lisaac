@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := REFERENCE[E];
+  + name      := REFERENCE(E);
   
   - import    := E;
   - export    := E,POINTER;

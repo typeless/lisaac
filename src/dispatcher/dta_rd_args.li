@@ -38,7 +38,7 @@ Section Public
   
   // Add.
   
-  + argument_list:FAST_ARRAY[EXPR];
+  + argument_list:FAST_ARRAY(EXPR);
   
   + copy_argument:BOOLEAN;
   
@@ -62,7 +62,7 @@ Section Public
   // Creation.
   //
   
-  - create p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] intern flag:BOOLEAN :SELF <-
+  - create p:POSITION call sl:SLOT with args:FAST_ARRAY(EXPR) intern flag:BOOLEAN :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -70,7 +70,7 @@ Section Public
     result
   );
   
-  - make p:POSITION call sl:SLOT with args:FAST_ARRAY[EXPR] intern flag:BOOLEAN <-
+  - make p:POSITION call sl:SLOT with args:FAST_ARRAY(EXPR) intern flag:BOOLEAN <-
   (
     position      := p;    
     slot          := sl;
@@ -128,11 +128,11 @@ Section Public
     
 Section NODE_STYLE, SELF  
   
-  - get_argument:FAST_ARRAY[EXPR] <-  
-  ( + result:FAST_ARRAY[EXPR];
+  - get_argument:FAST_ARRAY(EXPR) <-  
+  ( + result:FAST_ARRAY(EXPR);
     
     (copy_argument).if {
-      result := FAST_ARRAY[EXPR].create_with_capacity (argument_list.count);            
+      result := FAST_ARRAY(EXPR).create_with_capacity (argument_list.count);            
       (argument_list.lower).to (argument_list.upper) do { j:INTEGER;		
 	result.add_last (argument_list.item j.my_copy);
       };            

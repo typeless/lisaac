@@ -20,12 +20,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name    := LINKED_XOR_NODE[V];
+  + name    := LINKED_XOR_NODE(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
-  - comment := "To implement LINKED_XOR_LIST[V].";
+  - comment := "To implement LINKED_XOR_LIST(V).";
     
 Section Inherit
   
@@ -68,12 +68,12 @@ Section LINKED_XOR_LIST,LINKED_XOR_NODE
   
   - next prev:LINKED_XOR_NODE :LINKED_XOR_NODE <-
   ( 
-    CONVERT[POINTER,LINKED_XOR_NODE].on (link ^ prev.to_pointer)
+    CONVERT(POINTER,LINKED_XOR_NODE).on (link ^ prev.to_pointer)
   );
   
   - previous nex:LINKED_XOR_NODE :LINKED_XOR_NODE <-
   (
-    CONVERT[POINTER,LINKED_XOR_NODE].on (link ^ nex.to_pointer)
+    CONVERT(POINTER,LINKED_XOR_NODE).on (link ^ nex.to_pointer)
   );
     
   - set_link p:SELF and n:SELF <-

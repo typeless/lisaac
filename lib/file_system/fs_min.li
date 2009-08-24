@@ -44,21 +44,21 @@ Section Public
   //
   
   - open_read n:ABSTRACT_STRING :POINTER <- 
-  ( + buf:NATIVE_ARRAY[CHARACTER];
+  ( + buf:NATIVE_ARRAY(CHARACTER);
     string_tmp.copy n;
     buf := string_tmp.to_external;
     `fopen((char*)@buf,"rb")`:(POINTER)    
   );
 
   - open_write n:ABSTRACT_STRING :POINTER <- 
-  ( + buf:NATIVE_ARRAY[CHARACTER];
+  ( + buf:NATIVE_ARRAY(CHARACTER);
     string_tmp.copy n;
     buf := string_tmp.to_external;
     `fopen((char*)@buf,"wb")`:(POINTER)
   );
   
   - read f:POINTER in buf:STRING size sz:INTEGER :INTEGER <-   
-  ( + ptr:NATIVE_ARRAY[CHARACTER];
+  ( + ptr:NATIVE_ARRAY(CHARACTER);
     + result:INTEGER;
     ptr := buf.to_external;    
     result := `fread((void *)(@ptr),(size_t)(1), (size_t)(@sz),(FILE*)(@f))`:(INTEGER);
@@ -68,7 +68,7 @@ Section Public
   );
 
   - write f:POINTER with buf:STRING size sz:INTEGER :INTEGER <-   
-  ( + ptr:NATIVE_ARRAY[CHARACTER];
+  ( + ptr:NATIVE_ARRAY(CHARACTER);
     + result:INTEGER;
     ptr := buf.to_external;    
     result := `fwrite((void *)(@ptr),(size_t)(1), (size_t)(@sz),(FILE*)(@f))`:(INTEGER);
@@ -86,7 +86,7 @@ Section Public
   );
 
   - make_file new_path:ABSTRACT_STRING :BOOLEAN <-
-  ( + p:NATIVE_ARRAY[CHARACTER];
+  ( + p:NATIVE_ARRAY(CHARACTER);
     + stream:POINTER;
     + result:BOOLEAN;
     

@@ -40,9 +40,9 @@ Section Public
   // Comparison.
   //
   
-  - '==' Right 60 other:EXPR :BOOLEAN <- FALSE;
+  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <- FALSE;
   
-  - '!==' Right 60 other:EXPR :BOOLEAN <- ! (Self == other);
+  - Self:SELF '!==' Right 60 other:EXPR :BOOLEAN <- ! (Self == other);
   
   //
   // Type.
@@ -74,7 +74,7 @@ Section Public
     + slot_name:STRING_CONSTANT;
     + slot_msg:SLOT;    
     + node:NODE;
-    + args:FAST_ARRAY[EXPR];
+    + args:FAST_ARRAY(EXPR);
     + ts:ITM_TYPE_SIMPLE;
     
     ? {static_type != NULL};
@@ -109,7 +109,7 @@ Section Public
 	  //semantic_error p,string_tmp;
 	};	
 	(slot_msg.argument_count != 1).if {	  
-	  semantic_error ((slot_msg.position),"No argument for this slot.");
+	  semantic_error (slot_msg.position,"No argument for this slot.");
 	};
         ts ?= slot_msg.result_type;               
 	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
@@ -154,7 +154,7 @@ Section Public
 	  //semantic_error p,string_tmp;
 	};		
 	(slot_msg.argument_count != 2).if {
-	  semantic_error ((slot_msg.position),"Incorrect argument for this slot.");
+	  semantic_error (slot_msg.position,"Incorrect argument for this slot.");
 	};
 	ts ?= slot_msg.result_type;
 	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
@@ -169,7 +169,7 @@ Section Public
 	  POSITION.send_error;     
 	};
 	//	
-	args := FAST_ARRAY[EXPR].create_with_capacity 2;
+	args := FAST_ARRAY(EXPR).create_with_capacity 2;
 	args.add_last (PROTOTYPE_CST.create position type t);
 	args.add_last (local.read position);
 	node := NODE.new_read position slot slot_msg 

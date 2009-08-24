@@ -29,13 +29,13 @@ Section Header
   
 Section Inherit
   
-  - parent_abstract_string:ABSTRACT_STRING := ABSTRACT_STRING;
+  - inherit_abstract_string:ABSTRACT_STRING := ABSTRACT_STRING;
   
   - parent_arrayed:ARRAYED := ARRAYED;
   
 Section Public //ABSTRACT_STRING, ABSTRACT_ENTRY
   
-  + storage:NATIVE_ARRAY[CHARACTER];
+  + storage:NATIVE_ARRAY(CHARACTER);
   
 Section Public
     
@@ -47,7 +47,7 @@ Section Public
   // General :
   //
   
-  - set_storage tab:NATIVE_ARRAY[CHARACTER] <-
+  - set_storage tab:NATIVE_ARRAY(CHARACTER) <-
   ( ? {tab != NULL};
     storage := tab;
   );
@@ -77,7 +77,7 @@ Section Public
   ( ? {needed_capacity >= 0};
     (needed_capacity > 0).if {
       (capacity < needed_capacity).if	{	
-	storage := NATIVE_ARRAY[CHARACTER].create needed_capacity;
+	storage := NATIVE_ARRAY(CHARACTER).create needed_capacity;
 	capacity := needed_capacity;
       };
     };
@@ -132,7 +132,7 @@ Section Public
     (new_count <= count).if {
     }.elseif { capacity < new_count } then {
       (capacity = 0).if {
-	storage := NATIVE_ARRAY[CHARACTER].create new_count;
+	storage := NATIVE_ARRAY(CHARACTER).create new_count;
       } else {
 	storage := storage.realloc capacity with new_count;
       };
@@ -154,7 +154,7 @@ Section Public
     
     (new_capacity > capacity).if {   
       (capacity = 0).if {
-	storage := NATIVE_ARRAY[CHARACTER].create new_capacity;
+	storage := NATIVE_ARRAY(CHARACTER).create new_capacity;
       } else {
 	storage := storage.realloc capacity with new_capacity;
       };
@@ -178,7 +178,7 @@ Section Public
     count := other.count;
     (count > 0).if {
       (capacity < count).if	{
-	storage  := NATIVE_ARRAY[CHARACTER].create count;
+	storage  := NATIVE_ARRAY(CHARACTER).create count;
 	capacity := count;
       };
       storage.copy_from (other.storage) until (count-1);
@@ -213,7 +213,7 @@ Section Public
     (capacity < needed_capacity).if	{
       (capacity = 0).if	{
 	capacity := needed_capacity;
-	storage  := NATIVE_ARRAY[CHARACTER].create capacity;
+	storage  := NATIVE_ARRAY(CHARACTER).create capacity;
       } else {
 	storage  := storage.realloc capacity with needed_capacity;
 	capacity := needed_capacity;
@@ -221,6 +221,12 @@ Section Public
     };
     storage.copy (other.storage) to count until other_count;
     count := needed_capacity;
+  );
+  
+  - Self:SELF '+=' Left other:ABSTRACT_STRING :SELF <-
+  (
+    append other;
+    Self
   );
   
   - prepend other:ABSTRACT_STRING <-
@@ -392,7 +398,7 @@ Section Public
     (capacity <= count).if {
       (capacity = 0).if	{
 	capacity := 32;
-	storage  := NATIVE_ARRAY[CHARACTER].create capacity;
+	storage  := NATIVE_ARRAY(CHARACTER).create capacity;
       } else {
 	new_capacity := capacity * 2;
 	storage      := storage.realloc capacity with new_capacity;
@@ -506,7 +512,7 @@ Section Public
     (n > count).if {
       count := 0;
     } else {
-      count := count - n
+      count := count - n;
     };
 
     ? { count = 0.max(old_count - n) };
@@ -654,7 +660,7 @@ Section Public
     ? { model != NULL };
     c := model.count;
     (capacity < c).if {
-      storage := NATIVE_ARRAY[CHARACTER].calloc c;
+      storage := NATIVE_ARRAY(CHARACTER).calloc c;
       capacity := c;
     };
     count := c;
@@ -675,7 +681,7 @@ Section Public
   // Interfacing with C string :
   //
   
-  - to_external:NATIVE_ARRAY[CHARACTER] <-
+  - to_external:NATIVE_ARRAY(CHARACTER) <-
   // Gives C access to the internal `storage' (may be dangerous).
   // To be compatible with C, a null character is added at the end
   // of the internal `storage'. This extra null character is not
@@ -696,7 +702,7 @@ Section Public
     +? {Result.is_not_null};
   ];
   
-  - from_external p:NATIVE_ARRAY[CHARACTER] <-
+  - from_external p:NATIVE_ARRAY(CHARACTER) <-
   // Internal `storage' is set using `p' (may be dangerous because
   // the external C string `p' is not duplicated).
   // Assume `p' has a null character at the end in order to
@@ -718,7 +724,7 @@ Section Public
     ? {p = to_external};
   );
   
-  - from_external_copy p:NATIVE_ARRAY[CHARACTER]  <-
+  - from_external_copy p:NATIVE_ARRAY(CHARACTER)  <-
   // Internal `storage' is set using a copy of `p'.
   // Assume `p' has a null character at the end in order to
   // compute the Eiffel `count'. This extra null character
@@ -740,12 +746,12 @@ Section Public
   
   - element_sizeof:INTEGER <- 1;
   
-  - to_native_array_uinteger_8:NATIVE_ARRAY[UINTEGER_8] <- 
+  - to_native_array_uinteger_8:NATIVE_ARRAY(UINTEGER_8) <- 
   (
-    CONVERT[NATIVE_ARRAY[CHARACTER],NATIVE_ARRAY[UINTEGER_8]].on storage
+    CONVERT(NATIVE_ARRAY(CHARACTER),NATIVE_ARRAY(UINTEGER_8)).on storage
   );
   
-  - add_last_buffer buf:FAST_ARRAY[UINTEGER_8] from beg:INTEGER to end:INTEGER <-
+  - add_last_buffer buf:FAST_ARRAY(UINTEGER_8) from beg:INTEGER to end:INTEGER <-
   (
     beg.to end do { j:INTEGER;
       add_last (buf.item j.to_character);

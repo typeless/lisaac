@@ -199,7 +199,7 @@ Section Private
     };
     " : ".print;
     val := get_integer;
-    ((val < 0) | (val > 7)).if {
+    ((val < 1) | (val > 7)).if {
       "Error !\n".print; 
       message;
     } else {

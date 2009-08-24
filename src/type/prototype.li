@@ -34,12 +34,12 @@ Section Inherit
   
 Section Public
   
-  - prototype_list:FAST_ARRAY[PROTOTYPE] :=
-  FAST_ARRAY[PROTOTYPE].create_with_capacity 512;
+  - prototype_list:FAST_ARRAY(PROTOTYPE) :=
+  FAST_ARRAY(PROTOTYPE).create_with_capacity 512;
   // BSBS: Voir si il faut le conserver !
   
-  - prototype_dico:HASHED_DICTIONARY[PROTOTYPE,STRING_CONSTANT] := 
-  HASHED_DICTIONARY[PROTOTYPE,STRING_CONSTANT].create;
+  - prototype_dico:HASHED_DICTIONARY(PROTOTYPE,STRING_CONSTANT) := 
+  HASHED_DICTIONARY(PROTOTYPE,STRING_CONSTANT).create;
   
 Section Public
   
@@ -51,7 +51,7 @@ Section Public
   // Slots
   //
   
-  + slot_list:HASHED_DICTIONARY[ITM_SLOT,STRING_CONSTANT];
+  + slot_list:HASHED_DICTIONARY(ITM_SLOT,STRING_CONSTANT);
   
   + first_slot:ITM_SLOT;
   
@@ -129,15 +129,15 @@ Section Public
   // Cast information.
   //
 
-  + export_list:FAST_ARRAY[ITM_TYPE_MONO];
-  + import_list:FAST_ARRAY[ITM_TYPE_MONO];
+  + export_list:FAST_ARRAY(ITM_TYPE_MONO);
+  + import_list:FAST_ARRAY(ITM_TYPE_MONO);
 
-  - set_export_list s:FAST_ARRAY[ITM_TYPE_MONO] <-
+  - set_export_list s:FAST_ARRAY(ITM_TYPE_MONO) <-
   (
     export_list := s;
   );
 
-  - set_import_list s:FAST_ARRAY[ITM_TYPE_MONO] <-
+  - set_import_list s:FAST_ARRAY(ITM_TYPE_MONO) <-
   (
     import_list := s;
   );
@@ -152,7 +152,7 @@ Section Public
   
   + generic_count:INTEGER;
   
-  + idf_generic_list:FAST_ARRAY[ITM_TYPE_PARAMETER];
+  + idf_generic_list:FAST_ARRAY(ITM_TYPE_PARAMETER);
   
   //
   // Default value.
@@ -195,7 +195,7 @@ Section Public
       shortname := n;
     };
     generic_count := c;
-    idf_generic_list := FAST_ARRAY[ITM_TYPE_PARAMETER].create_with_capacity c;
+    idf_generic_list := FAST_ARRAY(ITM_TYPE_PARAMETER).create_with_capacity c;
         
     // Collection.    
     index := prototype_list.count;
@@ -216,7 +216,7 @@ Section Public
     FS_MIN.close file;
     
     // Init.    
-    slot_list := HASHED_DICTIONARY[ITM_SLOT,STRING_CONSTANT].create;        
+    slot_list := HASHED_DICTIONARY(ITM_SLOT,STRING_CONSTANT).create;        
     position  := POSITION.create Self line 1 column 0;
     //
   );
@@ -453,10 +453,10 @@ Section PROTOTYPE
     {  
       ((s.id_section.is_public) && {s.name = ALIAS_STR.slot_main}).if {	
 	(s.result_type != ITM_TYPE_SIMPLE.type_void).if {
-	  semantic_error ((s.position),"Unix mode: Not value return.");
+	  semantic_error (s.position,"Unix mode: Not value return.");
 	};
 	(s.argument_count != 1).if {
-	  semantic_error ((s.position),"Unix mode: Not argument list.");
+	  semantic_error (s.position,"Unix mode: Not argument list.");
 	};	
 	result := type_input.get_slot (s.name);
       };
@@ -469,7 +469,7 @@ Section PROTOTYPE
     result     
   );
   
-  - shorter_get_all_slot_in lst:FAST_ARRAY[ITM_SLOT] <-
+  - shorter_get_all_slot_in lst:FAST_ARRAY(ITM_SLOT) <-
   ( + s:ITM_SLOT; 
     + ps:ITM_TYPE_SIMPLE;
     + p:PROTOTYPE;
@@ -513,7 +513,7 @@ Section PROTOTYPE
     };    
   );
         
-  - shorter_table lst:FAST_ARRAY[ITM_SLOT] select sel:BLOCK 
+  - shorter_table lst:FAST_ARRAY(ITM_SLOT) select sel:{ITM_SLOT; BOOLEAN}
   title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first_cur:BOOLEAN;
     + s:ITM_SLOT; 
@@ -564,7 +564,7 @@ Section PROTOTYPE
     };    
   );
   
-  - shorter_detail lst:FAST_ARRAY[ITM_SLOT] select sel:BLOCK 
+  - shorter_detail lst:FAST_ARRAY(ITM_SLOT) select sel:{ITM_SLOT; BOOLEAN}
   title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first:BOOLEAN;
     + s:ITM_SLOT;
@@ -637,7 +637,7 @@ Section PROTOTYPE
     };
   );
   
-  - list_tmp:FAST_ARRAY[ITM_SLOT] := FAST_ARRAY[ITM_SLOT].create_with_capacity 256;
+  - list_tmp:FAST_ARRAY(ITM_SLOT) := FAST_ARRAY(ITM_SLOT).create_with_capacity 256;
   
   - str_tmp:STRING := STRING.create 512;
   - str_tmp2:STRING := STRING.create 64;
@@ -648,7 +648,7 @@ Section PROTOTYPE
     + stat,old_stat:INTEGER;
     + car:CHARACTER;
     + i:INTEGER;
-    + lst:LINKED_LIST[STRING_CONSTANT];
+    + lst:LINKED_LIST(STRING_CONSTANT);
     + code_balise:STRING_CONSTANT;
         
     cur := str.lower;

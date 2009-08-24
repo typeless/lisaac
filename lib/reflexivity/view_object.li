@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
  
-  + name    := VIEW_OBJECT[E];
+  + name    := VIEW_OBJECT(E);
 
     
   - comment := "Reflexivity view object.";
@@ -107,7 +107,7 @@ Section MEMORY
   )
   [ +? {  is_free}; ];
   
-  - deep_clone:VIEW_OBJECT[E] <-
+  - deep_clone:VIEW_OBJECT(E) <-
   ( + result:VIEW_OBJECT;
         
     ((! is_separate) && {! is_non_mutable}).if {
@@ -115,7 +115,7 @@ Section MEMORY
 	+ new_clone:VIEW_OBJECT;
 	
 	new_clone := clone;
-	new_clone.for_all_set_data { obj:VIEW_OBJECT[F];
+	new_clone.for_all_set_data { obj:VIEW_OBJECT(F);
 	  obj.deep_clone
 	};
 	new_clone
@@ -145,7 +145,7 @@ Section Public
   
 Section Private
   
-  - dico_clone:DICTIONARY[VIEW_OBJECT, VIEW_OBJECT] := DICTIONARY[VIEW_OBJECT, VIEW_OBJECT].create;
+  - dico_clone:DICTIONARY(VIEW_OBJECT, VIEW_OBJECT) := DICTIONARY(VIEW_OBJECT, VIEW_OBJECT).create;
   
   - get_idf_intern:INTEGER <-
   [ -? {! is_natif_expanded}; ]

@@ -561,7 +561,7 @@ Section Private
       string_tmp.print;
       "'\n".print;
       ENVIRONMENT.execute_command string_tmp;		
-      "  OK, you found this documentation in `lib_html/index.html'\n".print;  
+      "  OK, you'll find this documentation in `lib_html/index.html'\n".print;  
     };
     '\n'.print;
   );

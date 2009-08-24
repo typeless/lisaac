@@ -36,11 +36,11 @@ Section Inherit
 
 Section Private
   
-  - buffer_event:FAST_ARRAY[EVENT_KEYBOARD]; 
+  - buffer_event:FAST_ARRAY(EVENT_KEYBOARD); 
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
   - p_end:UINTEGER_8;  // Pointer on the buffer (end)
     
-  - bin_code:FAST_ARRAY[UINTEGER_8]; // Binary array of keys (102+7)/8
+  - bin_code:FAST_ARRAY(UINTEGER_8); // Binary array of keys (102+7)/8
 
   - cmd:UINTEGER_8;    // 0:CTRL 1:AltGr 2:Alt 3:Cmd 4:Shift 5:Cap 6:NumLock 7:Scrolllock
 
@@ -96,9 +96,9 @@ Section Public
   // Install keyboard.
   ( + new_event:EVENT_KEYBOARD;
     is_actif := TRUE;
-    bin_code := FAST_ARRAY[UINTEGER_8].create 14;
+    bin_code := FAST_ARRAY(UINTEGER_8).create 14;
     
-    buffer_event := FAST_ARRAY[EVENT_KEYBOARD].create 4;
+    buffer_event := FAST_ARRAY(EVENT_KEYBOARD).create 4;
     0.to 3 do { j:INTEGER;
       new_event := EVENT_KEYBOARD.clone;
       buffer_event.put new_event to j;

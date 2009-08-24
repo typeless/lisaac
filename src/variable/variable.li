@@ -77,11 +77,11 @@ Section Public
 
   - set_ensure_count c:INTEGER <-
   // Necessary for `context' local, `External' argument slot and `BLOCK' manager.
-  (
+  (        
     ensure_count := c;
   );
   
-  + require_list:FAST_ARRAY[WRITE];
+  + require_list:FAST_ARRAY(WRITE);
   + require_first:WRITE;
   - require_count:INTEGER <- 
   ( + result:INTEGER;
@@ -194,7 +194,7 @@ Section Public
       require_first := e;      
     } else {
       (require_list = NULL).if {
-	require_list := FAST_ARRAY[WRITE].create_with_capacity 1; 
+	require_list := FAST_ARRAY(WRITE).create_with_capacity 1; 
       };
       require_list.add_last e;
     };
@@ -210,26 +210,11 @@ Section Public
     };         
     
     e.set_create;
-    /*
-    (intern_name == "Self__GB").if {
-      "Creat :".print;
-      e.debug_display;
-      warning_error (e.position,"LA");
-    };
-    */
-    
     e
   );
     
   - unwrite e:WRITE <-
   ( + idx:INTEGER;
-    /*
-    (intern_name == "Self__GB").if {
-      e.debug_display;
-      warning_error (e.position,"LA");
-    };
-    */
-    
     (! e.is_create).if {
       crash;
     };
@@ -307,30 +292,38 @@ Section Public
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
     /*
-    (intern_name == "Result__ID").if {
-      "VARIABLE create :".print;
-      result.debug_display;      
-      (result.object_id = 6).if {
-       // crash;
-      };
+    (intern_name == "k__ELZH").if {
+      "Create : ".print;
+      result.object_id.print;
+      '\n'.print;      
+      //(result.object_id = 1).if {
+        crash;
+      //};
+      IO.read_character;      
     };
     */
-    
     result
   );
   //[ ? {ensure_count := Old ensure_count + 1}; ];
   
   - unread e:READ <-
   (    
-        
+    /*
+    (intern_name == "k__ELZH").if {
+      "Delete : ".print;
+      e.object_id.print;
+      '\n'.print;
+      IO.read_character;
+    };
+    */    
     ensure_count := ensure_count - 1;
     (ensure_count < 0).if {
       "C'est : ".print;
       e.debug_display;
       "\n dans :\n".print;
-      list_current.debug_display;
+      //list_current.debug_display;
       '\n'.print;
-      crash;
+      //crash;
     };
   /*  
     (intern_name == "Result__ID").if {
@@ -339,7 +332,7 @@ Section Public
     };
 */
     
-    ? {ensure_count >= 0};
+//    ? {ensure_count >= 0};
   );
     
   //

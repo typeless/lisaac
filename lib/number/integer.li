@@ -26,7 +26,7 @@ Section Header
   // Integer: 
   UINTEGER_8,  UINTEGER_16, UINTEGER_32, UINTEGER_64,
   INTEGER_8 ,  INTEGER_16 , INTEGER_32 , INTEGER_64 ,
-  UINTEGER_BIG,//INTEGER_BIG,
+  UINTEGER_BIG,UINTEGER,//INTEGER_BIG,
   // Fixed real:
   UREAL_16_16, UREAL_24_8 , UREAL_26_6 , 
   REAL_16_16 , REAL_24_8  , REAL_26_6  , 
@@ -42,7 +42,7 @@ Section Header
 
 Section Insert
   
-  - parent_numeric:NUMERIC := NUMERIC;
+  - inherit_numeric:NUMERIC := NUMERIC;
   
 Section Public
     
@@ -50,19 +50,28 @@ Section Public
   // Range.
   //
   
-  - maximum:UINTEGER_64 <- 07FFFFFFFh.to_raw_uinteger_64; 
-  
-  - minimum:INTEGER_64  <- (- 07FFFFFFFh).to_raw_integer_64; 
-  
+  - maximum:UINTEGER_64 <- 
+  // Maximum of integer	
+  07FFFFFFFh.to_raw_uinteger_64; 
+
+  - minimum:INTEGER_64  <- 
+  // Minimum of integer
+  (- 07FFFFFFFh).to_raw_integer_64; 
+
   //
   // Binary Operator.
   //
   
-  - '%'  Left 100 other:SELF    :SELF <- Self - ((Self / other) * other);
+  - Self:SELF '%'  Left 100 other:SELF    :SELF <- 
+  // Modulo
+  Self - ((Self / other) * other);
   
-  - '%#' Left 100 other:INTEGER :SELF <- Self % other;
+  - Self:SELF '%#' Left 100 other:INTEGER :SELF <- 
+  // Modulo
+  Self % other;
   
-  - '**' Right 120 exp:SELF :SELF <-
+  - Self:SELF '**' Right 120 exp:SELF :SELF <-
+  // Power
   ( + result:SELF;
     
     (exp = 0).if {
@@ -137,33 +146,51 @@ Section Public
   // Facility typing.
   //
   
-  - kb:SELF <- Self << 10;
+  - kb:SELF <- 
+  // Self in Kilobyte (ie. 1kb = 1024 bytes)
+  Self << 10;
   
-  - mb:SELF <- Self << 20;
-  
-  - gb:SELF <- Self << 30;
-  
-  - tb:SELF <- Self << 40;
-  
+  - mb:SELF <- 
+  // Self in megabytes
+  Self << 20;
+
+  - gb:SELF <- 
+  // Self in gigabytes
+  Self << 30;
+
+  - tb:SELF <- 
+  // Self in terabytes
+  Self << 40;
+
   //
   // Logic Operator
   //
       
-  - '&'  Left 100 other:SELF :SELF <- `6`;
-  
-  - '|'  Left 80  other:SELF :SELF <- ~(~Self & ~other);
-  
-  - '^'  Left 80  other:SELF :SELF <- (~Self & other) | (Self & ~other);
+  - Self:SELF '&'  Left 100 other:SELF :SELF <- 
+  // AND operator
+  `6`;
 
-  - '>>' Left 100 other:INTEGER :SELF <- `7`;
+  - Self:SELF '|'  Left 80  other:SELF :SELF <- 
+  // OR operator
+  ~(~Self & ~other);
 
-  - '<<' Left 100 other:INTEGER :SELF <- `8`;
+  - Self:SELF '^'  Left 80  other:SELF :SELF <- 
+  // XOR operator
+  (~Self & other) | (Self & ~other);
+
+  - Self:SELF '>>' Left 100 other:INTEGER :SELF <- 
+  // Shift right
+  `7`;
+
+  - Self:SELF '<<' Left 100 other:INTEGER :SELF <- 
+  // Shift left
+  `8`;
   
   //
   // Unary operator
   //
     
-  - '~' :SELF <- -Self - SELF.one; //(-SELF.one) - Self;
+  - '~' Self:SELF :SELF <- -Self - SELF.one; 
   
   //
   // Test. 
@@ -180,15 +207,16 @@ Section Public
   );
   
   - is_power_2:BOOLEAN <-
+  // TRUE is Self is power of 2
   ( + val:SELF;
     + result:BOOLEAN;
     
-    (Self != 0).if {
+    (Self != 0).if {      
       val := Self;
       {val.is_even}.while_do {
 	val := val >> 1;
-      };
-      result := val = 1;
+      };      
+      result := val = 1;      
     };
     result
   );
@@ -198,6 +226,7 @@ Section Public
   //
   
   - sqrt:SELF <-
+  // Square root
   ( + r,x:SELF;
     
     x:=(Self + 1) >> 1;
@@ -208,7 +237,13 @@ Section Public
     r
   );
   
+  - Self:SELF '!' :SELF <- 
+  // Factorial. Use it like "45!;" or "bar!.print;"
+  factorial;
+  
   - factorial:SELF <-
+  // Factorial
+  // * Require: Self >= 0
   [
     -? {Self >= 0};
   ]
@@ -224,6 +259,8 @@ Section Public
   );
   
   - fibonacci:SELF <-
+  // Fibonacci
+  // * Require: Self >= 0
   [
     -? {Self >= 0};
   ]
@@ -237,12 +274,19 @@ Section Public
     result
   );
   
-  - is_odd:BOOLEAN  <- (Self & 1) = 1;  // Is odd ?
-  
-  - is_even:BOOLEAN <- ! is_odd; // Is even ?
-  
+  - is_odd:BOOLEAN  <- 
+  // Is odd ?
+  (Self & 1) = 1;  
+
+  - is_even:BOOLEAN <- 
+  // Is even ?
+  ! is_odd; 
+
   - gcd other:SELF :SELF <-
   // Great Common Divisor of `self' and `other'.
+  // * Require: Self >= 0
+  // * Require: `other' >= 0
+  // * Ensure: 
   [
     -? {Self  >= 0};
     -? {other >= 0};
@@ -260,7 +304,27 @@ Section Public
   [
     +? {result == other.gcd self};
   ];
- 
+
+
+  - is_prime : BOOLEAN <-
+  // TRUE if `Self' is prime
+  ( + diviseur : INTEGER;
+    + sqrt_s : INTEGER;
+    + result : BOOLEAN;
+    diviseur := 5;
+    sqrt_s := sqrt;
+    result := TRUE;
+    ((Self % 2 = 0) || {Self % 3 = 0}).if_false {
+      1.to sqrt_s until {(Self % diviseur) = 0} do { cpt : INTEGER;
+        diviseur := diviseur + 2 + (((cpt-1) & 1) << 1);
+      };
+      result := result  && {!((Self % diviseur) = 0)};
+    };
+    result
+  );
+
+
+
   //
   // Random
   //
@@ -269,7 +333,7 @@ Section Public
   // Random number between 0 to `maximum' in SELF.
   ( - r_seed:UINTEGER_32;
     r_seed := (110351524 * r_seed + 12345) % 214748364;
-    CONVERT[UINTEGER_64,SELF].on (maximum & r_seed)
+    CONVERT(UINTEGER_64,SELF).on (maximum & r_seed)
   )
   [
     +? {Result >= 0};
@@ -293,7 +357,7 @@ Section Public
     -? {lower < upper};
   ]
   ( 
-    lower + (upper-lower).random_upper 
+    lower + random_upper (upper-lower)
   )
   [
     +? {Result.in_range lower to upper};
@@ -303,7 +367,7 @@ Section Public
   // Looping.
   //
   
-  - times action:BLOCK <-
+  - times action:{} <-
   (
     1.to Self do { i:INTEGER;
       action.value;
@@ -376,7 +440,7 @@ Section Public
   // Convert the hexadecimal view of `self' into a new allocated
   // STRING. For example, if `self' is -1 the new STRING is
   // "FFFFFFFF" on a 32 bit machine.
-  // Note: see also `to_hexadecimal_in' to save memory.
+  // * See:  `to_hexadecimal_in' to save memory.
   ( + result:STRING;
     
     result := STRING.create 8;
@@ -388,7 +452,7 @@ Section Public
   // Convert the hexadecimal view of `self' into a new allocated
   // STRING. For example, if `self' is -1 the new STRING is
   // "FFFFFFFF" on a 32 bit machine.
-  // Note: see also `to_hexadecimal_in' to save memory.
+  // * See:  `to_hexadecimal_in' to save memory.
   ( + result:STRING;
     
     result := STRING.create 8;
@@ -450,6 +514,7 @@ Section Public
   - to_binary_in buffer:STRING format s:INTEGER <-
   // Append in `buffer' the equivalent of `to_binary_string'. No new STRING
   // creation during the process.
+  // * Require: buffer not null
   [ -? {buffer!=NULL}; ]
   ( + val:SELF;
     + i,old_count:INTEGER;
@@ -477,13 +542,16 @@ Section Public
   // Hashing:
   //
   
-  - hash_code:INTEGER <- to_integer_32.hash_code; // BSBS:  Il faut revoir => Depending processor
+  - hash_code:INTEGER <-
+  // Hash code
+  to_integer_32.hash_code; // BSBS:  Il faut revoir => Depending processor
   
   //
   // Print
   //
   
   - print <-
+  // Print
   (
     (Self = 0).if {
       '0'.print;
@@ -497,6 +565,7 @@ Section Public
   
   - print_positif <-
   // Display this number without memory.
+  // * Require: Self >= 0
   [ -? {Self >=# 0}; ]
   ( + char:CHARACTER;
     + val:SELF;    
@@ -526,11 +595,11 @@ Section Public
   // Debug manager facility.
   //
   
-  - '?' blc:BLOCK <-  blc ?# Self;
+  - Self:SELF '?' blc:{BOOLEAN} <-  blc ?# Self;
   
 Section INTEGER  
   
-  - to_raw_pointer:POINTER         <- CONVERT[SELF,POINTER].on Self;
+  - to_raw_pointer:POINTER         <- CONVERT(SELF,POINTER).on Self;
 
 
 

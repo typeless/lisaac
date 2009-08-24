@@ -33,11 +33,11 @@ Section Inherit
   
 Section NODE, PROFIL_BLOCK, ITM_OLD
   
-  - node_list_base:LINKED_LIST[NODE_TYPE] := node_list;
+  - node_list_base:LINKED_LIST(NODE_TYPE) := node_list;
   
-  - node_list:LINKED_LIST[NODE_TYPE] := LINKED_LIST[NODE_TYPE].create;
+  - node_list:LINKED_LIST(NODE_TYPE) := LINKED_LIST(NODE_TYPE).create;
   
-  - set_node_list l:LINKED_LIST[NODE_TYPE] <-
+  - set_node_list l:LINKED_LIST(NODE_TYPE) <-
   (
     node_list := l;
   );
@@ -87,7 +87,7 @@ Section Public
   );
 
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR 
-  with larg:FAST_ARRAY[EXPR] intern is_intern:BOOLEAN :NODE <-
+  with larg:FAST_ARRAY(EXPR) intern is_intern:BOOLEAN :NODE <-
   ( + dta:DTA_RD_ARGS;        
     + result:NODE_TYPE;
     
@@ -111,7 +111,7 @@ Section Public
     NODE_TYPE.create_partial dta
   );
   
-  - new_read_finalize (rec:EXPR,s:SLOT) with larg:FAST_ARRAY[EXPR] <-
+  - new_read_finalize (rec:EXPR,s:SLOT) with larg:FAST_ARRAY(EXPR) <-
   ( + dta:DTA_RD_ARGS;    
     // Control argument type.            
     dta ?= data;
@@ -168,10 +168,10 @@ Section Public
   // Extern creation value block.
   //
   
-  - new_block p:POSITION receiver e:EXPR with larg:FAST_ARRAY[EXPR] :NODE <-
+  - new_block p:POSITION receiver e:EXPR with larg:FAST_ARRAY(EXPR) :NODE <-
   ( + dta:DTA_BLOCK;
     + result:NODE_TYPE;    
-    + lst_typ_f:FAST_ARRAY[TYPE_FULL];
+    + lst_typ_f:FAST_ARRAY(TYPE_FULL);
     + new_expr:EXPR;
     + block_model:TYPE_BLOCK;
     + pb:PROFIL_BLOCK;

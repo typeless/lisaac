@@ -102,7 +102,7 @@ Section Public
   
 Section ITM_READ, SLOT_DATA
   
-  - to_run_with first_itm:ITM_CODE args larg:FAST_ARRAY[ITM_CODE] :EXPR <-
+  - to_run_with first_itm:ITM_CODE args larg:FAST_ARRAY(ITM_CODE) :EXPR <-
   ( + rec:EXPR;
     //
     + itm_list:ITM_LIST;
@@ -135,8 +135,8 @@ Section ITM_READ, SLOT_DATA
   );
   
   - to_run_with_self (r:EXPR,implicit_self,is_resend:BOOLEAN) 
-  args larg:FAST_ARRAY[ITM_CODE] :EXPR <-
-  ( + args:FAST_ARRAY[EXPR];
+  args larg:FAST_ARRAY(ITM_CODE) :EXPR <-
+  ( + args:FAST_ARRAY(EXPR);
     + rec_type:TYPE;
     + rec:EXPR;
     + em:EXPR_MULTIPLE;
@@ -151,7 +151,7 @@ Section ITM_READ, SLOT_DATA
     //
     // Detect slot.
     //
-    args := ALIAS_ARRAY[EXPR].new;
+    args := ALIAS_ARRAY(EXPR).new;
     rec_type := rec.static_type.raw;
     (rec_type = TYPE_VOID).if {
       // BSBS: Ce cas ne doit jamais arriver !
@@ -221,7 +221,7 @@ Section ITM_READ, SLOT_DATA
     //
     (is_block_value).if {
       // { ... }.value      
-      args := ALIAS_ARRAY[EXPR].copy args;      
+      args := ALIAS_ARRAY(EXPR).copy args;      
       args.put (args.first.my_copy) to 0;      
       //rec := slot_msg.slot_data_intern.read position with rec;
       base := NODE.new_block position receiver rec with args;
@@ -234,7 +234,7 @@ Section ITM_READ, SLOT_DATA
       
       ((verify) && {is_all_warning} && {name == "deferred"}).if {
 	string_tmp.copy "Deferred in `";
-	string_tmp.append (profil_slot.slot.name);
+	profil_slot.slot.pretty_name_in string_tmp;
 	string_tmp.append "' for ";
 	rec.static_type.append_name_in string_tmp;	
 	warning_error (position,string_tmp);
@@ -243,7 +243,7 @@ Section ITM_READ, SLOT_DATA
       base := NODE.new_read position slot slot_msg 
       receiver rec self (args.first) intern implicit_self;
       
-      ALIAS_ARRAY[EXPR].free args;
+      ALIAS_ARRAY(EXPR).free args;
     } else {
       // Classic message with arguments.
       (is_resend).if {
@@ -251,14 +251,14 @@ Section ITM_READ, SLOT_DATA
       } else {
 	args.put (args.first.my_copy) to 0;
       };
-      args := ALIAS_ARRAY[EXPR].copy args;
+      args := ALIAS_ARRAY(EXPR).copy args;
       base := NODE.new_read position slot slot_msg 
       receiver rec with args intern implicit_self;
     };
     list_current.add_last base;
         
     (larg != NULL).if {
-      ALIAS_ARRAY[ITM_CODE].free larg;
+      ALIAS_ARRAY(ITM_CODE).free larg;
     };
         
     ? {base.result_expr != NULL};    
@@ -268,7 +268,7 @@ Section ITM_READ, SLOT_DATA
 Section Private
   
   - add_arg e:EXPR to idx:INTEGER 
-  in args:FAST_ARRAY[EXPR] for slot:SLOT block is_block_value:BOOLEAN <-
+  in args:FAST_ARRAY(EXPR) for slot:SLOT block is_block_value:BOOLEAN <-
   ( + em:EXPR_MULTIPLE;
     + count:INTEGER;
     

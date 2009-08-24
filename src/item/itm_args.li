@@ -34,7 +34,7 @@ Section Inherit
   
 Section Public
 
-  + name:FAST_ARRAY[STRING_CONSTANT];
+  + name:FAST_ARRAY(STRING_CONSTANT);
   
   + type:ITM_TYPE_MULTI;
   
@@ -44,7 +44,7 @@ Section Public
   // Creation.
   //
   
-  - create p:POSITION name n:FAST_ARRAY[STRING_CONSTANT] 
+  - create p:POSITION name n:FAST_ARRAY(STRING_CONSTANT) 
   type t:ITM_TYPE_MULTI :SELF <-
   ( + result:SELF;
     
@@ -53,7 +53,7 @@ Section Public
     result
   );
 
-  - make p:POSITION name n:FAST_ARRAY[STRING_CONSTANT] 
+  - make p:POSITION name n:FAST_ARRAY(STRING_CONSTANT) 
   type t:ITM_TYPE_MULTI <-
   (
     position := p;
@@ -71,7 +71,7 @@ Section Public
   );
   */
   
-  - to_run_in arg_lst:FAST_ARRAY[LOCAL] for p:PARAMETER_TO_TYPE <-
+  - to_run_in arg_lst:FAST_ARRAY(LOCAL) for p:PARAMETER_TO_TYPE <-
   ( + t:TYPE_FULL;
     
     (name.lower).to (name.upper) do { j:INTEGER;
@@ -92,7 +92,7 @@ Section Public
     i
   );
 
-  - check larg:FAST_ARRAY[EXPR] index idx:INTEGER for p:PARAMETER_TO_TYPE :INTEGER <-
+  - check larg:FAST_ARRAY(EXPR) index idx:INTEGER for p:PARAMETER_TO_TYPE :INTEGER <-
   ( + new_expr:EXPR;
     
     (type.lower).to (type.upper) do { i:INTEGER;
@@ -140,27 +140,4 @@ Section Public
     buf.add_last ')';
   );
   
-  //
-  // Comparaison.
-  //
-  
-  - is_equal other:ITM_ARGUMENT <-
-  ( + o:ITM_ARGS;
-    + err:STRING_CONSTANT;
-    ? {other != Self};
-    
-    o ?= other;
-    (o = NULL).if {
-      err := "Invariance number vector argument invalid.";
-    }.elseif {name != o.name} then {
-      err := "Invariance name argument invalid.";
-    }.elseif {type != o.type} then {
-      err := "Invariance type argument invalid.";
-    };
-    (err != NULL).if {
-      POSITION.put_error semantic text err;
-      position.put_position;
-      (other.position).put_position;
-      POSITION.send_error;
-    };
-  );
+

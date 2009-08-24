@@ -50,7 +50,7 @@ Section Public
     NULL
   );
   
-  - to_run_in lst:FAST_ARRAY[TYPE_FULL] for p:PARAMETER_TO_TYPE <-
+  - to_run_in lst:FAST_ARRAY(TYPE_FULL) for p:PARAMETER_TO_TYPE <-
   (
     lst.add_last (to_run_for p);
   );

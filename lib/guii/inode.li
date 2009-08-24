@@ -39,7 +39,7 @@ Section Public
   + operator:CHARACTER;
   + priority:INTEGER_8;
   + bitmap:ABSTRACT_STRING;
-  + list:LINKED_LIST[INODE];
+  + list:LINKED_LIST(INODE);
   + content:G_EXPR;
   + covering:INTEGER;		//take items whose are over this pourcentage
   + height:INTEGER;
@@ -49,7 +49,7 @@ Section Public
   + depth:INTEGER;
   + action:BLOCK;
   + win_out:G_WIN_OUT;
-  + dimensions:LINKED_LIST[DIMENSION];
+  + dimensions:LINKED_LIST(DIMENSION);
   - screen_width:INTEGER;
   - screen_height:INTEGER;
   + connector_width:INTEGER;
@@ -186,7 +186,7 @@ Section Public
   //
   //method
   //
-  - '+' other:INODE :INODE <-
+  - Self:SELF '+' other:INODE :INODE <-
   (
     +j:INTEGER;
     j:=0;
@@ -321,8 +321,8 @@ Section Private
     operator := op;
     name := n;
     priority := p;
-    list := LINKED_LIST[INODE].create;
-    dimensions := LINKED_LIST[DIMENSION].create;
+    list := LINKED_LIST(INODE).create;
+    dimensions := LINKED_LIST(DIMENSION).create;
   );
   
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER width w:INTEGER height h:INTEGER <-
@@ -332,8 +332,8 @@ Section Private
     priority := p;
     min_width := w;
     min_height := h;
-    list := LINKED_LIST[INODE].create;
-    dimensions := LINKED_LIST[DIMENSION].create;
+    list := LINKED_LIST(INODE).create;
+    dimensions := LINKED_LIST(DIMENSION).create;
   );
   
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER action b:BLOCK <-
@@ -342,8 +342,8 @@ Section Private
     name := n;
     priority := p;
     action := b;
-    list := LINKED_LIST[INODE].create;
-    dimensions := LINKED_LIST[DIMENSION].create;
+    list := LINKED_LIST(INODE).create;
+    dimensions := LINKED_LIST(DIMENSION).create;
   );
   
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER action b:BLOCK picture filename:ABSTRACT_STRING <-
@@ -353,8 +353,8 @@ Section Private
     priority := p;
     action := b;
     bitmap := filename;
-    list := LINKED_LIST[INODE].create;
-    dimensions := LINKED_LIST[DIMENSION].create;
+    list := LINKED_LIST(INODE).create;
+    dimensions := LINKED_LIST(DIMENSION).create;
   );
   
   - make n:STRING_CONSTANT priority p:INTEGER_8 operator op:CHARACTER picture filename:ABSTRACT_STRING <-
@@ -363,8 +363,8 @@ Section Private
     name := n;
     priority := p;
     bitmap := filename;
-    list := LINKED_LIST[INODE].create;
-    dimensions := LINKED_LIST[DIMENSION].create;
+    list := LINKED_LIST(INODE).create;
+    dimensions := LINKED_LIST(DIMENSION).create;
   );
   
 Section INTERNAL_INODE

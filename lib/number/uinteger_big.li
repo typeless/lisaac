@@ -31,7 +31,7 @@ Section Inherit
 
 Section UINTEGER_BIG
   
-  + storage:FAST_ARRAY[UINTEGER_32];
+  + storage:FAST_ARRAY(UINTEGER_32);
   
   - last_modulo:UINTEGER_32;
   
@@ -79,7 +79,7 @@ Section Public
   - make init:UINTEGER_32 :SELF <-
   (     
     (storage = NULL).if {
-      storage := FAST_ARRAY[UINTEGER_32].create_with_capacity 4; 
+      storage := FAST_ARRAY(UINTEGER_32).create_with_capacity 4; 
     } else {
       storage.clear;
     };
@@ -276,7 +276,7 @@ Section Public
     result
   );
   
-  - '*#' Left 100 other:INTEGER :SELF <-
+  - Self:SELF '*#' Left 100 other:INTEGER :SELF <-
   (
     + result:UINTEGER_BIG;
     + part1,product,over:UINTEGER_64;
@@ -303,14 +303,14 @@ Section Public
     result
   );
   
-  - '/'  Left 100 other:SELF :SELF <- 
+  - Self:SELF '/'  Left 100 other:SELF :SELF <- 
   ( + result:UINTEGER_BIG;
     
     
   );
   
   
-  - '/#' Left 100 other:INTEGER :SELF <-
+  - Self:SELF '/#' Left 100 other:INTEGER :SELF <-
   ( + result:SELF;
     + last_mod,div:UINTEGER_64;
     + idx:INTEGER;
@@ -365,7 +365,7 @@ Section Public
   // Test binary operator :
   //
     
-  - '>'   Right 60 other:SELF :BOOLEAN <- 
+  - Self:SELF '>'   Right 60 other:SELF :BOOLEAN <- 
   (
     + result:BOOLEAN;
     (count > (other.count)).if {
@@ -394,7 +394,7 @@ Section Public
   );
   
   
-  - '>#' Right 60 other:INTEGER :BOOLEAN <-
+  - Self:SELF '>#' Right 60 other:INTEGER :BOOLEAN <-
   (
     + result:BOOLEAN;
     (count > 1).if {
@@ -405,7 +405,7 @@ Section Public
     result
   );
   
-  - '=='  Right 60 other:SELF :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <-
   (
     + result:BOOLEAN;
     + idx:INTEGER;
@@ -672,8 +672,8 @@ Section Public
     };        
   );
   
-  - multiply_and_subtract (u1, qhat: INTEGER, d_storage: FAST_ARRAY[UINTEGER_32], 
-  d_offset:INTEGER, r_storage:FAST_ARRAY[UINTEGER_32],r_offset, length: INTEGER):BOOLEAN <-
+  - multiply_and_subtract (u1, qhat: INTEGER, d_storage: FAST_ARRAY(UINTEGER_32), 
+  d_offset:INTEGER, r_storage:FAST_ARRAY(UINTEGER_32),r_offset, length: INTEGER):BOOLEAN <-
   // Only used by `divide'.
   [ -? {qhat != 0}; ]
   ( + i, j, jmax, m1, m2: INTEGER; 
@@ -747,8 +747,8 @@ Section Public
     result
   );
 
-  - add_back (old_u1:INTEGER, d_storage:FAST_ARRAY[UINTEGER_32],d_offset:INTEGER,
-    r_storage:FAST_ARRAY[UINTEGER_32],r_offset, length:INTEGER):BOOLEAN <-
+  - add_back (old_u1:INTEGER, d_storage:FAST_ARRAY(UINTEGER_32),d_offset:INTEGER,
+    r_storage:FAST_ARRAY(UINTEGER_32),r_offset, length:INTEGER):BOOLEAN <-
   // Only used by `divide'.
   // `old_u1' is the value of `u1' before `multiply_and_subtract'.
   ( + i, j, jmax:INTEGER; 
@@ -810,7 +810,7 @@ Section Public
   ]
   ( + cmp, shift, nlen, dlen, qlen, j, k, v1, v2, u1, u2, rem: INTEGER;
     + qhat, rhat, v2qhat_1, v2qhat_2, d_offset: INTEGER; 
-    + q_storage, r_storage, d_storage:FAST_ARRAY[UINTEGER_32];
+    + q_storage, r_storage, d_storage:FAST_ARRAY(UINTEGER_32);
     + q_capacity, r_capacity:INTEGER;
     + borrow:BOOLEAN;
     

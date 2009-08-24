@@ -33,10 +33,10 @@ Section Inherit
   
 Section DIRECTORY
   
-  + list:LINKED_LIST[ENTRY];
+  + list:LINKED_LIST(ENTRY);
 
-  - alias:HASHED_DICTIONARY[ENTRY,ABSTRACT_STRING] := 
-  HASHED_DICTIONARY[ENTRY,ABSTRACT_STRING].create;
+  - alias:HASHED_DICTIONARY(ENTRY,ABSTRACT_STRING) := 
+  HASHED_DICTIONARY(ENTRY,ABSTRACT_STRING).create;
   
 Section Public
   
@@ -109,7 +109,7 @@ Section Public
     string_tmp2.add_last '/';
     string_tmp2.append p;
     reduce_path string_tmp2;
-    string_tmp3.copy string_tmp2;
+    string_tmp3.copy string_tmp2;    
     {
       result := alias.reference_at string_tmp2;
       (result = NULL).if {
@@ -139,7 +139,6 @@ Section Public
   - open:BOOLEAN <-
   (
     deferred;
-    FALSE
   )
   [
     +? {list != NULL};

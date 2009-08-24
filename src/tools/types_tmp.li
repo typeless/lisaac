@@ -34,9 +34,9 @@ Section Inherit
   
 Section Private
   
-  - bucket:HASHED_SET[TYPES] := HASHED_SET[TYPES].create;
+  - bucket:HASHED_SET(TYPES) := HASHED_SET(TYPES).create;
   
-  - free_list:FAST_ARRAY[TYPES_TMP] := FAST_ARRAY[TYPES_TMP].create_with_capacity 5;
+  - free_list:FAST_ARRAY(TYPES_TMP) := FAST_ARRAY(TYPES_TMP).create_with_capacity 5;
   
   + capacity:INTEGER;
   
@@ -51,7 +51,7 @@ Section Private
   - make_types_tmp <-
   (
     capacity := 256;
-    storage  := NATIVE_ARRAY[TYPE].calloc_intern capacity;
+    storage  := NATIVE_ARRAY(TYPE).calloc_intern capacity;
   )
   [ +? {is_empty}; ];
   

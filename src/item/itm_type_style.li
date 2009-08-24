@@ -34,7 +34,7 @@ Section Inherit
   
 Section Private 
   
-  - dico:FAST_ARRAY[ITM_TYPE_STYLE] := FAST_ARRAY[ITM_TYPE_STYLE].create_with_capacity 32;
+  - dico:FAST_ARRAY(ITM_TYPE_STYLE) := FAST_ARRAY(ITM_TYPE_STYLE).create_with_capacity 32;
   
   - create n:STRING_CONSTANT style s:STRING_CONSTANT :SELF <-
   ( + result:SELF;

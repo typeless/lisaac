@@ -73,7 +73,7 @@ Section Public
   
   - name:STRING_CONSTANT <- "BOOLEAN";
   
-  - '!' :LIP_CONSTANT <- get (! value);
+  - '!' Self:SELF :LIP_CONSTANT <- get (! value);
   
   - copy:LIP_CONSTANT <- Self;
   
@@ -86,22 +86,22 @@ Section LIP_CONSTANT
   
   - my_copy other:SELF :LIP_CONSTANT <- other;
            
-  - '|#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '|#'  other:SELF :LIP_CONSTANT <- 
   ( 
     get (value | other.value)
   );
   
-  - '&#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '&#'  other:SELF :LIP_CONSTANT <- 
   ( 
     get (value & other.value)
   );
       
-  - '=#'  other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '=#'  other:SELF :LIP_CONSTANT <- 
   ( 
     get (value = other.value)
   );
   
-  - '!=#' other:SELF :LIP_CONSTANT <- 
+  - Self:SELF '!=#' other:SELF :LIP_CONSTANT <- 
   ( 
     get (value != other.value)
   );

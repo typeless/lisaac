@@ -20,16 +20,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name := AVL_SET[V];
+  + name := AVL_SET(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
 Section Inherit
   
-  + parent_set:Expanded SET[V];
+  + parent_set:Expanded SET(V);
   
-  + parent_avl_tree:Expanded AVL_TREE[V];
+  + parent_avl_tree:Expanded AVL_TREE(V);
   
 Section Public 
   
@@ -56,7 +56,7 @@ Section Public
   );
 
   - reference_at e:V :V <-
-  ( + n:AVL_SET_NODE[V];
+  ( + n:AVL_SET_NODE(V);
     + result:V;
     
     (root != NULL).if {
@@ -79,14 +79,14 @@ Section Public
   
 Section Private
   
-  - set_item n:AVL_SET_NODE[V] <-
+  - set_item n:AVL_SET_NODE(V) <-
   (
     n.make item_memory;    
   );
 
-  - set_value n:AVL_SET_NODE[V];
+  - set_value n:AVL_SET_NODE(V);
 
-  - exchange_and_discard (n1, n2:AVL_SET_NODE[V]) <-
+  - exchange_and_discard (n1, n2:AVL_SET_NODE(V)) <-
   (
     map_dirty := TRUE;
     n1.set_item (n2.item);
@@ -95,7 +95,7 @@ Section Private
     discard_node n2;
   );
 
-  - discard_node n:AVL_SET_NODE[V] <-
+  - discard_node n:AVL_SET_NODE(V) <-
   ( //+ i:V;
     
     //n.make i;
@@ -103,9 +103,9 @@ Section Private
     //lost_nodes.set_item n;
   );
 
-  - a_new_node:AVL_SET_NODE[V] <-
+  - a_new_node:AVL_SET_NODE(V) <-
   (
-    AVL_SET_NODE[V].create
+    AVL_SET_NODE(V).create
   );
 
 Section Public  

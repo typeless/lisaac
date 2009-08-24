@@ -29,6 +29,6 @@ Section Header
 
 Section Inherit
   
-  - parent_std_input:STD_INPUT := STD_INPUT;
+  - inherit_std_input:STD_INPUT := STD_INPUT;
   
-  - parent_std_output:STD_OUTPUT := STD_OUTPUT;
+  - inherit_std_output:STD_OUTPUT := STD_OUTPUT;

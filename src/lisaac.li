@@ -32,7 +32,7 @@ Section Header
   // Top 5 memory record :
   // 1 - LOCAL         (>20MB) (il fo Aliaser les tmp !)
   // 2 - READ_LOCAL    (15MB)
-  // 3 - LIST          (13MB) (En baisse => a retester)
+  // 3 - LIST          (13MB) (En baisse => a retester.)
   // 4 - PROTOTYPE_CST (10MB)
   // 5 - WRITE_LOCAL   (10MB)
   
@@ -47,7 +47,7 @@ Section Private
   - input_name:STRING_CONSTANT;
   
   - path_lisaac:STRING_CONSTANT <-
-  ( + path:NATIVE_ARRAY[CHARACTER];
+  ( + path:NATIVE_ARRAY(CHARACTER);
     + path_str :STRING;
     + j:INTEGER;
     //COMMAND_LINE.executable_name.print; '\n'.print;
@@ -56,7 +56,7 @@ Section Private
     (path_str != NULL).if {
       string_tmp.copy path_str;
     } else {
-      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY[CHARACTER];
+      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
       string_tmp.clear;
       j := 0;
       {path.item j != '\0'}.while_do {
@@ -92,8 +92,8 @@ Section Private
   - end_usage:STRING_CONSTANT :=
   "                                                                \n\
   \Bug report:                                                     \n\
-  \\t post in : https://gna.org/bugs/?group=isaac         \n\
-  \\t mail to : sonntag@icps.u-strasbg.fr                 \n";
+  \\t post in : https://alioth.debian.org/projects/lisaac/         \n\
+  \\t mail to : sonntag@icps.u-strasbg.fr                          \n";
 
   - display_usage <-
   (
@@ -109,7 +109,8 @@ Section Private
   
   - read_options <-
   ( + cmd:STRING;
-    + j,i,f:INTEGER;  
+    + j,i:INTEGER;  
+    + f:POINTER;
     + lip_ok:BOOLEAN;
     + s:LIP_SLOT_CODE;
     + t:STRING_CONSTANT;
@@ -133,6 +134,9 @@ Section Private
           }
           .when 'p' then {
             is_path_list := TRUE;
+          }
+          .when 'r' then {
+            is_readable := TRUE;
           };
         } else {
           (lip_ok).if_false {
@@ -358,6 +362,7 @@ Section Private
         \    print_char(*str); \n\
         \    str++; \n\
         \  };\n\
+        \  return(0);\n\
         \}\n\
         \\n";
       };
@@ -388,7 +393,7 @@ Section Private
       //
             
       (debug_with_code).if {
-	+ src:HASHED_DICTIONARY[STRING,UINTEGER_32];
+	+ src:HASHED_DICTIONARY(STRING,UINTEGER_32);
 	+ key:UINTEGER_32;
 	
 	output_decl.append 
@@ -443,7 +448,7 @@ Section Private
       
       buf.append 	
       "void push_first(_____CONTEXT *path,unsigned long code)\n\
-      \{ int n; _____CONTEXT *c; static int mx=0;\n";
+      \{ \n";
       (debug_level_option = 20).if {
 	buf.append 
 	"  _____CONTEXT *cur,loop;\n\
@@ -461,10 +466,6 @@ Section Private
       "  path->back  = top_context;\n\
       \  path->code  = code;\n\
       \  top_context = path;\n\
-      \ \n\
-      \ /*c = path; n=0;\n\
-      \ while (c != NULL) { n++; c = c->back; };\n\
-      \ if ((n > mx) ) { print_integer(n); print_string(\"\\n\"); mx = n; };*/ \n\
       \} \n\
       \  \n\
       \void push(_____CONTEXT *path,unsigned long code)\n\
@@ -534,7 +535,7 @@ Section Private
   );
   
   - load_main_object <-
-  ( + type_gen:FAST_ARRAY[ITM_TYPE_MONO];
+  ( + type_gen:FAST_ARRAY(ITM_TYPE_MONO);
     + itm_type_character:ITM_TYPE_MONO;
     + itm_type_n_a_character:ITM_TYPE_MONO;
     
@@ -568,17 +569,17 @@ Section Private
     type_block     := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_block).to_run_for NULL.raw;        
     //
     type_pointer   := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_pointer).to_run_for NULL.raw;
-    // NATIVE_ARRAY[CHARACTER]
-    type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].new;
+    // NATIVE_ARRAY(CHARACTER)
+    type_gen  := ALIAS_ARRAY(ITM_TYPE_MONO).new;
     type_gen.add_last itm_type_character;
-    type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].alias type_gen;
+    type_gen  := ALIAS_ARRAY(ITM_TYPE_MONO).alias type_gen;
     itm_type_n_a_character := ITM_TYPE_GENERIC.get (ALIAS_STR.prototype_native_array)
     style NULL with type_gen;
     type_n_a_character := itm_type_n_a_character.to_run_for NULL.raw;
-    // NATIVE_ARRAY[NATIVE_ARRAY[CHARACTER]]
-    type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].new;
+    // NATIVE_ARRAY[NATIVE_ARRAY(CHARACTER)]
+    type_gen  := ALIAS_ARRAY(ITM_TYPE_MONO).new;
     type_gen.add_last itm_type_n_a_character;
-    type_gen  := ALIAS_ARRAY[ITM_TYPE_MONO].alias type_gen;
+    type_gen  := ALIAS_ARRAY(ITM_TYPE_MONO).alias type_gen;
     type_n_a_n_a_character := ITM_TYPE_GENERIC.get (ALIAS_STR.prototype_native_array)
     style NULL with type_gen.to_run_for NULL.raw;
     //    
@@ -787,6 +788,12 @@ Section Public
     };
     
     (is_statistic).if {            
+      STD_ERROR.put_string "  Local counter        : ";
+      STD_ERROR.put_integer (LIST.local_counter);
+      STD_ERROR.put_string "\n";
+      STD_ERROR.put_string "  Context counter      : ";
+      STD_ERROR.put_integer (LIST.context_counter);
+      STD_ERROR.put_string "\n";
       print "  Null call score      : " stat null_counter for late_binding_counter;            
       print "  Polymorphic call     : " stat polymorphic_counter for late_binding_counter;
       (is_optimization).if {

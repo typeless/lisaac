@@ -50,7 +50,7 @@ Section Public
     NULL
   );
 */  
-  - to_run_in arg_lst:FAST_ARRAY[LOCAL] for p:PARAMETER_TO_TYPE <-
+  - to_run_in arg_lst:FAST_ARRAY(LOCAL) for p:PARAMETER_TO_TYPE <-
   (
     deferred;
   );
@@ -60,7 +60,7 @@ Section Public
     deferred;
   );
   
-  - check larg:FAST_ARRAY[EXPR] index idx:INTEGER for p:PARAMETER_TO_TYPE :INTEGER <-
+  - check larg:FAST_ARRAY(EXPR) index idx:INTEGER for p:PARAMETER_TO_TYPE :INTEGER <-
   (
     deferred;
     0
@@ -70,7 +70,26 @@ Section Public
   // Comparaison.
   //
   
-  - is_equal other:ITM_ARGUMENT <- deferred;
+  - is_equal other:ITM_ARGUMENT <- 
+    ( + o:SELF;
+    + err:STRING_CONSTANT;
+    ? {other != Self};
+    
+    o ?= other;
+    (o = NULL).if {
+      err := "Invariance number vector argument invalid.";
+    }.elseif {name != o.name} then {
+      err := "Invariance name argument invalid.";
+    }.elseif {type != o.type} then {
+      err := "Invariance type argument invalid.";
+    };
+    (err != NULL).if {
+      POSITION.put_error semantic text err;
+      position.put_position;
+      (other.position).put_position;
+      POSITION.send_error;
+    };
+  );
   
   //
   // Display.

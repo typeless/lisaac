@@ -51,9 +51,9 @@ Section Public
   
   + type_self:TYPE_FULL; 
     
-  + argument_list:FAST_ARRAY[LOCAL];  
+  + argument_list:FAST_ARRAY(LOCAL);  
   
-  + result_list:Expanded SLIM_ARRAY[LOCAL];
+  + result_list:Expanded SLIM_ARRAY(LOCAL);
   
   + code:LIST;
   + context:LOCAL;
@@ -119,17 +119,17 @@ Section Public
     };    
   );
 
-  - write_argument args:FAST_ARRAY[EXPR] :FAST_ARRAY[WRITE] <-
+  - write_argument args:FAST_ARRAY(EXPR) :FAST_ARRAY(WRITE) <-
   ( + loc:LOCAL;
     + val:EXPR;
     + wrt:WRITE;
-    + result:FAST_ARRAY[WRITE];
+    + result:FAST_ARRAY(WRITE);
     
     (args.count != argument_list.count).if {
       semantic_error (args.last.position,"Incorrect vector size.");
     };
     
-    result := FAST_ARRAY[WRITE].create_with_capacity (argument_list.count);
+    result := FAST_ARRAY(WRITE).create_with_capacity (argument_list.count);
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       loc := argument_list.item j;
       val := args.item j;
@@ -369,7 +369,7 @@ Section Public
     // Results.      
     (result_list.lower + 1).to (result_list.upper) do { j:INTEGER;
       v := result_list.item j;
-      v.set_ensure_count (-1);
+      //v.set_ensure_count (-100);
       v.set_result TRUE;
       genere v result TRUE in buffer;
       buffer.add_last ',';
@@ -393,7 +393,9 @@ Section Public
     + v:LOCAL;
     + np:INTEGER;
     + low:INTEGER;
+    + idf:STRING_CONSTANT;
     
+    profil_current := Self;
     ((link_count != 0) || {result_list.count != 0}).if {
       ((cop_link_count != 0) && {result_list.count = 0}).if {
         // COP link.
@@ -434,7 +436,12 @@ Section Public
         ).if {
           buffer.add_last '&';
         };	
-        buffer.append (loc.intern_name);
+        (loc.my_alias = NULL).if {
+          idf := loc.intern_name;
+        } else {
+          idf := loc.my_alias.intern_name;
+        };
+        buffer.append idf;
         buffer.append ");\n";    
       };
       // End.
@@ -535,11 +542,6 @@ Section Private
       buffer.append "No inlinable.";
     } else {
       buffer.append "Inlinable.";
-    };
-    (is_context_sensitive).if {
-      buffer.append " Context_sensitive.";
-    } else {
-      buffer.append " No Context_sensitive.";
     };
     buffer.add_last '\n';
   );

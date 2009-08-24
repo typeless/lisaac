@@ -29,7 +29,9 @@ Section Header
   - external := `
 #include <stdio.h>
 #include <stdlib.h>
-  
+#ifndef __MINGW32__
+#include <sys/syscall.h>  
+#endif
 // Hardware 'print_char'
 void print_char(char car)
 {
@@ -49,7 +51,15 @@ Section Inherit
   - parent_object:OBJECT := OBJECT;
 
 Section Public
-
+  
+  - print_string str:ABSTRACT_STRING <-
+  ( + siz:INTEGER;
+    + buf:NATIVE_ARRAY(CHARACTER);
+    siz := str.count;
+    buf := str.to_external;
+    `syscall(__NR_write, 1,@buf,@siz)`;
+  );
+  
   - print_char byte:CHARACTER <-
   // Low level buffered output.
   (

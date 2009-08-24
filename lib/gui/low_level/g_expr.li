@@ -120,12 +120,12 @@ Section Public
   // Operator position.
   //
     
-  - '|' Right 40 other:G_EXPR :G_EXPR <-
+  - Self:SELF '|' Right 40 other:G_EXPR :G_EXPR <-
   ( 
     G_OR_EXPR.create Self and other
   );
 
-  - '/' Right 40 other:G_EXPR :G_EXPR <-
+  - Self:SELF '/' Right 40 other:G_EXPR :G_EXPR <-
   ( 
     G_DIV_EXPR.create Self and other
   );

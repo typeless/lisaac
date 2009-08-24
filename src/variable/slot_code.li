@@ -48,21 +48,21 @@ Section Public
   // Dynamic profil.
   //
 
-  + profil:FAST_ARRAY[PROFIL_SLOT];
+  + profil:FAST_ARRAY(PROFIL_SLOT);
     
-  - get_profil args:FAST_ARRAY[EXPR] self type_self:TYPE_FULL :(PROFIL, FAST_ARRAY[WRITE]) <-
+  - get_profil args:FAST_ARRAY(EXPR) self type_self:TYPE_FULL :(PROFIL, FAST_ARRAY(WRITE)) <-
   [
     -? {type_self != NULL};
   ]
   ( + result:PROFIL_SLOT;    
-    + res_lst:FAST_ARRAY[WRITE];
+    + res_lst:FAST_ARRAY(WRITE);
     + pro:PROFIL_SLOT;
     + j,i:INTEGER;
     + loc:LOCAL;
     + typ:TYPE_FULL;
     + typ_block:PROFIL_BLOCK;
     + typ_list:TYPES_TMP;
-    + pro_list:FAST_ARRAY[PROFIL_SLOT];    
+    + pro_list:FAST_ARRAY(PROFIL_SLOT);    
     + is_new:BOOLEAN;
         
     // Block Detect.
@@ -162,7 +162,7 @@ Section Public
   ( 
     parent_slot := base;
     value := val;
-    profil := FAST_ARRAY[PROFIL_SLOT].create_with_capacity 1;    
+    profil := FAST_ARRAY(PROFIL_SLOT).create_with_capacity 1;    
   );
       
   //

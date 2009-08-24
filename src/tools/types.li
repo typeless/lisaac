@@ -34,7 +34,7 @@ Section Inherit
   
 Section TYPES
   
-  + storage:NATIVE_ARRAY[TYPE];
+  + storage:NATIVE_ARRAY(TYPE);
   // Internal access to storage location.
   
 Section LISAAC
@@ -76,7 +76,7 @@ Section Public
   )
   [ +? {Result != NULL};            ];
 
-  - '==' Right 60 other:TYPES :BOOLEAN <-
+  - Self:SELF '==' Right 60 other:TYPES :BOOLEAN <-
   ( 
     (Self = other) || 
     {
@@ -85,7 +85,7 @@ Section Public
     }
   );
 
-  - '<=' Right 60 other:TYPES :BOOLEAN <-
+  - Self:SELF '<=' Right 60 other:TYPES :BOOLEAN <-
   // True, if `Self' is include in `other'.
   ( + result:BOOLEAN;
     + j1,j2:INTEGER;
@@ -151,7 +151,7 @@ Section TYPES_TMP
   ( + up:INTEGER;
     
     up := tab.upper;
-    storage := NATIVE_ARRAY[TYPE].calloc_intern (up + 1);
+    storage := NATIVE_ARRAY(TYPE).calloc_intern (up + 1);
     storage.copy_from (tab.storage) until up;
     upper := up;    
     size := size + count * 4;    

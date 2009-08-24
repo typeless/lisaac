@@ -41,8 +41,8 @@ Section Public
     
   - is_active_short:BOOLEAN;
   
-  - short_dico:HASHED_DICTIONARY[LINKED_LIST[STRING_CONSTANT],STRING_CONSTANT] :=
-  HASHED_DICTIONARY[LINKED_LIST[STRING_CONSTANT],STRING_CONSTANT].create;
+  - short_dico:HASHED_DICTIONARY(LINKED_LIST(STRING_CONSTANT),STRING_CONSTANT) :=
+  HASHED_DICTIONARY(LINKED_LIST(STRING_CONSTANT),STRING_CONSTANT).create;
   
   - short_derive:INTEGER;
   
@@ -51,7 +51,7 @@ Section Public
   - short key:STRING_CONSTANT token beg:INTEGER to end:INTEGER <-
   ( + pos:INTEGER;
     + add_text:ABSTRACT_STRING;
-    + fmt:LINKED_LIST[STRING_CONSTANT];
+    + fmt:LINKED_LIST(STRING_CONSTANT);
     
     (is_shorter).if {
       (is_active_short).if {
@@ -91,7 +91,7 @@ Section Public
     short_derive := short_derive - (end - begin + 1);
   );
   
-  - short_local:HASHED_SET[STRING_CONSTANT];
+  - short_local:HASHED_SET(STRING_CONSTANT);
   
 Section Private  
   
@@ -198,11 +198,35 @@ Section Private
   - last_comment_extern:STRING_CONSTANT;
   - last_comment_slot  :STRING_CONSTANT;
   - skip_comment:BOOLEAN;
-      
+  
+  - put_new_line_comment str:STRING with cmt:STRING_CONSTANT <- 
+  ( + lst:LINKED_LIST(STRING_CONSTANT);
+    + idx,idx_beg:INTEGER;
+    lst := PARSER.short_dico.fast_reference_at cmt;
+    (lst != NULL).if {
+      {(idx := str.index_of '\n' since (idx+1)) < str.upper}.while_do {
+        idx_beg := idx;
+        idx := idx + 1;
+        {
+          (idx <= str.upper) && 
+          {str.item idx <= ' ' } && 
+          {str.item idx != '\n'}
+        }.while_do {
+          idx := idx + 1;
+        };            
+        (str.item idx = '\n').if {
+          str.replace_substring (lst.first) from idx_beg to (idx-1);
+          idx := idx_beg + (lst.first.count)-1;
+        };
+      };
+    };      
+  );
+  
   - read_space:BOOLEAN <-
   ( + posold,pos,pos2:INTEGER;     
     + level_comment:INTEGER;
     + stat:INTEGER;
+    
     
     pos := position;
     posold := -1;    
@@ -249,7 +273,7 @@ Section Private
           (is_shorter2).if {
             (stat)
             .when 0 or 1 then { string_tmp3.add_last '\n'; }
-            .when 2      then { string_tmp4.add_last '\n'; };
+            .when 2      then { string_tmp4.add_last '\n'; };            
           };
           (is_shorter).if {
             // BSBS: A revoir ...            
@@ -315,9 +339,11 @@ Section Private
       (string_tmp3.is_empty).if {
         last_comment_slot := NULL;
       } else {
-        last_comment_slot := ALIAS_STR.get string_tmp3;
+        put_new_line_comment string_tmp3 with (ALIAS_STR.short_comment_new_line_slot);        
+        last_comment_slot := ALIAS_STR.get string_tmp3;        
       };
       (string_tmp4.is_empty).if_false {
+        put_new_line_comment string_tmp4 with (ALIAS_STR.short_comment_new_line_extern);
         last_comment_extern := ALIAS_STR.get string_tmp4;
       };
     };
@@ -580,10 +606,10 @@ Section Private
 	  (last_character='d').if {	    
 	    position := position+1;
 	  };
-	  (! string_tmp.is_integer).if {
+	  (! string_tmp.is_integer_64).if {
 	    syntax_error (current_position,"Incorrect decimal number.");
 	  };
-	  last_integer := string_tmp.to_integer;          
+	  last_integer := string_tmp.to_integer_64;          
 	};
       };
     };
@@ -878,7 +904,7 @@ Section Private
   - read_program:BOOLEAN <-
   ( + result:BOOLEAN;
     + pos_sec,old_derive:INTEGER;
-    + t:FAST_ARRAY[ITM_TYPE_MONO];
+    + t:FAST_ARRAY(ITM_TYPE_MONO);
     
     result := TRUE;
     
@@ -984,7 +1010,7 @@ Section Private
   - read_slot:BOOLEAN <-
   ( + result:BOOLEAN;
     + t:ITM_TYPE;
-    + lt:FAST_ARRAY[ITM_TYPE_MONO];
+    + lt:FAST_ARRAY(ITM_TYPE_MONO);
     + style:CHARACTER;
     + affect:CHARACTER;
     + old_pos,old_derive:INTEGER;
@@ -1110,9 +1136,9 @@ Section Private
   - read_type_slot:ITM_SLOT <-
   ( + arg:ITM_ARGUMENT;
     + result:ITM_SLOT;
-    + list_arg:FAST_ARRAY[ITM_ARGUMENT];
+    + list_arg:FAST_ARRAY(ITM_ARGUMENT);
     
-    list_arg := ALIAS_ARRAY[ITM_ARGUMENT].new;
+    list_arg := ALIAS_ARRAY(ITM_ARGUMENT).new;
     arg := read_loc_arg FALSE with_self TRUE;
         
     (arg = NULL).if {
@@ -1133,13 +1159,13 @@ Section Private
       };
     };
     (result != NULL).if {
-      list_arg := ALIAS_ARRAY[ITM_ARGUMENT].copy list_arg;
+      list_arg := ALIAS_ARRAY(ITM_ARGUMENT).copy list_arg;
       result.set_argument_list list_arg; 
     };
     result
   );
   
-  - read_slot_keyword list_arg:FAST_ARRAY[ITM_ARGUMENT] :ITM_SLOT <-
+  - read_slot_keyword list_arg:FAST_ARRAY(ITM_ARGUMENT) :ITM_SLOT <-
   ( + n:STRING;
     + arg:ITM_ARGUMENT;
     + result:ITM_SLOT;
@@ -1175,7 +1201,7 @@ Section Private
     result
   );
   
-  - read_slot_operator list_arg:FAST_ARRAY[ITM_ARGUMENT] :ITM_SLOT <-
+  - read_slot_operator list_arg:FAST_ARRAY(ITM_ARGUMENT) :ITM_SLOT <-
   ( + name,pretty_name:STRING_CONSTANT;    
     + associativity:STRING_CONSTANT;
     + priority:INTEGER;
@@ -1309,16 +1335,16 @@ Section Private
   );
 	
   //++ LOCAL        -> { identifier [ ':' TYPE ] ',' } identifier ':' TYPE
-  - read_local m:BOOLEAN :FAST_ARRAY[ITM_LOCAL] <-
+  - read_local m:BOOLEAN :FAST_ARRAY(ITM_LOCAL) <-
   ( + t:ITM_TYPE_MONO;
     + loc:ITM_LOCAL;
-    + result:FAST_ARRAY[ITM_LOCAL]; 
+    + result:FAST_ARRAY(ITM_LOCAL); 
     + beg:INTEGER;
     + mute:BOOLEAN;
     
     mute := m;
     (read_identifier).if {
-      result := ALIAS_ARRAY[ITM_LOCAL].new;      
+      result := ALIAS_ARRAY(ITM_LOCAL).new;      
       beg := result.lower;
       {
 	((result.count != 0) && {! read_identifier} && {! mute}).if {
@@ -1340,13 +1366,13 @@ Section Private
       }.do_while {read_character ','};
       (beg != result.upper + 1).if {
 	(mute).if {
-	  ALIAS_ARRAY[ITM_LOCAL].free result;
+	  ALIAS_ARRAY(ITM_LOCAL).free result;
 	  result := NULL;
 	} else {
 	  syntax_error (current_position,"Incorrect local type.");
 	};	
       } else {
-	result := ALIAS_ARRAY[ITM_LOCAL].copy result;
+	result := ALIAS_ARRAY(ITM_LOCAL).copy result;
 	
 	(is_shorter).if {
 	  (result.lower).to (result.upper) do { j:INTEGER;
@@ -1362,8 +1388,8 @@ Section Private
   - read_local_arg m:BOOLEAN with_self s:BOOLEAN :ITM_ARGUMENT <-
   ( + t:ITM_TYPE_MONO;
     + tm:ITM_TYPE_MULTI;
-    + type:FAST_ARRAY[ITM_TYPE_MONO];
-    + name:FAST_ARRAY[STRING_CONSTANT]; 
+    + type:FAST_ARRAY(ITM_TYPE_MONO);
+    + name:FAST_ARRAY(STRING_CONSTANT); 
     + beg:INTEGER;
     + mute:BOOLEAN;
     + result:ITM_ARGUMENT;
@@ -1374,8 +1400,8 @@ Section Private
       ((s) && {read_this_keyword (ALIAS_STR.variable_self)}) ||
       {read_identifier}
     ).if {      
-      name := ALIAS_ARRAY[STRING_CONSTANT].new;
-      type := ALIAS_ARRAY[ITM_TYPE_MONO].new;      
+      name := ALIAS_ARRAY(STRING_CONSTANT).new;
+      type := ALIAS_ARRAY(ITM_TYPE_MONO).new;      
       beg  := name.lower;
       {
 	((name.count != 0) && {! read_identifier} && {! mute}).if {
@@ -1398,8 +1424,8 @@ Section Private
 	(mute).if_false {
 	  syntax_error (current_position,"Incorrect argument type.");
 	};	
-	ALIAS_ARRAY[STRING_CONSTANT].free name;
-	ALIAS_ARRAY[ITM_TYPE_MONO].free type;
+	ALIAS_ARRAY(STRING_CONSTANT).free name;
+	ALIAS_ARRAY(ITM_TYPE_MONO).free type;
       } else {
 	(
 	  (s) && {
@@ -1416,12 +1442,12 @@ Section Private
 	  result := ITM_ARG.create current_position 
 	  name (name.first)
 	  type (type.first);
-	  ALIAS_ARRAY[STRING_CONSTANT].free name;
-	  ALIAS_ARRAY[ITM_TYPE_MONO].free type;
+	  ALIAS_ARRAY(STRING_CONSTANT).free name;
+	  ALIAS_ARRAY(ITM_TYPE_MONO).free type;
 	} else {
 	  // Vector Arguments.
-	  name := ALIAS_ARRAY[STRING_CONSTANT].alias name;
-	  type := ALIAS_ARRAY[ITM_TYPE_MONO].alias type;
+	  name := ALIAS_ARRAY(STRING_CONSTANT).alias name;
+	  type := ALIAS_ARRAY(ITM_TYPE_MONO).alias type;
 	  tm := ITM_TYPE_MULTI.get type;
 	  result := ITM_ARGS.create current_position name name type tm;
 	};
@@ -1438,8 +1464,8 @@ Section Private
   );  // read_local  
   
   //++ TYPE_LIST    -> TYPE { ',' TYPE }
-  - read_type_list is_section:BOOLEAN :FAST_ARRAY[ITM_TYPE_MONO] <-
-  ( + lst:FAST_ARRAY[ITM_TYPE_MONO];
+  - read_type_list is_section:BOOLEAN :FAST_ARRAY(ITM_TYPE_MONO) <-
+  ( + lst:FAST_ARRAY(ITM_TYPE_MONO);
     + t:ITM_TYPE_MONO;
     + ts:ITM_TYPE_SIMPLE;
     
@@ -1452,7 +1478,7 @@ Section Private
 	  "For a section, the prototype name only (without '['...']').");
 	};
       };
-      lst := ALIAS_ARRAY[ITM_TYPE_MONO].new;
+      lst := ALIAS_ARRAY(ITM_TYPE_MONO).new;
       lst.add_last t;      
       {read_character ','}.while_do {
 	t := read_type FALSE;
@@ -1468,7 +1494,7 @@ Section Private
 	};
 	lst.add_last t;
       };
-      lst := ALIAS_ARRAY[ITM_TYPE_MONO].alias lst;
+      lst := ALIAS_ARRAY(ITM_TYPE_MONO).alias lst;
     };
     lst
   );
@@ -1478,7 +1504,7 @@ Section Private
   - read_type is_local:BOOLEAN :ITM_TYPE_MONO <-
   ( + style:STRING_CONSTANT;
     + result:ITM_TYPE_MONO;
-    + lst:FAST_ARRAY[ITM_TYPE_MONO];
+    + lst:FAST_ARRAY(ITM_TYPE_MONO);
     + typ_arg,typ_res:ITM_TYPE;
     + contract:ITM_LIST;
     
@@ -1554,7 +1580,7 @@ Section Private
   //++ PROTOTYPE    -> cap_identifier{('.'|'...')cap_identifier}['('PARAM_TYPE{','PARAM_TYPE}')']
   - read_prototype styl:STRING_CONSTANT :ITM_TYPE_MONO <-
   ( + nam:STRING_CONSTANT;    
-    + genericity:FAST_ARRAY[ITM_TYPE_MONO];    
+    + genericity:FAST_ARRAY(ITM_TYPE_MONO);    
     + result,t:ITM_TYPE_MONO;    
     + old_pos,old_derive,sav_derive,pos_before:INTEGER;
     + continue:BOOLEAN;
@@ -1589,7 +1615,7 @@ Section Private
 	//
 	// Genericity.
         //		
-        genericity := ALIAS_ARRAY[ITM_TYPE_MONO].new;
+        genericity := ALIAS_ARRAY(ITM_TYPE_MONO).new;
         {
           t := read_param_type;
           (t = NULL).if {
@@ -1597,7 +1623,7 @@ Section Private
           };
           genericity.add_last t;
         }.do_while {read_character ','};        
-        genericity := ALIAS_ARRAY[ITM_TYPE_MONO].alias genericity;
+        genericity := ALIAS_ARRAY(ITM_TYPE_MONO).alias genericity;
         result     := ITM_TYPE_GENERIC.get nam style styl with genericity;
         (read_character ')').if_false {
           warning_error (current_position,"Added ')'.");
@@ -1674,14 +1700,14 @@ Section Private
   ( + result,value:ITM_CODE;    
     + affect:CHARACTER;   
     + again:BOOLEAN;
-    + l_assignment:FAST_ARRAY[STRING_CONSTANT];
+    + l_assignment:FAST_ARRAY(STRING_CONSTANT);
     + p:INTEGER;
     + name:STRING_CONSTANT;
     
     // !! AMBIGU resolution !!    
     save_context;
     (read_character '(').if {
-      l_assignment := ALIAS_ARRAY[STRING_CONSTANT].new;
+      l_assignment := ALIAS_ARRAY(STRING_CONSTANT).new;
       {
 	again := FALSE;
 	(read_identifier).if {
@@ -1706,7 +1732,7 @@ Section Private
 	};
       }.do_while {again};
       ((! l_assignment.is_empty) && {read_character ')'} && {read_affect}).if {	
-	l_assignment := ALIAS_ARRAY[STRING_CONSTANT].copy l_assignment;
+	l_assignment := ALIAS_ARRAY(STRING_CONSTANT).copy l_assignment;
 	result := ITM_LIST_IDF.create current_position with l_assignment;
 	affect := last_string.first;	
 	value  := read_expr;
@@ -1725,7 +1751,7 @@ Section Private
 	  result := ITM_WRITE_CAST.create (result.position) assign result with value;
 	};	
       } else {
-	ALIAS_ARRAY[STRING_CONSTANT].free l_assignment;
+	ALIAS_ARRAY(STRING_CONSTANT).free l_assignment;
       };
     }.elseif {read_identifier} then {
       p := position - last_string.count;
@@ -1772,11 +1798,11 @@ Section Private
   - read_expr_operator:ITM_CODE <-
   ( + result:ITM_CODE;
     + expr :ITM_CODE;
-    + l_expr:FAST_ARRAY[ITM_CODE];    
+    + l_expr:FAST_ARRAY(ITM_CODE);    
     + itm_op:ITM_OPERATOR;    
     + last_msg,first_msg:INTEGER;
     
-    l_expr := ALIAS_ARRAY[ITM_CODE].new;
+    l_expr := ALIAS_ARRAY(ITM_CODE).new;
     {read_operator}.while_do {
       expr := ITM_OPERATOR.create current_position name last_string;
       l_expr.add_last expr;
@@ -1787,7 +1813,7 @@ Section Private
       (! l_expr.is_empty).if {
 	syntax_error (current_position,"Incorrect expression.");
       };
-      ALIAS_ARRAY[ITM_CODE].free l_expr;      
+      ALIAS_ARRAY(ITM_CODE).free l_expr;      
     } else {
       // { operator {operator} EXPR_MESSAGE } {operator}      
       first_msg := l_expr.count;
@@ -1828,7 +1854,7 @@ Section Private
       };
       (l_expr.count = 1).if {
 	result := l_expr.first;	
-	ALIAS_ARRAY[ITM_CODE].free l_expr;
+	ALIAS_ARRAY(ITM_CODE).free l_expr;
       }.elseif {l_expr.count = 3} then {
 	// Simple binary message.	
 	itm_op ?= l_expr.second;
@@ -1836,10 +1862,10 @@ Section Private
 	name (operator (ALIAS_STR.slot_infix) name (itm_op.name)) 
 	args (l_expr.first,l_expr.item 2);
 	//
-	ALIAS_ARRAY[ITM_CODE].free l_expr;      
+	ALIAS_ARRAY(ITM_CODE).free l_expr;      
       } else {
 	// Complex expression.
-	l_expr := ALIAS_ARRAY[ITM_CODE].copy l_expr;
+	l_expr := ALIAS_ARRAY(ITM_CODE).copy l_expr;
 	result := ITM_EXPRESSION.create l_expr;
       };
     };
@@ -1893,7 +1919,7 @@ Section Private
   - read_expr_primary:ITM_CODE <-
   ( + result:ITM_CODE;
     + type :ITM_TYPE_MONO;
-    + ltype:FAST_ARRAY[ITM_TYPE_MONO];
+    + ltype:FAST_ARRAY(ITM_TYPE_MONO);
     + ext  :ITM_EXTERNAL_TYPE;
     + group_sav:ITM_LIST;
     + arg:ITM_ARGUMENT;
@@ -2010,13 +2036,13 @@ Section Private
   );
   
   //++ GROUP        -> DEF_LOCAL {EXPR ';'} [ EXPR {',' {EXPR ';'} EXPR } ]
-  - read_group:FAST_ARRAY[ITM_CODE] <-
+  - read_group:FAST_ARRAY(ITM_CODE) <-
   ( + e:ITM_CODE;    
-    + result:FAST_ARRAY[ITM_CODE];
+    + result:FAST_ARRAY(ITM_CODE);
     
     read_def_local;
     
-    result := ALIAS_ARRAY[ITM_CODE].new;
+    result := ALIAS_ARRAY(ITM_CODE).new;
     e := read_expr;
     {(e != NULL) && {read_character ';'}}.while_do {
       result.add_last e;
@@ -2040,7 +2066,7 @@ Section Private
       e := ITM_RESULT.create e;
       result.add_last e;
     };    
-    ALIAS_ARRAY[ITM_CODE].copy result
+    ALIAS_ARRAY(ITM_CODE).copy result
   );
   
   - read_invariant:BOOLEAN <-
@@ -2079,13 +2105,13 @@ Section Private
   ( + continue:BOOLEAN;
     + e:ITM_CODE;
     + result:ITM_LIST;
-    + lst:FAST_ARRAY[ITM_CODE];
+    + lst:FAST_ARRAY(ITM_CODE);
     
     (read_character '[').if {
       result := last_group := ITM_LIST.create current_position;
       read_def_local;
       
-      lst := ALIAS_ARRAY[ITM_CODE].new;
+      lst := ALIAS_ARRAY(ITM_CODE).new;
       {
 	e := read_expr;
 	(e = NULL).if {
@@ -2108,22 +2134,22 @@ Section Private
       e := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
       lst.add_last e;
       //
-      result.set_code (ALIAS_ARRAY[ITM_CODE].copy lst);
+      result.set_code (ALIAS_ARRAY(ITM_CODE).copy lst);
     };
     result
   );
   
   //++ DEF_LOCAL    -> { style LOCAL ';' } !! AMBIGU !!
   - read_def_local <-
-  ( + loc_lst:FAST_ARRAY[ITM_LOCAL];
-    + local_list,static_list:FAST_ARRAY[ITM_LOCAL];    
+  ( + loc_lst:FAST_ARRAY(ITM_LOCAL);
+    + local_list,static_list:FAST_ARRAY(ITM_LOCAL);    
     + styl:CHARACTER;
     
     save_context; // !! SAVE CONTEXT !!
     
     styl    := read_style;
-    local_list  := ALIAS_ARRAY[ITM_LOCAL].new;
-    static_list := ALIAS_ARRAY[ITM_LOCAL].new;
+    local_list  := ALIAS_ARRAY(ITM_LOCAL).new;
+    static_list := ALIAS_ARRAY(ITM_LOCAL).new;
     {styl != ' '}.while_do {
       loc_lst := read_local TRUE;
       (loc_lst != NULL).if {
@@ -2147,14 +2173,14 @@ Section Private
       };      
     };
     (local_list.is_empty).if {
-      ALIAS_ARRAY[ITM_LOCAL].free local_list;
+      ALIAS_ARRAY(ITM_LOCAL).free local_list;
     } else {
-      last_group.set_local_list  (ALIAS_ARRAY[ITM_LOCAL].copy local_list);
+      last_group.set_local_list  (ALIAS_ARRAY(ITM_LOCAL).copy local_list);
     };
     (static_list.is_empty).if {
-      ALIAS_ARRAY[ITM_LOCAL].free static_list;
+      ALIAS_ARRAY(ITM_LOCAL).free static_list;
     } else {
-      last_group.set_static_list (ALIAS_ARRAY[ITM_LOCAL].copy static_list); 
+      last_group.set_static_list (ALIAS_ARRAY(ITM_LOCAL).copy static_list); 
     };
   );
   
@@ -2163,7 +2189,7 @@ Section Private
   ( + result:ITM_CODE;
     + name :STRING_CONSTANT;
     + n:STRING;
-    + l_arg:FAST_ARRAY[ITM_CODE];
+    + l_arg:FAST_ARRAY(ITM_CODE);
     + arg:ITM_CODE;
     + p1,p2,old_derive,sav_derive:INTEGER;
     
@@ -2178,7 +2204,7 @@ Section Private
       n := ALIAS_STR.new;
       n.copy last_string;
       // Argument list.
-      l_arg := ALIAS_ARRAY[ITM_CODE].new;
+      l_arg := ALIAS_ARRAY(ITM_CODE).new;
       arg := read_argument;
       (arg != NULL).if {          
 	l_arg.add_last arg;	
@@ -2218,14 +2244,14 @@ Section Private
 	} else {  
 	  result := ITM_READ_ARG1.create current_position name name arg first_arg; 
 	};
-	ALIAS_ARRAY[ITM_CODE].free l_arg;
+	ALIAS_ARRAY(ITM_CODE).free l_arg;
       }.elseif {l_arg.count=1} then {
 	result := ITM_READ_ARG2.create current_position name 
 	name args (first_arg,(l_arg.first)); 
-	ALIAS_ARRAY[ITM_CODE].free l_arg;
+	ALIAS_ARRAY(ITM_CODE).free l_arg;
       } else {
 	l_arg.add_first first_arg;
-	l_arg := ALIAS_ARRAY[ITM_CODE].copy l_arg;	
+	l_arg := ALIAS_ARRAY(ITM_CODE).copy l_arg;	
 	result := ITM_READ_ARGS.create current_position name name args l_arg; 
       };
     }; // if
@@ -2255,12 +2281,12 @@ Section Private
   - read_slot_header first:BOOLEAN :BOOLEAN <-
   ( + result:BOOLEAN;    
     + v:ITM_CODE;
-    + cast:FAST_ARRAY[ITM_TYPE_MONO];
+    + cast:FAST_ARRAY(ITM_TYPE_MONO);
     + style:CHARACTER;
     + is_export:BOOLEAN;
     + parameter_type:ITM_TYPE_PARAMETER;
     + instr:LIP_CODE;
-    + param:BLOCK;
+    + param:{ITM_TYPE_PARAMETER};
     
     style := read_style;
     (style != ' ').if {
@@ -2685,7 +2711,7 @@ Section Private
     + data:LIP_SLOT_DATA;
     + slot_code:LIP_SLOT_CODE;
     + cst:LIP_CONSTANT;
-    + cod:FAST_ARRAY[LIP_CODE];
+    + cod:FAST_ARRAY(LIP_CODE);
     + instr:LIP_CODE;
     + pos:POSITION;
     
@@ -2712,7 +2738,7 @@ Section Private
         (cst = NULL).if {
           syntax_error (current_position,"Incorrect expression.");
         };
-        data.set_value cst;
+        data.set_value cst;        
         cst.free;
       };
     }.elseif {read_character '-'} then {
@@ -2743,7 +2769,7 @@ Section Private
         warning_error (current_position,"Added '(' is needed.");
       };      
       is_shorter2 := FALSE;
-      cod := ALIAS_ARRAY[LIP_CODE].new;
+      cod := ALIAS_ARRAY(LIP_CODE).new;
       {(instr := readlip_expr) != NULL}.while_do {
         cod.add_last instr;
         (read_character ';').if_false {
@@ -2753,7 +2779,7 @@ Section Private
       (read_character ')').if_false {
         warning_error (current_position,"Added ')' is needed.");
       };
-      cod := ALIAS_ARRAY[LIP_CODE].copy cod;            
+      cod := ALIAS_ARRAY(LIP_CODE).copy cod;            
       slot_code := LIP_SLOT_CODE.create pos section sec 
       name n argument data code cod;
       (sec = ALIAS_STR.section_public).if {
@@ -2771,16 +2797,16 @@ Section Private
   //// TYPE         -> 'BOOLEAN' | 'STRING' | 'INTEGER'
   ( + result:LIP_CONSTANT;
     
-    (read_cap_identifier).if {            
+    (read_cap_identifier).if {                              
       (last_string = ALIAS_STR.prototype_integer).if {
         result := LIP_INTEGER.get 0;
-      }.elseif {last_string = ALIAS_STR.prototype_string} then {
-        result := LIP_STRING.get (ALIAS_STR.get "");
-      }.elseif {last_string = ALIAS_STR.prototype_boolean} then {
+      }.elseif {last_string = ALIAS_STR.prototype_string} then {        
+        result := LIP_STRING.get (ALIAS_STR.get "");        
+      }.elseif {last_string = ALIAS_STR.prototype_boolean} then {        
         result := LIP_BOOLEAN.get FALSE;
       } else {
         syntax_error (current_position,"Incorrect type.");
-      };
+      };     
     };
     result
   );
@@ -2820,11 +2846,11 @@ Section Private
   //// FUNCTION     -> 'if' '{' { EXPR ';' }  '}' [ 'else' '{' { EXPR ';' } '}' ]
   ////               | 'print'
   ( + result:LIP_CODE;
-    + the,els:FAST_ARRAY[LIP_CODE];
+    + the,els:FAST_ARRAY(LIP_CODE);
     + val:LIP_CODE;
     
     (read_word (ALIAS_STR.slot_if)).if {
-      the := ALIAS_ARRAY[LIP_CODE].new;      
+      the := ALIAS_ARRAY(LIP_CODE).new;      
       (read_character '{').if_false {
         warning_error (current_position,"Added '(' is needed.");
       };
@@ -2837,9 +2863,9 @@ Section Private
       (read_character '}').if_false {
         warning_error (current_position,"Added '(' is needed.");
       };
-      the := ALIAS_ARRAY[LIP_CODE].copy the;
+      the := ALIAS_ARRAY(LIP_CODE).copy the;
       (read_word (ALIAS_STR.slot_else)).if {
-        els := ALIAS_ARRAY[LIP_CODE].new;
+        els := ALIAS_ARRAY(LIP_CODE).new;
         (read_character '{').if_false {
           warning_error (current_position,"Added '(' is needed.");
         };
@@ -2852,7 +2878,7 @@ Section Private
         (read_character '}').if_false {
           warning_error (current_position,"Added '(' is needed.");
         };
-        els := ALIAS_ARRAY[LIP_CODE].copy els;
+        els := ALIAS_ARRAY(LIP_CODE).copy els;
       };
       result := LIP_IF.create current_position if rec then the else els;    
     }.elseif {read_word (ALIAS_STR.slot_print)} then {
@@ -3035,13 +3061,13 @@ Section Private
 
   //|| FORMAT -> { '-' identifier ':=' SHORT_DEF ';' }
   - read_format <-
-  ( + def:LINKED_LIST[STRING_CONSTANT];
+  ( + def:LINKED_LIST(STRING_CONSTANT);
     
     {read_character '-'}.while_do {
       (read_identifier).if_false {
 	syntax_error (current_position,"Incorrect slot identifier."); 
       };
-      def := LINKED_LIST[STRING_CONSTANT].create;
+      def := LINKED_LIST(STRING_CONSTANT).create;
       (short_dico.fast_has last_string).if {
 	syntax_error (current_position,"Double definition slot.");
       };
@@ -3065,7 +3091,7 @@ Section Private
   );
 
   //|| SHORT_DEF -> { SHORT_ELT '+' } SHORT_ELT
-  - read_short_def def:LINKED_LIST[STRING_CONSTANT] :BOOLEAN <-
+  - read_short_def def:LINKED_LIST(STRING_CONSTANT) :BOOLEAN <-
   ( + result:BOOLEAN;
     
     read_short_elt.if {
@@ -3143,7 +3169,7 @@ Section Public
       is_active_short := TRUE;            
       short_derive := 0;
       output_code.copy source;
-      short_local := HASHED_SET[STRING_CONSTANT].create;
+      short_local := HASHED_SET(STRING_CONSTANT).create;
       short (ALIAS_STR.short_begin) token 1 to 1;
     };
     

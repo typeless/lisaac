@@ -81,9 +81,9 @@ Section Public
     node := NODE.new_cast position type typ_cast with val;
     list_current.add_last node;    
     // Assignment result.
-    affect nm with (node.result_expr);
+    affect nm with (node.result_expr)
     // Value result.
-    assign.to_run_expr
+    //assign.to_run_expr
   );
 
 

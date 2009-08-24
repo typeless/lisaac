@@ -128,51 +128,7 @@ Section Public
     p_beg := (p_beg+1) & 03h;
   );
   
-  //
-  // Extern robot.
-  //
   
-  - extern_event_move (x,y:INTEGER) <-
-  (
-    `mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE,@x*51,@y*64,0,0)`; 
-    //                                                           *64 // 1024
-    //                                                           *82 // 800
-  );
-
-  - extern_event_left_down <-
-  (
-    `mouse_event(MOUSEEVENTF_LEFTDOWN,0,0,0,0)`;
-  );
-
-  - extern_event_left_up <-
-  (
-    `mouse_event(MOUSEEVENTF_LEFTUP,0,0,0,0)`;
-  );
-  
-  - extern_event_right_down <-
-  (
-    `mouse_event(MOUSEEVENTF_RIGHTDOWN,0,0,0,0)`;
-  );
-
-  - extern_event_right_up <-
-  (
-    `mouse_event(MOUSEEVENTF_LEFTUP,0,0,0,0)`;
-  );
-  
-  - extern_get_mouse:(INTEGER,INTEGER,BOOLEAN,BOOLEAN) <-
-  ( + x,y,tmp:INTEGER;    
-    + l,r:BOOLEAN;
-    `{ POINT pt; GetCursorPos(&pt)`;
-      x := `pt.x`:INTEGER;
-      y := `pt.y`:INTEGER;
-    `}`; 
-    tmp := `GetKeyState(1)`:INTEGER;
-    l := (tmp != 0) && {tmp !=1};
-    tmp := `GetKeyState(2)`:INTEGER;
-    r := (tmp != 0) && {tmp !=1};
-        
-    x,y,l,r
-  );
   
 
 

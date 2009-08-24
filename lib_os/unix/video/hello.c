@@ -48,7 +48,7 @@ typedef char __CHARACTER;
 #define __STRING_CONSTANT__ 0
 typedef struct STRING_CONSTANT_struct __STRING_CONSTANT;
 struct STRING_CONSTANT_struct {
-  __CHARACTER *storage__0;
+  __CHARACTER *storage__1;
 };
 // INTEGER
 typedef int __INTEGER;
@@ -68,7 +68,7 @@ __STRING_CONSTANT STRING_CONSTANT_;
 // STRING CONSTANT          //
 //==========================//
 
-__STRING_CONSTANT __string_1={"Helloo\n"};
+__STRING_CONSTANT __string_1={"Hello\n"};
 
 //==========================//
 // FUNCTION HEADER          //
@@ -82,13 +82,13 @@ __STRING_CONSTANT __string_1={"Helloo\n"};
 
 int main(int argc,char **argv)
 {
-  __INTEGER Self__WE;
+  __INTEGER Self__XE;
   arg_count  = argc;
   arg_vector = argv;
-  Self__WE= 1;
-  while ((Self__WE <=  7)) {
-    fputc((int)((&__string_1)->storage__0[(__INTEGER)(Self__WE -  1)]),stdout);
-    Self__WE=(__INTEGER)(Self__WE +  1);
+  Self__XE= 1;
+  while ((Self__XE <=  6)) {
+    fputc((int)((&__string_1)->storage__1[(__INTEGER)(Self__XE -  1)]),stdout);
+    Self__XE=(__INTEGER)(Self__XE +  1);
   };
   return(0);
 }

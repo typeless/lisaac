@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := COLLECTION2[V];
+  + name        := COLLECTION2(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
@@ -34,7 +34,7 @@ Section Header
       
 Section Inherit
   
-  - parent_safe_equal:SAFE_EQUAL[V] := SAFE_EQUAL[V];
+  - parent_safe_equal:SAFE_EQUAL(V) := SAFE_EQUAL(V);
   
 Section Public
   
@@ -130,7 +130,7 @@ Section Public
     (lower1 <= line) && { line <= upper1}
   )
   [
-    +? { Result = (lower1 <= line) && { line <= upper1 } };
+    +? { Result = ((lower1 <= line) && { line <= upper1 }) };
   ];
     
   - valid_index1 line:INTEGER :BOOLEAN <-
@@ -139,11 +139,11 @@ Section Public
   );
     
   - valid_column column:INTEGER :BOOLEAN <- 
-  (
-    (lower2 <= column) && {column <= upper2}
+  ( 
+    (lower2 <= column) && {column <= upper2}    
   )
-  [
-    +? { Result = (lower2 <= column) && {column <= upper2} };
+  [    
+    +? { Result = ((lower2 <= column) && {column <= upper2}) };
   ];
     
   - valid_index2 column:INTEGER :BOOLEAN <-
@@ -157,7 +157,7 @@ Section Public
     {lower2 <= column} && {column <= upper2}
   )
   [      
-    +? { Result = (valid_line line) && {valid_column column} };
+    +? { Result = ((valid_line line) && {valid_column column}) };
   ];
   
   //
@@ -240,7 +240,7 @@ Section Public
   // Creating or initializing:
   //
   
-  - from_collection2 model:COLLECTION2[V] <-
+  - from_collection2 model:COLLECTION2(V) <-
   //  Uses `model' to initialize Current.
   [ -? { model != NULL }; ]
   (
@@ -251,7 +251,7 @@ Section Public
     +? { count2 = model.count2 };
   ];
     
-  - from_model model:COLLECTION[COLLECTION[V]] <-
+  - from_model model:COLLECTION(COLLECTION(V)) <-
   // The `model' is used to fill line by line Current.
   // Assume all sub-collections of `model' have the same
   // number of lines.
@@ -278,7 +278,7 @@ Section Public
     FALSE
   );
   
-  - '==' other:COLLECTION2[V] :BOOLEAN <-
+  - Self:SELF '==' other:COLLECTION2(V) :BOOLEAN <-
   // Do both collections have the same `lower1', `lower2', `upper1' and `upper2', and items?
   // The basic `=' is used for comparison of items.
   //
@@ -306,7 +306,7 @@ Section Public
     result
   );
 
-  - is_equal_map (other:COLLECTION2[V]) :BOOLEAN <-
+  - is_equal_map (other:COLLECTION2(V)) :BOOLEAN <-
   // Do both collections have the same `lower1', `lower2', `upper1' and `upper2', and items?
   // Feature `is_equal' is used for comparison of items.
   //

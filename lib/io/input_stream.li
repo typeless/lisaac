@@ -130,14 +130,14 @@ Section Public
     stop := FALSE;
     stop.until_do {
       end_of_input.if {
-	stop := TRUE;
+        stop := TRUE;
       } else {
-	(( last_character = '\n') || {last_character = '\b'}).if {
-	  read_character;
-	  stop := TRUE;
-	} else {
-	  read_character;
-	};
+        (( last_character = '\n') || {last_character = '\b'}).if {
+          read_character;
+          stop := TRUE;
+        } else {
+          read_character;
+        };
       };
     };
   );
@@ -164,40 +164,40 @@ Section Public
     { state > 2 }.until_do {
       read_character;
       (state = 0).if {
-	(last_character.is_separator).if {
-	}.elseif { last_character.is_digit} then {
-	  last_integer := last_character.decimal_value;
-	  state := 2;
-	}.elseif { last_character = '-'} then {
-	  sign := TRUE;
-	  state := 1;
-	}.elseif { last_character = '+'} then {
-	  state := 1;
-	} else {
-	  state := 4;
-	};
+        (last_character.is_separator).if {
+        }.elseif { last_character.is_digit} then {
+          last_integer := last_character.decimal_value;
+          state := 2;
+        }.elseif { last_character = '-'} then {
+          sign := TRUE;
+          state := 1;
+        }.elseif { last_character = '+'} then {
+          state := 1;
+        } else {
+          state := 4;
+        };
       }.elseif {state = 1} then {
-	(last_character.is_separator).if {
-	}.elseif { last_character.is_digit }  then {
-	  last_integer := last_character.decimal_value;
-	  state := 2;
-	} else {
-	  state := 4;
-	};
+        (last_character.is_separator).if {
+        }.elseif { last_character.is_digit }  then {
+          last_integer := last_character.decimal_value;
+          state := 2;
+        } else {
+          state := 4;
+        };
       } else { // 2
-	( last_character.is_digit ).if {
-	  last_integer := (last_integer * 10) + last_character.decimal_value;
-	} else {
-	  state := 3;
-	};
+        ( last_character.is_digit ).if {
+          last_integer := (last_integer * 10) + last_character.decimal_value;
+        } else {
+          state := 3;
+        };
       };
       
       end_of_input.if {
-	state.when 0 to 1 then {
-	  state := 4;
-	}.when 2 to 3 then {
-	  state := 3;
-	};
+        state.when 0 to 1 then {
+          state := 4;
+        }.when 2 to 3 then {
+          state := 3;
+        };
       };
     };
     
@@ -247,52 +247,52 @@ Section Public
     { state >= 4 }.until_do {
       read_character;
       ( state = 0).if {
-	(last_character.is_separator).if {
-	}.elseif { last_character.is_digit } then {
-	  last_string.add_last last_character;
-	  state := 2;
-	}.elseif { last_character = '-' } then {
-	  sign := TRUE;
-	  state := 1;
-	}.elseif { last_character = '+' } then {
-	  state := 1;
-	}.elseif { last_character = '.' } then {
-	  last_string.add_last last_character;
-	  state := 3;
-	} else {
-	  state := 5;
-	};
+        (last_character.is_separator).if {
+        }.elseif { last_character.is_digit } then {
+          last_string.add_last last_character;
+          state := 2;
+        }.elseif { last_character = '-' } then {
+          sign := TRUE;
+          state := 1;
+        }.elseif { last_character = '+' } then {
+          state := 1;
+        }.elseif { last_character = '.' } then {
+          last_string.add_last last_character;
+          state := 3;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 1 } then {
-	( last_character.is_separator ).if {
-	}.elseif { last_character.is_digit } then {
-	  last_string.add_last last_character;
-	  state := 2;
-	} else {
-	  state := 5;
-	};
+        ( last_character.is_separator ).if {
+        }.elseif { last_character.is_digit } then {
+          last_string.add_last last_character;
+          state := 2;
+        } else {
+          state := 5;
+        };
       }.elseif { state = 2 } then {
-	( last_character.is_digit ).if {
-	  last_string.add_last last_character;
-	}.elseif { last_character = '.' } then {
-	  last_string.add_last last_character;
-	  state := 3;
-	} else {
-	  state := 4;
-	};
+        ( last_character.is_digit ).if {
+          last_string.add_last last_character;
+        }.elseif { last_character = '.' } then {
+          last_string.add_last last_character;
+          state := 3;
+        } else {
+          state := 4;
+        };
       } else { // 3
-	( last_character.is_digit ).if {
-	  last_string.add_last last_character;
-	} else {
-	  state := 4;
-	};
+        ( last_character.is_digit ).if {
+          last_string.add_last last_character;
+        } else {
+          state := 4;
+        };
       };
       
       end_of_input.if {
-	state.when 2 to 4 then {
-	  state := 4;
-	} else {
-	  state := 5;
-	};
+        state.when 2 to 4 then {
+          state := 4;
+        } else {
+          state := 5;
+        };
       };
     };
     
@@ -367,9 +367,9 @@ Section Public
     {stop}.until_do {
       read_character;
       ( end_of_input || { last_character = '\n' }).if {
-	stop := TRUE;
+        stop := TRUE;
       } else {
-	last_string.extend last_character;
+        last_string.extend last_character;
       };
     };
   );
@@ -394,20 +394,20 @@ Section Public
       // Reach the first character of the `keyword':
       i := 2;
       { (i > last_string.count) || { last_string.item i = first }}.until_do {
-	i := i + 1;
+        i := i + 1;
       };
       
       ( i <= last_string.count ).if {
-	last_string.remove_first (i - 1);
+        last_string.remove_first (i - 1);
       } else {
-	last_string.clear;
-	!end_of_input.if {
-	  read_character;
-	};
-	{ end_of_input || { last_character = first } }.until_do {
-	  read_character;
-	};
-	last_string.extend last_character;
+        last_string.clear;
+        !end_of_input.if {
+          read_character;
+        };
+        { end_of_input || { last_character = first } }.until_do {
+          read_character;
+        };
+        last_string.extend last_character;
       };
       
       ? { !end_of_input ->> {last_string.item 1 = first}};
@@ -415,8 +415,8 @@ Section Public
       
       // Now we need as many characters as in `keyword':
       { end_of_input || { last_string.count = keyword.count } }.until_do {
-	read_character;
-	last_string.extend last_character;
+        read_character;
+        last_string.extend last_character;
       };
       stop := last_string == keyword;
     };
@@ -464,7 +464,7 @@ Section Public
     end_of_input.until_do {
       read_character;
       !end_of_input.if {
-	str.extend last_character;
+        str.extend last_character;
       };
     };
     

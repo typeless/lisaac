@@ -39,7 +39,7 @@ Section Public
   
   + argument:LIP_SLOT_DATA;
     
-  + code:FAST_ARRAY[LIP_CODE];
+  + code:FAST_ARRAY(LIP_CODE);
   
   + comment:STRING_CONSTANT;
   
@@ -64,7 +64,7 @@ Section Public
   - create p:POSITION section sec:STRING_CONSTANT 
   name n:STRING_CONSTANT 
   argument arg:LIP_SLOT_DATA
-  code c:FAST_ARRAY[LIP_CODE] :LIP_SLOT_CODE <-
+  code c:FAST_ARRAY(LIP_CODE) :LIP_SLOT_CODE <-
   ( + result:LIP_SLOT_CODE;
     
     result := get_method n;
@@ -72,7 +72,7 @@ Section Public
       ((arg = NULL) ^ (result.argument = NULL)).if {
         semantic_error (result.position,"Incorrect redefinition.");
       };
-      ALIAS_ARRAY[LIP_CODE].free c;
+      ALIAS_ARRAY(LIP_CODE).free c;
     } else {    
       result := clone;
       result.make p section sec name n argument arg code c;      
@@ -83,7 +83,7 @@ Section Public
   - make p:POSITION section sec:STRING_CONSTANT 
   name n:STRING_CONSTANT 
   argument arg:LIP_SLOT_DATA 
-  code c:FAST_ARRAY[LIP_CODE] <-
+  code c:FAST_ARRAY(LIP_CODE) <-
   ( 
     position := p;
     section := sec;

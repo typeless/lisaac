@@ -62,7 +62,7 @@ Section Public
   - run_expr:LIP_CONSTANT <-
   ( + result:LIP_CONSTANT;
         
-    result := value.run_expr;    
+    result := value.run_expr;        
     (operator)
     .when '-' then { result := - result; }
     .when '!' then { result := ! result; };

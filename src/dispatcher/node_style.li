@@ -79,7 +79,7 @@ Section NODE, DTA
     -? {self_type != NULL};
   ]
   ( + typ:TYPE;
-    + list:FAST_ARRAY[CASE];
+    + list:FAST_ARRAY(CASE);
     + case:CASE;
     + e:EXPR;
     + low,up,count:INTEGER;
@@ -130,13 +130,13 @@ Section Private
     + rd:READ;
     + wrt:WRITE;    
     + result_var:VARIABLE;
-    + new_larg:FAST_ARRAY[EXPR];    
+    + new_larg:FAST_ARRAY(EXPR);    
     + slot_dta:SLOT_DATA;
     + slot_cod:SLOT_CODE;
     + idx:INTEGER;    
     + type:TYPE_FULL;
     + my_profil:PROFIL;
-    + wrt_lst:FAST_ARRAY[WRITE];
+    + wrt_lst:FAST_ARRAY(WRITE);
     + ctext:LOCAL;
     + new_type_self:TYPE_FULL;
     + data_rd:DTA_RD;
@@ -220,7 +220,7 @@ Section Private
       // Function.
       slot_cod := slot.slot_code idx;      
       (slot_cod.id_section.is_inherit_or_insert).if {
-	new_larg := FAST_ARRAY[EXPR].create_with_capacity 1;
+	new_larg := FAST_ARRAY(EXPR).create_with_capacity 1;
 	new_larg.add_last (data.self_arg.my_copy);
       } else {
 	new_larg := data.get_argument;
@@ -230,11 +230,15 @@ Section Private
       //      
       (debug_level_option != 0).if {	        
         // BSBS: Poser le PUSH avant le NODE
-	(data.context = NULL).if {
-	  ctext := context_main;
-	} else {
-	  ctext := data.context;
-	};
+	//(data.context = NULL).if {
+	//  ctext := context_main;
+        //} else {
+        (data.context = NULL).if {
+          crash_with_message "NODE_STYLE : data.context = NULL!\n";
+        };
+        
+        ctext := data.context;
+	//};
 	result.add_last (
 	  PUSH.create position context ctext first FALSE
         );     

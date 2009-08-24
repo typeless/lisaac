@@ -80,7 +80,10 @@ Section Public
     .when '+' then { result := lv +   rv; }
     .when '-' then { result := lv -   rv; };
     (result = NULL).if {
-      semantic_error (position,"Incorrect type.");      
+      operator.print; '\n'.print;
+      lv.print; '\n'.print;
+      rv.print; '\n'.print;
+      semantic_error (position,"Incorrect type operator.");      
     };
     result    
   );

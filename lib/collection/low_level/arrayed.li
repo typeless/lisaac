@@ -48,7 +48,7 @@ Section Public
     0
   );
   
-  - add_last_buffer buf:FAST_ARRAY[UINTEGER_8] from beg:INTEGER to end:INTEGER <-
+  - add_last_buffer buf:FAST_ARRAY(UINTEGER_8) from beg:INTEGER to end:INTEGER <-
   (
     deferred;
   );
@@ -68,9 +68,23 @@ Section Public
     deferred;
   );
   
-  - to_native_array_uinteger_8:NATIVE_ARRAY[UINTEGER_8] <- 
+  - to_native_array_uinteger_8:NATIVE_ARRAY(UINTEGER_8) <- 
   (
     deferred;
     NULL
   );
+
+  - get_buffer_from_byte i:INTEGER size_bytes s:INTEGER :FAST_ARRAY(UINTEGER_8) <-
+  [
+    -? { i >= 0 };
+    -? { s >= 0 };
+    -? { i < capacity * element_sizeof };
+    -? { i+s < capacity * element_sizeof };
+  ]
+  (
+    deferred;
+  )
+  [
+    +? { Result.count = s };
+  ];
 

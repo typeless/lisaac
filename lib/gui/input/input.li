@@ -40,7 +40,7 @@ Section Inherit
   
 Section SELF
   
-  + list_client:LINKED_LIST[INBOX];
+  + list_client:LINKED_LIST(INBOX);
   
 Section Public
   
@@ -49,7 +49,7 @@ Section Public
   - add_client obj:INBOX <-
   ( + idx:INTEGER;
     (list_client = NULL).if {
-      list_client := LINKED_LIST[INBOX].create;      
+      list_client := LINKED_LIST(INBOX).create;      
     };
     idx := list_client.fast_index_of obj start (list_client.lower);    
     (idx > list_client.upper).if {

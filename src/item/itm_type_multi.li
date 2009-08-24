@@ -34,9 +34,9 @@ Section Inherit
   
 Section Private
   
-  - dico:FAST_ARRAY[ITM_TYPE_MULTI] := FAST_ARRAY[ITM_TYPE_MULTI].create_with_capacity 32;
+  - dico:FAST_ARRAY(ITM_TYPE_MULTI) := FAST_ARRAY(ITM_TYPE_MULTI).create_with_capacity 32;
 
-  - create lt:FAST_ARRAY[ITM_TYPE_MONO] :SELF <-
+  - create lt:FAST_ARRAY(ITM_TYPE_MONO) :SELF <-
   ( + result:SELF;
     
     result := clone;
@@ -44,14 +44,14 @@ Section Private
     result
   );
   
-  - make lt:FAST_ARRAY[ITM_TYPE_MONO] <-
+  - make lt:FAST_ARRAY(ITM_TYPE_MONO) <-
   (
     list_type := lt;
   );
  
 Section Public
   
-  + list_type:FAST_ARRAY[ITM_TYPE_MONO];
+  + list_type:FAST_ARRAY(ITM_TYPE_MONO);
   
   - count:INTEGER <- list_type.count;
   
@@ -74,7 +74,7 @@ Section Public
     list_type.first
   );
   
-  - get lt:FAST_ARRAY[ITM_TYPE_MONO] :SELF <-
+  - get lt:FAST_ARRAY(ITM_TYPE_MONO) :SELF <-
   ( + result:SELF;
     + idx:INTEGER;
     
@@ -96,10 +96,10 @@ Section Public
   //
   
   - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
-  ( + lst:FAST_ARRAY[EXPR];
+  ( + lst:FAST_ARRAY(EXPR);
     + t:TYPE_FULL;
     
-    lst := FAST_ARRAY[EXPR].create_with_capacity count;
+    lst := FAST_ARRAY(EXPR).create_with_capacity count;
     lower.to upper do { i:INTEGER;
       t := item i.to_run_for p;
       lst.add_last (t.get_temporary_expr (p.position));
@@ -107,7 +107,7 @@ Section Public
     EXPR_MULTIPLE.create lst
   );
   
-  - to_run_in lst:FAST_ARRAY[TYPE_FULL] for p:PARAMETER_TO_TYPE <-
+  - to_run_in lst:FAST_ARRAY(TYPE_FULL) for p:PARAMETER_TO_TYPE <-
   ( + t:TYPE_FULL;
     
     lower.to upper do { i:INTEGER;

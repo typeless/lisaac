@@ -94,7 +94,7 @@ Section Public
   // Static local slot.
   ( + result:LOCAL;
     + slot:ITM_SLOT;
-    + larg:FAST_ARRAY[ITM_ARGUMENT];
+    + larg:FAST_ARRAY(ITM_ARGUMENT);
     + arg:ITM_ARGUMENT;
     + proto:PROTOTYPE;
     
@@ -113,11 +113,11 @@ Section Public
       feature (SECTION_.get_name (ALIAS_STR.section_private));
       slot.set_style '-';
       slot.set_result_type type;
-      larg := ALIAS_ARRAY[ITM_ARGUMENT].new;
+      larg := ALIAS_ARRAY(ITM_ARGUMENT).new;
       arg := ITM_ARG.create position name (ALIAS_STR.variable_self)
       type (ITM_TYPE_SIMPLE.type_self);
       larg.add_last arg;
-      larg := ALIAS_ARRAY[ITM_ARGUMENT].copy larg;
+      larg := ALIAS_ARRAY(ITM_ARGUMENT).copy larg;
       slot.set_argument_list larg; 
       proto.add_slot slot;
     } else {

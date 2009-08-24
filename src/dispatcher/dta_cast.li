@@ -51,6 +51,11 @@ Section Public
   - make p:POSITION type t:TYPE_FULL <-
   (
     result_expr := t.get_temporary_expr p;
+    (profil_current = NULL).if {
+      context := context_main;
+    } else {
+      context := profil_current.context;
+    };
   );
 
   //
