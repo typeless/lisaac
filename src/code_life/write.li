@@ -118,7 +118,6 @@ Section Public
     + read:READ;
     + val:INSTR;
     + slot:SLOT_DATA;
-    //+ old_loop_invariant:LOOP;
     
     ? { variable != NULL };
     ? { value    != NULL };
