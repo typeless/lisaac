@@ -67,7 +67,7 @@ Section Public
   
   - variable:VARIABLE <-
   (
-    deferred;
+    deferred;    
     NULL
   );
   
@@ -76,7 +76,7 @@ Section Public
     variable.type
   );
   
-  + value : EXPR;
+  + value:EXPR;
 
   - set_value new:EXPR <-
   (
