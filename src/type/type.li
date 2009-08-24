@@ -36,9 +36,11 @@ Section Inherit
   
   - parent_parameter_to_type:Expanded PARAMETER_TO_TYPE;
   
-Section TYPE, READ_SLOT
+Section PROFIL_LIST
   
-  - is_alias_struct:BOOLEAN := FALSE;
+  - is_alias_struct:BOOLEAN := TRUE;
+  
+Section Private
   
   - dico_type:HASHED_DICTIONARY(TYPE,STRING_CONSTANT) := 
   HASHED_DICTIONARY(TYPE,STRING_CONSTANT).create;
@@ -386,6 +388,9 @@ Section Public
   );
 
   - detect_alias_struct <-
+  [
+    -? {is_alias_struct};
+  ]
   ( + slot:SLOT;    
     + i,nb:INTEGER;
     + action:{SLOT_DATA; };    
@@ -422,9 +427,9 @@ Section Public
     (
       (alias_slot != NULL) &&       
       {! (is_late_binding -> alias_slot.type.raw.is_late_binding)}  
-    ).if {
+    ).if {      
       alias_slot := NULL;
-    };          
+    };         
   );
   
   - genere_struct <-
@@ -663,7 +668,7 @@ Section Public
               output_decl.append "super();\n";
             };
             output_decl.append "  };\n};\n";  
-          }.elseif {(alias_slot = NULL) || {! is_alias_struct}} then {                        
+          }.elseif {alias_slot = NULL} then {                        
             output_decl.append "struct ";
             output_decl.append intern_name;
             output_decl.append "_struct {\n";
@@ -717,7 +722,7 @@ Section Public
   
   - genere_typedef <-
   ( + tg:TYPE_GENERIC;              
-    
+    + t:TYPE;
     (
       (prototype.name = ALIAS_STR.prototype_native_array) || 
       {prototype.name = ALIAS_STR.prototype_native_array_volatile}
@@ -729,18 +734,18 @@ Section Public
       (type_c != NULL).if {        
         output_decl.append type_c;
       } else {
-        output_decl.append "struct ";
-        ((alias_slot != NULL) && {is_alias_struct}).if {
-          output_decl.append (alias_type.intern_name);
-        } else {
-          output_decl.append intern_name;
+        t := Self;        
+        {t.alias_slot = NULL}.until_do {
+          t := t.alias_type;
         };        
+        output_decl.append "struct ";
+        output_decl.append (t.intern_name);
         output_decl.append "_struct";        
       };
       output_decl.append " __";
       output_decl.append intern_name;	  
       output_decl.add_last ';';      
-      ((type_c = NULL) && {alias_slot != NULL} && {is_alias_struct}).if {
+      ((type_c = NULL) && {alias_slot != NULL}).if {
         output_decl.append " // ALIAS with ";
         output_decl.append (alias_type.intern_name);
       };

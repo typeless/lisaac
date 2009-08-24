@@ -140,9 +140,7 @@ Section Public
   - inline_level_current:INTEGER := 3;
   
   - execute_pass <-
-  ( 
-    TYPE.detect_alias;
-    TYPE_GENERIC.detect_alias;
+  (     
     VARIABLE.update;
     life_limit := 0;
     profil_slot := NULL;
@@ -159,6 +157,10 @@ Section Public
     ((! reduce_profil) && {inline_level_current < inline_level}).if {
       inline_level_current := inline_level_current + 3;
       new_execute_pass;
+    };
+    (TYPE.is_alias_struct).if {
+      TYPE.detect_alias;
+      TYPE_GENERIC.detect_alias;
     };
   );
   

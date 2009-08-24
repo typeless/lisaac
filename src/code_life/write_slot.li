@@ -100,9 +100,10 @@ Section Public
   - genere buffer:STRING <-
   ( + tf:TYPE_FULL;
     + t:TYPE;
-                   
-    slot.receiver_type.add_genere_list;    
-    (quiet_generation).if_false {
+    
+    t := slot.receiver_type;
+    t.add_genere_list;            
+    ((! quiet_generation) && {t.alias_slot != variable}).if {
       // Receiver.
       (is_java).if {
         receiver.genere buffer;
@@ -133,29 +134,7 @@ Section Public
         buffer.append ".__id=0";
       } else {
         buffer.add_last '=';    
-        genere_value buffer;
-        
-        /*
-        buffer.add_last ';';
-        tf := receiver.static_type;    
-        ((tf.is_strict) || {tf.is_expanded_ref}).if {
-          receiver.genere buffer;
-          buffer.append "->";
-        }.elseif {tf.is_expanded} then {      
-          receiver.genere buffer;
-          buffer.add_last '.';          
-        } else {
-          buffer.append "((";
-          t := slot.receiver_type;
-          t.put_reference_declaration buffer;	
-          buffer.add_last ' ';
-          t.put_reference_star_declaration buffer;	
-          buffer.add_last ')';
-          receiver.genere buffer;
-          buffer.append ")->";          
-        };
-        */
-        
+        genere_value buffer;        
       };
     };
   );
