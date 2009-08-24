@@ -68,6 +68,9 @@ Section Public
     
     new_val := value.my_copy;
     result ?= variable.write position with (receiver.my_copy) value new_val;
+    (quiet_generation).if {
+      result.set_quiet_generation;
+    };
     result
   );
   
@@ -104,7 +107,12 @@ Section Public
     t := slot.receiver_type;
     t.add_genere_list;            
     ((! quiet_generation) && {t.alias_slot != variable}).if {
-      // Receiver.
+      // Receiver.      
+      (quiet_generation).if {
+        buffer.append "/* WRTOK */";
+      } else {
+        buffer.append "/* WRTNO */";
+      };
       (is_java).if {
         receiver.genere buffer;
         buffer.add_last '.';          
