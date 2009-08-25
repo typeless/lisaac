@@ -107,12 +107,7 @@ Section Public
     t := slot.receiver_type;
     t.add_genere_list;            
     ((! quiet_generation) && {t.alias_slot != variable}).if {
-      // Receiver.      
-      (quiet_generation).if {
-        buffer.append "/* WRTOK */";
-      } else {
-        buffer.append "/* WRTNO */";
-      };
+      // Receiver.            
       (is_java).if {
         receiver.genere buffer;
         buffer.add_last '.';          

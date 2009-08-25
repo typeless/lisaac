@@ -179,7 +179,7 @@ Section Private
       (is_cop).if {
         lib_gcc := lib_gcc + " -lpthread";
       };
-      execute ("gcc " + input_file + ".c -o " + input_file + " -lm -lX11 " + option_gcc + lib_gcc);
+      execute ("gcc " + input_file + ".c -o " + input_file + " -lm " + option_gcc + lib_gcc);
     };
   );
   

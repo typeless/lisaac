@@ -58,11 +58,11 @@ Section Public
   // Loop :
   //
   
-  - Self:{}.loop_without_end <-
+  - Self:{}.endless_loop <-
   (
     (`1`:BOOLEAN{TRUE,FALSE}).if {
       value;
-      loop_without_end;
+      endless_loop;
     };
   );
   

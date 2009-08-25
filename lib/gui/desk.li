@@ -99,7 +99,7 @@ Section Public
 	input ?= msg.source;
 	input.acknowledge;
       };      
-    }.loop_without_end;
+    }.endless_loop;
   );
   
   //
