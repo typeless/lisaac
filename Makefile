@@ -55,24 +55,66 @@
 #  bug tracker system: https://gna.org/bugs/?func=additem&group=isaac
 #  mail to: Xavier Oswald <x.oswald@free.fr>
 
+PROJECT=lisaac
+VERSION_FULL=0.4.0
+DIST_SRC=\
+	Makefile \
+	COPYING \
+	Changelog \
+	Not_yet_implemented \
+	README \
+	TODO \
+	install_lisaac.c \
+	install_lisaac.li \
+	make.lip \
+	bin \
+	editor \
+	example \
+	lib \
+	lib_os \
+	manpage \
+	shorter \
+	src \
+	tests
+
 PREFIX=/usr/local
 MAN=$(PREFIX)/share/man/man1
 DOC=$(PREFIX)/share/doc/lisaac
 LIB=$(PREFIX)/share/lisaac
 BIN=$(PREFIX)/bin
-HTMLDOC=/html
-DESTDIR=
+HTML=/html
+DESTDIR?=
 
 #CC=gcc
-CFLAGS=-O2
+CFLAGS=-O3
+
+# do not change anything after this point
+DIST_NAME=$(PROJECT)-$(VERSION_FULL)
+export LISAAC_DIRECTORY=..
 
 all: bin/lisaac bin/shorter
+
+bootstrap/path.h:
+	mkdir bootstrap
+	@echo "#define LISAAC_DIRECTORY \"..\"" > bootstrap/path.h
+
+bootstrap/lisaac_pre: bin/lisaac bootstrap/path.h
+	cd bootstrap && ../bin/lisaac ../src/make.lip ../src/lisaac -no_debug -boost -gcc "-o lisaac_pre"
+
+bootstrap/lisaac: bootstrap/lisaac_pre
+	cd bootstrap && ./lisaac_pre ../src/make.lip ../src/lisaac -no_debug -boost
+
+bootstrap: src bootstrap/lisaac
+
+check: bootstrap
+	diff -s bootstrap/lisaac bootstrap/lisaac_pre
+	diff -s bin/lisaac bootstrap/lisaac
 
 bin/path.h:
 	@echo "#define LISAAC_DIRECTORY \"$(LIB)\"" > bin/path.h
 
 bin/lisaac: bin/lisaac.c bin/path.h
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@ -lm -lX11 -fomit-frame-pointer
 
 bin/shorter: bin/shorter.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@
@@ -87,20 +129,13 @@ install: bin/lisaac bin/shorter
 	mkdir -p $(DESTDIR)$(LIB) 
 	mkdir -p $(DESTDIR)$(BIN)
 	mkdir -p $(DESTDIR)$(MAN)
-	mkdir -p $(DESTDIR)$(DOC)$(HTML)
 	cp bin/lisaac  $(DESTDIR)$(BIN) 
 	cp bin/shorter  $(DESTDIR)$(BIN)
-	cp path.li  $(DESTDIR)$(LIB)
+	cp make.lip  $(DESTDIR)$(LIB)
 	cp -rf lib/  $(DESTDIR)$(LIB)
 	cp -rf lib_os/  $(DESTDIR)$(LIB)
 	cp -rf shorter/  $(DESTDIR)$(LIB)
 	cp -rf manpage/*.gz  $(DESTDIR)$(MAN)
-
-	# Temprary since shorter is broken
-	# $(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
-	#
-	# previous html documentation:
-	cp lib_html/* $(DESTDIR)$(DOC)$(HTML)
 
 uninstall:
 	-rm -rf $(DESTDIR)$(BIN)/lisaac
@@ -111,6 +146,17 @@ uninstall:
 	-rm -rf $(DESTDIR)$(MAN)/shorter.1.gz
 
 clean:
-	-rm -f path.h bin/lisaac bin/shorter
+	-rm -rf bootstrap
+	-rm -f bin/lisaac bin/shorter
+
+dist: clean
+	if ! test -d $(DIST_NAME) ; then mkdir $(DIST_NAME) ; fi
+	cp -rf $(DIST_SRC) $(DIST_NAME)
+	find $(DIST_NAME) \( -name .svn -o -name .git -o -name CVS -o -name .cvsignore -o -name *.jar \) -print0 | xargs -0 /bin/rm -rf
+	tar -cjf $(DIST_NAME).tar.bz2 $(DIST_NAME)
+	/bin/rm -rf $(DIST_NAME)
+
+distclean: clean
+
 
 
