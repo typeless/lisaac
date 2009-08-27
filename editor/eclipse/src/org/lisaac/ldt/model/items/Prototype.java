@@ -78,7 +78,7 @@ public class Prototype {
 	public IFile getFile() {
 		return file;
 	}
-	
+
 	public String getFileName() {
 		return file.getName();
 	}
@@ -106,7 +106,7 @@ public class Prototype {
 			copyrightOffset = position;
 		}
 	}
-	
+
 
 	public LisaacParser openParser() {
 		parser.initialize();
@@ -318,6 +318,11 @@ public class Prototype {
 			// Rewind to '(' '{' ';' '[' '.' '<-' 'operator'
 			c = source.charAt(offset);
 
+			if (c == '\n') {// '//' comments
+				offset = unreadSingleLineComment(offset, source);
+				continue;
+			}
+			
 			if (c == '(' || c == '{' || c == '[') {
 				if (bracketLevel == 0) {
 					break;
@@ -335,7 +340,6 @@ public class Prototype {
 				if (c == ';' || c == '.') {
 					break;
 				}
-
 				// affectation
 				if (c == '=' && source.length() - offset > 2) {
 					if (source.charAt(offset - 1) == ':'
@@ -349,57 +353,57 @@ public class Prototype {
 				}
 				if (parser.isOperatorSymbol(c)) {
 					if (c == '+' || c == '-') {
-						// ambiguity with slot definition
+						// slot definition
 						if (offset - 3 > 0 && source.charAt(offset - 1) == ' ' &&
 								source.charAt(offset - 2) == ' ' && 
 								source.charAt(offset - 3) == '\n') {
-							offset = offset - 3;
-							continue;
+							String slotName = parser
+							.readSlotNameFromOffset(offset + 1, false);
+							if (slotName != null) {
+								result = lookupSlot(slotName);
+								if (result == null) {
+									return null;
+								}
+								if (result.keywordCount() == 1) {
+									if (result.getName().compareTo(keyword) == 0) {
+										return result;
+									}
+									return null; // not a keyword
+								} else {
+									// find keyword next token
+									offset = baseOffset;
+									while (offset < source.length() - 1
+											&& Character
+											.isJavaIdentifierPart(source
+													.charAt(offset))) {
+										offset++;
+									}
+									// read space
+									while (offset < source.length() - 1
+											&& Character.isWhitespace(source
+													.charAt(offset))) {
+										offset++;
+									}
+									if (source.charAt(offset) != ':') {
+										return result;// 'keyword' is a slot keyword
+									}
+									return null;
+								}
+							}
 						}
+					}
+					// comments   */
+					if (offset - 1 > 0 && c == '/' && source.charAt(offset - 1) == '*')  {
+						offset = unreadMultiLineComment(offset, source);
+						continue;
 					}
 					break;
 				}
-			}
-
-			// look at indentation
-			if (c == '\n' && source.length() - offset > 4) {
-				if (source.charAt(offset + 1) == ' '
-					&& source.charAt(offset + 2) == ' '
-						&& (source.charAt(offset + 3) == '+' || source
-								.charAt(offset + 3) == '-')) {
-					String slotName = parser
-					.readSlotNameFromOffset(offset + 4, false);
-					if (slotName != null) {
-						result = lookupSlot(slotName);
-						if (result == null) {
-							return null;
-						}
-						if (result.keywordCount() == 1) {
-							if (result.getName().compareTo(keyword) == 0) {
-								return result;
-							}
-						} else {
-							// find keyword next token
-							offset = baseOffset;
-							while (offset < source.length() - 1
-									&& Character
-									.isJavaIdentifierPart(source
-											.charAt(offset))) {
-								offset++;
-							}
-							// read space
-							while (offset < source.length() - 1
-									&& Character.isWhitespace(source
-											.charAt(offset))) {
-								offset++;
-							}
-							if (source.charAt(offset) != ':') {
-								return result;// 'keyword' is a slot keyword
-							}
-							return null;
-						}
-					}
-				}
+				// strings 
+				if (c == '\"' || c == '\'' || c == '`') {
+					offset = unreadString(c, offset, source);
+					continue;
+				} 
 			}
 			offset--;
 		}
@@ -410,21 +414,48 @@ public class Prototype {
 				int pointOffset = offset;
 				offset--;
 				bracketLevel = 0;
+				invBracketLevel = 0;
 
-				// rewind until ';' '(' '{' '['
+				// Rewind to '(' '{' ';' '[' '.' '<-' 'operator'
 				while (offset > 0) {
 					c = source.charAt(offset);
-					if (c == ';') {
-						break;
-					}
+
 					if (c == '(' || c == '{' || c == '[') {
 						if (bracketLevel == 0) {
 							break;
 						}
 						bracketLevel--;
+						invBracketLevel++;
 					}
 					if (c == ')' || c == '}' || c == ']') {
 						bracketLevel++;
+						invBracketLevel--;
+					}
+
+					// ok, we're not in nested statements
+					if (bracketLevel == 0 && invBracketLevel == 0) {
+						if (c == ';') {
+							break;
+						}
+						// affectation
+						if (c == '=' && source.length() - offset > 2) {
+							if (source.charAt(offset - 1) == ':'
+								|| source.charAt(offset - 1) == '?') {
+								break;
+							}
+						} else if (c == '-' && source.length() - offset > 2) {
+							if (source.charAt(offset - 1) == '<') {
+								break;
+							}
+						}
+						if (parser.isOperatorSymbol(c)) {
+							break;
+						}
+						// strings 
+						if (c == '\"' || c == '\'' || c == '`') {
+							offset = unreadString(c, offset, source);
+							continue;
+						} 
 					}
 					offset--;
 				}
@@ -451,6 +482,59 @@ public class Prototype {
 		return result;
 	}
 
+	private int unreadSingleLineComment(int offset, String source) {
+		int saveOffset;
+		
+		offset--; // unread '\n'
+		saveOffset = offset;
+		
+		while (offset > 0) {
+			char c = source.charAt(offset);
+			if (c == '\n') {// no comment in the line
+				return saveOffset;
+			}
+			if (offset - 1 > 0 && c == '/' && source.charAt(offset - 1) == '/')  {
+				offset = offset - 2;
+				break;
+			}
+			offset--;
+		}
+		if (offset < 0) {
+			offset = 0;
+		}
+		return offset;
+	}
+
+	private int unreadMultiLineComment(int offset, String source) {
+		offset -= 2; // unread '*/'
+		
+		while (offset > 0) {
+			char c = source.charAt(offset);
+			// read '/*'
+			if (offset - 1 > 0 && c == '*' && source.charAt(offset - 1) == '/')  {
+				offset = offset - 2;
+				break;
+			}
+			offset--;
+		}
+		if (offset < 0) {
+			offset = 0;
+		}
+		return offset;
+	}
+	
+	private int unreadString(char type, int offset, String source) {
+		char c;
+		do {
+			offset--;
+			c = source.charAt(offset);
+		} while (offset > 0 && c != type);
+		if (c == type) {
+			offset--;
+		}
+		return offset;
+	}
+	
 	public void addSlot(Slot s) {
 		slotList.put(s.getName(), s);
 	}
@@ -600,19 +684,19 @@ public class Prototype {
 	public Change refactorHeader(String author, String bibliography,
 			String copyright, String license) {
 		MultiTextEdit edit= new MultiTextEdit();
-		
+
 		// update header slots.
 		refactorHeaderSlot(ILisaacModel.slot_author, authorOffset, author, edit);
 		refactorHeaderSlot(ILisaacModel.slot_bibliography, bibliographyOffset, bibliography, edit);
 		refactorHeaderSlot(ILisaacModel.slot_copyright, copyrightOffset, copyright, edit);
-		
+
 		// update license.
 		if (license != null) {
 			int offset = getOffsetBeforeSection();
 			edit.addChild(new DeleteEdit(0, offset-1));
 			edit.addChild(new InsertEdit(0, license));
 		}
-		
+
 		// create change
 		if (edit.getChildrenSize() > 0) {
 			TextFileChange change = new TextFileChange("Update Section Header", file);
@@ -621,7 +705,7 @@ public class Prototype {
 		}
 		return null;
 	}
-	
+
 	private void refactorHeaderSlot(String name, Position pos, String newValue, MultiTextEdit edit) {
 		if (newValue != null) {
 			if (pos != null) {
@@ -635,16 +719,16 @@ public class Prototype {
 			}
 		}
 	}
-	
+
 	private int getOffsetAfterName() {
 		LisaacParser parser = openParser();
 		parser.setPosition(nameOffset);
 		parser.readCapIdentifier();
 		parser.readCharacter(';');
-	
+
 		return parser.getOffset();
 	}
-	
+
 	private int getOffsetBeforeSection() {
 		LisaacParser parser = openParser();
 		parser.setPosition(0);
@@ -653,19 +737,19 @@ public class Prototype {
 		}
 		return 0;
 	}
-	
+
 	public void setNameOffset(int offset) {
 		nameOffset = offset;
 	}
-	
+
 	public void setAuthorOffset(Position p) {
 		authorOffset = p;
 	}
-	
+
 	public void setBibliographyOffset(Position p) {
 		bibliographyOffset = p;
 	}
-	
+
 	public void setCopyrightOffset(Position p) {
 		copyrightOffset = p;
 	}
@@ -673,7 +757,7 @@ public class Prototype {
 	public IRegion getRegionAt(int line, int column) {
 		LisaacParser parser = openParser();
 		parser.readTokenAt(line, column);
-		
+
 		return new Region(parser.getOffset(), parser.getLastString().length());
 	}
 }

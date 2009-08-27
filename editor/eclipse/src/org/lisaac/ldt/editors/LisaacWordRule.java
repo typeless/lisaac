@@ -42,6 +42,17 @@ public class LisaacWordRule extends WordRule {
 			int offset = ((LisaacScanner) scanner).getOffset();
 			String word = fBuffer.toString();
 			
+			try {
+				Slot slot = prototype.getSlotFromKeyword(word, prototype.openParser(), offset-word.length());
+				if (slot != null) {
+					return result;
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			Slot slot = prototype.getSlot(offset);
 			if (slot != null) {
 				
@@ -53,16 +64,6 @@ public class LisaacWordRule extends WordRule {
 				if (slot.hasVariableDefinition(word, offset)) {
 					return localVariableToken;
 				}
-			}
-			try {
-				slot = prototype.getSlotFromKeyword(word, prototype.openParser(), offset-word.length());
-				if (slot != null) {
-					return result;
-				}
-			} catch (CoreException e) {
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		return result;

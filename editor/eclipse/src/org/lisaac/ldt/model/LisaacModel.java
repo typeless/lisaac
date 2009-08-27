@@ -3,8 +3,8 @@ package org.lisaac.ldt.model;
 import java.io.InputStream;
 import java.util.HashMap;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -102,7 +102,7 @@ public class LisaacModel implements ILisaacModel{
 		if (prototypes != null) {
 			result = prototypes.get(name); // prototype is already cached
 
-			if (result == null) {
+			if (result == null && modelPath != null) {
 				// cache new prototype
 				String prototypePath = modelPath.getFullPath(name);
 				if (prototypePath != null) {
@@ -116,17 +116,17 @@ public class LisaacModel implements ILisaacModel{
 						file = project.getFile(location);
 					} else {
 						// file is outside workspace : create link in /lib
-						IContainer lib = project.getFolder("lib");
-						if (lib == null) {
-							lib = project;
+						IFolder lib = project.getFolder("lib");
+						if (!lib.exists()) {
+							lib.create(false, true, null);
 						}
 						file = lib.getFile(new Path(location.lastSegment()));
 						if (! file.isAccessible() && ! file.exists()) {
 							file.createLink(location, IResource.NONE, null);
 							//
-							ResourceAttributes attrib = new ResourceAttributes();
-							attrib.setReadOnly(true);
-							file.setResourceAttributes(attrib);
+							//ResourceAttributes attrib = new ResourceAttributes();
+							//attrib.setReadOnly(true);
+							//file.setResourceAttributes(attrib);
 							//
 						}
 					}

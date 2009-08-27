@@ -109,6 +109,7 @@ public class PrototypeHyperLink implements IHyperlink {
 				if (prototype != null) {
 					final IProject p = project;
 					final String filename = prototype.getFileName();
+					final String prototypePath = prototype.getModel().getPathManager().getFullPath(prototype.getName());
 					final Position selectPosition = position;
 
 					part.getSite().getShell().getDisplay().asyncExec(new Runnable() {
@@ -117,33 +118,38 @@ public class PrototypeHyperLink implements IHyperlink {
 							if (page == null) {
 								return;
 							}
-							IFile file=null;
-							IPath location = new Path(filename);
+														
+							if (prototypePath != null) {
+								IPath location = new Path(prototypePath);
+								IPath projectLocation = p.getLocation();
+								IFile file = null;
 
-							IContainer src = p.getFolder("src");
-							if (src == null) {
-								src = p;
-							}
-							file = src.getFile(location);
-							if (!file.isAccessible()) {
-								IContainer lib = p.getFolder("lib");
-								if (lib == null) {
-									lib = p;
-								}
-								file = lib.getFile(location);
-							}
-							try {
-								IDE.openEditor(page, file);
-								if (selectPosition != null) {
-									IWorkbenchPart part = w.getPartService().getActivePart();
-									if (part instanceof LisaacEditor) {
-										((LisaacEditor)part).selectAndReveal(selectPosition.offset, selectPosition.length);
+								if (projectLocation.isPrefixOf(location)) {
+									// the file is inside the workspace
+									location = location.removeFirstSegments(projectLocation.segmentCount());
+									file = p.getFile(location);
+								} else {
+									// file is outside workspace : search in /lib
+									IContainer lib = p.getFolder("lib");
+									if (lib == null) {
+										lib = p;
 									}
+									file = lib.getFile(new Path(filename));
 								}
-							} catch (CoreException e) {
-								// TODO open editor error
-								e.printStackTrace();
-							}
+								
+								try {
+									IDE.openEditor(page, file);
+									if (selectPosition != null) {
+										IWorkbenchPart part = w.getPartService().getActivePart();
+										if (part instanceof LisaacEditor) {
+											((LisaacEditor)part).selectAndReveal(selectPosition.offset, selectPosition.length);
+										}
+									}
+								} catch (CoreException e) {
+									// TODO open editor error
+									e.printStackTrace();
+								}
+							}					
 						}
 					});
 				}

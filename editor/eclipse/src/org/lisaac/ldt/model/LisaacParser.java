@@ -670,32 +670,33 @@ public class LisaacParser extends AbstractLisaacParser {
 	} 
 
 	private String getOperator(String typ, String op) {
-		String s = new String(typ);
+		StringBuffer s = new StringBuffer(typ);
+
 
 		for (int i=0; i<op.length(); i++) {
 			char c = op.charAt(i);
 			switch (c) {
-			case '+': s += "_add"; break;
-			case '-': s += "_sub"; break;
-			case '~': s += "_logicnot"; break;
-			case '!': s += "_not"; break;
-			case '/': s += "_div"; break;
-			case '*': s += "_mul"; break;
-			case '^': s += "_xor"; break;
-			case '%': s += "_mod"; break;
-			case '>': s += "_greater"; break;
-			case '<': s += "_less"; break;
-			case '=': s += "_equal"; break;
-			case '\\': s += "_notdiv"; break;
-			case '|': s += "_or"; break;
-			case '&': s += "_and"; break;
-			case '$': s += "_dollar"; break;
-			case '#': s += "_diese"; break;
-			case '@': s += "_at"; break;
-			case '?': s += "_ask"; break;
+			case '+': s.append("_add"); break;
+			case '-': s.append("_sub"); break;
+			case '~': s.append("_logicnot"); break;
+			case '!': s.append("_not"); break;
+			case '/': s.append("_div"); break;
+			case '*': s.append("_mul"); break;
+			case '^': s.append("_xor"); break;
+			case '%': s.append("_mod"); break;
+			case '>': s.append("_greater"); break;
+			case '<': s.append("_less"); break;
+			case '=': s.append("_equal"); break;
+			case '\\': s.append("_notdiv"); break;
+			case '|': s.append("_or"); break;
+			case '&': s.append("_and"); break;
+			case '$': s.append("_dollar"); break;
+			case '#': s.append("_diese"); break;
+			case '@': s.append("_at"); break;
+			case '?': s.append("_ask"); break;
 			}
 		}
-		return getString(s); // alias string
+		return getString(s.toString()); // alias string
 	}
 
 	//++ EXPR         -> { ASSIGN !!AMBIGU!! affect } EXPR_OPERATOR
@@ -814,7 +815,7 @@ public class LisaacParser extends AbstractLisaacParser {
 				ITMOperator itm_op = (ITMOperator) l_expr.get(last_msg+1);
 				expr = new ITMReadArg1(getOperator("__postfix", itm_op.getName()), l_expr.get(last_msg));
 
-				l_expr.add(last_msg, expr);
+				l_expr.set(last_msg, expr);
 				l_expr.remove(last_msg+1);
 			}
 			if (last_msg - first_msg < 3) {

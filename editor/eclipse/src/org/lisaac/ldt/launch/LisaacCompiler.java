@@ -43,15 +43,25 @@ public class LisaacCompiler {
 	}
 
 	public IContainer launchInConsole(final ILaunch launch, IProject project, IProgressMonitor monitor) throws CoreException {
-		IContainer src = project.getFolder("src");
+		
+		String prototypePath = model.getPathManager()
+			.getFullPath(LisaacModel.extractPrototypeName(inputFile));
+		
+		if (prototypePath != null) {
+			IPath location = new Path(prototypePath);
+			IPath projectLocation = project.getLocation();
+			IFile file = null;
 
-		if (src != null) {
-			if (LisaacLauncher.executeCommandInConsole(launch, monitor, src, this.toCommandLineArray(),this)) {
-				return src;
+			if (projectLocation.isPrefixOf(location)) {
+				// the file is inside the workspace
+				location = location.removeFirstSegments(projectLocation.segmentCount());
+				file = project.getFile(location);
+				
+				IContainer container = file.getParent();
+				if (LisaacLauncher.executeCommandInConsole(launch, monitor, container, this.toCommandLineArray(),this)) {
+					return container;
+				}
 			}
-		}
-		else if (LisaacLauncher.executeCommandInConsole(launch, monitor, project, this.toCommandLineArray(),this)) {
-			return project;
 		}
 		return null;
 	}

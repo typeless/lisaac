@@ -2,6 +2,7 @@ package org.lisaac.ldt;
 
 import java.io.IOException;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
@@ -99,8 +100,13 @@ public class LisaacPlugin extends AbstractUIPlugin {
 				if (projects[i] != null && projects[i].isOpen()) {
 					if (projects[i].getNature(LisaacNature.NATURE_ID) != null) {
 						try {
+							IContainer bin = projects[i].getFolder("lib");
+							if (bin.exists()) {
+								bin.delete(true, null);
+							}
+							
 							// clean all lisaac projects to get started
-							projects[i].build(IncrementalProjectBuilder.FULL_BUILD, null);
+							projects[i].build(IncrementalProjectBuilder.CLEAN_BUILD, null);
 							
 						} catch (Exception e) {
 							log(new Status(IStatus.ERROR,

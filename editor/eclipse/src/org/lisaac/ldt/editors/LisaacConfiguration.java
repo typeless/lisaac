@@ -42,7 +42,9 @@ public class LisaacConfiguration extends SourceViewerConfiguration {
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return new String[] {
 			IDocument.DEFAULT_CONTENT_TYPE,
-			LisaacPartitionScanner.LISAAC_COMMENT
+			LisaacPartitionScanner.LISAAC_COMMENT,
+			LisaacPartitionScanner.LISAAC_STRING,
+			LisaacPartitionScanner.LISAAC_EXTERNAL
 		};
 	}
 	
@@ -155,11 +157,17 @@ public class LisaacConfiguration extends SourceViewerConfiguration {
 		reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
 		NonRuleBasedDamagerRepairer ndr =
-			new NonRuleBasedDamagerRepairer(
-				new TextAttribute(
-					colorManager.getColor(ILisaacColor.COMMENT)));
+			new NonRuleBasedDamagerRepairer(colorManager.getToken(ILisaacColor.PREF_COMMENT, ILisaacColor.PREF_NORMAL));
 		reconciler.setDamager(ndr, LisaacPartitionScanner.LISAAC_COMMENT);
 		reconciler.setRepairer(ndr, LisaacPartitionScanner.LISAAC_COMMENT);
+		 
+		ndr = new NonRuleBasedDamagerRepairer(colorManager.getToken(ILisaacColor.PREF_STRING, ILisaacColor.STYLE_STRING));
+		reconciler.setDamager(ndr, LisaacPartitionScanner.LISAAC_STRING);
+		reconciler.setRepairer(ndr, LisaacPartitionScanner.LISAAC_STRING);
+		
+		ndr = new NonRuleBasedDamagerRepairer(colorManager.getToken2(ILisaacColor.PREF_EXTERNAL, ILisaacColor.PREF_LOCAL_SLOT));
+		reconciler.setDamager(ndr, LisaacPartitionScanner.LISAAC_EXTERNAL);
+		reconciler.setRepairer(ndr, LisaacPartitionScanner.LISAAC_EXTERNAL);
 		
 		return reconciler;
 	}

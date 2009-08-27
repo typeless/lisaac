@@ -169,15 +169,6 @@ public class AbstractLisaacEditor extends TextEditor {
 		markAsStateDependentAction("ContentAssistProposal", true); //$NON-NLS-1$
 	}
 
-	public void doSave(IProgressMonitor progressMonitor) {
-		super.doSave(progressMonitor);
-
-		/*LisaacModel model = LisaacModel.getModel(getProject());
-		if (model != null) {
-			model.incrementalBuild(); 
-		}*/
-	}
-
 	public ISourceViewer getViewer() {
 		return getSourceViewer();
 	}

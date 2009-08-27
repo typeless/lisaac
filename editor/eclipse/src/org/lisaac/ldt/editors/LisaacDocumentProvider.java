@@ -20,7 +20,9 @@ public class LisaacDocumentProvider extends FileDocumentProvider {
 					new LisaacPartitionScanner(),
 					new String[] {
 						LisaacPartitionScanner.LISAAC_DEFAULT,
-						LisaacPartitionScanner.LISAAC_COMMENT });
+						LisaacPartitionScanner.LISAAC_COMMENT,
+						LisaacPartitionScanner.LISAAC_STRING,
+						LisaacPartitionScanner.LISAAC_EXTERNAL});
 			partitioner.connect(document);
 			document.setDocumentPartitioner(partitioner);
 		}

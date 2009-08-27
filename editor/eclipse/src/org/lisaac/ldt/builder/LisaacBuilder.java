@@ -2,6 +2,7 @@ package org.lisaac.ldt.builder;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -146,6 +147,11 @@ public class LisaacBuilder extends IncrementalProjectBuilder {
 		if (kind == CLEAN_BUILD) {
 			model.refreshPath();
 			monitor.worked(10);
+			
+			IContainer bin = project.getFolder("lib");
+			if (bin.exists()) {
+				bin.delete(true, monitor);
+			}
 		}
 		
 		if (kind == FULL_BUILD) {

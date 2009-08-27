@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
@@ -19,7 +18,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -40,7 +38,7 @@ import org.lisaac.ldt.outline.OutlineLabelProvider;
 public class LisaacOutlineView extends ContentOutlinePage implements IDocumentListener {
 
 	/** the delay before the outline view is updated. */
-	private static final long UPDATE_DELAY = 1000; 
+	private static final long UPDATE_DELAY = 2000; 
 
 	/** the document provider. */
 	private IDocumentProvider documentProvider;

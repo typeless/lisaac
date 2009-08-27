@@ -10,7 +10,7 @@ import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.presentation.IPresentationDamager;
 import org.eclipse.jface.text.presentation.IPresentationRepairer;
-import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.swt.custom.StyleRange;
 
 public class NonRuleBasedDamagerRepairer
@@ -19,15 +19,13 @@ public class NonRuleBasedDamagerRepairer
 	/** The document this object works on */
 	protected IDocument fDocument;
 	/** The default text attribute if non is returned as data by the current token */
-	protected TextAttribute fDefaultTextAttribute;
+	protected IToken colorToken;
 	
 	/**
 	 * Constructor for NonRuleBasedDamagerRepairer.
 	 */
-	public NonRuleBasedDamagerRepairer(TextAttribute defaultTextAttribute) {
-		Assert.isNotNull(defaultTextAttribute);
-
-		fDefaultTextAttribute = defaultTextAttribute;
+	public NonRuleBasedDamagerRepairer(IToken colorToken) {
+		this.colorToken = colorToken;
 	}
 
 	/**
@@ -106,11 +104,13 @@ public class NonRuleBasedDamagerRepairer
 	public void createPresentation(
 		TextPresentation presentation,
 		ITypedRegion region) {
+		
+		TextAttribute attr = (TextAttribute) colorToken.getData();
 		addRange(
 			presentation,
 			region.getOffset(),
 			region.getLength(),
-			fDefaultTextAttribute);
+			attr);
 	}
 
 	/**
