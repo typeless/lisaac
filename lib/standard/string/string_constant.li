@@ -22,6 +22,12 @@ Section Header
 
   + name    := Strict STRING_CONSTANT;
 
+  - import := NATIVE_ARRAY(CHARACTER),
+              NATIVE_ARRAY(INTEGER_8),
+              NATIVE_ARRAY(UINTEGER_8);
+  - export := NATIVE_ARRAY(CHARACTER),
+              NATIVE_ARRAY(INTEGER_8),
+              NATIVE_ARRAY(UINTEGER_8);
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
@@ -77,6 +83,12 @@ Section Public
     result
   );
 
+  - from_external p:NATIVE_ARRAY(CHARACTER) :STRING_CONSTANT <-
+  ( + i:INTEGER;
+    {n.item i = '\0'}.until_do { i := i + 1; };
+    new_intern n count i
+  );
+
   - to_external:NATIVE_ARRAY(CHARACTER) <-
   // Gives C access to the internal `storage' (may be dangerous).
   // To be compatible with C, a null character is added at the end
@@ -124,4 +136,15 @@ Section Public
 
   - Self:SELF '+?' test:{BOOLEAN} <- test +? Self;
 
+  //
+  // Import NATIVE_ARRAY
+  //
 
+  - from_native_array_of_character p:NATIVE_ARRAY(CHARACTER) :STRING_CONSTANT <-
+    from_external p;
+
+  - from_native_array_of_integer_8 p:NATIVE_ARRAY(INTEGER_8) :STRING_CONSTANT <-
+    from_external(CONVERT(NATIVE_ARRAY(INTEGER_8),NATIVE_ARRAY(CHARACTER)).on p);
+
+  - from_native_array_of_uinteger_8 p:NATIVE_ARRAY(UINTEGER_8) :STRING_CONSTANT <-
+    from_external(CONVERT(NATIVE_ARRAY(UINTEGER_8),NATIVE_ARRAY(CHARACTER)).on p);
