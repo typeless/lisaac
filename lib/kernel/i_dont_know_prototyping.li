@@ -23,7 +23,7 @@ Section Header
   + name    := I_DONT_KNOW_PROTOTYPING;
 
 
-  - copyright   := "2003-2007 Benoit Sonntag";
+  - copyright   := "2003-2007 Benoit Sonntag; another idiot : Pierre-Alex";
 
   - comment := "Facility, but it's not in prototype spirit.";
 
@@ -33,12 +33,12 @@ Section Public
   // Conditional.
   //
     
-  - if cond:BOOLEAN then true_block:BLOCK :BOOLEAN <-
+  - if cond:BOOLEAN then true_block:{} :BOOLEAN <-
   (
     cond.if true_block
   );
 
-  - if cond:BOOLEAN then true_block:BLOCK else false_block:BLOCK <-
+  - if cond:BOOLEAN then true_block:{} else false_block:{} <-
   (
     cond.if true_block else false_block;
   );
@@ -47,17 +47,17 @@ Section Public
   // Loop.
   //
   
-  - while cond:BLOCK do body:BLOCK <-
+  - while cond:{} do body:{} <-
   (
     cond.while_do body;
   );
   
-  - do body:BLOCK while cond:BLOCK <-
+  - do body:{} while cond:{} <-
   (
     body.do_while cond;
   );
   
-  - repeat body:BLOCK until cond:BLOCK <-
+  - repeat body:{} until cond:{} <-
   (
     body.do_until cond;
   );
