@@ -64,7 +64,8 @@ Section Private
   - standard_path <-
   // Standard library.
   ( 
-    path (lisaac + "lib/*");    
+    LIP.create "lib/make.lip".init;
+    // path (lisaac + "lib/*");    
   );
   
   //
