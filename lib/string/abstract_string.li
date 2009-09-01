@@ -931,19 +931,21 @@ Section Public
   // Modification:
   //
   
-  - Self:SELF '+' other:ABSTRACT_STRING :STRING <-
+  - Self:SELF '+' other:ABSTRACT_STRING :STRING_BUFFER <-
   // Create a new STRING which is the concatenation of
   // `self' and `other'.
-  ( + result:STRING;
-    ? {other != NULL};
-    
-    result:=STRING.create (count + other.count);
+  [
+    -? {other != NULL};
+  ]
+  ( + result:STRING_BUFFER;
+    result:=STRING_BUFFER.create (count + other.count);
     result.append Self;
     result.append other;
-    
-    ? {result.count = count + other.count};
     result
-  );
+  )
+  [
+    +? {Result.count = count + other.count};
+  ];
     
   - as_lower:STRING <-
   // New object with all letters in lower case.

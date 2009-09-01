@@ -223,7 +223,7 @@ Section Public
     count := needed_capacity;
   );
   
-  - Self:SELF '+=' Left other:ABSTRACT_STRING :SELF <-
+  - Self:SELF '+=' Right other:ABSTRACT_STRING :STRING_BUFFER <-
   (
     append other;
     Self
