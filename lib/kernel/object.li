@@ -166,12 +166,11 @@ Section Public
 
   - to_string :STRING <- to_pointer.to_string;
 
-  - print <- to_string.print;
+  - to_abstract_string :ABSTRACT_STRING <- to_string;
 
-  - println <- 
-  ( 
-    to_string.println; 
-  );
+  - print <- to_abstract_string.print;
+
+  - println <- to_abstract_string.println;
   
   - dynamic_type:SELF <- SELF;
   

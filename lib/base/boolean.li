@@ -102,13 +102,15 @@ Section Public
   //
   // Convertion
   //
-  
-  - to_string:STRING <- 
+
+  - to_string:STRING <-
   ( + result:STRING;
-    
+
     deferred;
     result
   );
+
+  - to_abstract_string:ABSTRACT_STRING <- "BOOLEAN";
   
   - to_integer:INTEGER <- 
   ( + result:INTEGER;
@@ -124,15 +126,4 @@ Section Public
     result
   );
   
-  - append_in str:STRING <- str.append to_string;
-
-  //
-  // Output.
-  //
-  
-  - print <-
-  (
-    deferred;
-  );
-
-
+  - append_in str:STRING <- str.append to_abstract_string;
