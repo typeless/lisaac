@@ -335,6 +335,12 @@ public class Prototype {
 				invBracketLevel--;
 			}
 
+			// strings 
+			if (c == '\"' || c == '\'' || c == '`') {
+				offset = unreadString(c, offset, source);
+				continue;
+			} 
+			
 			// ok, we're not in nested statements
 			if (bracketLevel == 0 && invBracketLevel == 0) {
 				if (c == ';' || c == '.') {
@@ -399,11 +405,6 @@ public class Prototype {
 					}
 					break;
 				}
-				// strings 
-				if (c == '\"' || c == '\'' || c == '`') {
-					offset = unreadString(c, offset, source);
-					continue;
-				} 
 			}
 			offset--;
 		}
@@ -497,7 +498,11 @@ public class Prototype {
 				offset = offset - 2;
 				break;
 			}
-			offset--;
+			if (c == '\"' || c == '\'' || c == '`') {
+				offset = unreadString(c, offset, source);
+				continue;
+			}
+			offset--; 
 		}
 		if (offset < 0) {
 			offset = 0;

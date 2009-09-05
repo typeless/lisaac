@@ -13,18 +13,20 @@ public class LisaacChangeListener implements IResourceChangeListener {
 	public void resourceChanged(IResourceChangeEvent event) {
 		IResourceDelta delta = event.getDelta();
 
-		IResource resource = delta.getResource(); 
-		if (resource != null) {
-			if (resource instanceof IWorkspaceRoot) {
-				delta = (IResourceDelta) (delta.getAffectedChildren())[0];// TODO go deeper in the delta
-				resource = delta.getResource(); 
-			}
+		if (delta != null) {
+			IResource resource = delta.getResource(); 
 			if (resource != null) {
-				IProject project = (IProject) resource.getProject();
-				LisaacModel model = LisaacModel.getModel(project);
+				if (resource instanceof IWorkspaceRoot) {
+					delta = (IResourceDelta) (delta.getAffectedChildren())[0];// TODO go deeper in the delta
+					resource = delta.getResource(); 
+				}
+				if (resource != null) {
+					IProject project = (IProject) resource.getProject();
+					LisaacModel model = LisaacModel.getModel(project);
 
-				if (model != null) {
-					model.setCompiled(false);
+					if (model != null) {
+						model.setCompiled(false);
+					}
 				}
 			}
 		}

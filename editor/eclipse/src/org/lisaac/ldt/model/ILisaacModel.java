@@ -5,13 +5,6 @@ import org.lisaac.ldt.builder.ILisaacErrorHandler;
 import org.lisaac.ldt.model.lip.LIP;
 
 public interface ILisaacModel {
-
-	final String[] keywords = new String[] { "Section", "Public",
-		"Private", "Inherit", "Header", "Insert", "Mapping", "Interrupt",
-		"External", "Directory", 
-		"Expanded", "Strict",
-		"Left", "Right",
-		"Self",};
 	
 	final String inherit_shared             = "Shared";
 	final String inherit_shared_expanded    = "Shared Expanded";
@@ -79,13 +72,23 @@ public interface ILisaacModel {
 	final String variable_void          = "VOID";
 	final String variable_self          = "Self";
 	
+	
+	final String[] keywords = new String[] { keyword_section, section_public,
+			section_private, section_inherit, section_header, section_insert,
+			section_mapping, section_interrupt,
+			section_external, section_directory, 
+			keyword_expanded, keyword_strict,
+			keyword_left, keyword_right,
+			variable_self, keyword_old, keyword_result};
+	
+	
 	// lip
 	final String slot_lip    = "lip";
 	final String slot_if    = "if";
 	final String slot_else  = "else";
 	final String slot_print = "print";
 	
-	final String slot_debug_mode = "debug_mode";
+	final String slot_debug_mode = "run_mode";
 	
 	ILisaacErrorHandler getReporter();
 	AliasString getAliasString();

@@ -1,5 +1,6 @@
 package org.lisaac.ldt.wizards;
 
+import java.awt.GridLayout;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
@@ -40,15 +46,17 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		final String name;
 		final IPath path;
+		final boolean genereSrc;
 		IRunnableWithProgress op = null;
 		try {
 			name = mainPage.getProjectName();
 			path = mainPage.getLocationPath();
-			//lisaacPath = mainPage.getLisaacPath();
+			genereSrc = mainPage.generateSrc();
+
 			op = new IRunnableWithProgress() {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException {
 					try {						
-						doFinish(name, path, monitor);
+						doFinish(name, path, genereSrc, monitor);
 					} catch (CoreException e) {
 						throw new InvocationTargetException(e);
 					} finally {
@@ -72,7 +80,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		return true;
 	}
 
-	private void doFinish(String projectName, IPath nomRep, IProgressMonitor monitor)
+	private void doFinish(String projectName, IPath nomRep, boolean genereSrc, IProgressMonitor monitor)
 	throws CoreException
 	{
 		monitor.beginTask("Project Creation " + projectName, 4); //$NON-NLS-1$
@@ -114,22 +122,23 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 			// create make file for project
 			IFile lipFile = project.getFile("make.lip"); //$NON-NLS-1$
 			if (! lipFile.exists()) {
-				lipFile.create(new ByteArrayInputStream(getLipStream(project)), false, monitor);
+				lipFile.create(new ByteArrayInputStream(getLipStream(project, genereSrc)), false, monitor);
 			}
 
 			// create default folder & files in project
-			IFolder src = project.getFolder("src"); //$NON-NLS-1$
-			if (! src.exists()) {
-				src.create(false, true, monitor);
-				src.setPersistentProperty(
-						new QualifiedName("", LisaacResourceDecorator.SOURCE_FOLDER_PROPERTY),
-				"true");
-			}
-
-			monitor.worked(1);
-			IFile mainPrototype = src.getFile(projectName.toLowerCase()+".li"); //$NON-NLS-1$
-			if (! mainPrototype.exists()) {
-				mainPrototype.create(new ByteArrayInputStream(getMainPrototypeStream(projectName)), false, monitor);
+			if (genereSrc) {
+				IFolder src = project.getFolder("src"); //$NON-NLS-1$
+				if (! src.exists()) {
+					src.create(false, true, monitor);
+					src.setPersistentProperty(
+							new QualifiedName("", LisaacResourceDecorator.SOURCE_FOLDER_PROPERTY),
+					"true");
+				}
+				monitor.worked(1);
+				IFile mainPrototype = src.getFile(projectName.toLowerCase()+".li"); //$NON-NLS-1$
+				if (! mainPrototype.exists()) {
+					mainPrototype.create(new ByteArrayInputStream(getMainPrototypeStream(projectName)), false, monitor);
+				}
 			}
 			IFolder bin = project.getFolder("bin"); //$NON-NLS-1$
 			if (! bin.exists()) {
@@ -170,7 +179,7 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		return contents.getBytes();
 	}
 
-	public byte[] getLipStream(IProject project) throws IOException {
+	public byte[] getLipStream(IProject project, boolean genereSrc) throws IOException {
 		String contents = "//\n// `"+project.getName()+"`  LIsaac Project file\n//"; //$NON-NLS-1$ //$NON-NLS-2$
 		contents += "\nSection Inherit\n\n"; //$NON-NLS-1$
 		contents += "  + parent:STRING;\n"; //$NON-NLS-1$
@@ -179,7 +188,11 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		contents += "  - project_src_path <- \n"; //$NON-NLS-1$
 		contents += "  // Define the project path for source code.\n"; //$NON-NLS-1$
 		contents += "  (\n"; //$NON-NLS-1$
-		contents += "    path (project_root + \"src/\");\n"; //$NON-NLS-1$
+		if (genereSrc) {
+			contents += "    path (project_root + \"src/\");\n"; //$NON-NLS-1$
+		} else {
+			contents += "    path project_root;\n"; //$NON-NLS-1$
+		}
 		contents += "  );\n\n"; //$NON-NLS-1$
 		contents += "  - front_end <- \n"; //$NON-NLS-1$
 		contents += "  // Executed by compiler, before compilation step.\n"; //$NON-NLS-1$
@@ -188,10 +201,14 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 		contents += "    general_front_end;\n"; //$NON-NLS-1$
 		contents += "  );\n"; //$NON-NLS-1$
 		contents +=	"\nSection Public\n\n"; //$NON-NLS-1$
-		contents += "  - debug_mode <- \n"; //$NON-NLS-1$
-		contents += "  // Run in Debug Mode.\n"; //$NON-NLS-1$
+		contents += "  - run_mode m:STRING <- \n"; //$NON-NLS-1$
+		contents += "  // Select Run Mode.\n"; //$NON-NLS-1$
 		contents += "  (\n"; //$NON-NLS-1$
-		contents += "    debug 15; // default level [1-20]\n"; //$NON-NLS-1$
+		contents += "    (m = \"run\").if {\n"; //$NON-NLS-1$			
+		contents += "      no_debug;\n"; //$NON-NLS-1$
+		contents += "    } else {\n"; //$NON-NLS-1$		
+		contents += "      debug 15; // default level [1-20]\n"; //$NON-NLS-1$
+		contents += "    };\n"; //$NON-NLS-1$	
 		contents += "  );\n\n"; //$NON-NLS-1$
 		contents += "  - clean <- \n"; //$NON-NLS-1$
 		contents += "  // Clean project.\n"; //$NON-NLS-1$
@@ -214,10 +231,29 @@ public class NewProjectWizard extends Wizard implements INewWizard {
 
 class NewProjectWizardPage extends WizardNewProjectCreationPage {
 
+	Button genereSrc;
+
 	NewProjectWizardPage(String pageName) {
 		super(pageName);
 		setTitle(pageName);
 		setDescription(LisaacMessages.getString("NewProjectWizard_48")); 
+	}
+
+	public void createControl(Composite parent) {
+		super.createControl(parent);
+
+		Composite composite = (Composite) getControl();
+
+		genereSrc = new Button(composite, SWT.CHECK);
+		genereSrc.setText("Generate src files");
+		genereSrc.setSelection(true);
+	}
+
+	public boolean generateSrc() {
+		if (! genereSrc.isDisposed()) {
+			return genereSrc.getSelection();
+		}
+		return true;
 	}
 }
 /*

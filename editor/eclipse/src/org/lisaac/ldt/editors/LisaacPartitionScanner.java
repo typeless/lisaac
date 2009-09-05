@@ -20,17 +20,17 @@ public class LisaacPartitionScanner extends RuleBasedPartitionScanner {
 		IToken string = new Token(LISAAC_STRING);
 		IToken external = new Token(LISAAC_EXTERNAL);
 		
-		IPredicateRule[] rules = new IPredicateRule[4];
+		IPredicateRule[] rules = new IPredicateRule[6];
 
-		rules[0] = new MultiLineRule("/*", "*/", comment);
-		rules[1] = new EndOfLineRule("//", comment);
-
-		rules[2] = new MultiLineRule("\"", "\"", string);
-		rules[3] = new MultiLineRule("`", "`", external);
-
+		rules[0] = new MultiLineRule("\"", "\"", string);
+		rules[1] = new MultiLineRule("`", "`", external);
+		
+		rules[2] = new MultiLineRule("/*", "*/", comment);
+		rules[3] = new EndOfLineRule("//", comment);
+		
 		// avoid processing comment inside lisaac strings
-		//rules[2] = new MultiLineRule("\"", "\"", Token.UNDEFINED, '\0', true);
-		//rules[3] = new SingleLineRule("`", "`", Token.UNDEFINED, '\0', true);
+		rules[4] = new MultiLineRule("\"", "\"", string, '\0', true);
+		rules[5] = new SingleLineRule("`", "`", external, '\0', true);
 		
 		setPredicateRules(rules);
 	}

@@ -495,7 +495,7 @@ public class AbstractLisaacParser {
 					Integer integer = Integer.valueOf(string_tmp, 16);
 					lastInteger = integer.intValue();
 				} catch (Exception e) {
-					System.out.println("Warning readInteger : "+e);// FIXME hex string
+					//System.out.println("Warning readInteger : "+e);// FIXME hex string
 					lastInteger = 0;
 				}
 				position++;
@@ -736,7 +736,6 @@ public class AbstractLisaacParser {
 	//-- string -> '\"' ascii_string '\"'
 	public boolean readString() {
 		boolean result=false;
-		//	int old_pos;
 
 		if (readSpace() && lastCharacter() == '\"') {
 			//	old_pos = position;
@@ -755,7 +754,7 @@ public class AbstractLisaacParser {
 				position = position+1;
 				lastString = getString(string_tmp);
 				result = true;
-			} else {
+			} else { 
 				position = begin_position;
 				reporter.syntaxError("Unterminated string constant.", getPosition());
 			}
