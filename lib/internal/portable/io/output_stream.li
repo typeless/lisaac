@@ -112,6 +112,7 @@ Section Public
     DIRECTORY.has path
   );
 
+  /*
   - append_file file_name:STRING <-
   (
     + c:CHARACTER;
@@ -127,6 +128,7 @@ Section Public
     };
     tmp_file_read.disconnect;
   );
+  */
 
   - flush <-
   // forces a write of unwritten character (write my have been
@@ -140,7 +142,7 @@ Section Private
   - basic_io_putc c:CHARACTER <- SYSTEM_IO.print_char c;
 
   - basic_error_putc c:CHARACTER <- SYSTEM_IO.print_error_char c;
-
+  /*
   - tmp_file_read:TEXT_FILE_READ := TEXT_FILE_READ.create;
-
+  */
   - tmp_string:STRING := STRING.create 512;
