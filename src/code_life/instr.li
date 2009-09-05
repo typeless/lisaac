@@ -36,7 +36,7 @@ Section Public
 
   - is_invariant:BOOLEAN <- FALSE;
   // TODO: Documentation
-  // For expressions, it seems they are invariant if they are constant, like 
+  // For expressions, it seems they are invariant if they are constant, like
   // sizeof or binary operators on two invariant expressions.
   // For instructions, it is redefined in LIST, SWITCH and WRITE
 

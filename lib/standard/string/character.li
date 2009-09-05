@@ -22,13 +22,13 @@ Section Header
 
   + name    := Expanded CHARACTER;
 
-  - export  := INTEGER_8, CHAR_UNICODE;
+  - export  := UINTEGER_8, CHAR_UNICODE;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
   - comment := "Static Character library (self is mapping on `char' C).";
 
-  - type    := `char`;
+  - type    := `unsigned char`;
   - default := '\0';
 
 Section Insert
@@ -53,23 +53,23 @@ Section Public
   // Sign-extended conversion.
   ( + result:INTEGER;
     result:=code.to_integer;
-    ? {result.in_range (INTEGER_8.minimum) to (INTEGER_8.maximum)};
+    ? {result.in_range (UINTEGER_8.minimum) to (UINTEGER_8.maximum)};
     result
   );
 
-  - code:INTEGER_8 <-
+  - code:UINTEGER_8 <-
   // ASCII code of Current.
   // No Sign-extended conversion.
-  ( + result:INTEGER_8;
-    result:=to_integer_8;
+  ( + result:UINTEGER_8;
+    result:=to_uinteger_8;
     //? {result.in_range minimum to maximum};
     result
   );
 
   - to_integer_8:INTEGER_8 <- CONVERT(CHARACTER,INTEGER_8).on Self;
-  // Auto-cast.
 
   - to_uinteger_8:UINTEGER_8 <- CONVERT(CHARACTER,UINTEGER_8).on Self;
+  // Auto-cast.
 
   //
   // Print.
