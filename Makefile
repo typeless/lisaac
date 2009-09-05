@@ -116,8 +116,8 @@ bin/path.h:
 bin/lisaac: bin/lisaac.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@ -lm -fomit-frame-pointer
 
-bin/shorter: bin/shorter.c bin/path.h
-	$(CC) $(CFLAGS) $< -o $@
+bin/shorter: bin/lisaac
+	cd bin && ./lisaac ../src/make.lip -shorter -boost
 
 interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
@@ -147,7 +147,8 @@ uninstall:
 
 clean:
 	-rm -rf bootstrap
-	-rm -f bin/lisaac bin/shorter
+	-rm -f bin/lisaac
+	-rm -f bin/shorter bin/shorter.c
 
 dist: clean
 	if ! test -d $(DIST_NAME) ; then mkdir $(DIST_NAME) ; fi
