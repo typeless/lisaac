@@ -102,6 +102,8 @@ Section Private
   //
     
   - object   : PROTOTYPE;
+
+  - lip_dir  :STRING_CONSTANT; // Compute from lip project
   
   - source   : STRING;
   
@@ -2791,7 +2793,7 @@ Section Private
         warning_error (current_position,"Added ')' is needed.");
       };
       cod := ALIAS_ARRAY(LIP_CODE).copy cod;            
-      slot_code := LIP_SLOT_CODE.create pos section sec 
+      slot_code := LIP_SLOT_CODE.create pos dir lip_dir section sec
       name n argument data code cod;
       (sec = ALIAS_STR.section_public).if {
         (last_comment_slot = NULL).if {
@@ -3208,7 +3210,17 @@ Section Public
       pos_cur := source.lower;
       pos_line:=1;
       pos_col :=0;
-    
+
+      string_tmp.copy path_lip;
+      {
+        (!string_tmp.is_empty)    &&
+        {string_tmp.last != '/'}  &&
+        {string_tmp.last != '\\'}
+      }.while_do {
+        string_tmp.remove_last 1;
+      };
+      lip_dir := ALIAS_STR.get (string_tmp);
+
       // Parse.
       readlip_program;
       //

@@ -30,33 +30,33 @@ Section Private
   
   - src_path <-
   ( 
-    path (lisaac + "src/");
-    path (lisaac + "src/tools/");
-    path (lisaac + "src/type/");
-    path (lisaac + "src/item/");
-    path (lisaac + "src/constant/");
-    path (lisaac + "src/variable/");
-    path (lisaac + "src/external/");
-    path (lisaac + "src/external/logic/");
-    path (lisaac + "src/external/arithmetic/");
-    path (lisaac + "src/external/comparison/");
-    path (lisaac + "src/dispatcher/");
-    path (lisaac + "src/code_life/");    
-    path (lisaac + "src/lip/");    
+    path (".");
+    path ("tools/");
+    path ("type/");
+    path ("item/");
+    path ("constant/");
+    path ("variable/");
+    path ("external/");
+    path ("external/logic/");
+    path ("external/arithmetic/");
+    path ("external/comparison/");
+    path ("dispatcher/");
+    path ("code_life/");
+    path ("lip/");
   );
   
   - compiler_path <-
   (
     src_path;    
     input_file := "lisaac";
-    path (lisaac + "src/compiler_any/");
+    path ("compiler_any/");
   );
     
   - shorter_path <-
   (
     src_path;    
     input_file := "shorter";
-    path (lisaac + "src/shorter_any/");
+    path ("shorter_any/");
   );
     
   //

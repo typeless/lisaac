@@ -41,6 +41,8 @@ Section Public
   HASHED_DICTIONARY(LIP_SLOT_DATA,STRING_CONSTANT).create;
   
   - stack:FAST_ARRAY(LIP_SLOT_DATA) := FAST_ARRAY(LIP_SLOT_DATA).create_with_capacity 8;
+
+  - stack_base_directory:FAST_ARRAY(STRING_CONSTANT) := FAST_ARRAY(STRING_CONSTANT).create_with_capacity 8;
   
   - get_data n:STRING_CONSTANT :LIP_SLOT_DATA <-
   (

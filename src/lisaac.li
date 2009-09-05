@@ -227,7 +227,7 @@ Section Private
           (i > string_tmp2.lower).if {
             string_tmp2.remove_last (string_tmp2.upper-i+1);
           };
-          LIP_CALL.load_directory (ALIAS_STR.get string_tmp) is_recursive FALSE;          
+          LIP_CALL.load_directory (ALIAS_STR.get string_tmp) base_path NULL is_recursive FALSE;
           input_name := ALIAS_STR.get string_tmp2;
           LIP_CODE.put_string input_name to (ALIAS_STR.slot_input_file);
         };

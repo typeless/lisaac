@@ -89,7 +89,9 @@ Section Public
         path := ALIAS_STR.get string_tmp;
         is_rec := TRUE;
       };        
-      load_directory path is_recursive is_rec;
+      load_directory path
+        base_path    (stack_base_directory.last)
+        is_recursive is_rec;
     }.elseif {name = ALIAS_STR.slot_run} then {
       str ?= val;
       (str = NULL).if {
@@ -164,11 +166,20 @@ Section Public
     result
   );
   
-  - load_directory path:ABSTRACT_STRING is_recursive is_rec:BOOLEAN <-
+  - load_directory path:ABSTRACT_STRING
+    base_path base:ABSTRACT_STRING
+    is_recursive is_rec:BOOLEAN <-
   ( + entry:ENTRY;
-    + dir:DIRECTORY;
-    
-    entry := FILE_SYSTEM.get_entry path;         
+    + dir, base_dir:DIRECTORY;
+
+    ((base != NULL) && {base.count > 0}).if {
+      base_dir ?= FILE_SYSTEM.get_entry base;
+    };
+    (base_dir = NULL).if {
+      base_dir := FILE_SYSTEM;
+    };
+
+    entry := base_dir.get_entry path;
     ((entry != NULL) && {entry.is_directory} && {entry.open}).if {
       dir ?= entry;           
       (dir.lower).to (dir.upper) do { j:INTEGER;
@@ -176,13 +187,24 @@ Section Public
         (entry.name.has_suffix ".li").if {
           path_file.add_last (entry.path);            
         }.elseif {(is_rec) && {entry.is_directory}} then {
-          load_directory (entry.path) is_recursive TRUE;
+          load_directory (entry.path) base_path NULL is_recursive TRUE;
         };
       };      
     } else {
       string_tmp.copy "Incorrect directory `";
       string_tmp.append path;
-      string_tmp.append "'.";
+      string_tmp.add_last '\'';
+      string_tmp.append " from: `";
+      string_tmp.append (base_dir.path);
+      string_tmp.add_last '\'';
+      /*
+      (base != NULL).if {
+        string_tmp.append " from: `";
+        string_tmp.append base;
+        string_tmp.add_last '\'';
+      };
+      */
+      string_tmp.add_last '.';
       warning_error (position,string_tmp);
     };
   );
