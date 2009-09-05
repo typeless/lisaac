@@ -459,7 +459,7 @@ Section Public
     
     (prev!=NULL).if {
       (plan!=NULL).if {
-	// Modification des Plans : Les EltPs sont classé en plan croissant.
+	// Modification des Plans : Les EltPs sont classÃ© en plan croissant.
 	// Recherche du dernier plan du groupe :
 	win:=prev;
 	{(win!=NULL) && {win.plan=NULL}}.while_do {
@@ -474,7 +474,7 @@ Section Public
 	  pl_begin:=win.plan.next;
 	  pl_end:=plan.next;
 	  
-	  // On décroche le Groupe :
+	  // On dÃ©croche le Groupe :
 	  pl:=pl_begin.prev;
 	  pl.set_next pl_end;	  	  
 	  pl_end.set_prev pl; 
@@ -506,7 +506,7 @@ Section Public
 	  (plan.next!=NULL).if {
 	    plan.next.set_prev plan;
 	  };
-	  // On réaffecte les plans :
+	  // On rÃ©affecte les plans :
 	  {pl_begin!=pl_end}.while_do { 
 	    pl_begin.set_level plan_value; 
 	    plan_value:=plan_value+1;
@@ -740,7 +740,7 @@ Section AREA
 	};	
 	
 	y1:=y1+1;
-	// On positionne les X : Décroissant Plan...
+	// On positionne les X : DÃ©croissant Plan...
 	elt_x:=LIMIT_X.create x0 plan plan;
 	plan.set_x0 elt_x;
 	list_x:=elt_x.append list_x;
@@ -845,7 +845,7 @@ Section AREA
       y0:=plan.y0.value; 
       y1:=plan.y1.value;
       
-      // On active les fenêtres concerné :
+      // On active les fenÃªtres concernÃ© :
       // Tous ses fils.
       win:=child;
       {win!=NULL}.while_do {
@@ -876,7 +876,7 @@ Section AREA
       elt_y:=list_y; // A Optimiser !
       cy0:=y0;
       {elt_y!=NULL}.while_do {
-	// On active ou désactive des fenêtres :
+	// On active ou dÃ©sactive des fenÃªtres :
 	{(elt_y!=NULL) && {! elt_y.plan.is_y}}.while_do {
 	  elt_y:=elt_y.next;
 	};

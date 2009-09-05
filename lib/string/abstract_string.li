@@ -1246,10 +1246,10 @@ Section Public
     ? { (words.count) >= old_count };
   );
   
-  - get_new_iterator:ITERATOR(CHARACTER) <-
+  /*- get_new_iterator:ITERATOR(CHARACTER) <-
   (
     ITERATOR_ON_STRING(CHARACTER).create Self
-  );
+  );*/
   
   - same_string other:ABSTRACT_STRING :BOOLEAN <-
   // Do self and other have the same character sequence?
