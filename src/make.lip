@@ -78,12 +78,14 @@ Section Private
   (
     general_back_end;
     (is_valid).if {
-      execute "cp lisaac.c ../bin/.";
-      execute "cp lisaac ../bin/.";
+      (is_shorter).if {
+        execute "cp shorter ../bin/.";
+      } else {
+        execute "cp lisaac.c ../bin/.";
+        execute "cp lisaac ../bin/.";
+      };
     };
-    (is_shorter).if {
-      execute "cp shorter ../bin/.";
-    };    
+   
   );
   
 Section Public
