@@ -410,7 +410,7 @@ Section Public
     -? {in_range 0 to 9};
   ]
   (
-    (Self.to_integer_8 + '0'.code).to_character
+    (Self.to_uinteger_8 + '0'.code).to_character
   )
   [
     +? {"0123456789".has Result};
@@ -429,7 +429,7 @@ Section Public
     (Self <= 9).if {
       result := digit;
     } else {
-      result := ('A'.code + (Self - 10).to_integer_8).to_character;
+      result := ('A'.code + (Self - 10).to_uinteger_8).to_character;
     };
     result
   )
@@ -437,7 +437,7 @@ Section Public
     +? {"0123456789ABCDEF".has Result};
   ];
 
-  - to_character:CHARACTER <- to_integer_8.to_character;
+  - to_character:CHARACTER <- to_uinteger_8.to_character;
   // Return the coresponding ASCII character.
 
   - to_octal:SELF <-
