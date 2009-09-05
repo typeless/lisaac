@@ -114,7 +114,7 @@ bin/path.h:
 	@echo "#define LISAAC_DIRECTORY \"$(LIB)\"" > bin/path.h
 
 bin/lisaac: bin/lisaac.c bin/path.h
-	$(CC) $(CFLAGS) $< -o $@ -lm -lX11 -fomit-frame-pointer
+	$(CC) $(CFLAGS) $< -o $@ -lm -fomit-frame-pointer
 
 bin/shorter: bin/shorter.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@
