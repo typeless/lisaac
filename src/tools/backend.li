@@ -32,3 +32,73 @@ Section Inherit
   + parent_any: Expanded ANY;
 
 Section Public
+
+  - append_string str:ABSTRACT_STRING in buf:STRING <-
+  (
+    buf.add_last '\"';
+    append_escaped_string str in buf;
+    buf.add_last '\"';
+  );
+
+  - append_character c:CHARACTER in buf:STRING <-
+  (
+    buf.add_last '\'';
+    append_escaped_character c in buf;
+    buf.add_last '\'';
+  );
+
+  - append_escaped_character c:CHARACTER in buf:STRING <-
+    (
+      (c = '\0').if {               buf.add_last '\\'; buf.add_last '0';
+      }.elseif {c = '\a'} then {    buf.add_last '\\'; buf.add_last 'a';
+      }.elseif {c = '\b'} then {    buf.add_last '\\'; buf.add_last 'b';
+      }.elseif {c = '\f'} then {    buf.add_last '\\'; buf.add_last 'f';
+      }.elseif {c = '\n'} then {    buf.add_last '\\'; buf.add_last 'n';
+      }.elseif {c = '\r'} then {    buf.add_last '\\'; buf.add_last 'r';
+      }.elseif {c = '\t'} then {    buf.add_last '\\'; buf.add_last 't';
+      }.elseif {c = '\v'} then {    buf.add_last '\\'; buf.add_last 'v';
+      }.elseif {c = '\\'} then {    buf.add_last '\\'; buf.add_last '\\';
+      //}.elseif {c = '\?'} then {    buf.add_last '\\'; buf.add_last '?';
+      }.elseif {c = '\v'} then {    buf.add_last '\\'; buf.add_last 'v';
+      }.elseif {c = '\''} then {    buf.add_last '\\'; buf.add_last '\'';
+      }.elseif {c = '\"'} then {    buf.add_last '\\'; buf.add_last '\"';
+      }.elseif {c.in_range '\32\' to '\126\'} then {
+        buf.add_last c;
+      } else {
+        buf.add_last '\\';
+        buf.add_last (( (c.to_integer) / 64)     .decimal_digit);
+        buf.add_last ((((c.to_integer) % 64) / 8).decimal_digit);
+        buf.add_last (( (c.to_integer) % 8 )     .decimal_digit);
+      };
+    );
+
+  - append_escaped_string str:ABSTRACT_STRING in buf:STRING <-
+    append_escaped_string str in buf split_every 0 starting 0;
+
+  - append_escaped_string str:ABSTRACT_STRING in buf:STRING split_every max:INTEGER starting t:INTEGER <-
+  ( + cur, restart :INTEGER;
+    + break_line :STRING_CONSTANT;
+    cur := buf.count - t;
+
+    is_java.if {
+      break_line := "\\\n";
+      restart := 0;
+    } else {
+      break_line := "\"\n\"";
+      restart := 1;
+    };
+
+    (str.lower).to (str.upper) do { i:INTEGER;
+      + c :CHARACTER;
+      c := str.item i;
+      append_escaped_character c in buf;
+      ((max > 0) &&
+       {(c = '\n') && {i != str.upper} ||
+        {(buf.count - cur) >= max}}).if
+      {
+        buf.append break_line;
+        cur := buf.count - restart - 1;
+      };
+    };
+  );
+

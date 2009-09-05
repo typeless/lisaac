@@ -689,8 +689,8 @@ Section Private
   //--                 | 'v' | '\\' | '?' | '\'' | '\"' | '0'
   - read_escape_character <-
   ( + nothing:BOOLEAN;
-    + val:INTEGER;
     last_character.is_separator.if {
+      // Read escape sequence '\' {space} '\'
       position := position+1;
       {
 	(last_character = 0.to_character) ||
@@ -702,52 +702,59 @@ Section Private
 	string_tmp.remove_last 1;
 	position := position+1;
       }.elseif {last_character != 0.to_character} then {
-	syntax_error (current_position,"Unknown escape sequence.");
+	syntax_error (current_position,"Malformed spacing escape sequence.");
       };
-    }.elseif {last_character != 0.to_character} then {
-      ( (last_character = 'a')  ||
-	{last_character = 'b'}  ||
-	{last_character = 'f'}  ||
-	{last_character = 'n'}  ||
-	{last_character = 'r'}  ||
-	{last_character = 't'}  ||
-	{last_character = 'v'}  ||
-	{last_character = '\\'} ||
-	{last_character = '?'}  ||
-	{last_character = '\''} ||
-	{last_character = '\"'}
+    }.elseif { "abfnrtv?\\\'\"".has last_character } then {
+      // Read named escape sequence
+      string_tmp.remove_last 1; // remove '\\'
+      last_character
+      .when 'a'  then { string_tmp.add_last '\a'; }
+      .when 'b'  then { string_tmp.add_last '\b'; }
+      .when 'f'  then { string_tmp.add_last '\f'; }
+      .when 'n'  then { string_tmp.add_last '\n'; }
+      .when 'r'  then { string_tmp.add_last '\r'; }
+      .when 't'  then { string_tmp.add_last '\t'; }
+      .when 'v'  then { string_tmp.add_last '\v'; }
+      .when '?'  then { string_tmp.add_last '\?'; }
+      .when '\\' then { string_tmp.add_last '\\'; }
+      .when '\'' then { string_tmp.add_last '\''; }
+      .when '\"' then { string_tmp.add_last '\"'; };
+      //string_tmp.add_last last_character;
+      position := position+1;
+    }.elseif {last_character.in_range '0' to '9'} then {
+      (
+	(last_character='0') &&
+	{position<source.upper} &&
+	{! source.item(position+1).is_hexadecimal_digit}
       ).if {
-	string_tmp.add_last last_character;
+	// Read \0
+	string_tmp.remove_last 1; // remove '\\'
+	string_tmp.add_last '\0';
+	//string_tmp.add_last last_character;
 	position := position+1;
-      }.elseif {last_character.in_range '0' to '9'} then {
-	(
-          (last_character='0') &&
-	  {position<source.upper} &&
-          {! source.item(position+1).is_hexadecimal_digit}
-        ).if {
-	  string_tmp.add_last last_character;
-	  position := position+1;
-	} else {
-	  string_tmp2.copy string_tmp;
-	  nothing := read_integer; // result is Always TRUE.
-	  string_tmp.copy string_tmp2;
-	  (last_integer > 255).if {
-	    syntax_error (current_position,
-	    "Invalid range character number [0,255].");
-	  };
-	  val := last_integer.to_integer;
-	  string_tmp.add_last ((val / 64).decimal_digit);
-	  string_tmp.add_last (((val % 64) / 8).decimal_digit);
-	  string_tmp.add_last ((val % 8).decimal_digit);
-	  (last_character='\\').if {
-	    position := position + 1;
-	  } else {
-	    syntax_error (current_position,"Character '\' is needed.");
-	  };
-	};
       } else {
-	syntax_error (current_position,"Unknown escape sequence.");
+	// Read '\' integer '\'
+	string_tmp2.copy string_tmp;
+	nothing := read_integer; // result is Always TRUE.
+	string_tmp.copy string_tmp2;
+	((last_integer > 255) || {last_integer < 0}).if {
+	  syntax_error (current_position,
+	  "Invalid range character number [0,255].");
+	};
+	string_tmp.remove_last 1; // remove '\\'
+	string_tmp.add_last (last_integer.to_character);
+	// Save 3 octal digits
+	//string_tmp.add_last ((val / 64).decimal_digit);
+	//string_tmp.add_last (((val % 64) / 8).decimal_digit);
+	//string_tmp.add_last ((val % 8).decimal_digit);
+	(last_character='\\').if {
+	  position := position + 1;
+	} else {
+	  syntax_error (current_position,"Character '\' is needed.");
+	};
       };
+    } else {
+      syntax_error (current_position,"Unknown escape sequence.");
     };
   );
 
@@ -2048,7 +2055,10 @@ Section Private
     }.elseif {read_integer} then {
       result := ITM_NUMBER.create current_position value last_integer;
     }.elseif {read_characters} then {
-      result := ITM_CHARACTER.create current_position char last_string;
+      (last_string.count = 1).if_false {
+        syntax_error (current_position,"Character constant with more than a character");
+      };
+      result := ITM_CHARACTER.create current_position char (last_string.first);
     }.elseif {read_string} then {
       result := ITM_STRING.create current_position text last_string;
     };

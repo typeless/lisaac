@@ -74,25 +74,13 @@ Section Public
   // Generation.
   //
 
-  - genere buffer:STRING <-
-  (
-    buffer.add_last '\"';
-    buffer.append string;
-    buffer.add_last '\"';
-  );
+  - genere buffer:STRING <- backend.append_string string in buffer;
 
   //
   // Display.
   //
 
-  - display buffer:STRING <-
-  (
-    buffer.add_last '\"';
-    buffer.append string;
-    buffer.add_last '\"';
-    display_ref buffer;
-  );
-
+  - display buffer:STRING <- BACKEND_C.append_string string in buffer;
 
 
 
