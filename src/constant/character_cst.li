@@ -38,20 +38,20 @@ Section Public
   // Value.
   //
 
-  + text:STRING_CONSTANT;
+  + text:CHARACTER;
 
   //
   // Creation.
   //
 
-  - create p:POSITION char car:STRING_CONSTANT :SELF<-
+  - create p:POSITION char car:CHARACTER :SELF<-
   ( + result:SELF;
     result := clone;
     result.make p char car;
     result
   );
 
-  - make p:POSITION char car:STRING_CONSTANT <-
+  - make p:POSITION char car:CHARACTER <-
   (
     position := p;
     text := car;
@@ -74,24 +74,13 @@ Section Public
   // Generation.
   //
 
-  - genere buffer:STRING <-
-  (
-    buffer.add_last '\'';
-    buffer.append text;
-    buffer.add_last '\'';
-  );
+  - genere buffer:STRING <- backend.append_character text in buffer;
 
   //
   // Display.
   //
 
-  - display buffer:STRING <-
-  (
-    buffer.add_last '\'';
-    buffer.append text;
-    buffer.add_last '\'';
-    display_ref buffer;
-  );
+  - display buffer:STRING <- BACKEND_C.append_character text in buffer;
 
 
 

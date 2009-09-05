@@ -38,20 +38,20 @@ Section Public
   // Data
   //
 
-  + character:STRING_CONSTANT;
+  + character:CHARACTER;
 
   //
   // Creation
   //
 
-  - create p:POSITION char n:STRING_CONSTANT :SELF <-
+  - create p:POSITION char n:CHARACTER :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p char n;
     result
   );
 
-  - make p:POSITION char n:STRING_CONSTANT <-
+  - make p:POSITION char n:CHARACTER <-
   (
     position:=p;
     character:=n;
@@ -71,8 +71,4 @@ Section Public
   //
 
   - append_in buffer:STRING <-
-  (
-    buffer.add_last '\'';
-    buffer.append character;
-    buffer.add_last '\'';
-  );
+    backend.append_character character in buffer;

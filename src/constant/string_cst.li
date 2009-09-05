@@ -87,6 +87,9 @@ Section Public
 
   - genere buffer:STRING <-
   ( + idx,count,cur:INTEGER;
+//     + count_esc:INTEGER;
+//     + esc_octal:BOOLEAN;
+//     + esc_hexa :BOOLEAN;
     - is_init:BOOLEAN;
     - is_storage:BOOLEAN;
     - is_count:BOOLEAN;
@@ -110,7 +113,13 @@ Section Public
       };
       output.append "__";
       output.append (type_string_constant.intern_name);
-      output.append " __string_";
+      ((output.count - cur) >= 78).if {
+        output.add_last '\n';
+        cur := output.count - 1;
+      } else {
+        output.add_last ' ';
+      };
+      output.append "__string_";
       idx.append_in output;
       output.add_last '=';
       (is_java).if {
@@ -128,12 +137,20 @@ Section Public
         output.add_last ',';
       };
       (is_storage).if {
+        ((output.count - cur) >= 78).if {
+          output.add_last '\n';
+          cur := output.count - 1;
+        };
 	output.add_last '\"';
-	output.append string;
-	{(output.count - cur) > 78}.while_do {
-	  output.insert_string "\\\n" to (cur+78);
-	  cur := cur + 78;
-	};
+//         output.append string;
+//         {(output.count - cur) > 78}.while_do {
+//           output.insert_string "\\\n" to (cur+78);
+//           cur := cur + 78;
+//         };
+        backend.append_escaped_string string
+                in                    output
+                split_every           78
+                starting              (output.count - cur);
 	output.add_last '\"';
       } else {
         output.remove_last 1;
@@ -162,13 +179,8 @@ Section Public
   // Display.
   //
 
-  - display buffer:STRING <-
-  (
-    buffer.add_last '\"';
-    buffer.append string;
-    buffer.add_last '\"';
-    display_ref buffer;
-  );
+  - display buffer:STRING <- BACKEND_C.append_string string in buffer;
+
 
 Section Private
 
