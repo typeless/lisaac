@@ -76,7 +76,17 @@ Section Public
       (val != NULL).if {
         warning_error (position,"No argument for `exit' method.");
       };
-      die_with_code exit_failure_code;      
+      die_with_code exit_failure_code;
+    }.elseif {name = ALIAS_STR.slot_help} then {
+      (val != NULL).if {
+        warning_error (position,"No argument for `help' method.");
+      };
+      LISAAC.show_help;
+    }.elseif {name = ALIAS_STR.slot_version} then {
+      (val != NULL).if {
+        warning_error (position,"No argument for `version' method.");
+      };
+      LISAAC.show_version;
     }.elseif {name = ALIAS_STR.slot_path} then {
       str ?= val;
       (str = NULL).if {

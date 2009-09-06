@@ -39,49 +39,121 @@ Section Header
 Section Inherit
   
   - parent_any:ANY := ANY;
+
+Section Public
+
+  - show_help <-
+  (
+    command_line_header.print;
+    begin_usage.print;
+    LIP_CODE.print_usage;
+    end_usage.print;
+  );
+  
+  - show_version <-
+  ( + b:BOOLEAN;
+    + i:INTEGER;
+    command_line_header.print;
+    "Built on:           ".print;  compile_date.print; " ".print;
+                         compile_time.print; "\n".print;
+    `
+    #if defined(_LISAAC_DEBUG_LEVEL) && defined(_LISAAC_DEBUG_CODE)
+    `;
+    b := `_LISAAC_DEBUG_CODE`:BOOLEAN{TRUE,FALSE};
+    i := `_LISAAC_DEBUG_LEVEL`:INTEGER;
+    "Debug Level:        ".print; i.print;
+    b.if {
+      " (with source code)".println;
+    } else {
+      " (without source code)".println;
+    };
+    `
+    #endif
+    #ifdef _LISAAC_INLINE_LEVEL
+    `;
+    i := `_LISAAC_INLINE_LEVEL`:INTEGER;
+    "Inline Level:       ".print; i.println;
+    `
+    #endif
+    #ifdef _LISAAC_OPTIM
+    `;
+    i := `_LISAAC_OPTIM`:INTEGER;
+    "Optimization Level: ".print; i.println;
+    `
+    #endif
+    `;
+    '\n'.print;
+    (path_lisaac_builtin = path_lisaac).if {
+      "Lisaac path:        ".print; path_lisaac.println;
+    } else {
+      "Lisaac path:".println;
+      "  builtin:          ".print; path_lisaac_builtin.println;
+      "  current:          ".print; path_lisaac.println;
+    };
+  );
   
 Section Private
 
   - output_name:STRING_CONSTANT;
   
   - input_name:STRING_CONSTANT;
-  
-  - path_lisaac:STRING_CONSTANT <-
+
+  - path_lisaac_builtin:STRING_CONSTANT <-
   ( + path:NATIVE_ARRAY(CHARACTER);
-    + path_str :STRING;
-    + j:INTEGER;
-    //COMMAND_LINE.executable_name.print; '\n'.print;
-    // Load LISAAC_DIRECTORY.
-    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
-    (path_str != NULL).if {
-      string_tmp.copy path_str;
-    } else {
-      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
-      string_tmp.clear;
-      j := 0;
-      {path.item j != '\0'}.while_do {
-	string_tmp.add_last (path.item j);
-	j := j + 1;
-      };
+    + j :INTEGER;
+    path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
+    string_tmp.clear;
+    j := 0;
+    {path.item j != '\0'}.while_do {
+      string_tmp.add_last (path.item j);
+      j := j + 1;
     };
     ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
       string_tmp.add_last '/';
     };
-    path_lisaac := ALIAS_STR.get string_tmp
+    path_lisaac_builtin := ALIAS_STR.get string_tmp;
+    path_lisaac_builtin
+  );
+
+  - path_lisaac_env:STRING_CONSTANT <-
+  ( + path_str :STRING;
+    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
+    (path_str != NULL).if {
+      string_tmp.copy path_str;
+      ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
+        string_tmp.add_last '/';
+      };
+      path_lisaac_env := ALIAS_STR.get string_tmp;
+    } else {
+      path_lisaac_env := NULL;
+    };
+    path_lisaac_env
+  );
+  
+  - path_lisaac:STRING_CONSTANT <-
+  (
+    (path_lisaac_env != NULL).if {
+      path_lisaac := path_lisaac_env;
+    } else {
+      path_lisaac := path_lisaac_builtin;
+    };
+    path_lisaac
   );
   
   //
   // Command.
   //
 
-  - begin_usage: STRING_CONSTANT :=
+  - command_line_header :STRING_CONSTANT :=
   "----------------------------------------------------------------\n\
   \--            Lisaac IS An Advanced Compiler V.0.14           --\n\
   \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
   \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
   \--                   http://www.IsaacOS.com                   --\n\
-  \----------------------------------------------------------------\n\
-  \Usage:                                                          \n\
+  \----------------------------------------------------------------\n";
+
+  - begin_usage: STRING_CONSTANT :=
+  "Usage:                                                          \n\
   \  lisaac [<lip_file.lip>] [<input_file[.li]>] {<Options>}       \n\
   \                                                                \n\
   \  Note: without <lip_file> or <input_file>,                     \n\
@@ -97,9 +169,7 @@ Section Private
 
   - display_usage <-
   (
-    begin_usage.print;
-    LIP_CODE.print_usage;
-    end_usage.print;
+    show_help;
     die_with_code exit_failure_code;
   );
   
@@ -603,6 +673,33 @@ Section Private
       STD_ERROR.put_string ")\n";
     };
   );
+
+  - compile_time :TIME <-
+  ( + i:INTEGER;
+    `
+    #ifdef _LISAAC_COMPILE_TIME
+    `;
+    i := `_LISAAC_COMPILE_TIME`:INTEGER;
+    `
+    #endif
+    `;
+    TIME.create_csecond i
+  );
+
+  - compile_date :DATE <-
+  ( + i,j,k,l:INTEGER;
+    `
+    #ifdef _LISAAC_COMPILE_DATE
+    `;
+    i := `_LISAAC_COMPILE_DATE_YEAR`:INTEGER;
+    j := `_LISAAC_COMPILE_DATE_MONTH`:INTEGER;
+    k := `_LISAAC_COMPILE_DATE_DAY`:INTEGER;
+    l := `_LISAAC_COMPILE_DATE_WDAY`:INTEGER;
+    `
+    #endif
+    `;
+    DATE.create (i, j, k, l)
+  );
   
 Section Public  
 
@@ -614,12 +711,16 @@ Section Public
   ( + file_output:POINTER;
     //+ entry:ENTRY;
     + begin_time,end_time:UINTEGER_64;
+    + clk_date :DATE;
+    + clk_time :TIME;
     + time:INTEGER;    
     + txt:STRING;
     + s:LIP_SLOT_CODE;
 
     ALIAS_STR.make;
-    
+
+    clk_date := CLOCK.date;
+    clk_time := CLOCK.time;
     begin_time := SYSTEM.get_universal_time;
     
     //
@@ -644,13 +745,24 @@ Section Public
     // Header C 
     //    
     (is_java).if {
-      output_decl.copy "// Java code generated by Lisaac compiler (www.isaacOS.com) //\n";
+      output_decl.copy "// Java code generated by Lisaac compiler (www.isaacOS.com) //\n\n";
       output_decl.append "class ";      
       output_decl.append input_name;
       output_decl.append " {\n";
       output_decl.append "private static String arg[];\n";
     } else {
-      output_decl.copy "// C code generated by Lisaac compiler (www.isaacOS.com) //\n";
+      output_decl.copy "// C code generated by Lisaac compiler (www.isaacOS.com) //\n\n";
+      output_decl.append "#define _LISAAC_COMPILE_DATE\n";
+      output_decl.append "#define _LISAAC_COMPILE_DATE_YEAR  "; clk_date.year.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_COMPILE_DATE_MONTH "; clk_date.month.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_COMPILE_DATE_DAY   "; clk_date.day.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_COMPILE_DATE_WDAY  "; clk_date.week_day.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_COMPILE_TIME "; clk_time.to_csecond.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_DEBUG_LEVEL  "; debug_level_option.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_INLINE_LEVEL "; inline_level.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_DEBUG_CODE   "; debug_with_code.to_integer.append_in output_decl; output_decl.add_last '\n';
+      output_decl.append "#define _LISAAC_OPTIM        "; is_optimization.to_integer.append_in output_decl; output_decl.add_last '\n';
+      output_decl.add_last '\n';
       // ANSI argument command.
       (debug_level_option != 0).if {
         output_decl.append "#include <signal.h>\n";
