@@ -138,6 +138,8 @@ public class LisaacModel implements ILisaacModel{
 						}
 						public void warning(String msg, Position position) {
 						}
+						public void enableErrorReport(boolean enable) {
+						}
 					});
 				}
 			}

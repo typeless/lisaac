@@ -84,6 +84,10 @@ public class LisaacParser extends AbstractLisaacParser {
 		super.initialize();
 		TypeSimple.init();
 	}
+	
+	public void enableErrorReport(boolean enable) {
+		reporter.enableErrorReport(enable);
+	}
 
 	public ILisaacContext getSectionContext() {
 		return sectionContext;
@@ -900,7 +904,7 @@ public class LisaacParser extends AbstractLisaacParser {
 
 		readSpace();
 		Position pos = getPosition();
-
+ 
 		if (readThisKeyword(ILisaacModel.variable_self)) {
 			result = new ITMRead(new String(lastString));
 		} else if (readThisKeyword(ILisaacModel.keyword_result)) {

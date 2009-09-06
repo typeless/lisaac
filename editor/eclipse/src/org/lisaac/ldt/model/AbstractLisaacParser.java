@@ -203,6 +203,8 @@ public class AbstractLisaacParser {
 			}
 			public void warning(String msg, Position position) {
 			}
+			public void enableErrorReport(boolean enable) {	
+			}
 		};
 		source = contents;
 		initialize();

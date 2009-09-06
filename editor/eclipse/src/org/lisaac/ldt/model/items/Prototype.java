@@ -309,7 +309,9 @@ public class Prototype {
 		if (offset >= source.length() - 1) {
 			return null;
 		}
-
+		//
+		parser.enableErrorReport(false); // turn off error reporting
+		//
 		while (offset > 0) {
 			//
 			// find beginning of SEND_MSG grammar rule
@@ -365,6 +367,9 @@ public class Prototype {
 								source.charAt(offset - 3) == '\n') {
 							String slotName = parser
 							.readSlotNameFromOffset(offset + 1, false);
+							
+							parser.enableErrorReport(true);// finish with parser
+							
 							if (slotName != null) {
 								result = lookupSlot(slotName);
 								if (result == null) {
@@ -480,6 +485,9 @@ public class Prototype {
 				result = receiver.lookupSlot(slotName);
 			}
 		}
+		//
+		parser.enableErrorReport(true); // turn on error reporting
+		//
 		return result;
 	}
 
