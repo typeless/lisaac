@@ -111,7 +111,10 @@ check: bootstrap
 	diff -s bin/lisaac bootstrap/lisaac
 
 bin/path.h:
-	@echo "#define LISAAC_DIRECTORY \"$(LIB)\"" > bin/path.h
+	@echo "#define LISAAC_DIRECTORY \"$(LIB)\"" > $@
+
+path.h src/path.h:
+	@echo "#define LISAAC_DIRECTORY \"`pwd`\"" > $@
 
 bin/lisaac: bin/lisaac.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@ -lm -fomit-frame-pointer
