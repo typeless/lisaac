@@ -383,12 +383,36 @@ Section Public
   - last_position:POSITION;
 
   - load_lip file_lip:ABSTRACT_STRING <-
+    load_lip file_lip in NULL;
+
+  - load_lip file_lip:ABSTRACT_STRING in lip_dir:STRING_CONSTANT <-
   ( + path_lip:STRING_CONSTANT;
     + is_good:BOOLEAN;
     + count:INTEGER;
 
+    //
+    // Search in lip_dir
+    //
     string_tmp.clear;
-    {
+    (lip_dir != NULL).if {
+      string_tmp.append lip_dir;
+      (string_tmp.last != '/').if {
+        string_tmp.add_last '/';
+      };
+      string_tmp.append file_lip;
+      path_lip := ALIAS_STR.get string_tmp;
+      (is_good := PARSER.read_lip path_lip).if_false {
+        LIP_CALL.load_directory lip_dir is_recursive FALSE;
+        string_tmp.remove_last (file_lip.count);
+      } else {
+        "Load lip file: ".print; path_lip.println;
+      };
+    };
+
+    //
+    // Search in 5 parent directories
+    //
+    {(count < 5) && {! is_good}}.while_do {
       string_tmp.append file_lip;
       path_lip := ALIAS_STR.get string_tmp;
       (is_good := PARSER.read_lip path_lip).if_false {
@@ -396,8 +420,17 @@ Section Public
         string_tmp.remove_last (file_lip.count);
         string_tmp.append "../";
         count := count + 1;
+      } else {
+        // Display which lip file to use if we had to look parent directories
+        (count > 0).if {
+          "Load lip file: ".print; path_lip.println;
+        };
       };
-    }.do_while {(count < 5) && {! is_good}};
+    };
+
+    //
+    // Load default make.lip in LISAAC_DIRECTORY
+    //
     (is_good).if_false {
       string_tmp.copy path_lisaac;
       string_tmp.append "make.lip";
@@ -409,6 +442,10 @@ Section Public
         die_with_code exit_failure_code;
       };
     };
+
+    //
+    // Load parent .lip (inheritance)
+    //
     {LIP_CODE.list_parent.is_empty}.until_do {
       path_lip := LIP_CODE.list_parent.first;
       LIP_CODE.list_parent.remove_first;

@@ -95,6 +95,9 @@ Section Private
     + t:STRING_CONSTANT;
     + arg:LIP_CONSTANT;
     + is_path_list:BOOLEAN;
+    + hook_after_load_lip :{};
+
+    hook_after_load_lip := {};
 
     // Default value.
     is_ansi := TRUE;
@@ -123,6 +126,7 @@ Section Private
         } else {
           (lip_ok).if_false {
             load_lip "make.lip";
+            hook_after_load_lip.value;
             lip_ok := TRUE;
           };
           string_tmp.copy cmd;
@@ -187,24 +191,24 @@ Section Private
             display_usage;
           };
           load_lip cmd;
+          hook_after_load_lip.value;
           lip_ok := TRUE;
         } else {
           // .li
-          (lip_ok).if_false {
-            load_lip "make.lip";
-            lip_ok := TRUE;
-          };
           (input_name != NULL).if {
             display_usage;
           };
           input_name := ALIAS_STR.get (COMMAND_LINE.item j);
-          LIP_CODE.put_string input_name to (ALIAS_STR.slot_input_file);
+          hook_after_load_lip := {
+            LIP_CODE.put_string input_name to (ALIAS_STR.slot_input_file);
+          };
         };
       };
       j := j+1;
     };
     (lip_ok).if_false {
-      load_lip "make.lip";
+      load_lip "make.lip" in input_path;
+      hook_after_load_lip.value;
     };
 
     LIP_CODE.call_front_end;
