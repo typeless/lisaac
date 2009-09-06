@@ -58,6 +58,12 @@ Section Public
     condition := rec;
     then := the;
     else := els;
+    (then.last != NULL).if {
+      warning_error (then.last.position,"Unreachable expression.");
+    };
+    ((else != NULL) && {else.last != NULL}).if {
+      warning_error (else.last.position,"Unreachable expression.");
+    };
   );
   
   //
@@ -72,11 +78,11 @@ Section Public
       semantic_error (position,"BOOLEAN needed.");
     };
     (val.value).if {
-      (then.lower).to (then.upper) do { i:INTEGER;
+      (then.lower).to (then.upper-1) do { i:INTEGER;
         then.item i.run;
-      };
+      };      
     }.elseif {else != NULL} then {
-      (else.lower).to (else.upper) do { i:INTEGER;
+      (else.lower).to (else.upper-1) do { i:INTEGER;
         else.item i.run;
       };
     };

@@ -20,7 +20,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name      := LIP_PRINT;
+  + name      := LIP_LIST;
 
   - copyright := "2003-2008 Sonntag Benoit";
 
@@ -29,27 +29,27 @@ Section Header
 
 Section Inherit
 
-  + parent_lip_code:Expanded LIP_CODE; 
+  + parent_lip_code:Expanded LIP_CODE;
 
 Section Public
   
-  + message:LIP_CODE;
+  + list:FAST_ARRAY(LIP_CODE);
   
   //
   // Creation.
   //
 
-  - create p:POSITION message rec:LIP_CODE :SELF <-
+  - create p:POSITION with v:FAST_ARRAY(LIP_CODE) :SELF <-
   ( + result:SELF;
     result := clone;
-    result.make p message rec;
+    result.make p with v;
     result
   );
 
-  - make p:POSITION message rec:LIP_CODE <-
+  - make p:POSITION with v:FAST_ARRAY(LIP_CODE) <-
   ( 
     position := p;
-    message := rec;
+    list := v;
   );
   
   //
@@ -57,12 +57,27 @@ Section Public
   //
   
   - run <-
-  ( + val:LIP_CONSTANT;
-    
-    val := message.run_expr;
-    (val = NULL).if {
-      semantic_error (position,"Incorrect type.");
+  (
+    run_intern;
+    (list.last != NULL).if {
+      semantic_error (position,"Incorrect expression.");
     };
-    val.print;
-    val.free;
+  );
+  
+  - run_expr:LIP_CONSTANT <-
+  (     
+    run_intern;
+    (list.last = NULL).if {
+      semantic_error (position,"Unreachable expression.");
+    };
+    list.last.run_expr
+  );
+  
+Section Private
+  
+  - run_intern <-
+  (
+    (list.lower).to (list.upper-1) do { i:INTEGER;
+      list.item i.run;
+    };
   );

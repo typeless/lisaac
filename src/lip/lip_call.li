@@ -33,6 +33,8 @@ Section Inherit
 
 Section Public
   
+  + receiver:LIP_CODE;
+  
   + name:STRING_CONSTANT;
   
   + argument:LIP_CODE;
@@ -41,19 +43,20 @@ Section Public
   // Creation.
   //
 
-  - create p:POSITION name n:STRING_CONSTANT with arg:LIP_CODE :SELF <-
+  - create p:POSITION receiver rec:LIP_CODE name n:STRING_CONSTANT with arg:LIP_CODE :SELF <-
   ( + result:SELF;
     result := clone;
-    result.make p name n with arg;
+    result.make p receiver rec name n with arg;
     result
   );
 
-  - make p:POSITION name n:STRING_CONSTANT with arg:LIP_CODE <-
+  - make p:POSITION receiver rec:LIP_CODE name n:STRING_CONSTANT with arg:LIP_CODE <-
   [
     -? {p.code != 0};
   ]
   ( 
     position := p;
+    receiver := rec;
     name := n;
     argument := arg;
   );
@@ -64,15 +67,26 @@ Section Public
   
   - run <-
   ( + slot:LIP_SLOT_CODE;
-    + val:LIP_CONSTANT;
+    + val,rec:LIP_CONSTANT;
     + str:LIP_STRING;    
     + path:STRING_CONSTANT;
     + is_rec:BOOLEAN;
     
+    (receiver != NULL).if {
+      rec := receiver.run_expr;
+    };
     (argument != NULL).if {
       val := argument.run_expr;    
     };    
-    (name = ALIAS_STR.slot_exit).if {
+    (name = ALIAS_STR.slot_print).if {
+      (rec = NULL).if {
+        semantic_error (position,"Incorrect type.");
+      };      
+      (val != NULL).if {        
+        warning_error (position,"No argument for `print' method.");
+      };
+      rec.print;      
+    }.elseif {name = ALIAS_STR.slot_exit} then {
       (val != NULL).if {
         warning_error (position,"No argument for `exit' method.");
       };
@@ -109,6 +123,9 @@ Section Public
       (slot.run_with val).if_false {
         semantic_error (position,"Invalid argument.");
       };
+    };
+    (rec != NULL).if {
+      rec.free;
     };
     (val != NULL).if {
       val.free;
