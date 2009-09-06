@@ -1,0 +1,10 @@
+Section Header
+
+  + name := PRINT_CHAR_TEST;
+
+Section Public
+
+  - main <-
+  ( + a:INTEGER;
+    a := 10;
+  );
