@@ -1,0 +1,27 @@
+Section Header
+
+  + name := BOOLEAN_TEST2;
+
+Section Inherit
+
+  + parent_object :Expanded OBJECT;
+
+Section Public
+
+  - main <-
+  ( + boolean_variable :BOOLEAN;
+    "FALSE expected: ".print;
+    boolean_variable.println;
+    boolean_variable := FALSE;
+    "FALSE expected: ".print;
+    boolean_variable.println;
+    boolean_variable := TRUE;
+    "TRUE  expected: ".print;
+    boolean_variable.println;
+    "TRUE  expected: ".print;
+    boolean_variable.if {
+      "TRUE".println;
+    } else {
+      "FALSE".println;
+    };
+  );
