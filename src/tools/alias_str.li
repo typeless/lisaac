@@ -159,6 +159,7 @@ Section Public
   - slot_front_end    :STRING_CONSTANT := "front_end";
   - slot_back_end     :STRING_CONSTANT := "back_end";
   - slot_input_file   :STRING_CONSTANT := "input_file";
+  - slot_output_file  :STRING_CONSTANT := "output_file";
   - slot_debug_level  :STRING_CONSTANT := "debug_level";
   - slot_debug_with_code:STRING_CONSTANT := "debug_with_code";
   - slot_is_all_warning:STRING_CONSTANT := "is_all_warning";
@@ -451,6 +452,7 @@ Section Public
     list.add slot_path;
     list.add slot_front_end;
     list.add slot_back_end;
+    list.add slot_output_file;
     list.add slot_input_file;
     list.add slot_debug_level;
     list.add slot_debug_with_code;

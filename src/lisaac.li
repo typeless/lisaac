@@ -95,6 +95,8 @@ Section Public
 Section Private
 
   - output_name:STRING_CONSTANT;
+
+  - output_basename:STRING_CONSTANT;
   
   - input_name:STRING_CONSTANT;
 
@@ -300,6 +302,7 @@ Section Private
           LIP_CALL.load_directory (ALIAS_STR.get string_tmp) base_path NULL is_recursive FALSE;
           input_name := ALIAS_STR.get string_tmp2;
           LIP_CODE.put_string input_name to (ALIAS_STR.slot_input_file);
+          LIP_CODE.put_string input_name to (ALIAS_STR.slot_output_file);
         };
       };
       j := j+1;
@@ -334,6 +337,7 @@ Section Private
     
     // Loading variable.
     input_name         := LIP_CODE.get_string  (ALIAS_STR.slot_input_file);
+    output_basename    := LIP_CODE.get_string  (ALIAS_STR.slot_output_file);
     debug_level_option := LIP_CODE.get_integer (ALIAS_STR.slot_debug_level);
     debug_with_code    := LIP_CODE.get_boolean (ALIAS_STR.slot_debug_with_code);
     is_all_warning     := LIP_CODE.get_boolean (ALIAS_STR.slot_is_all_warning);
@@ -346,8 +350,12 @@ Section Private
     ((input_name = NULL) || {input_name.is_empty}).if {      
       "ERROR : `input_file' is empty.\n".print;
       display_usage;
-    };        
-    string_tmp.copy input_name;
+    };
+    ((output_basename = NULL) || {output_basename.is_empty}).if {
+      output_basename := input_name;
+      LIP_CODE.put_string output_basename to (ALIAS_STR.slot_output_file);
+    };
+    string_tmp.copy output_basename;
     (is_java).if {
       string_tmp.append ".java";
     } else {

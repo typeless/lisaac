@@ -30,6 +30,7 @@ Section Private
   // File information.
   + lisaac:STRING;      // is environment variable value (auto-loading).
   + input_file:STRING;  // is input file name value without extension (auto-loading, if possible).
+  + output_file:STRING;
     
   // Debug information.
   + debug_level:INTEGER := 15;
@@ -173,25 +174,25 @@ Section Private
       (is_cop).if {
         "Warning: COP not yet implemented\n".print;
       };
-      execute ("javac " + input_file + ".java");
+      execute ("javac " + output_file + ".java");
     };
     (target = "dos").if {
       (is_cop).if {
         "Warning: COP not yet implemented\n".print;
       };
-      execute ("gcc " + input_file + ".c -o " + input_file + ".exe " + option_gcc + lib_gcc); 
+      execute ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
     };
     (target = "windows").if {
       (is_cop).if {
         "Warning: COP not yet implemented\n".print;
       };
-      execute ("gcc " + input_file + ".c -o " + input_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
+      execute ("gcc " + output_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
     };
     (target = "unix").if {      
       (is_cop).if {
         lib_gcc := lib_gcc + " -lpthread";
       };
-      execute ("gcc " + input_file + ".c -o " + input_file + " -lm " + option_gcc + lib_gcc);
+      execute ("gcc " + output_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
     };
   );
   
@@ -292,6 +293,12 @@ Section Public
   // Add option for GCC.
   (
     option_gcc := option_gcc + " " + option;
+  );
+
+  - o output:STRING <-
+  // Change output file
+  (
+    output_file := output;
   );
   
   //
