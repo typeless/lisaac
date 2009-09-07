@@ -583,6 +583,10 @@ Section Private
     type_n_a_n_a_character := ITM_TYPE_GENERIC.get (ALIAS_STR.prototype_native_array)
     style NULL with type_gen.to_run_for NULL.raw;
     //    
+    (debug_level_option != 0).if {
+      // Load for `print_char' and `die_with_code'
+      ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_system_io).to_run_for NULL;
+    };
     ? {type_input != NULL};
   );
   

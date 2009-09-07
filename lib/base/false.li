@@ -87,10 +87,6 @@ Section Public
   // Binary operator :
   //
   
-  - Self:SELF '=='  Right 60 other:BOOLEAN :BOOLEAN <- ! other;
-  
-  - Self:SELF '!==' Right 60 other:BOOLEAN :BOOLEAN <- other;
-  
   - Self:SELF '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- other.value;
   
   - Self:SELF '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- FALSE;
