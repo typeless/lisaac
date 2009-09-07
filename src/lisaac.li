@@ -27,8 +27,6 @@ Section Header
   - author   := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
   - comment  := "The main prototype";
   
-  - external := `#include "path.h"`;
-  
   // Top 5 memory record :
   // 1 - LOCAL         (>20MB) (il fo Aliaser les tmp !)
   // 2 - READ_LOCAL    (15MB)
@@ -44,52 +42,17 @@ Section Public
 
   - show_help <-
   (
-    command_line_header.print;
+    COMMON.command_line_header "Compiler".print;
     begin_usage.print;
     LIP_CODE.print_usage;
-    end_usage.print;
+    COMMON.command_line_footer.print;
   );
   
   - show_version <-
-  ( + b:BOOLEAN;
-    + i:INTEGER;
-    command_line_header.print;
-    "Built on:           ".print;  compile_date.print; " ".print;
-                         compile_time.print; "\n".print;
-    `
-    #if defined(_LISAAC_DEBUG_LEVEL) && defined(_LISAAC_DEBUG_CODE)
-    `;
-    b := `_LISAAC_DEBUG_CODE`:BOOLEAN{TRUE,FALSE};
-    i := `_LISAAC_DEBUG_LEVEL`:INTEGER;
-    "Debug Level:        ".print; i.print;
-    b.if {
-      " (with source code)".println;
-    } else {
-      " (without source code)".println;
-    };
-    `
-    #endif
-    #ifdef _LISAAC_INLINE_LEVEL
-    `;
-    i := `_LISAAC_INLINE_LEVEL`:INTEGER;
-    "Inline Level:       ".print; i.println;
-    `
-    #endif
-    #ifdef _LISAAC_OPTIM
-    `;
-    i := `_LISAAC_OPTIM`:INTEGER;
-    "Optimization Level: ".print; i.println;
-    `
-    #endif
-    `;
-    '\n'.print;
-    (path_lisaac_builtin = path_lisaac).if {
-      "Lisaac path:        ".print; path_lisaac.println;
-    } else {
-      "Lisaac path:".println;
-      "  builtin:          ".print; path_lisaac_builtin.println;
-      "  current:          ".print; path_lisaac.println;
-    };
+  (
+    COMMON.command_line_header "Compiler".print;
+    COMMON.print_info;
+    COMMON.command_line_footer.print;
   );
   
 Section Private
@@ -99,75 +62,20 @@ Section Private
   - output_basename:STRING_CONSTANT;
   
   - input_name:STRING_CONSTANT;
-
-  - path_lisaac_builtin:STRING_CONSTANT <-
-  ( + path:NATIVE_ARRAY(CHARACTER);
-    + j :INTEGER;
-    path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
-    string_tmp.clear;
-    j := 0;
-    {path.item j != '\0'}.while_do {
-      string_tmp.add_last (path.item j);
-      j := j + 1;
-    };
-    ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
-      string_tmp.add_last '/';
-    };
-    path_lisaac_builtin := ALIAS_STR.get string_tmp;
-    path_lisaac_builtin
-  );
-
-  - path_lisaac_env:STRING_CONSTANT <-
-  ( + path_str :STRING;
-    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
-    (path_str != NULL).if {
-      string_tmp.copy path_str;
-      ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
-        string_tmp.add_last '/';
-      };
-      path_lisaac_env := ALIAS_STR.get string_tmp;
-    } else {
-      path_lisaac_env := NULL;
-    };
-    path_lisaac_env
-  );
-  
-  - path_lisaac:STRING_CONSTANT <-
-  (
-    (path_lisaac_env != NULL).if {
-      path_lisaac := path_lisaac_env;
-    } else {
-      path_lisaac := path_lisaac_builtin;
-    };
-    path_lisaac
-  );
   
   //
   // Command.
   //
 
-  - command_line_header :STRING_CONSTANT :=
-  "----------------------------------------------------------------\n\
-  \--            Lisaac IS An Advanced Compiler V.0.14           --\n\
-  \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
-  \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
-  \--                   http://www.IsaacOS.com                   --\n\
-  \----------------------------------------------------------------\n";
-
   - begin_usage: STRING_CONSTANT :=
   "Usage:                                                          \n\
   \  lisaac [<lip_file.lip>] [<input_file[.li]>] {<Options>}       \n\
   \                                                                \n\
-  \  Note: without <lip_file> or <input_file>,                     \n\
-  \        the nearest `make.lip' file is interpreted.             \n\
+  \  Note: without <lip_file> the nearest `make.lip' file is       \n\
+  \        interpreted.                                            \n\
   \                                                                \n\
   \Options:                                                        \n";
   
-  - end_usage:STRING_CONSTANT :=
-  "                                                                \n\
-  \Bug report:                                                     \n\
-  \\t post in : https://alioth.debian.org/projects/lisaac/         \n\
-  \\t mail to : sonntag@icps.u-strasbg.fr                          \n";
 
   - display_usage <-
   (
@@ -415,7 +323,7 @@ Section Private
     // Load default make.lip in LISAAC_DIRECTORY
     //
     (is_good).if_false {
-      string_tmp.copy path_lisaac;
+      string_tmp.copy (COMMON.path_lisaac);
       string_tmp.append "make.lip";
       path_lip := ALIAS_STR.get string_tmp;
       (is_good := PARSER.read_lip path_lip).if_false {      
@@ -434,7 +342,7 @@ Section Private
       path_lip := LIP_CODE.list_parent.first;
       LIP_CODE.list_parent.remove_first;      
       (path_lip.is_empty).if {
-        string_tmp.copy path_lisaac;
+        string_tmp.copy (COMMON.path_lisaac);
         string_tmp.append "make.lip";
         path_lip := ALIAS_STR.get string_tmp;
       };
@@ -448,7 +356,7 @@ Section Private
       };
     };
     // Auto-load 'lisaac' variable.
-    LIP_CODE.put_string path_lisaac to (ALIAS_STR.variable_lisaac);    
+    LIP_CODE.put_string (COMMON.path_lisaac) to (ALIAS_STR.variable_lisaac);
   );
 
   - put_trace_code buf:STRING <-
@@ -711,33 +619,6 @@ Section Private
       STD_ERROR.put_integer t;
       STD_ERROR.put_string ")\n";
     };
-  );
-
-  - compile_time :TIME <-
-  ( + i:INTEGER;
-    `
-    #ifdef _LISAAC_COMPILE_TIME
-    `;
-    i := `_LISAAC_COMPILE_TIME`:INTEGER;
-    `
-    #endif
-    `;
-    TIME.create_csecond i
-  );
-
-  - compile_date :DATE <-
-  ( + i,j,k,l:INTEGER;
-    `
-    #ifdef _LISAAC_COMPILE_DATE
-    `;
-    i := `_LISAAC_COMPILE_DATE_YEAR`:INTEGER;
-    j := `_LISAAC_COMPILE_DATE_MONTH`:INTEGER;
-    k := `_LISAAC_COMPILE_DATE_DAY`:INTEGER;
-    l := `_LISAAC_COMPILE_DATE_WDAY`:INTEGER;
-    `
-    #endif
-    `;
-    DATE.create (i, j, k, l)
   );
   
 Section Public  

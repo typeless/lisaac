@@ -29,8 +29,6 @@ Section Header
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Shorter source code.";
   
-  - external := `#include "path.h"`;
-    
 Section Inherit
   
   - parent_any:ANY := ANY;
@@ -70,13 +68,7 @@ Section Private
   //
 
   - usage:STRING_CONSTANT :=
-  "----------------------------------------------------------------\n\
-  \--                   Lisaac source Shorter                    --\n\
-  \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
-  \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
-  \--                   http://www.IsaacOS.com                   --\n\
-  \----------------------------------------------------------------\n\
-  \Usage:                                                      \n\
+  "Usage:                                                      \n\
   \  shorter <input_file[.li]> [Options]                       \n\
   \                                                            \n\
   \Options:                                                    \n\
@@ -88,6 +80,8 @@ Section Private
   \  -f <format_file> : formatting description file            \n\
   \                     (see `/lisaac/shorter/')               \n\
   \  -d               : Lisaac doc style (no -c, -r)           \n\
+  \  -h               : Help                                   \n\
+  \  -version         : Show version information               \n\
   \                                                            \n\
   \Examples:                                                   \n\
   \  * Output format file:                                     \n\
@@ -97,15 +91,21 @@ Section Private
   \    shorter -r -f html ~/lisaac/lib                         \n\
   \                                                            \n\
   \  * Build html documentation style JavaDoc:                 \n\
-  \    shorter -d -f belinda ~/lisaac/lib                      \n\
-  \                                                            \n\
-  \Bug report:                                                 \n\
-  \            post in : https://gna.org/bugs/?group=isaac     \n\
-  \            mail to : sonntag@icps.u-strasbg.fr             \n";
+  \    shorter -d -f belinda ~/lisaac/lib                      \n";
 
   - display_usage <-
   (
+    COMMON.command_line_header "Shorter".print;
     usage.print;
+    COMMON.command_line_footer.print;
+    die_with_code exit_failure_code;
+  );
+
+  - display_version <-
+  (
+    COMMON.command_line_header "Shorter".print;
+    COMMON.print_info;
+    COMMON.command_line_footer.print;
     die_with_code exit_failure_code;
   );
   
@@ -117,7 +117,6 @@ Section Private
   ( + cmd:STRING;
     + j:INTEGER;
     + var_lisaac:STRING_CONSTANT;
-    + path:NATIVE_ARRAY(CHARACTER);
     
     // Read argument.
     is_shorter := TRUE;
@@ -148,9 +147,11 @@ Section Private
 	}.elseif {cmd.item 2 = 'r'} then {
           is_short_recursive := TRUE;
         }.elseif {cmd.item 2 = 'd'} then {
-          is_shorter  := FALSE;          
+          is_shorter  := FALSE;
           is_shorter2 := TRUE;
           is_short_recursive := TRUE;
+        }.elseif {cmd == "-version"} then {
+          display_version;
 	} else {
 	  display_usage;
 	};
@@ -172,19 +173,7 @@ Section Private
     };
     
     (format_name != NULL).if {
-      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
-      var_lisaac := STRING_CONSTANT.new_intern path
-      count (path.fast_first_index_of '\0' until 1024);
-      //var_lisaac := ENVIRONMENT.get_environment_variable "LISAAC";
-      //(var_lisaac = NULL).if {
-	//STD_ERROR.put_string "Unable to find `LISAAC' environment variable.\n";
-	//STD_ERROR.put_string "Please, set the environment variable `LISAAC'\n";
-	//STD_ERROR.put_string "with the appropriate absolute path to lisaac \
-	//\root directory.\n";
-	//STD_ERROR.put_string "Example: 'set LISAAC=/lisaac/'\n";
-	//die_with_code exit_failure_code;
-      //};
-      //
+      var_lisaac := COMMON.path_lisaac;
       string_tmp.copy var_lisaac;
       ((var_lisaac.last != '/') &&
       {var_lisaac.last != '\\'}).if {
