@@ -92,7 +92,7 @@ CFLAGS=-O3
 DIST_NAME=$(PROJECT)-$(VERSION_FULL)
 export LISAAC_DIRECTORY=..
 
-all: bin/lisaac bin/shorter
+all: bin/lisaac bin/shorter doc
 
 bootstrap/path.h:
 	mkdir bootstrap
@@ -122,6 +122,11 @@ bin/lisaac: bin/lisaac.c bin/path.h
 bin/shorter: bin/lisaac
 	cd bin && ./lisaac ../src/make.lip -shorter -boost
 
+doc: doc/html
+doc/html: bin/shorter lib
+	mkdir -p doc/html
+	cd doc && ../bin/shorter -d -f belinda ../lib -o html 
+
 interactive_userland: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
 	@echo Please wait...
@@ -137,6 +142,7 @@ install: bin/lisaac bin/shorter
 	cp make.lip  $(DESTDIR)$(LIB)
 	cp -rf lib/  $(DESTDIR)$(LIB)
 	cp -rf lib_os/  $(DESTDIR)$(LIB)
+	cp -rf doc/html/ $(DESTDIR)$(DOC)$(HTML)
 	cp -rf shorter/  $(DESTDIR)$(LIB)
 	cp -rf manpage/*.gz  $(DESTDIR)$(MAN)
 
@@ -152,6 +158,7 @@ clean:
 	-rm -rf bootstrap
 	-rm -f bin/lisaac
 	-rm -f bin/shorter bin/shorter.c
+	-rm -rf doc
 
 dist: clean
 	if ! test -d $(DIST_NAME) ; then mkdir $(DIST_NAME) ; fi
