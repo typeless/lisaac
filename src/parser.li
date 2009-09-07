@@ -2794,7 +2794,7 @@ Section Private
         result := LIP_STRING.get (ALIAS_STR.get "");        
       }.elseif {last_string = ALIAS_STR.prototype_boolean} then {        
         result := LIP_BOOLEAN.get FALSE;
-      }.elseif {last_string = ALIAS_STR.prototype_boolean} then {
+      }.elseif {last_string = ALIAS_STR.prototype_lip} then {
         not_yet_implemented;
       } else {
         syntax_error (current_position,"Incorrect type.");
