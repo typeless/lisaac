@@ -173,6 +173,11 @@ Section Public
     to_string.println; 
   );
   
+  - println_bug <-
+  (
+    bug.print;
+  );
+  
   - dynamic_type:SELF <- SELF;
   
   - same_dynamic_type other:OBJECT :BOOLEAN <-

@@ -131,6 +131,12 @@ Section Private
         };
         */
         
+        (typ_f.raw = type_boolean).if {          
+          lst_typ.print;
+          '\n'.print;
+          warning_error (position,"ICI");
+        };
+        
 	(! lst_typ.is_empty).if {
 	  (lst_typ.count = 1).if {
 	    (first_code = NULL).if {
