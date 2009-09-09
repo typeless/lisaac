@@ -121,8 +121,6 @@ Section Public
   
   - to_character:CHARACTER <- '0';
   
-   - bug:CHARACTER <- ( '0' );
-  
   //
   // Output.
   //

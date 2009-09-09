@@ -134,8 +134,6 @@ Section Public
   // Output.
   //
   
-  - bug:CHARACTER <- ( 'M' );
-  
   - print <-
   (
     deferred;

@@ -115,7 +115,7 @@ Section Public
   //
   // Output.
   //
-  
+
   - print <-
   (
     "TRUE".print;

@@ -56,7 +56,7 @@ Section Public
   - print_runtime_stack_on ptr:POINTER <- 
   (
     (debug_level != 0).if {
-      `stack_print((_____CONTEXT *)@ptr)`;
+      `lisaac_stack_print((_____CONTEXT *)@ptr)`;
     };
   );
   
@@ -172,12 +172,7 @@ Section Public
   ( 
     to_string.println; 
   );
-  
-  - println_bug <-
-  (
-    bug.print;
-  );
-  
+    
   - dynamic_type:SELF <- SELF;
   
   - same_dynamic_type other:OBJECT :BOOLEAN <-

@@ -436,7 +436,7 @@ Section Private
 	"// Unix Signal manager:\n\
 	\void interrupt_signal(int sig)  \n\
 	\{                               \n\
-	\  stack_print(top_context);     \n\
+	\  lisaac_stack_print(top_context);     \n\
 	\  print_string(\"User interrupt.\\n\"); \n\
 	\  die_with_code(1);                     \n\
 	\}                                       \n\n";
@@ -447,7 +447,7 @@ Section Private
       //
       
       buf.append 	
-      "void push_first(_____CONTEXT *path,unsigned long code)\n\
+      "void lisaac_push_first(_____CONTEXT *path,unsigned long code)\n\
       \{ \n";
       (debug_level_option = 20).if {
 	buf.append 
@@ -457,7 +457,7 @@ Section Private
 	\  if (cur == path) {\n\
 	\    loop.back = top_context;\n\	
 	\    loop.code = code; \n\
-	\    stack_print(&loop);\n\
+	\    lisaac_stack_print(&loop);\n\
 	\    print_string(\"COMPILER : Debug context looping detected !\\n\");\n\
 	\    die_with_code(1);\n\
 	\  };\n";
@@ -468,13 +468,13 @@ Section Private
       \  top_context = path;\n\
       \} \n\
       \  \n\
-      \void push(_____CONTEXT *path,unsigned long code)\n\
+      \void lisaac_push(_____CONTEXT *path,unsigned long code)\n\
       \{ \n\      	
       \  path->code  = code;\n\
       \  top_context = path;\n\  
       \} \n\
       \  \n\
-      \void stack_print(_____CONTEXT *up)      \n\
+      \void lisaac_stack_print(_____CONTEXT *up)      \n\
       \{ _____CONTEXT *back,*next;             \n\
       \  int j;	                              \n\
       \  next = (void *)0;                          \n\  
@@ -703,9 +703,9 @@ Section Public
           output_code.append "void interrupt_signal(int sig);\n";
         };
         output_code.append 
-        "void stack_print(_____CONTEXT *up);\n\
-        \void push_first(_____CONTEXT *path,unsigned long code);\n\
-        \void push(_____CONTEXT *path,unsigned long code);\n\
+        "void lisaac_stack_print(_____CONTEXT *up);\n\
+        \void lisaac_push_first(_____CONTEXT *path,unsigned long code);\n\
+        \void lisaac_push(_____CONTEXT *path,unsigned long code);\n\
         \void print_integer(unsigned short n);\n";
       };
     };
