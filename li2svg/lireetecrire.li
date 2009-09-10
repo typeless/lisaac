@@ -1,0 +1,68 @@
+
+
+Section Header
+  + name := LIREETECRIRE;  
+   
+  - author:="HILBERT Jérôme (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Grégoire(greg-jacquemin@hotmail.fr)";
+  - comment:="Prototype qui permet de lire un fichier et de créer et d'écrire dans un fichier SVG";
+  
+Section Inherit
+  
+  + parent_object:OBJECT := OBJECT;
+  
+Section Private
+  
+  //le fichier svg dans lequel on va écrire
+  + file:STD_FILE;
+  
+Section Public
+
+  //lit un fichier et renvoit son contenu dans une chaine de caractères
+  + lire e:ENTRY :STRING <-
+  ( 
+    + fichier:STD_FILE;
+    + text:STRING;
+    
+    fichier ?= e;
+    ((fichier = NULL) || {! fichier.open}).if {
+      "File ".print;
+      e.name.print;
+      " not open!\n'".print;
+      die_with_code exit_failure_code;	
+    };
+    text := STRING.create (fichier.size);
+    fichier.read text size (fichier.size);
+    fichier.close;
+    text
+  );
+              
+  //ouvre le fichier SVG, s'il n'éxiste pas il sera créé, sinon il sera vidé
+  + ouvrir_svg dest:STRING <-
+  (
+    + e:ENTRY;
+    e := FILE_SYSTEM.get_entry dest;    
+    (e = NULL).if {
+      file := FILE_SYSTEM.make_file dest;
+    } else {
+      file ?= e;
+    };    
+    ((file = NULL) || {! file.open}).if {
+      "File ".print;
+      dest.print;
+      " not open!\n'".print;
+      die_with_code exit_failure_code;	
+    };
+  );
+  
+  //écrit la chaine dans le fichier SVG
+  + ecrire_svg chaine:STRING<-
+  (
+    file.write chaine from 1 size (chaine.count);
+  );
+  
+  //ferme le fichier SVG
+  + fermer_svg <-
+  (
+    file.close;	
+  );
+  

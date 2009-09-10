@@ -1,0 +1,48 @@
+Section Header
+  + name := PARSE;  
+   
+  - author:="HILBERT Jérôme (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Grégoire(greg-jacquemin@hotmail.fr)";
+  - comment:="Parcours le dossier puis les sous-dossiers passé en paramètre à la recherche de fichier lisaac";
+  
+Section Inherit
+  
+  + parent_object:OBJECT := OBJECT;
+  
+Section Public
+
+  //parcours un dossier et renvoit un ensemble de fichier qui contient la description de tous les fichiers lisaac trouvés
+  + parcours_dossier dir:ENTRY option simple:BOOLEAN ou uniquement_public:BOOLEAN :ENS_FICHIERS<-
+  ( 
+    + direc:DIRECTORY;
+    + string_tmp:STRING;
+    + courant:ENTRY;
+    + parsing:PARSING;
+    + ensfichiers:ENS_FICHIERS;
+    
+    ensfichiers := ENS_FICHIERS.create;
+    
+    parsing := PARSING.clone;
+    
+    direc ?= dir;
+    
+    ((direc = NULL) || {! direc.open}).if{ 
+      "NULL\n".print; 
+    } else {
+      (direc.lower).to (direc.upper) do { j:INTEGER;
+        courant := direc.item j;
+        
+        (courant.is_directory).if{
+          ensfichiers.ajouter_tous (parcours_dossier courant option simple ou uniquement_public);
+        }else{
+          string_tmp := courant.name.substring (courant.name.count-2) to (courant.name.count);
+          (string_tmp.compare ".li" == 0).if {	
+            ensfichiers.ajouter (
+              parsing.parcours_fichier courant option simple ou uniquement_public
+            );	
+          };
+        };
+      };
+    };
+    ensfichiers
+  );
+ 

@@ -1,0 +1,40 @@
+/*******	Prototype qui permet de stocker les différents parents instanciés d'un fichier 		*******/
+
+
+
+Section Header
+  + name := ENS_PARENTS;
+
+  - author := "HILBERT Jérôme (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Grégoire(greg-jacquemin@hotmail.fr)";
+  - comment := "gère un ensemble de parent";
+  
+Section Inherit
+  + parent_linked_list:Expanded LINKED_LIST(STRING);
+  
+Section Public
+  
+  + ajouter s:STRING <-
+  (
+    add_last s ;
+  );
+  
+  + ajouter_tous ep:ENS_PARENTS <-
+  (
+    append_collection ep;	
+  );
+  
+  //cherche si l'ensemble contient déjà le parent (fr)
+  + has fr:STRING :BOOLEAN <-
+  (
+    +result:BOOLEAN;
+    
+    result := FALSE;
+    (lower).to (upper) do{ i:INTEGER;
+      + g:STRING;
+      g := item i;
+      (g == fr).if{
+        result := TRUE;
+      };
+    };
+    result
+  );

@@ -1,0 +1,22 @@
+Section Header
+  + name :=PRIVATE;
+  
+  - author:="HILBERT Jérôme (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Grégoire(greg-jacquemin@hotmail.fr)";
+  - comment:="Décrit l'accès Private";
+  
+Section Inherit
+  - parent_acces:ACCES:=ACCES;
+  
+Section Public
+  
+  //renvoit une chaine de caractèrs décrivant le type d'accès
+  - get_type :ABSTRACT_STRING<-
+  (
+    "private"
+  );
+  
+  //renvoit le type d'accès au format UML (-)
+  - get_uml_type :STRING_CONSTANT<-
+  (
+    "-"
+  );

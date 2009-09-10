@@ -1,0 +1,27 @@
+
+
+Section Header
+  + name := ACCES;
+  
+  - author:="HILBERT Jérôme (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Grégoire(greg-jacquemin@hotmail.fr)";
+  - comment:="Prototype qui gère les différents type d'accès des méthodes et attributs";
+  
+Section Inherit 
+  - parent_object:OBJECT:=OBJECT;
+  
+Section Public
+  
+  //renvoit une chaine de caractèrs décrivant le type d'accès
+  + get_type :ABSTRACT_STRING<-
+  (
+    deferred;
+    "FALSE"
+  );
+
+  //renvoit le type d'accès au format UML (+,-,*)
+  + get_uml_type :STRING_CONSTANT<-
+  (
+    deferred;
+    "FALSE"
+  );
+  
