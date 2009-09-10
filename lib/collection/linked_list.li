@@ -228,12 +228,13 @@ Section Public
     result
   );
   
-  - index_of x:V start start_index:INTEGER :INTEGER <-
+  - index_of element:V start start_index:INTEGER :INTEGER <-
   ( + result:INTEGER;
-    + safe_equal:SAFE_EQUAL(V);
+    //+ safe_equal:SAFE_EQUAL(V);
     
     result := start_index;
-    {(result > upper) || {safe_equal.test x with (item result)}}.until_do {
+    //{(result > upper) || {safe_equal.test x with (item result)}}.until_do {
+    {(result > upper) || {element == item result}}.until_do {
       result := result + 1;
     };    
     result

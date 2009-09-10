@@ -40,13 +40,16 @@ Section Public
   
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + result:TYPE_FULL;
+    
     (p.name = ALIAS_STR.prototype_self).if {
       // For Self.
       result := self_arg.static_type;            
     } else {
-      // For genericity.
-      result := self_arg.static_type.raw.parameter_to_type p;
+      // For genericity.      
+      result := slot.receiver_type.parameter_to_type p;
+      //result := self_arg.static_type.raw.parameter_to_type p;      
     };
+    
     result
   );
   
@@ -92,7 +95,7 @@ Section DTA_RD
         
     (slot.id_section.is_interrupt).if {
       result := type_pointer.default.get_temporary_expr position;
-    } else {      
+    } else {            
       result := slot.result_type.get_expr_for Self;
     };
     result

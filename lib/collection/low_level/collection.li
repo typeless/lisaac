@@ -385,8 +385,7 @@ Section Public
   //
   // * Parametre: 
   //    `element' : L'element que l'on veut chercher.
-  // * Necessite: `element' pas null.
-  // * Garantie: c'est une bonne fonction :-)
+  // * Necessite: `element' pas null.  
   // * Voir: `fast_first_index_of', `index_of', `last_index_of', 
   // `reverse_index_of'.
   ( 
@@ -409,7 +408,8 @@ Section Public
   )
   [
     +? {Result.in_range start_index to (upper + 1)};
-    +? {valid_index Result ->> { SAFE_EQUAL(V).test element with (item Result)}};
+    //+? {valid_index Result ->> { SAFE_EQUAL(V).test element with (item Result)}};
+    +? {valid_index Result ->> {element == item Result}};
   ];
   
   - reverse_index_of element:V start start_index:INTEGER :INTEGER <-
