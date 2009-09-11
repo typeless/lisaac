@@ -44,6 +44,7 @@ Section Private
   // Generate code.
   + is_java:BOOLEAN;
   + is_cop:BOOLEAN; // Correct value after compilation.
+  + execute_back_end:BOOLEAN := TRUE;
   
   // Other.
   + is_statistic:BOOLEAN;
@@ -104,15 +105,24 @@ Section Private
   - get_target <-
   (
     (target = "dos").if {
+      (is_cop).if {
+        "Warning: COP not yet implemented\n".print;
+      };
       dos_target;
     };
     (target = "windows").if {
+      (is_cop).if {
+        "Warning: COP not yet implemented\n".print;
+      };
       windows_target;
     };
     (target = "unix").if {
       unix_target;
     };
     (target = "java").if {
+      (is_cop).if {
+        "Warning: COP not yet implemented\n".print;
+      };
       java_target;
     };
     (target = "").if {
@@ -170,29 +180,22 @@ Section Private
   
   - general_back_end <-
   (
-    (target = "java").if {
-      (is_cop).if {
-        "Warning: COP not yet implemented\n".print;
+    (execute_back_end).if {
+      (target = "java").if {
+        execute ("javac " + output_file + ".java");
       };
-      execute ("javac " + output_file + ".java");
-    };
-    (target = "dos").if {
-      (is_cop).if {
-        "Warning: COP not yet implemented\n".print;
+      (target = "dos").if {
+        execute ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
       };
-      execute ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
-    };
-    (target = "windows").if {
-      (is_cop).if {
-        "Warning: COP not yet implemented\n".print;
+      (target = "windows").if {
+        execute ("gcc " + output_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
       };
-      execute ("gcc " + output_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
-    };
-    (target = "unix").if {      
-      (is_cop).if {
-        lib_gcc := lib_gcc + " -lpthread";
+      (target = "unix").if {
+        (is_cop).if {
+          lib_gcc := lib_gcc + " -lpthread";
+        };
+        execute ("gcc " + output_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
       };
-      execute ("gcc " + output_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
     };
   );
   
@@ -299,6 +302,12 @@ Section Public
   // Change output file
   (
     output_file := output;
+  );
+
+  - partial <-
+  // Only generate C code and don't compile it with GCC
+  (
+    execute_back_end := FALSE;
   );
   
   //
