@@ -156,8 +156,8 @@ Section Interrupt
     //
     .when 0 then {
       // Refresh Linux Window
-      (INTERFACE.screen != NULL).if {
-	INTERFACE.screen.redraw (p1,p2) to (p3,p4);
+      (DESK.physical_screen != NULL).if {
+	DESK.physical_screen.redraw (p1,p2) to (p3,p4);
       };
     }
     //

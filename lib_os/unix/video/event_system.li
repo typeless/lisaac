@@ -92,7 +92,7 @@ Section Public
 	y1 := `ev.xresizerequest.height`:INTEGER;
 	`XResizeWindow(display,window,@x1,@y1)`;
 	
-	VIDEO.pixel_hard (x1,10) color 0FF0000h;
+	//VIDEO.pixel_hard (x1,10) color 0FF0000h;
 	
 	DESK.resize_window (x1,y1);
       }
