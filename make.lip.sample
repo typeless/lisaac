@@ -44,7 +44,8 @@ Section Private
   // Generate code.
   + is_cop:BOOLEAN;     // Correct value after compilation.
   + is_library:BOOLEAN; // For build a lisaac library C 
-  
+  + execute_back_end:BOOLEAN := TRUE;
+
   // Other.
   + is_statistic:BOOLEAN;
   + is_quiet:BOOLEAN;
@@ -176,19 +177,21 @@ Section Private
   
   - general_back_end <-
   (
-    (is_cop).if {
-      lib_gcc := lib_gcc + " -lpthread";
-    };
-    ((target = "dos") | (target = "windows")).if {
-      execute_file := output_file + ".exe";
-    } else {
-      execute_file := output_file;
-    };
-    option_gcc := option_gcc + " -U_FORTIFY_SOURCE ";
-    (is_library).if {
-      execute ("gcc " + output_file + ".c -c " + option_gcc);
-    } else {
-      execute ("gcc " + output_file + ".c -o " + output_file + option_gcc + lib_gcc);
+    (execute_back_end).if {
+      (is_cop).if {
+        lib_gcc := lib_gcc + " -lpthread";
+      };
+      ((target = "dos") | (target = "windows")).if {
+        execute_file := output_file + ".exe";
+      } else {
+        execute_file := output_file;
+      };
+      option_gcc := option_gcc + " -U_FORTIFY_SOURCE ";
+      (is_library).if {
+        execute ("gcc " + output_file + ".c -c " + option_gcc);
+      } else {
+        execute ("gcc " + output_file + ".c -o " + output_file + option_gcc + lib_gcc);
+      };
     };
   );
   
@@ -288,6 +291,12 @@ Section Public
   // Add option for GCC.
   (
     option_gcc := option_gcc + " " + option;
+  );
+
+  - partial <-
+  // Only generate C code and don't compile it with GCC
+  (
+    execute_back_end := FALSE;
   );
   
   //
