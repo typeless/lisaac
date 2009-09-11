@@ -378,6 +378,7 @@ Section Private
       new_text.append path_current;
       new_text.append path_next;
       update file idf comment with new_text confirmation TRUE;
+      /*
       (system = system_windows).if {
         string_tmp.copy file;
       } else {
@@ -394,6 +395,7 @@ Section Private
         \  Note: You'll have to reboot or reloaded environnement   \n\
         \        to acknowledge the changes.                       \n".print;
       };
+      */
     };
     
     //
@@ -653,6 +655,9 @@ Section Public
         \=============================                           \n\
         \  Installation successfull.                             \n\
         \  Run `lisaac' to compile.                              ".print;
+        "\n\
+        \  Note: You'll have to reboot or reloaded environnement   \n\
+        \        to acknowledge the changes.                       \n".print;
       }
       .when 2 then {
         {

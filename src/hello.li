@@ -34,10 +34,9 @@ Section Inherit
 Section Public
 
   - main <-
-  ( + var:BOOLEAN;          
-    //var := TRUE;
-    var.println_bug.print;
-    '\n'.print;
+  ( + txt:STRING;
+    
+    txt.print;
     
   );
 

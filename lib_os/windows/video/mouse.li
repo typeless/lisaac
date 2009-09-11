@@ -74,7 +74,7 @@ Section Public
   
 Section Private
   
-  + buffer_event:FAST_ARRAY[EVENT_MOUSE];
+  + buffer_event:FAST_ARRAY(EVENT_MOUSE);
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
   - p_end:UINTEGER_8;  // Pointer on the buffer (end)
     
@@ -98,7 +98,7 @@ Section Public
     //
     // Software configuration.
     //
-    buffer_event := FAST_ARRAY[EVENT_MOUSE].create 4;
+    buffer_event := FAST_ARRAY(EVENT_MOUSE).create 4;
     0.to 3 do { j:INTEGER;
       new_event := EVENT_MOUSE.clone;
       buffer_event.put new_event to j;
