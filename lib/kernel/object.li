@@ -111,15 +111,15 @@ Section Public
   - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- (! (Self == other));
   
   
-  - clone_allocation_size:POINTER;
+  - clone_allocation_size:UINTEGER_CPU;
   
   - clone:SELF <- 
   ( + result:SELF;
     + ptr:POINTER;
-    + sz:POINTER;
+    + sz:UINTEGER_CPU;
     + typ_id:INTEGER;
       
-    sz := object_size.to_pointer;        
+    sz := object_size;        
     (sz = 0).if {      
       result := Self;
     } else {      
@@ -145,10 +145,10 @@ Section Public
   - free_allocation_memory <- 
   // Static free, don't use with GC.
   ( + ptr:POINTER;
-    + sz:UINTEGER_32;
+    + sz:UINTEGER_CPU;
     + typ_id:INTEGER;
       
-    sz := object_size.to_uinteger_32;        
+    sz := object_size;        
     (sz != 0).if {      
       typ_id := type_id_intern;      
       //ptr := `free(@Self)`;                  

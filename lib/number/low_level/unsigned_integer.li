@@ -110,7 +110,7 @@ Section Public
   // Looping
   //
   
-  - downto limit_down:SELF do blc:BLOCK <-
+  - downto limit_down:SELF do blc:{SELF; } <-
   (
     (Self+1).downto_unsigned limit_down do blc; 
   );
@@ -126,7 +126,7 @@ Section Public
   
 Section Private
 
-  - downto_unsigned limit_down:SELF do blc:BLOCK <-
+  - downto_unsigned limit_down:SELF do blc:{SELF; } <-
   (
     (Self > limit_down).if {
       blc.value (Self - 1);

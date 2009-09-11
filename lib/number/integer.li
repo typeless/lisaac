@@ -24,12 +24,12 @@ Section Header
   
   - export := 
   // Integer: 
-  UINTEGER_8,  UINTEGER_16, UINTEGER_32, UINTEGER_64,
-  INTEGER_8 ,  INTEGER_16 , INTEGER_32 , INTEGER_64 ,
-  UINTEGER_BIG,UINTEGER,//INTEGER_BIG,
+  UINTEGER_8,  UINTEGER_16, UINTEGER_32 , UINTEGER_64,
+  INTEGER_8 ,  INTEGER_16 , INTEGER_32  , INTEGER_64 ,
+  UINTEGER_BIG,UINTEGER   , UINTEGER_CPU,//INTEGER_BIG,
   // Fixed real:
-  UREAL_16_16, UREAL_24_8 , UREAL_26_6 , 
-  REAL_16_16 , REAL_24_8  , REAL_26_6  , 
+  UREAL_16_16, UREAL_24_8 , UREAL_26_6  , 
+  REAL_16_16 , REAL_24_8  , REAL_26_6   , 
   // Float Real:
   REAL, REAL_32, REAL_64, REAL_80,
   // Other:
@@ -37,7 +37,7 @@ Section Header
  
   - comment := "Generic Integer.";
   
-  - type    := `int`;
+  - type    := `signed int`;
   - default := 0;
 
 Section Insert

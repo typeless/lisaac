@@ -80,7 +80,7 @@ Section MEMORY
   
   - begin:POINTER                     <- this + object_size;
   
-  - size:UINTEGER_CPU                 <- size_and_id & 0FFFF_FFFCh;
+  - size:UINTEGER_CPU                 <- size_and_id & ~ 3.to_uinteger_cpu;
   
   - next_linear:MEMORY                <- CONVERT(POINTER,MEMORY).on (begin + size);
     
@@ -138,7 +138,7 @@ Section MEMORY
     block := CONVERT(POINTER,MEMORY).on (begin_memory + old_size);    
     
     block.set_previous_linear NULL; 
-    block.set_size_and_id ((64.mb - object_size) | id_free | id_end);
+    block.set_size_and_id (id_free | id_end | (64.mb - object_size));
     block.add_link_free;    
     put_last block to (nb_page - 1);
         
@@ -291,7 +291,7 @@ Section MEMORY
   
   - search new_size:UINTEGER_CPU :MEMORY <-
   ( + result:MEMORY;
-    + idx:UINTEGER_32;
+    + idx:UINTEGER_CPU;
     
     {new_size > minimum_size-POINTER.object_size} ? "Memory: Big block.";
     {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
@@ -366,7 +366,7 @@ Section Private
           
   - begin_memory:POINTER;
   
-  - capacity_max:POINTER;
+  - capacity_max:UINTEGER_CPU;
   
   - read_ptr p:POINTER :POINTER <-
   ( + mem:NATIVE_ARRAY(POINTER);
@@ -440,7 +440,7 @@ Section Private
 
   - copy src:POINTER to dst:POINTER size sz:UINTEGER_CPU <-
   ( + na_src,na_dst:NATIVE_ARRAY(POINTER);
-    + siz:UINTEGER_CPU;
+    + siz:INTEGER;
     
     siz := sz.to_integer;
     {(siz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
@@ -456,7 +456,7 @@ Section Private
   - fill_memory src:POINTER size sz:UINTEGER_CPU <-
   // Just for debug.
   ( + na_src:NATIVE_ARRAY(POINTER);
-    + siz:UINTEGER_CPU;
+    + siz:INTEGER;
     
     {(sz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
     
@@ -517,7 +517,7 @@ Section Public
   - alloc_type t:UINTEGER_32 size sz:UINTEGER_CPU :POINTER <-
   // Allocation for object without type. (LAB_TYPE)
   ( + ptr_table,result:POINTER;    
-    + new_size:POINTER;
+    + new_size:UINTEGER_CPU;
     
     {sz <= minimum_size} ? "Memory: Size bound.";
 

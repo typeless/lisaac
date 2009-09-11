@@ -566,7 +566,7 @@ Section Public
 	    id_counter_with_type.append_in output_decl;	  
             id_counter_with_type := id_counter_with_type + 1;
             (prototype.style != '-').if {
-              string_tmp.append "  unsigned long __id;\n";
+              string_tmp.append "  unsigned int __id;\n";
             };
 	    (prototype.is_mapping).if {	    
 	      semantic_error (prototype.position,	    

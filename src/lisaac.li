@@ -681,13 +681,13 @@ Section Public
       output_decl.append 
       "// Generic Object\n\
       \class ___OBJ {\n\
-      \  long __id;\n\
+      \  int __id;\n\
       \};\n\n";          
     } else {
       output_decl.append 
       "// Generic Object\n\
       \struct ___OBJ {\n\
-      \  unsigned long __id;\n\
+      \  unsigned int __id;\n\
       \};\n\n";          
     };
     title "GLOBAL" in output_glob;

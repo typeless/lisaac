@@ -20,39 +20,33 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
   
-  + name        := Expanded INTEGER_32;
-  
-  - export      := INTEGER, INTEGER_64, POINTER;
+  + name    := Expanded UINTEGER_CPU;
+
+  - export  := UINTEGER_64, POINTER;
    
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag, 2007 Xavier Oswald";
-
-  - comment     :="Signed 32 bits integer.";
-
-  - type        := `signed int`;
-  - default     := (0.to_raw_integer_32);
+  - comment := "Unsigned integer (variable size according to CPU word).";
   
+  - type    := `unsigned long`;
+  - default := (0.to_raw_uinteger_cpu);
+
 Section Insert
   
-  - parent_signed_integer:SIGNED_INTEGER := SIGNED_INTEGER;
+  - parent_unsigned_integer:UNSIGNED_INTEGER := UNSIGNED_INTEGER;
   
 Section Public
   
-  - object_size:INTEGER := 4;
+  - object_size:INTEGER <- `sizeof(unsigned long)`:INTEGER;
 
   //
-  // Range
+  // Range.
   //
   
-  - maximum:UINTEGER_64 <- 07FFF_FFFFh.to_raw_uinteger_64; 
-  
-  - minimum:INTEGER_64 <- - 07FFF_FFFFh.to_raw_integer_64;
+  - maximum:UINTEGER_64 := (~ 0.to_uinteger_cpu).to_raw_uinteger_64;
   
   //
   // Conversion with test.
   //
- 
-  - to_integer_32:INTEGER_32     <- Self;  
-
-
-
-
+  
+  - to_uinteger_64:UINTEGER_64 <- to_raw_uinteger_64;
+  
+  - to_pointer:POINTER <- to_raw_pointer;
