@@ -1610,11 +1610,9 @@ Section Private
         };
       }.do_while {continue};      
       nam := ALIAS_STR.get string_tmp2;
-      
+      //
       (read_character '(').if {	
-	//
-	// Genericity.
-        //		
+	// Multiple Genericity.
         genericity := ALIAS_ARRAY(ITM_TYPE_MONO).new;
         {
           t := read_param_type;
