@@ -139,7 +139,7 @@ Section Private
         lib_gcc := lib_gcc + " " + lib;
         run "rm __tmp__.c __tmp__";
       } else {
-        "\nERROR: `" + lib + "' library for GCC not found.\n".print;
+        ("\nERROR: `" + lib + "' library for GCC not found.\n").print;
         run "rm __tmp__.c";
         exit;
       };    

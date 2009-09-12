@@ -41,7 +41,7 @@ Section Public
   // Range.
   //
   
-  - maximum:UINTEGER_64 := 0FFFF_FFFFh.to_raw_uinteger_64;
+  - maximum:UINTEGER_64 := ~ 0.to_raw_uinteger_32;
   
   //
   // Conversion with test.

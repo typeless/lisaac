@@ -114,7 +114,10 @@ Section MEMORY
   ( 
     capacity_max := SYSTEM.get_memory_capacity;
     begin_memory := SYSTEM.get_begin_memory;
-  
+    /*
+    "Capacity : ".print; capacity_max.print_hex; '\n'.print;
+    "Begin    : ".print; begin_memory.print_hex; '\n'.print;
+    */
     {begin_memory != NULL} ? "Memory: Not memory.";
     {(begin_memory & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
   );
@@ -134,14 +137,17 @@ Section MEMORY
       "Not enough memory.\n".print;
       die_with_code exit_failure_code;
     };
-            
-    block := CONVERT(POINTER,MEMORY).on (begin_memory + old_size);    
-    
+    /*
+    "Begin_memory + old_size : ".print;  
+    (begin_memory + old_size).print_hex; '\n'.print;
+    "object_size : ".print; object_size.print; '\n'.print;
+    */
+    block := CONVERT(POINTER,MEMORY).on (begin_memory + old_size);        
     block.set_previous_linear NULL; 
     block.set_size_and_id (id_free | id_end | (64.mb - object_size));
     block.add_link_free;    
     put_last block to (nb_page - 1);
-        
+
     block
   );
     
@@ -326,7 +332,7 @@ Section MEMORY
       idx := idx + 1;
     };
     
-    (idx >= nb_page).if {    
+    (idx >= nb_page).if {          
       blc := new_page;
     };        
     blc.set_size_and_id (blc.size_and_id - 4096);
@@ -394,7 +400,7 @@ Section Private
 
     result := read_ptr ptr_table;            
     (result = NULL).if {      
-      // Allocation new LAB.            
+      // Allocation new LAB.                  
       result := new_lab lab_type;          
       next := result + new_size;            
       put_ptr NULL to next;
@@ -523,6 +529,8 @@ Section Public
 
     new_size  := sz.align_power (POINTER.object_size); 
     
+    //"alloc_type : ".print; new_size.print; '\n'.print;
+    
     {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";        
         
     ptr_table := table_type t;
@@ -546,6 +554,8 @@ Section Public
     {sz <= minimum_size} ? "Memory: Size bound.";
         
     new_size  := sz.align_power (POINTER.object_size); 
+    
+    //"alloc_size : ".print; new_size.print; '\n'.print;
     
     {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     

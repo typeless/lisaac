@@ -599,7 +599,7 @@ Section Public
   
 Section INTEGER  
   
-  - to_raw_pointer:POINTER         <- CONVERT(SELF,POINTER).on Self;
+  - to_raw_pointer:POINTER         <- CONVERT(UINTEGER_CPU,POINTER).on to_uinteger_cpu;
 
 
 
