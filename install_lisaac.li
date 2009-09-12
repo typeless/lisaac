@@ -639,7 +639,10 @@ Section Public
         \  Run `lisaac' to compile.                              ".print;
         "\n\
         \  Note: You'll have to reboot or reloaded environnement   \n\
-        \        to acknowledge the changes.                       \n".print;
+        \        to acknowledge the changes.                       \n\
+        \     OR for bash users, doing a `source ~/.bashrc' should \n\
+        \        do the job.                                       \n".print;
+
       }
       .when 2 then {
         {
