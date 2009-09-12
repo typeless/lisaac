@@ -378,24 +378,6 @@ Section Private
       new_text.append path_current;
       new_text.append path_next;
       update file idf comment with new_text confirmation TRUE;
-      /*
-      (system = system_windows).if {
-        string_tmp.copy file;
-      } else {
-        string_tmp.copy "source ";
-        string_tmp.append file;
-      };
-      "  Execute :`".print;
-      string_tmp.print;
-      "'\t".print;
-      (ENVIRONMENT.execute_command string_tmp = 0).if {
-        "OK.\n".print;
-      } else {
-        "Fail!\n\n\
-        \  Note: You'll have to reboot or reloaded environnement   \n\
-        \        to acknowledge the changes.                       \n".print;
-      };
-      */
     };
     
     //
