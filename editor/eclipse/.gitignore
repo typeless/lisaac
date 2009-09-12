@@ -1,0 +1,4 @@
+export.xml
+.metadata/**/*
+!.metadata/.plugins/org.eclipse.core.resources/**/*
+

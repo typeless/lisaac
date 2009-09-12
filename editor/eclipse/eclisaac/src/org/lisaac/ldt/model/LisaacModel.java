@@ -8,7 +8,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
-import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -138,6 +137,8 @@ public class LisaacModel implements ILisaacModel{
 						public void syntaxError(String msg, Position position) {			
 						}
 						public void warning(String msg, Position position) {
+						}
+						public void enableErrorReport(boolean enable) {
 						}
 					});
 				}

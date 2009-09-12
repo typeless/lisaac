@@ -39,6 +39,10 @@ public class LisaacTextHover implements ITextHover, ITextHoverExtension {
 				return null;
 			}
 			
+			if (model == null) {
+				return null;
+			}
+			
 			String text = textViewer.getDocument().get(hoverRegion.getOffset(), hoverRegion.getLength());
 			if (LisaacScanner.isPrototypeIdentifier(text)) {
 				// get prototype info

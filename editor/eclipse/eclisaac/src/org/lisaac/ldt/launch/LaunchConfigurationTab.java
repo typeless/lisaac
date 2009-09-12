@@ -334,12 +334,9 @@ public class LaunchConfigurationTab extends AbstractLaunchConfigurationTab {
 								item.setText(2, methodComment);
 
 								if (method.getName().compareTo(ILisaacModel.slot_debug_mode) == 0) {
-									if (getLaunchConfigurationDialog().getMode().compareTo("debug") == 0) {
-										item.setChecked(true);
-									} else {
-										item.setChecked(false);
-									}
-								}
+									item.setChecked(true);
+									item.setText(1, getLaunchConfigurationDialog().getMode());
+								} 
 							}
 						}
 					}
