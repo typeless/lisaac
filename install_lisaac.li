@@ -540,13 +540,50 @@ Section Private
       "  Sorry, Hippoedit editor is only for Windows.".print;
     };
   );
-  
+   
   - install_eclipse <-
-  (
-    // TODO: BSBS->Damien 
-    "  Sorry, Not yet implemented.\n\
-    \  Please, read `editor/eclipse/README' file.".print;
+  ( + eclipse_dir,script:STRING;
+    + build_filename:STRING_CONSTANT;
+    + build_file:POINTER;
+    
+    " Prerequisite: you need the Eclipse SDK package installed.\n\
+    \ Give the full path of your Eclipse SDK installation :\n>".print;
+    IO.read_line;
+    eclipse_dir := IO.last_string;
+    
+    // 1. generate build script
+    script := STRING.create 100;
+    script.copy "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    script.append "<project default=\"plugin_export\" name=\"build\">\n";
+    script.append "  <target name=\"plugin_export\">\n";
+    script.append "    <pde.exportPlugins destination=\"";
+    script.append eclipse_dir;
+    script.append "\" exportSource=\"false\" exportType=\"directory\" plugins=\"org.lisaac.ldt\" useJARFormat=\"true\"/>\n";
+    script.append "  </target>\n";
+    script.append "</project>\n";
+    
+    build_filename := "editor/eclipse/export.xml";	
+    build_file := open_write build_filename;
+    write build_file with script size (script.count);
+    close build_file;
+    
+    // 2. build and export the plugin
+    string_tmp.copy "java -cp ";
+    string_tmp.append eclipse_dir;
+    string_tmp.append "/plugins/org.eclipse.equinox.launcher_*.jar org.eclipse.core.launcher.Main -application org.eclipse.ant.core.antRunner -data editor/eclipse -buildfile ";
+    string_tmp.append build_filename;
+   
+    (ENVIRONMENT.execute_command string_tmp != 0).if {
+      "\nrun `".print;  
+      string_tmp.print; // can fail because the last command process is out of memory. Copying the command by hand should work...
+      "\'\n".print;
+      
+      "\n  Sorry auto-install fail!\n Please, read `editor/eclipse/README' file.\n".print;  
+    } else {
+      "OK.\n".print;
+    };
   );
+ 
   
   //
   // Install Compiler

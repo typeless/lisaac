@@ -25,22 +25,31 @@ How to get started?
   * Plugin Installation :
      -------------------
  
+    - Install latest Eclipse distribution (3.5 Galileo)  see http://www.eclipse.org/downloads.
+
     - Use the Eclipse Update Manager to install the Lisaac plugin.  Add the http://isaacproject.u-strasbg.fr/eclipse/update/  site in the manager, select Lisaac feature and click 'Install'.
        or
     - Open the Eclisaac project as described below, export it into a .jar file, copy the jar into your 'eclipse/plugins' directory.
     
+   * Command-line Plugin Installation (headless build) : 
+   -------------------------------------
+
+    - Install latest Eclipse SDK (3.5 Galileo)  see http://www.eclipse.org/downloads.
+
+    - Run the 'install_lisaac' program, choose 'Editor Installation' then 'Installation of Eclipse mode'.
+
+    - Enter the path of your eclipse installation directory, the plugin will be compiled and exported there.
+
    * Plugin Development and Bug Report :
    ------------------------------------------------
    
     - Install latest Eclipse SDK (3.5 Galileo)  see http://www.eclipse.org/downloads.
     
-    - Copy the 'editor/eclipse' directory to your Eclipse workspace.
-    - Launch Eclipse, create a Project (File->New->Project, select General->Project).
-    - Enter project name: 'eclipse'  and click on the finish button.
-        or
-    - Select your own workspace and create a project with 'eclipse' lisaac plugin location.
+    - Launch Eclipse, switch your workspace to the 'editor/eclipse' directory.
+    - create a Project (File->New->Project, select General->Project).
+    - Enter project name: 'eclisaac'  and click on the finish button.
         or 
-    - Import the 'eclipse' project (File->Import then select 'Existing Projects into Workspace').
+    - Import the 'eclisaac' project (File->Import then select 'Existing Projects into Workspace').
     
     - First Run : open META-INF/MANIFEST.MF and click on the link 'Launch an Eclipse application'.
     - Other Run :   Green toolbar button  Run or Run->Run As->EclipseApplication

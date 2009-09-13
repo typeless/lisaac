@@ -1,0 +1,4 @@
+export.xml                                           #generated file with user-dependant info
+.metadata/**/*                                       #the plugin workspace is part of the git for command-line build.
+!.metadata/.plugins/org.eclipse.core.resources/**/*  #minimum info needed to compile the plugin project with command-line. 
+
