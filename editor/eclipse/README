@@ -20,7 +20,7 @@
 How to get started?
 ===================
    
-  - Install lastest Lisaac Compiler 0.14.
+  - Install lastest Lisaac Compiler.
     
   * Plugin Installation :
      -------------------
@@ -29,22 +29,14 @@ How to get started?
 
     - Use the Eclipse Update Manager to install the Lisaac plugin.  Add the http://isaacproject.u-strasbg.fr/eclipse/update/  site in the manager, select Lisaac feature and click 'Install'.
        or
-    - Open the Eclisaac project as described below, export it into a .jar file, copy the jar into your 'eclipse/plugins' directory.
+    - Compile and export the plugin project in editor/eclipse/eclisaac/ to your Eclipse installation root.
     
-   * Command-line Plugin Installation (headless build) : 
-   -------------------------------------
-
-    - Install latest Eclipse SDK (3.5 Galileo)  see http://www.eclipse.org/downloads.
-
-    - Run the 'install_lisaac' program, choose 'Editor Installation' then 'Installation of Eclipse mode'.
-
-    - Enter the path of your eclipse installation directory, the plugin will be compiled and exported there.
-
+ 
    * Plugin Development and Bug Report :
    ------------------------------------------------
    
     - Install latest Eclipse SDK (3.5 Galileo)  see http://www.eclipse.org/downloads.
-    
+   
     - Launch Eclipse, switch your workspace to the 'editor/eclipse' directory.
     - create a Project (File->New->Project, select General->Project).
     - Enter project name: 'eclisaac'  and click on the finish button.
@@ -54,7 +46,7 @@ How to get started?
     - First Run : open META-INF/MANIFEST.MF and click on the link 'Launch an Eclipse application'.
     - Other Run :   Green toolbar button  Run or Run->Run As->EclipseApplication
     
-    - export the plugin project to a suitable .jar file. (optional)
+    - export the plugin project to a suitable jar file. (optional)
   
   
 Quick Start into the Lisaac Mode.
