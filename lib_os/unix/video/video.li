@@ -51,6 +51,9 @@ Section Public //VIDEO
   
 Section Public
   
+  - screen_width:INTEGER;
+  - screen_height:INTEGER;
+  
   - message str:ABSTRACT_STRING <-
   ( 
     "Message : ".print; str.print; '\n'.print;
@@ -96,8 +99,10 @@ Section Public
     planes := `PlanesOfScreen(screen)`:UINTEGER_32;
     "Video mode: ".print;
     planes.print; "bits\n".print;
+        
+    screen_width  := w_max := `WidthOfScreen(screen)`:INTEGER;
+    screen_height := `HeightOfScreen(screen)`:INTEGER;    
     
-    w_max := `WidthOfScreen(screen)`:INTEGER;
     
     planes
     .when 15 then {
@@ -203,7 +208,65 @@ Section Public
   (
     not_yet_implemented;
   );
+  
+  //
+  // Frame buffer.
+  //
+  
+  - open_frame_buffer <-
+  ( + fb,w,h:INTEGER;
+    
+    fb := `open("/dev/fb0", O_RDWR)`:INTEGER;
+    (fb = 0).if {
+      "Error: cannot open framebuffer device.\n".print;
+      die_with_code 0;
+    };
+    
+    w := screen_width;
+    h := screen_height;  
+    view_screen := `mmap(0, @w*@h*4, PROT_READ | PROT_WRITE,MAP_SHARED,@fb, 0)`:
+    NATIVE_ARRAY(UINTEGER_8);
+    
+    (CONVERT(NATIVE_ARRAY(UINTEGER_8),INTEGER).on view_screen = -1).if {
+      "Error: failed to map framebuffer device to memory.\n".print;
+      die_with_code 0;
+    };
+  );
+  
+  - get_pixel_screen (x,y:INTEGER) :UINTEGER_32 <-
+  [
+    -? {x.in_range 0 to (screen_width -1)};
+    -? {y.in_range 0 to (screen_height-1)};
+  ]
+  ( + ofs:INTEGER;
+    /*
+    (x.in_range 0 to (screen_width -1)).if_false {
+      "MERDE\n".print;
+    };
+    (y.in_range 0 to (screen_height-1)).if_false {
+      "MERDE Y\n".print;
+    };
+    */
+    ofs := (y * screen_width + x) * 3;
+    (view_screen.item  ofs   .to_uinteger_32      ) | 
+    (view_screen.item (ofs+1).to_uinteger_32 <<  8) |
+    (view_screen.item (ofs+2).to_uinteger_32 << 16)    
+  );
+  
+  - set_pixel_screen (x,y:INTEGER) color col:UINTEGER_32 <-
+  ( + ofs:INTEGER;
+    
+    ofs := (y * screen_width + x) * 4;
+    view_screen.put ((col >> 16).to_uinteger_8)         to (ofs+2);
+    view_screen.put (((col >> 8) & 0FFh).to_uinteger_8) to (ofs+1);
+    view_screen.put ((col & 0FFh).to_uinteger_8)        to (ofs+0);    
+  );
+  
+Section Private
+  
+  - view_screen:NATIVE_ARRAY(UINTEGER_8);
 
+  
   /* A voir pour bloquer la size minimum
   
 // pointer to the size hints structure. 

@@ -185,7 +185,7 @@ Section Public
   ( + entry:ENTRY;
     + dir:DIRECTORY;
     
-    entry := FILE_SYSTEM.get_entry path;         
+    entry := FILE_SYSTEM.get_entry path;             
     ((entry != NULL) && {entry.is_directory} && {entry.open}).if {
       dir ?= entry;           
       (dir.lower).to (dir.upper) do { j:INTEGER;

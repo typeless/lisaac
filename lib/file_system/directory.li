@@ -253,6 +253,11 @@ Section Public
     result
   );
   
+  - create_file p:ABSTRACT_STRING :STD_FILE <-
+  (
+    make_file p
+  );
+  
   //
   // Display.
   //
