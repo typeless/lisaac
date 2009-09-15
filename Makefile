@@ -137,6 +137,7 @@ install: bin/lisaac bin/shorter
 	mkdir -p $(DESTDIR)$(LIB) 
 	mkdir -p $(DESTDIR)$(BIN)
 	mkdir -p $(DESTDIR)$(MAN)
+	mkdir -p $(DESTDIR)$(DOC)$(HTML)
 	cp bin/lisaac  $(DESTDIR)$(BIN) 
 	cp bin/shorter  $(DESTDIR)$(BIN)
 	cp make.lip  $(DESTDIR)$(LIB)
