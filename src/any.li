@@ -172,7 +172,7 @@ Section Public
       
   - output_decl:STRING := STRING.create 60000;
   - output_glob:STRING := STRING.create 10000;
-  - output_code:STRING := STRING.create 4000000;
+  - output_code:STRING := STRING.create 4_000_000;
   
   - title txt:STRING_CONSTANT in buf:STRING <-
   (
