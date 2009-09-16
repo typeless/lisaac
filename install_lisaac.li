@@ -540,13 +540,15 @@ Section Private
       "  Sorry, Hippoedit editor is only for Windows.".print;
     };
   );
-  
+   
   - install_eclipse <-
-  (
-    // TODO: BSBS->Damien 
-    "  Sorry, Not yet implemented.\n\
-    \  Please, read `editor/eclipse/README' file.".print;
+  ( 
+    " Prerequisite: you need the Eclipse package installed.\n\
+    \ Use the Eclipse Update Manager to install the Lisaac Mode with the URL:\n\
+    \    http://isaacproject.u-strasbg.fr/eclipse/update/\n\n\
+    \ Please, read `editor/eclipse/README' file for further information.\n".print;  
   );
+ 
   
   //
   // Install Compiler

@@ -67,25 +67,35 @@ public class LisaacBuilder extends IncrementalProjectBuilder {
 	class LisaacErrorHandler implements ILisaacErrorHandler {
 
 		private IFile file;
-
+		private boolean doReport;
+		
 		public LisaacErrorHandler(IFile file) {
 			this.file = file;
+			this.doReport = true;
 		}
 
 		public void syntaxError(String msg, Position position) {
-			addMarker(file, msg, position, IMarker.SEVERITY_ERROR);
+			if (doReport)
+				addMarker(file, msg, position, IMarker.SEVERITY_ERROR);
 		}
 
 		public void semanticError(String msg, Position position) {
-			addMarker(file, msg, position, IMarker.SEVERITY_ERROR);
+			if (doReport)
+				addMarker(file, msg, position, IMarker.SEVERITY_ERROR);
 		}
 
 		public void fatalError(String msg, Position position) {
-			addMarker(file, msg, position, IMarker.SEVERITY_ERROR);
+			if (doReport)
+				addMarker(file, msg, position, IMarker.SEVERITY_ERROR);
 		}
 
 		public void warning(String msg, Position position) {
-			addMarker(file, msg, position, IMarker.SEVERITY_WARNING);
+			if (doReport)
+				addMarker(file, msg, position, IMarker.SEVERITY_WARNING);
+		}
+
+		public void enableErrorReport(boolean enable) {
+			doReport = enable;
 		}
 	}
 

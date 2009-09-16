@@ -84,6 +84,10 @@ public class LisaacParser extends AbstractLisaacParser {
 		super.initialize();
 		TypeSimple.init();
 	}
+	
+	public void enableErrorReport(boolean enable) {
+		reporter.enableErrorReport(enable);
+	}
 
 	public ILisaacContext getSectionContext() {
 		return sectionContext;
@@ -131,7 +135,7 @@ public class LisaacParser extends AbstractLisaacParser {
 					return null;
 				}
 				if (isSection) {
-					if (! (t instanceof TypeSimple)) {
+					if (! (t instanceof TypeSimple) && ! (t instanceof TypeSelf)) {
 						reporter.syntaxError("For a section, the prototype name only (without '('...')').", getLine());
 						return null;
 					}
@@ -378,7 +382,7 @@ public class LisaacParser extends AbstractLisaacParser {
 			if (lastComment != null && lastComment.length() > 0) {
 				lastSlot.setComment(lastComment);
 			}
-			if (lastSection.isInheritOrInsert()) {
+			if (lastComment != null && lastSection.isInheritOrInsert()) {
 				// Add parent slot
 				Slot s = prototype.getParentSlot(lastSlot.getName());
 				if (s != null) {
@@ -900,7 +904,7 @@ public class LisaacParser extends AbstractLisaacParser {
 
 		readSpace();
 		Position pos = getPosition();
-
+ 
 		if (readThisKeyword(ILisaacModel.variable_self)) {
 			result = new ITMRead(new String(lastString));
 		} else if (readThisKeyword(ILisaacModel.keyword_result)) {

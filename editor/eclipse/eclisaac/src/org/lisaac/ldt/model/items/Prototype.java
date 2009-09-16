@@ -309,7 +309,9 @@ public class Prototype {
 		if (offset >= source.length() - 1) {
 			return null;
 		}
-
+		//
+		parser.enableErrorReport(false); // turn off error reporting
+		//
 		while (offset > 0) {
 			//
 			// find beginning of SEND_MSG grammar rule
@@ -335,6 +337,12 @@ public class Prototype {
 				invBracketLevel--;
 			}
 
+			// strings 
+			if (c == '\"' || c == '\'' || c == '`') {
+				offset = unreadString(c, offset, source);
+				continue;
+			} 
+			
 			// ok, we're not in nested statements
 			if (bracketLevel == 0 && invBracketLevel == 0) {
 				if (c == ';' || c == '.') {
@@ -359,6 +367,9 @@ public class Prototype {
 								source.charAt(offset - 3) == '\n') {
 							String slotName = parser
 							.readSlotNameFromOffset(offset + 1, false);
+							
+							parser.enableErrorReport(true);// finish with parser
+							
 							if (slotName != null) {
 								result = lookupSlot(slotName);
 								if (result == null) {
@@ -399,11 +410,6 @@ public class Prototype {
 					}
 					break;
 				}
-				// strings 
-				if (c == '\"' || c == '\'' || c == '`') {
-					offset = unreadString(c, offset, source);
-					continue;
-				} 
 			}
 			offset--;
 		}
@@ -479,6 +485,9 @@ public class Prototype {
 				result = receiver.lookupSlot(slotName);
 			}
 		}
+		//
+		parser.enableErrorReport(true); // turn on error reporting
+		//
 		return result;
 	}
 
@@ -497,7 +506,11 @@ public class Prototype {
 				offset = offset - 2;
 				break;
 			}
-			offset--;
+			if (c == '\"' || c == '\'' || c == '`') {
+				offset = unreadString(c, offset, source);
+				continue;
+			}
+			offset--; 
 		}
 		if (offset < 0) {
 			offset = 0;

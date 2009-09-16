@@ -11,4 +11,6 @@ public interface ILisaacErrorHandler {
 	void warning(String msg, Position position);
 
 	void semanticError(String msg, Position position);
+
+	void enableErrorReport(boolean enable);
 }
