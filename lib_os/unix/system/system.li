@@ -88,12 +88,12 @@ Section Public
       cap := cap * 2;
       mem := new_mem;
       new_mem := `realloc(@mem,@cap)`:POINTER;    
-      /*(mem != NULL).if { 
-	`free(@mem)`;
-      };*/      
     }.do_until {(new_mem = NULL) || {(cap >> 20) = 2048}}; // BSBS: BUG COMPILO 0.13
     (new_mem = NULL).if {
       cap := cap / 2;
+    } else
+    {
+      mem := new_mem;
     };
     get_begin_memory := mem;
     //
