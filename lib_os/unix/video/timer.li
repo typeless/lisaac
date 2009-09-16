@@ -115,8 +115,13 @@ Section Public
     p := p_beg;
     { p != p_end }.while_do {
       evt := buffer_event.item p;
+      /*
+      "Timer! ".print;
+      evt.count.print;
+      '\n'.print;
+      */
       (list_client.lower).to (list_client.upper) do { j:INTEGER;
-	list_client.item j.receive (buffer_event.item p);
+        list_client.item j.receive (buffer_event.item p);        
       };      
       p := (p + 1) & 03h;
     };    

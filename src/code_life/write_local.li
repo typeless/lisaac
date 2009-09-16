@@ -107,14 +107,14 @@ Section Public
     
     idf := ALIASER_LOCAL.write Self;        
     (quiet_generation).if_false {
-      (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
+      (local.is_result).if { 
         buffer.add_last '*';
       };    
       buffer.append idf; 
       //
       ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
         buffer.append ".__id=0";
-      } else {
+      } else {        
         buffer.add_last '=';    
         genere_value buffer;
       };
@@ -125,10 +125,10 @@ Section Public
   ( + idf:STRING_CONSTANT;
     
     idf := ALIASER_LOCAL.write Self;        
-    (variable.ensure_count = -1).if { // BSBS : Bidouille !!!
+    (local.is_result).if { 
       buffer.add_last '*';
     };
-    buffer.append idf;
+    buffer.append idf;    
     //    
     buffer.add_last '=';    
   );

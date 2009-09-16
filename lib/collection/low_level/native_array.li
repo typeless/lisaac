@@ -87,7 +87,7 @@ Section Public
     result
   )
   [ ...
-    +? {Result.all_default (nb_elements-1)};
+//    +? {Result.all_default (nb_elements-1)};
   ];
   
   - realloc old_nb_elts:INTEGER with new_nb_elts:INTEGER :NATIVE_ARRAY(V) <-
@@ -142,7 +142,7 @@ Section Public
     force_put element to index;        
   )
   [ ...
-    +? {element = item index}; 
+//    +? {element = item index}; 
   ];
     
   //

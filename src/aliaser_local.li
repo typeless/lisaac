@@ -49,7 +49,7 @@ Section ALIASER_LOCAL,LIST
     
 Section Public
   
-  - is_on:BOOLEAN := TRUE;
+  - is_on:BOOLEAN := FALSE; // BSBS: Bug with Cortex (vector result)
   
   - reset <-
   (

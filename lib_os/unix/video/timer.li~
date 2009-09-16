@@ -122,6 +122,10 @@ Section Public
     };    
   );
 
+  - clear <-
+  (
+    p_beg := p_end;
+  );
 
 /* 
 //Other solution :

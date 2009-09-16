@@ -247,7 +247,7 @@ Section Public
       "MERDE Y\n".print;
     };
     */
-    ofs := (y * screen_width + x) * 3;
+    ofs := (y * screen_width + x) * 4;        
     (view_screen.item  ofs   .to_uinteger_32      ) | 
     (view_screen.item (ofs+1).to_uinteger_32 <<  8) |
     (view_screen.item (ofs+2).to_uinteger_32 << 16)    
