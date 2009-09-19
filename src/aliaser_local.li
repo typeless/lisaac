@@ -49,7 +49,7 @@ Section ALIASER_LOCAL,LIST
     
 Section Public
   
-  - is_on:BOOLEAN := FALSE; // BSBS: Bug with Cortex (vector result)
+  - is_on:BOOLEAN := TRUE; 
   
   - reset <-
   (
@@ -186,33 +186,37 @@ Section Private
     + t:TYPE_FULL;
     + result:LOCAL;
     + is_void:BOOLEAN;
-        
-    t := v.type;
-    is_void := (! t.is_expanded) && {! t.is_strict} && {! t.raw.is_block};
-    tab := var_size.item (v.type.size);
-    j := tab.lower;    
-    {
-      (j <= tab.upper) && 
-      {
-        (
-          (tab.item j.type != t) &&  
-          {
-            (! is_void) ||
-            {tab.item j.type.is_expanded} ||
-            {tab.item j.type.is_strict} ||
-            {tab.item j.type.raw.is_block}
-          }
-        ) || 
-        {tab.item j.ensure_count != 0} ||
-        {tab.item j.list_level < current_list_level}
-      }
-    }.while_do {
-      j := j + 1;
-    };
-    (j > tab.upper).if {
+    
+    (v.name.first = 'R').if {
       result := v;
     } else {
-      result := tab.item j;
+      t := v.type;
+      is_void := (! t.is_expanded) && {! t.is_strict} && {! t.raw.is_block};
+      tab := var_size.item (v.type.size);
+      j := tab.lower;    
+      {
+        (j <= tab.upper) && 
+        {
+          (
+            (tab.item j.type != t) &&  
+            {
+              (! is_void) ||
+              {tab.item j.type.is_expanded} ||
+              {tab.item j.type.is_strict} ||
+              {tab.item j.type.raw.is_block}
+            }
+          ) || 
+          {tab.item j.ensure_count != 0} ||
+          {tab.item j.list_level < current_list_level}
+        }
+      }.while_do {
+        j := j + 1;
+      };
+      (j > tab.upper).if {
+        result := v;
+      } else {
+        result := tab.item j;
+      };
     };
     result
   );

@@ -51,11 +51,11 @@ Section Private
     `(unsigned int)((255. / 15) * @n)`:UINTEGER_32
   );
   
-  - color_table:NATIVE_ARRAY(UINTEGER_32) :=
-  ( + result:NATIVE_ARRAY(UINTEGER_32);
+  - color_table:NATIVE_ARRAY[UINTEGER_32] :=
+  ( + result:NATIVE_ARRAY[UINTEGER_32];
     + r,g,b,col:UINTEGER_32;
     
-    result := NATIVE_ARRAY(UINTEGER_32).create 4096;
+    result := NATIVE_ARRAY[UINTEGER_32].create 4096;
     0.to 4095 do { c:INTEGER;      
       r := color_4_to_8 ((c & 0F00h) >> 8);
       g := color_4_to_8 ((c & 00F0h) >> 4);
@@ -81,7 +81,7 @@ Section Private
     color_table.item idx
   );
   
-  + line_tmp:BMP_LINE(PIXEL_32);
+  + line_tmp:BMP_LINE[PIXEL_32];
     
 Section Public  
   
@@ -148,12 +148,12 @@ Section Public
   
   - make t:ABSTRACT_STRING with elt:G_EXPR <-
   (
-    title_len := BITMAP(PIXEL_32).font_width t + 2; //+ 25;
+    title_len := BITMAP[PIXEL_32].font_width t + 2; //+ 25;
     title := t;
     //root := elt;
     
     // ***** APPEND ****
-    line_tmp  := BMP_LINE(PIXEL_32).create 2048;
+    line_tmp  := BMP_LINE[PIXEL_32].create 2048;
   );
   
   //

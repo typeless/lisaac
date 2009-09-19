@@ -72,7 +72,7 @@ Section Public
   ( + msg:EVENT;    
     + input:INPUT;
 
-    set_video_support bmp;
+    //set_video_support bmp; // BSBS: Warning Perf !!! (-all_warning) Fixed with VIDEO!
     physical_screen := AREA.clone;
     physical_screen.make NULL from (0,0) size (bmp.width,bmp.height);    
     //
@@ -99,7 +99,7 @@ Section Public
 	input ?= msg.source;
 	input.acknowledge;
       };      
-    }.endless_loop;
+    }.do_while {`1`:BOOLEAN{TRUE,FALSE}}; // Infinity Loop     
   );
   
   //
@@ -149,6 +149,7 @@ Section Public
   - receive msg:EVENT <-
   ( + mouse:EVENT_MOUSE;
     + win:AREA;
+        
     (msg.destination = NULL).if {
       // Hardware Message.
       storage_message.add_last msg;

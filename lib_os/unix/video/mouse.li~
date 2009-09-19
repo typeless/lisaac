@@ -73,7 +73,7 @@ Section Public
   
 Section Private
   
-  + buffer_event:FAST_ARRAY(EVENT_MOUSE);
+  + buffer_event:FAST_ARRAY[EVENT_MOUSE];
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
   - p_end:UINTEGER_8;  // Pointer on the buffer (end)
     
@@ -91,7 +91,7 @@ Section Public
     //
     // Software configuration.
     //
-    buffer_event := FAST_ARRAY(EVENT_MOUSE).create 4;
+    buffer_event := FAST_ARRAY[EVENT_MOUSE].create 4;
     0.to 3 do { j:INTEGER;
       new_event := EVENT_MOUSE.clone;
       buffer_event.put new_event to j;
@@ -102,7 +102,7 @@ Section Public
     buffer_event.first.set_prev new_event;
         
     // MASK
-    mask := FAST_ARRAY(UINTEGER_16).create 16;
+    mask := FAST_ARRAY[UINTEGER_16].create 16;
     make (DESK.physical_screen) from (x_current,y_current) size (16,16);
   );
   
@@ -137,7 +137,7 @@ Section Public
   // BSBS: A refaire avec une bitmap en dehors contenant le dessin avec une couleur de mask!!
   // Plus simple, plus puissant, plus rapide !
   
-  + mask:FAST_ARRAY(UINTEGER_16);
+  + mask:FAST_ARRAY[UINTEGER_16];
 
   - pixel_hard (x,y:INTEGER) color col:UINTEGER_32 <-
   ( + m:UINTEGER_16;
@@ -231,7 +231,49 @@ Section Public
     NULL
   );
   
+  //
+  // Extern robot.
+  //
   
+  - extern_event_move (x,y:INTEGER) <-
+  (
+    `XTestFakeMotionEvent(display,-1,@x,@y,1)`;
+  );
+
+  - extern_event_left_down <-
+  (
+    `XTestFakeButtonEvent(display,1,True,1)`;      
+  );
+
+  - extern_event_left_up <-
+  (
+    `XTestFakeButtonEvent(display,1,False,1)`;      
+  );
+  
+  - extern_event_right_down <-
+  (
+    `XTestFakeButtonEvent(display,3,True,1)`;      
+  );
+
+  - extern_event_right_up <-
+  (
+    `XTestFakeButtonEvent(display,3,False,1)`;      
+  );
+  
+  - extern_get_mouse:(INTEGER,INTEGER,BOOLEAN,BOOLEAN) <-
+  ( + x,y,mask:INTEGER;
+    + l,r:BOOLEAN;
+    `{ Window	dummy1, dummy2`;
+      `int x,y,winx,winy,mask`;
+      `XQueryPointer(display,RootWindow(display, DefaultScreen(display)), &dummy1, &dummy2, &x,&y, &winx, &winy, &mask)`;
+      x := `winx`:INTEGER;
+      y := `winy`:INTEGER;
+      mask := `mask`:INTEGER;
+    `}`;     
+    l := (mask & 100h)!=0;
+    r := (mask & 400h)!=0;
+    x,y,l,r
+  );  
 
 
 

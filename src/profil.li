@@ -266,7 +266,7 @@ Section Public
   ( + old_list_current:LIST;    
     
     (stat = -1).if {
-      count_intern_call := count_intern_call + 1;
+      count_intern_call := count_intern_call + 1;            
       (count_intern_call = 1).if {	  	  
 	old_list_current   := list_current;
 	//
@@ -277,7 +277,7 @@ Section Public
 	(count_intern_call = 1).if {	  
 	  stat := 0;
 	} else {
-	  stat := recursivity_bit;
+          stat := recursivity_bit;          
 	};	
       };
     };
@@ -300,6 +300,10 @@ Section Public
     LOCAL_SEQ.clear;
     
     seq_call_and_loop := seq_call_and_loop + 1;
+    
+    ((code.count = 1) && {is_recursive}).if {
+      stat := stat & ~ recursivity_bit;      
+    };      
     
     (
       (CALL_SLOT.count_context_sensitive = 0) && 

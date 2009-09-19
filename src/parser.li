@@ -3163,7 +3163,7 @@ Section Public
   - go_on obj:PROTOTYPE <-
   (
     ? { object=NULL};
-    
+        
     // Source information.
     object   := obj;
     source   := obj.source;

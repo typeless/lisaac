@@ -190,7 +190,7 @@ Section Public
   // Unary operator
   //
     
-  - '~' Self:SELF :SELF <- -Self - SELF.one; 
+  - '~' Self:SELF :SELF <- - Self - SELF.one; 
   
   //
   // Test. 
@@ -357,7 +357,7 @@ Section Public
     -? {lower < upper};
   ]
   ( 
-    lower + random_upper (upper-lower)
+    lower + (upper-lower).random_upper 
   )
   [
     +? {Result.in_range lower to upper};

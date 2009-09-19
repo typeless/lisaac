@@ -63,7 +63,7 @@ Section Public
       };
       w := bmp.width;
       h := bmp.height;      
-      f.close;
+      bmp.close;
     }.elseif {entry.path.has_suffix ".ai"} then {
       not_yet_implemented;
     };
@@ -99,7 +99,7 @@ Section Public
     + ai_file:AI_FILE;
     + w,h:INTEGER;
     + bmp:BITMAP(PIXEL_24);
-        
+    
     entry := FILE_SYSTEM.get_entry filename;
     ((entry = NULL) || {! entry.is_file}).if {
       VIDEO.message ("ERROR: File '" + filename + "' not found.\n");
@@ -109,22 +109,22 @@ Section Public
       entry.open;    
       f ?= entry;
       fmt := FORMAT_BMP.create_with_file f;
-      (fmt = NULL).if {      
+      (fmt = NULL).if {
         VIDEO.message "Error: BMP format invalid.\n";
         die_with_code exit_failure_code;      
       };
       w := fmt.width;
       h := fmt.height;
       bmp := BITMAP(PIXEL_24).create (w,h);
-      fmt.put_image_in bmp;    
-      f.close;
-    }.elseif {entry.path.has_suffix ".ai"} then {
+      fmt.put_image_in bmp;          
+      f.close;      
+    }.elseif {entry.path.has_suffix ".ai"} then {      
       entry.open;      
       f ?= entry;
       bmp := BITMAP(PIXEL_24).create (10,10);	
       ai_file := AI_FILE.clone;
       ai_file.fill_bitmap f in bmp scale 3;	
-      f.close;      
+      f.close;
     };
     //
     result := clone;
@@ -154,6 +154,7 @@ Section Public
   ( //+ g_grp:G_GROUP;    
     clipping (x0,y0) to (x1,y1);    
     //    
+        
     put_bitmap bitmap to (0,0);
     //    
     //g_grp ?= parent;

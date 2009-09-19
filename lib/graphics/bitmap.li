@@ -159,9 +159,10 @@ Section Public
     //image.item y.item x
     get_y_line y.item x
   );
-  
+
   - get_color_hard (x,y:INTEGER) :UINTEGER_32 <-
   (
     //image.item y.item x
     get_y_line y.get_color x
   );
+  

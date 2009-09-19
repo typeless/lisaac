@@ -34,6 +34,13 @@ Section Header
   - external := 
 `
 #include <X11/Xlib.h>
+
+// For Frame buffer.
+#include <X11/extensions/XTest.h>  
+#include <linux/fb.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+
 Display *display;
 Window  window;
 GC      gc;
@@ -99,10 +106,9 @@ Section Public
     planes := `PlanesOfScreen(screen)`:UINTEGER_32;
     "Video mode: ".print;
     planes.print; "bits\n".print;
-        
-    screen_width  := w_max := `WidthOfScreen(screen)`:INTEGER;
-    screen_height := `HeightOfScreen(screen)`:INTEGER;    
     
+    screen_width  := w_max := `WidthOfScreen(screen)`:INTEGER;
+    screen_height := `HeightOfScreen(screen)`:INTEGER;
     
     planes
     .when 15 then {
@@ -199,7 +205,7 @@ Section Public
   image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   ( + len:INTEGER;
 
-    len := x1 - x;
+    len := x1 - x;    
     VIDEO.line_tmp.put line offset ofs from 0 to len;
     `XPutImage(display,window,gc, ximage, 0, 0, @x, @y, @len+1, 1)`;
   );
@@ -223,8 +229,8 @@ Section Public
     };
     
     w := screen_width;
-    h := screen_height;  
-    view_screen := `mmap(0, @w*@h*4, PROT_READ | PROT_WRITE,MAP_SHARED,@fb, 0)`:
+    h := screen_height;
+    view_screen := `mmap(0, @w*@h*3, PROT_READ | PROT_WRITE,MAP_SHARED,@fb, 0)`:
     NATIVE_ARRAY(UINTEGER_8);
     
     (CONVERT(NATIVE_ARRAY(UINTEGER_8),INTEGER).on view_screen = -1).if {
@@ -247,7 +253,7 @@ Section Public
       "MERDE Y\n".print;
     };
     */
-    ofs := (y * screen_width + x) * 4;        
+    ofs := (y * screen_width + x) * 4;
     (view_screen.item  ofs   .to_uinteger_32      ) | 
     (view_screen.item (ofs+1).to_uinteger_32 <<  8) |
     (view_screen.item (ofs+2).to_uinteger_32 << 16)    
@@ -266,7 +272,6 @@ Section Private
   
   - view_screen:NATIVE_ARRAY(UINTEGER_8);
 
-  
   /* A voir pour bloquer la size minimum
   
 // pointer to the size hints structure. 
