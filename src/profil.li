@@ -42,7 +42,7 @@ Section PROFIL_LIST
   );
   
 Section Public
-  
+    
   - slot:SLOT <- deferred;
 
   - is_interrupt:BOOLEAN;
@@ -73,6 +73,12 @@ Section Public
   // 10 : Recusive,     No tail.
   // 11 : Recusive,     Tail
   
+  - reset_recursive <-
+  (
+    stat := -1;
+    count_intern_call := 0;
+  );
+  
   - recursivity_bit:INTEGER_8 := 10b;
   - tail_bit:INTEGER_8        := 01b;
   - inlining_bit:INTEGER_8    := 01b;
@@ -95,7 +101,7 @@ Section Public
   (     
     PROFIL_LIST.set_life Self;
     (mode_recursive).if {      
-      execute_recursive;
+      execute_recursive;      
     };
   );
 
@@ -116,7 +122,7 @@ Section Public
     } else {
       link_count := link_count - 1;    
       ? {link_count >= 0};
-    };    
+    };        
   );
 
   - write_argument args:FAST_ARRAY(EXPR) :FAST_ARRAY(WRITE) <-
@@ -278,7 +284,7 @@ Section Public
 	  stat := 0;
 	} else {
           stat := recursivity_bit;          
-	};	
+        };	              
       };
     };
   );
@@ -300,11 +306,7 @@ Section Public
     LOCAL_SEQ.clear;
     
     seq_call_and_loop := seq_call_and_loop + 1;
-    
-    ((code.count = 1) && {is_recursive}).if {
-      stat := stat & ~ recursivity_bit;      
-    };      
-    
+        
     (
       (CALL_SLOT.count_context_sensitive = 0) && 
       {! mode_recursive} &&
@@ -312,7 +314,6 @@ Section Public
       {is_context_sensitive || {(seq_inline - old_seq_inline) < inline_lev}}
     ).if {
       stat := stat | inlining_bit;      
-      new_execute_pass;
     };
   );
   
@@ -340,7 +341,7 @@ Section Public
     
     (is_static).if {
       buffer.append "static ";
-    };
+    };        
     
     // Result.    
     (result_list.is_empty).if {
@@ -373,7 +374,6 @@ Section Public
     // Results.      
     (result_list.lower + 1).to (result_list.upper) do { j:INTEGER;
       v := result_list.item j;
-      //v.set_ensure_count (-100);
       v.set_result TRUE;
       genere v result TRUE in buffer;
       buffer.add_last ',';
@@ -399,6 +399,11 @@ Section Public
     + low:INTEGER;
     + idf:STRING_CONSTANT;
     
+    ((stat & recursivity_bit) != 0).if {
+      counter_recursivity_function := counter_recursivity_function + 1;
+    };
+    counter_function := counter_function + 1;
+    //
     profil_current := Self;
     ((link_count != 0) || {result_list.count != 0}).if {
       ((cop_link_count != 0) && {result_list.count = 0}).if {
@@ -584,3 +589,8 @@ Section Private
     };
     buffer.append (v.intern_name);
   );
+  
+Section PROFIL, LISAAC
+  
+  - counter_function:INTEGER;
+  - counter_recursivity_function:INTEGER;

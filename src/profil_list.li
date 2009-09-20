@@ -126,6 +126,9 @@ Section Public
     
   - execute_pass_recursive <-
   (
+    (profil_list.lower).to (profil_list.upper) do { i:INTEGER;
+      profil_list.item i.reset_recursive;
+    };
     VARIABLE.update;
     life_limit := 0;
     PROFIL.set_mode_recursive TRUE;

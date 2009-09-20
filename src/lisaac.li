@@ -807,6 +807,10 @@ Section Public
       STD_ERROR.put_string "\n";
       print "  Null call score      : " stat null_counter for late_binding_counter;            
       print "  Polymorphic call     : " stat polymorphic_counter for late_binding_counter;
+      //
+      print "  Recursivity function : " 
+      stat (PROFIL.counter_recursivity_function) for (PROFIL.counter_function);
+      //
       (is_optimization).if {
 	"  Invariant loop score : ".print; count_invariant.print; '\n'.print;      
       };
