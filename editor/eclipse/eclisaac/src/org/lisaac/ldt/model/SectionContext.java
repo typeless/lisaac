@@ -1,8 +1,11 @@
 package org.lisaac.ldt.model;
 
+import java.util.ArrayList;
+
 import org.lisaac.ldt.model.items.Prototype;
 import org.lisaac.ldt.model.items.Section;
 import org.lisaac.ldt.model.types.ITypeMono;
+import org.lisaac.ldt.model.types.TypeParameter;
 
 public class SectionContext implements ILisaacContext {
 
@@ -135,24 +138,33 @@ public class SectionContext implements ILisaacContext {
 							//
 							// Generic loader.
 							//
-							// TODO error for non generic object
 							if (parser.readIdentifier()) {
 								return false;
 								// TODO syntax identifier : PROTO
 							} else if (parser.readCapIdentifier()) {
-								// TODO error Identifier parameter type is needed.
-
+								if (! parser.isParameterType) {
+									parser.getReporter().syntaxError("Identifier parameter type is needed.", parser.getLine());
+								}
+								ArrayList<TypeParameter> genlist = new ArrayList<TypeParameter>();
+								TypeParameter param = TypeParameter.get(parser.getLastString());
+								genlist.add(param);
+								
 								while (parser.readCharacter(',')) {
-									// TODO error Identifier parameter type is needed.
 									if (! parser.readCapIdentifier()) {
 										parser.getReporter().syntaxError("Identifier parameter type is needed.", parser.getLine());
 										return false;
 									}
+									if (! parser.isParameterType) {
+										parser.getReporter().syntaxError("Identifier parameter type is needed.", parser.getLine());
+									}
+									param = TypeParameter.get(parser.getLastString());
+									genlist.add(param);
 								}
 								if (! parser.readCharacter(')')) {
 									parser.getReporter().syntaxError("Added ')'.", parser.getLine());
 									return false;
 								}
+								prototype.setGenericList(genlist.toArray(new TypeParameter[genlist.size()]));
 							} else {
 								parser.getReporter().syntaxError("Identifier parameter type is needed.", parser.getLine());
 								return false;

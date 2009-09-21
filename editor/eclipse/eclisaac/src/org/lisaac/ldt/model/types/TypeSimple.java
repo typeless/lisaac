@@ -6,7 +6,7 @@ import org.lisaac.ldt.model.ILisaacModel;
 
 public class TypeSimple implements ITypeMono {
 
-	private static HashMap<String,TypeSimple> dico;
+	protected static HashMap<String,TypeSimple> dico;
 
 	protected String name;
 

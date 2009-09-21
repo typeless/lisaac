@@ -8,4 +8,8 @@ public class TypeGeneric extends TypeStyle {
 		super(name, style);
 		listType = lt;
 	}
+	
+	public ITypeMono getGenericElt(int index) {
+		return listType[index];
+	}
 }

@@ -38,7 +38,7 @@ import org.lisaac.ldt.outline.OutlineLabelProvider;
 public class LisaacOutlineView extends ContentOutlinePage implements IDocumentListener {
 
 	/** the delay before the outline view is updated. */
-	private static final long UPDATE_DELAY = 2000; 
+	private static final long UPDATE_DELAY = 1500; 
 
 	/** the document provider. */
 	private IDocumentProvider documentProvider;

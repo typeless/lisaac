@@ -32,6 +32,10 @@ public class AbstractLisaacParser {
 	public Position getPosition(int len) {
 		Position result=null;
 
+		if (position > source.length()) { // outline thread bug
+			return new Position(pos_line, pos_col, pos_cur, len);
+		}
+		
 		while (pos_cur < position) {
 			if (source.charAt(pos_cur) == '\n') {
 				pos_col = 0;

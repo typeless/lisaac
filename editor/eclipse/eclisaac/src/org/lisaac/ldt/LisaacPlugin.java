@@ -106,7 +106,7 @@ public class LisaacPlugin extends AbstractUIPlugin {
 							}
 							
 							// clean all lisaac projects to get started
-							projects[i].build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+							projects[i].build(IncrementalProjectBuilder.FULL_BUILD, null);
 							
 						} catch (Exception e) {
 							log(new Status(IStatus.ERROR,
