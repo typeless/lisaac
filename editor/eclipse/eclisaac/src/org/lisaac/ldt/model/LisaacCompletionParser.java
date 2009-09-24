@@ -79,7 +79,7 @@ public class LisaacCompletionParser extends LisaacParser {
 		ICode code = readExpr();
 		if (code != null && currentPrototype != null) {
 			type = code.getType(currentSlot, currentPrototype);
-			if (type != null) {
+			if (type != null && source.charAt(position-1) == '.') {
 				if (type instanceof TypeSelf) {
 					currentPrototype = findPrototype(((TypeSelf) type).getStaticType());
 
@@ -96,7 +96,6 @@ public class LisaacCompletionParser extends LisaacParser {
 				if (currentPrototype != null) {
 					// compute completion result
 					currentPrototype.getSlotProposals(proposals, baseOffset, 0);
-					proposals.add(new CompletionProposal(""+type,baseOffset,0,0));
 				} else {
 					// partial prototype name
 					String prefix = type.toString();

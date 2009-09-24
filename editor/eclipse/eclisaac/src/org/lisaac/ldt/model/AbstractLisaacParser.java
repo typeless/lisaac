@@ -802,9 +802,9 @@ public class AbstractLisaacParser {
 		return result;
 	}
 
-	private final String operators = "!@#$%^&<|*-+=~/?\\>";
+	private static final String operators = "!@#$%^&<|*-+=~/?\\>";
 
-	public boolean isOperatorSymbol(char c) {
+	public static boolean isOperatorSymbol(char c) {
 		return operators.indexOf(c) != -1;
 	}
 	

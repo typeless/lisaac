@@ -378,7 +378,7 @@ public class Prototype {
 						break;
 					}
 				}
-				if (parser.isOperatorSymbol(c)) {
+				if (LisaacParser.isOperatorSymbol(c)) {
 					if (c == '+' || c == '-') {
 						// slot definition
 						if (offset - 3 > 0 && source.charAt(offset - 1) == ' ' &&
@@ -473,7 +473,7 @@ public class Prototype {
 								break;
 							}
 						}
-						if (parser.isOperatorSymbol(c)) {
+						if (LisaacParser.isOperatorSymbol(c)) {
 							break;
 						}
 						// strings 

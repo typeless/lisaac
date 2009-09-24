@@ -124,15 +124,6 @@ public class LisaacOutlineView extends ContentOutlinePage implements IDocumentLi
 		IToolBarManager toolbarManager = actionBars.getToolBarManager();
 		toolbarManager.add(sortByName);
 		toolbarManager.add(sortBySection);
-		
-		/* IMenuManager menuManager = actionBars.getMenuManager();
-        menuManager.add(new OutlineHideCommentsAction(this, imageCache));
-        menuManager.add(new OutlineHideImportsAction(this, imageCache));
-        menuManager.add(new OutlineHideMagicObjectsAction(this, imageCache));
-        menuManager.add(new OutlineHideFieldsAction(this, imageCache));
-        menuManager.add(new OutlineHideNonPublicMembersAction(this, imageCache));
-        menuManager.add(new OutlineHideStaticMethodsAction(this, imageCache));
-		 */
 	}
 
 	/**

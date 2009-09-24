@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
+import org.lisaac.ldt.editors.ColorManager;
 import org.lisaac.ldt.model.Position;
 import org.lisaac.ldt.model.types.IType;
 import org.lisaac.ldt.model.types.ITypeMono;
@@ -39,6 +41,13 @@ public class ITMArgument implements IArgument {
 		buffer.append(name);
 		buffer.append(':');
 		buffer.append(type);
+	}
+	
+	public void styledPrintIn(StyledString buffer) {
+		ColorManager colors = ColorManager.getDefault();
+		buffer.append(name, colors.getVariableStyler());
+		buffer.append(':');
+		buffer.append(type.toString(), colors.getPrototypeStyler());
 	}
 	
 	public String getHoverInformation() {

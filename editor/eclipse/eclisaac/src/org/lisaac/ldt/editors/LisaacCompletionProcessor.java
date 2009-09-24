@@ -1,6 +1,9 @@
 package org.lisaac.ldt.editors;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
@@ -13,6 +16,7 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.templates.TemplateProposal;
 import org.lisaac.ldt.LisaacPlugin;
 import org.lisaac.ldt.model.LisaacCompletionParser;
+import org.lisaac.ldt.model.LisaacParser;
 import org.lisaac.ldt.preferences.PreferenceConstants;
 import org.lisaac.ldt.templates.LisaacTemplateProcessor;
 
@@ -38,6 +42,13 @@ public class LisaacCompletionProcessor implements IContentAssistProcessor {
 
 			//
 			computeLisaacCompletion(document, offset, result);
+			if (result.size() > 1) {
+				Collections.sort(result, new Comparator<ICompletionProposal>() {
+					public int compare(ICompletionProposal o1, ICompletionProposal o2) {
+						return o1.getDisplayString().compareTo(o2.getDisplayString());
+					}
+				});
+			}
 			//
 
 			String prefix= extractPrefix(document, offset);
@@ -75,6 +86,9 @@ public class LisaacCompletionProcessor implements IContentAssistProcessor {
 					break;
 				}
 				if (c == '-' && pos-1 > 0 && document.getChar(pos-1) == '<') {
+					break;
+				}
+				if (LisaacParser.isOperatorSymbol(c)) {
 					break;
 				}
 				if (c == '(' || c == '{' || c == '[') {
