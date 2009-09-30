@@ -48,7 +48,10 @@ Section Public
   (        
     deferred;
     NULL
-  );
+  )
+  [
+    +? { Result != NULL };
+  ];
   
   - to_run_in lst:FAST_ARRAY(TYPE_FULL) for p:PARAMETER_TO_TYPE <-
   (
