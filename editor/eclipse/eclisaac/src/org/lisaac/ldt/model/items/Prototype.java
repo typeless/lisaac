@@ -25,7 +25,6 @@ import org.lisaac.ldt.model.LisaacParser;
 import org.lisaac.ldt.model.Position;
 import org.lisaac.ldt.model.types.IType;
 import org.lisaac.ldt.model.types.ITypeMono;
-import org.lisaac.ldt.model.types.TypeParameter;
 import org.lisaac.ldt.outline.OutlineItem;
 import org.lisaac.ldt.outline.OutlinePrototype;
 import org.lisaac.ldt.outline.OutlineSection;
@@ -42,9 +41,6 @@ public class Prototype {
 	protected HashMap<String, Slot> parentList;
 	protected HashMap<String, Slot> slotList;
 
-	// genericity
-	protected TypeParameter[] genericList;
-	
 	// hover informations
 	protected String headerData;
 	protected String headerComment;
@@ -91,21 +87,6 @@ public class Prototype {
 		return name;
 	}
 
-	public int getGenericIndex(TypeParameter param) {
-		if (genericList != null) {
-			for (int i=0; i<genericList.length; i++) {
-				if (genericList[i].equals(param)) {
-					return i;
-				}
-			}
-		}
-		return -1;
-	}
-	
-	public void setGenericList(TypeParameter[] list) {
-		genericList = list;
-	}
-	
 	public void setHeaderComment(String comment) {
 		this.headerComment = comment;
 	}
@@ -126,7 +107,7 @@ public class Prototype {
 		}
 	}
 
-	
+
 	public LisaacParser openParser() {
 		parser.initialize();
 		return parser;
@@ -378,7 +359,7 @@ public class Prototype {
 						break;
 					}
 				}
-				if (LisaacParser.isOperatorSymbol(c)) {
+				if (parser.isOperatorSymbol(c)) {
 					if (c == '+' || c == '-') {
 						// slot definition
 						if (offset - 3 > 0 && source.charAt(offset - 1) == ' ' &&
@@ -473,7 +454,7 @@ public class Prototype {
 								break;
 							}
 						}
-						if (LisaacParser.isOperatorSymbol(c)) {
+						if (parser.isOperatorSymbol(c)) {
 							break;
 						}
 						// strings 

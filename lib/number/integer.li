@@ -238,7 +238,7 @@ Section Public
   );
   
   - Self:SELF '!' :SELF <- 
-  // Factorial. Use it like "45!;" or "bar!.print;"
+  // Factorial. Use it like "45!" or "bar!.print;"
   factorial;
   
   - factorial:SELF <-

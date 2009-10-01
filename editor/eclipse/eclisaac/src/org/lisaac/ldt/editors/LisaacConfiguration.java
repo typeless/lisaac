@@ -71,7 +71,6 @@ public class LisaacConfiguration extends SourceViewerConfiguration {
 			//
 			contentAssistant.setRepeatedInvocationMode(true);
 			contentAssistant.setStatusLineVisible(true);
-			contentAssistant.enableColoredLabels(true);
 			contentAssistant.setStatusMessage(LisaacMessages.getString("LisaacConfiguration_0")); //$NON-NLS-1$
 			//
 			

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -119,10 +118,7 @@ public class LisaacCompiler {
 		output.refreshLocal(IResource.DEPTH_INFINITE, null);
 
 		// move the generated files to bin/
-		IFolder bin = project.getFolder("bin");
-		if (! bin.exists()) {
-			bin.create(false,true,null);
-		}
+		IContainer bin = project.getFolder("bin");
 		IPath generatedPath = new Path(outputName);
 		IFile executable = output.getFile(generatedPath);
 		if (! executable.exists()) {

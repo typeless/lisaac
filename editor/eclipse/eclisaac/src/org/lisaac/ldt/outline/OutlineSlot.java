@@ -2,10 +2,10 @@ package org.lisaac.ldt.outline;
 
 import java.util.List;
 
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 import org.lisaac.ldt.model.Position;
 import org.lisaac.ldt.model.items.Slot;
+import org.lisaac.ldt.model.types.IType;
 
 public class OutlineSlot extends OutlineItem {
 
@@ -30,13 +30,6 @@ public class OutlineSlot extends OutlineItem {
 			result = slot.getSignature(false);
 		}
 		return result;
-	}
-	
-	public StyledString getStyledText() {
-		if (slot != null) {
-			return slot.getStyledSignature(false, false);
-		}
-		return null;
 	}
 
 	public String toString() {

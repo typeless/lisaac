@@ -129,7 +129,7 @@ Section Public
       argument.print;
       ">".print;
     };
-    " :\n".print;
+    ":\n".print;
     (comment != NULL).if {      
       '\t'.print;
       (comment.lower).to (comment.upper) do { i:INTEGER;

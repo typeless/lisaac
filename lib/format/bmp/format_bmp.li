@@ -186,7 +186,12 @@ Section Private
   (     
     (file != NULL).if {
       header := BMP_HEADER.clone;
-      file.open;
+      (file.is_open).if_false {
+        (file.open).if_false {
+          "FORMAT_BMP : Open file fail!\n".print;
+          die_with_code 0;
+        };
+      };
       file.read header;
     } else {
       header := CONVERT(NATIVE_ARRAY(UINTEGER_8),BMP_HEADER).on (buffer.storage);

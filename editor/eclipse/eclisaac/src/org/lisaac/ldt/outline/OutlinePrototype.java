@@ -3,9 +3,7 @@ package org.lisaac.ldt.outline;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
-import org.lisaac.ldt.editors.ColorManager;
 import org.lisaac.ldt.model.items.Prototype;
 
 public class OutlinePrototype extends OutlineItem {
@@ -26,11 +24,6 @@ public class OutlinePrototype extends OutlineItem {
     public String getText() {
     	return name;
     }
-    
-    public StyledString getStyledText() {
-		ColorManager colors = ColorManager.getDefault();
-		return new StyledString(name, colors.getPrototypeStyler());
-	}
     
     public String toString() {
     	return name;

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
-import org.lisaac.ldt.editors.ColorManager;
 import org.lisaac.ldt.model.Position;
 import org.lisaac.ldt.model.types.IType;
 import org.lisaac.ldt.model.types.TypeMulti;
@@ -78,22 +76,6 @@ public class ITMArgs implements IArgument {
 		buffer.append(")");
 	}
 
-	public void styledPrintIn(StyledString buffer) {
-		ColorManager colors = ColorManager.getDefault();
-		buffer.append("(");
-		for (int i=0; i<name.length; i++) {
-			IType subType = type.getSubType(i);
-			buffer.append(name[i], colors.getVariableStyler());
-			buffer.append(" : ");
-			buffer.append(subType.toString(), colors.getPrototypeStyler());
-			
-			if (i != name.length-1) {
-				buffer.append(", ");
-			}
-		}
-		buffer.append(")");
-	}
-	
 	public String getHoverInformation() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("<I>Arguments</I> : ");

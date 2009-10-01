@@ -509,13 +509,5 @@
          </action>
       </viewerContribution>
    </extension>
-   <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="eclisaac_product.application"
-            name="eclisaac">
-      </product>
-   </extension>
 
 </plugin>

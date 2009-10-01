@@ -38,7 +38,7 @@ Section Inherit
   
 Section PROFIL_LIST
   
-  - is_alias_struct:BOOLEAN := FALSE; // BSBS: A revoir BUG Cortex.
+  - is_alias_struct:BOOLEAN := TRUE; 
   
 Section Private
   

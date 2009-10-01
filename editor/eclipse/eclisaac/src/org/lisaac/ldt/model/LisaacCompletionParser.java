@@ -16,9 +16,6 @@ import org.lisaac.ldt.model.items.ITMRead;
 import org.lisaac.ldt.model.items.Prototype;
 import org.lisaac.ldt.model.items.Slot;
 import org.lisaac.ldt.model.types.IType;
-import org.lisaac.ldt.model.types.ITypeMono;
-import org.lisaac.ldt.model.types.TypeGeneric;
-import org.lisaac.ldt.model.types.TypeParameter;
 import org.lisaac.ldt.model.types.TypeSelf;
 import org.lisaac.ldt.outline.OutlineImages;
 
@@ -30,15 +27,11 @@ public class LisaacCompletionParser extends LisaacParser {
 
 	protected int endOffset;
 
-	protected TypeGeneric lastGenericType;
 
 
 	public LisaacCompletionParser(String contents, LisaacModel model) {
 		super(null,contents);
 		LisaacCompletionParser.model = model;
-		//
-		enableErrorReport(false); // turn off error reporting
-		//
 	} 
 
 	/**
@@ -54,9 +47,8 @@ public class LisaacCompletionParser extends LisaacParser {
 
 		currentPrototype = LisaacModel.getCurrentPrototype();
 		currentSlot = currentPrototype.getSlot(startOffset);
-		lastGenericType = null;
 		endOffset = -1;
-		
+
 		// keyword match
 		while (readKeyword()) {
 			if (baseOffset != (startOffset+position)) {
@@ -74,28 +66,22 @@ public class LisaacCompletionParser extends LisaacParser {
 			return;
 		}
 		setPosition(0);
-
+		
 		// slot match
 		ICode code = readExpr();
 		if (code != null && currentPrototype != null) {
 			type = code.getType(currentSlot, currentPrototype);
-			if (type != null && source.charAt(position-1) == '.') {
+			if (type != null) {
+				//if (! type.equals(TypeSimple.getTypeSelf())) {
+				//if ("SELF".compareTo(type.toString()) != 0) {
 				if (type instanceof TypeSelf) {
 					currentPrototype = findPrototype(((TypeSelf) type).getStaticType());
-
-				} else if (type instanceof TypeParameter && lastGenericType != null) {
-					// genericity TypeParameter -> TypeSimple
-					int index = currentPrototype.getGenericIndex((TypeParameter) type);
-					if (index != -1) { 
-						ITypeMono realType = lastGenericType.getGenericElt(index);
-						currentPrototype = findPrototype(realType.toString());
-					}
 				} else {
 					currentPrototype = findPrototype(type.toString());
 				}
 				if (currentPrototype != null) {
-					// compute completion result
 					currentPrototype.getSlotProposals(proposals, baseOffset, 0);
+					proposals.add(new CompletionProposal(""+type,baseOffset,0,0));
 				} else {
 					// partial prototype name
 					String prefix = type.toString();
@@ -105,7 +91,7 @@ public class LisaacCompletionParser extends LisaacParser {
 				// partial name, search for matches
 				if (code instanceof ITMRead) {
 					String prefix = ((ITMRead) code).getName();
-
+					
 					// partial local name
 					if (currentSlot != null) {
 						currentSlot.getArgumentMatchProposals(prefix, proposals, baseOffset, 0);
@@ -134,34 +120,20 @@ public class LisaacCompletionParser extends LisaacParser {
 				}
 				// update source of completion
 				IType type = lastResult.getType(currentSlot, currentPrototype);
-				if (type != null) {
-					String stringType = type.toString();
-					if (stringType != null && "SELF".compareTo(stringType) != 0) {
-						try {
-							if (type instanceof TypeParameter && lastGenericType != null) {
-								// genericity TypeParameter -> TypeSimple
-								int index = currentPrototype.getGenericIndex((TypeParameter) type);
-								if (index != -1) { 
-									ITypeMono realType = lastGenericType.getGenericElt(index);
-									currentPrototype = findPrototype(realType.toString());
-								}
-							} else {
-								currentPrototype = findPrototype(stringType);
-							}
-						} catch(CoreException e) {
-							return null;
-						}
-						if (currentPrototype == null) {
-							return null;
-						}
-						if (type instanceof TypeGeneric) {
-							lastGenericType = (TypeGeneric) type;
-						}
-						if (result instanceof ITMRead) {
-							currentSlot = currentPrototype.lookupSlot(((ITMRead) result).getName());
-						} else {
-							currentSlot = null;
-						}
+				//if (type != null && ! type.equals(TypeSimple.getTypeSelf())) {
+				if (type != null && "SELF".compareTo(type.toString()) != 0) {
+					try {
+						currentPrototype = findPrototype(type.toString());
+					} catch(CoreException e) {
+						return null;
+					}
+					if (currentPrototype == null) {
+						return null;
+					}
+					if (result instanceof ITMRead) {
+						currentSlot = currentPrototype.lookupSlot(((ITMRead) result).getName());
+					} else {
+						currentSlot = null;
 					}
 				}
 			}
@@ -170,11 +142,11 @@ public class LisaacCompletionParser extends LisaacParser {
 	}
 
 
-	public Prototype readReceiver(int startOffset, int endOffset, Prototype current) throws CoreException {
+	public Prototype readReceiver(int startOffset, int endOffset, Prototype currentPrototype) throws CoreException {
 		Prototype result=null;
 		IType type;
 
-		currentPrototype = current;
+		this.currentPrototype = currentPrototype;//LisaacModel.getCurrentPrototype();
 		currentSlot = currentPrototype.getSlot(startOffset);
 		this.endOffset = endOffset;
 
@@ -191,14 +163,6 @@ public class LisaacCompletionParser extends LisaacParser {
 					currentPrototype = findPrototype(type.toString());
 					if (currentPrototype == null) {
 						currentPrototype = save;
-					}
-				}
-				// genericity TypeParameter -> TypeSimple
-				if (type instanceof TypeParameter && lastGenericType != null) {
-					int index = currentPrototype.getGenericIndex((TypeParameter) type);
-					if (index != -1) { 
-						ITypeMono realType = lastGenericType.getGenericElt(index);
-						currentPrototype = findPrototype(realType.toString());
 					}
 				}
 				result = currentPrototype;	

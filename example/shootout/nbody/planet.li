@@ -24,18 +24,48 @@ Section Public
   
   - days_per_year:REAL_64 := 365.24;
   
-  + x, y, z, px, py, pz, vx, vy, vz, pvx, pvy, pvz, mass : REAL_64; 
+  + x : REAL_64; 
+  + y : REAL_64;
+  + z : REAL_64;
+  
+  + px : REAL_64;
+  + py : REAL_64;
+  + pz : REAL_64;
+  
+  + vx : REAL_64;
+  + vy : REAL_64;
+  + vz : REAL_64;
+
+  + pvx : REAL_64;
+  + pvy : REAL_64;
+  + pvz : REAL_64;
   
   + mass : REAL_64;
   
-  - set_x v:REAL_64  y  y:REAL_64 z z:REAL_64 <-
+  - set_x v:REAL_64 <-
   (
-    (x,y,z) := (v,y,z);
+    x := v;
+  );
+  - set_y v:REAL_64 <-
+  (
+    y := v;
+  );
+  - set_z v:REAL_64 <-
+  (
+    z := v;
   );
   
-  - set_vx v:REAL_64 vy vy:REAL_64 vz vz:REAL_64 <-
+  - set_vx v:REAL_64 <-
   (
-    (vx,vy,vz) := (v,vy,vz);
+    vx := v;
+  );
+  - set_vy v:REAL_64 <-
+  (
+    vy := v;
+  );
+  - set_vz v:REAL_64 <-
+  (
+    vz := v;
   );
   
   - set_speed_to (pvx, pvy, pvz:REAL_64) <-

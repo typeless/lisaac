@@ -1,8 +1,6 @@
 package org.lisaac.ldt.outline;
 
 import java.util.List;
-
-import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
 public abstract class OutlineItem implements Comparable<Object> {
@@ -25,8 +23,6 @@ public abstract class OutlineItem implements Comparable<Object> {
      */
     public abstract String getText();
 	
-    public abstract StyledString getStyledText();
-    
 	/**
      * Returns the children of this element.
      */
@@ -39,5 +35,5 @@ public abstract class OutlineItem implements Comparable<Object> {
 
 	public int length() {
 		return fLength;
-	}	
+	}
 }

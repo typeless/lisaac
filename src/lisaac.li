@@ -76,7 +76,7 @@ Section Private
 
   - begin_usage: STRING_CONSTANT :=
   "----------------------------------------------------------------\n\
-  \--            Lisaac IS An Advanced Compiler V.0.16           --\n\
+  \--            Lisaac IS An Advanced Compiler V.0.17           --\n\
   \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
   \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
   \--                   http://www.IsaacOS.com                   --\n\
@@ -92,8 +92,8 @@ Section Private
   - end_usage:STRING_CONSTANT :=
   "                                                                \n\
   \Bug report:                                                     \n\
-  \\t post in : https://alioth.debian.org/projects/lisaac/         \n\
-  \\t mail to : sonntag@icps.u-strasbg.fr                          \n";
+  \\t post in: https://alioth.debian.org/projects/lisaac/         \n\
+  \\t mail to: sonntag@icps.u-strasbg.fr                          \n";
 
   - display_usage <-
   (
@@ -144,10 +144,11 @@ Section Private
             lip_ok := TRUE;
           };
           string_tmp.copy cmd;
-          string_tmp.remove_first 1;
+          string_tmp.remove_first 1;          
+          string_tmp.replace_all '-' with '_';
           s := LIP_CODE.get_method (ALIAS_STR.get string_tmp);
           ((s = NULL) || {s.section != ALIAS_STR.section_public}).if {
-            "ERROR : Option `".print;
+            "ERROR: Option `".print;
             cmd.print;
             "' not found.\n".print;
             display_usage;
@@ -155,7 +156,7 @@ Section Private
           (s.argument != NULL).if {
             j := j + 1;
             (j > COMMAND_LINE.upper).if {
-              "ERROR : For option `".print;
+              "ERROR: For option `".print;
               cmd.print;
               "', argument needed.\n".print;
               display_usage;
@@ -178,14 +179,16 @@ Section Private
               arg := LIP_STRING.get (ALIAS_STR.get cmd);
             };
             (arg = NULL).if {
-              "ERROR : Incorrect type for `".print;
+              "ERROR: Incorrect type for `".print;
               cmd.print;
               "' argument.\n".print;
               display_usage;
             };            
+          } else {
+            arg := NULL;
           };
           (s.run_with arg).if_false {
-            "ERROR : Invalid argument.\n".print;
+            "ERROR: Invalid argument.\n".print;
             display_usage;
           };
         };
@@ -196,7 +199,7 @@ Section Private
         (cmd.has_suffix ".lip").if {
           // .lip 
           (lip_ok).if {
-            "ERROR : Put options after `".print;
+            "ERROR: Put options after `".print;
             cmd.print;
             "'.".print;
             display_usage;
@@ -273,7 +276,7 @@ Section Private
     is_quiet           := LIP_CODE.get_boolean (ALIAS_STR.slot_is_quiet);
     //
     ((input_name = NULL) || {input_name.is_empty}).if {      
-      "ERROR : `input_file' is empty.\n".print;
+      "ERROR: `input_file' is empty.\n".print;
       display_usage;
     };        
     string_tmp.copy input_name;
@@ -458,7 +461,7 @@ Section Private
 	\    loop.back = top_context;\n\	
 	\    loop.code = code; \n\
 	\    lisaac_stack_print(&loop);\n\
-	\    print_string(\"COMPILER : Debug context looping detected !\\n\");\n\
+	\    print_string(\"COMPILER: Debug context looping detected !\\n\");\n\
 	\    die_with_code(1);\n\
 	\  };\n";
       };
@@ -630,9 +633,9 @@ Section Public
     //
     read_options;
     is_verbose.if {
-      string_tmp.copy "\ninput  file : ";
+      string_tmp.copy "\ninput  file: ";
       string_tmp.append input_name;      
-      string_tmp.append ".li\noutput file : ";
+      string_tmp.append ".li\noutput file: ";
       string_tmp.append output_name;
       string_tmp.append "\npath directory :\n";
       path_file.lower.to (path_file.upper) do { j:INTEGER;

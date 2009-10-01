@@ -114,9 +114,6 @@ Section Public
   
   - new_execute_pass <- 
   (
-    (pass_count > 60).if {
-      crash;
-    };
     new_depend_pass;
   );
   

@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.text.TextAttribute;
@@ -14,38 +13,20 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 
 public class ColorManager {
 
-	private static ColorManager instance;
-	
 	protected Map<RGB,Color> fColorTable = new HashMap<RGB,Color>(10);
 	private Map<String,IToken> tokenTable = new HashMap<String,IToken>(10);
 	private Map<String,String> styleTable = new HashMap<String,String>(10);
 
 	private final IPreferenceStore preferenceStore;
 
-	private Styler operatorStyler;
-	private Styler prototypeStyler;
-	private Styler slotStyler;
-	private Styler variableStyler;
-	
 	public ColorManager(IPreferenceStore preferenceStore) {
 		this.preferenceStore = preferenceStore;
-		instance = this;
-		
-		operatorStyler = new DefaultStyler(ILisaacColor.PREF_OPERATOR, ILisaacColor.STYLE_OPERATOR);
-		prototypeStyler = new DefaultStyler(ILisaacColor.PREF_PROTOTYPE, ILisaacColor.STYLE_PROTOTYPE);
-		slotStyler = new DefaultStyler(ILisaacColor.PREF_SLOT, ILisaacColor.STYLE_SLOT);
-		variableStyler = new DefaultStyler(ILisaacColor.PREF_LOCAL_SLOT, ILisaacColor.STYLE_LOCAL_SLOT);
 	}
 
-	public static ColorManager getDefault() {
-		return instance;
-	}
-	
 	public void dispose() {
 		Iterator<Color> e = fColorTable.values().iterator();
 		while (e.hasNext())
@@ -141,35 +122,5 @@ public class ColorManager {
 			return TextAttribute.UNDERLINE;
 		}
 		return SWT.NORMAL; 
-	}
-	
-	public Styler getOperatorStyler() {
-		return operatorStyler;
-	}
-	
-	public Styler getPrototypeStyler() {
-		return prototypeStyler;
-	}
-	
-	public Styler getSlotStyler() {
-		return slotStyler;
-	}
-	
-	public Styler getVariableStyler() {
-		return variableStyler;
-	}
-	
-	private class DefaultStyler extends Styler {
-		String prefKey, styleKey;
-		
-		public DefaultStyler(String prefKey, String styleKey) {
-			this.prefKey = prefKey;
-			this.styleKey = styleKey;
-		}
-		public void applyStyles(TextStyle textStyle) {
-			IToken token = getToken(prefKey, styleKey);
-			TextAttribute attrib = (TextAttribute) token.getData();
-			textStyle.foreground = attrib.getForeground();
-		}
 	}
 }

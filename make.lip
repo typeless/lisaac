@@ -120,7 +120,7 @@ Section Private
       exit;
     };
   );
-      
+    
   - add_lib lib:STRING <-
   (
     (target = "windows").if {
@@ -210,6 +210,7 @@ Section Private
   
 Section Public
   
+   
   //
   // Debug information.
   // 
@@ -269,8 +270,14 @@ Section Public
   // Generate code.
   //
   
+  - o outputfile:STRING <-  
+  // output file (default: `input_file').
+  (
+    output_file := outputfile;
+  );
+  
   - target idf:STRING <-
-  // Target for backend (UNIX,WINDOWS,DOS,JAVA)
+  // Target for backend (unix,windows,dos,java)
   (
     target := idf;
   );
