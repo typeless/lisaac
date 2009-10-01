@@ -1,12 +1,14 @@
 	package org.lisaac.ldt.model.items;
 
 	import java.util.ArrayList;
-	import org.eclipse.jface.text.contentassist.CompletionProposal;
 	import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.viewers.StyledString;
 	import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.TextEdit;
+import org.lisaac.ldt.editors.ColorManager;
+import org.lisaac.ldt.editors.LisaacCompletionProposal;
 	import org.lisaac.ldt.model.ILisaacModel;
 import org.lisaac.ldt.model.LisaacParser;
 	import org.lisaac.ldt.model.Position;
@@ -277,11 +279,9 @@ import org.lisaac.ldt.outline.OutlineSlot;
 		}
 
 		public String getSignature(boolean isCall) {
-
 			if (name.startsWith("__")) {
 				return getOperatorName();
 			}
-
 			if (keywordList == null || keywordList.length < 1) {
 				return name;
 			}
@@ -307,9 +307,51 @@ import org.lisaac.ldt.outline.OutlineSlot;
 			if (!isCall && resultType.toString() != null) {
 				buffer.append(" : " + resultType);
 			}
+			
 			return buffer.toString();
 		}
+		
+		public StyledString getStyledSignature(boolean isCall, boolean showProto) {
+			ColorManager colors = ColorManager.getDefault();
+			StyledString result = new StyledString();
+			
+			if (name.startsWith("__")) {
+				result.append(getOperatorName(), colors.getOperatorStyler());
+				return result;
+			}
+			if (keywordList == null || keywordList.length < 1) {
+				result.append(name, colors.getSlotStyler());
+				return result;
+			}
+			result.append(keywordList[0], colors.getSlotStyler());
+			result.append(" ");
 
+			int keywordIndex = 1;
+			for (int argIndex = 0; argIndex < argumentList.length; argIndex++) {
+				if (isCall) { 
+					result.append(argumentList[argIndex].getName(), colors.getVariableStyler());
+				} else {
+					argumentList[argIndex].styledPrintIn(result);
+				}
+				result.append(" ");
+
+				if (keywordIndex < keywordList.length) {
+					result.append(keywordList[keywordIndex], colors.getSlotStyler());
+					result.append(" ");
+					keywordIndex++;
+				}
+			}
+			if (!isCall && resultType.toString() != null) {
+				result.append(" : ");
+				result.append(resultType.toString(), colors.getPrototypeStyler());
+			}
+			if (showProto) {
+				result.append("  - ", StyledString.QUALIFIER_STYLER);
+				result.append(getPrototype().getName(), StyledString.QUALIFIER_STYLER);
+			}
+			return result;
+		}
+		
 		public void getSlotProposals(ArrayList<ICompletionProposal> proposals,
 				int offset, int length) {
 
@@ -317,11 +359,10 @@ import org.lisaac.ldt.outline.OutlineSlot;
 			String displayString = getSignature(true);
 			
 			if (checkUnicity(proposals,displayString)) {
-				proposals.add(new CompletionProposal(displayString, offset, length,
-					displayString.length() - 1, image, getSignature(false),
-					null, null));
+				proposals.add(new LisaacCompletionProposal(displayString, offset, length,
+					displayString.length() - 1, image, getStyledSignature(false, true)));
 			}
-		}
+		} 
 
 		public void getSlotMatchProposals(
 				ArrayList<ICompletionProposal> proposals, int offset,
@@ -332,9 +373,8 @@ import org.lisaac.ldt.outline.OutlineSlot;
 
 			if (checkUnicity(proposals,displayString)) {
 				displayString = displayString.substring(matchLength);
-				proposals.add(new CompletionProposal(displayString, offset, length,
-					displayString.length(), image, getSignature(false), null,
-					null));
+				proposals.add(new LisaacCompletionProposal(displayString, offset, length,
+					displayString.length(), image, getStyledSignature(false, true)));
 			}
 		}
 		
@@ -376,6 +416,7 @@ import org.lisaac.ldt.outline.OutlineSlot;
 			}
 		}
 
+		// FIXME cannot compare display string now... they're already unique, ex: "slot - SON" and "slot - FATHER"
 		public static boolean checkUnicity(ArrayList<ICompletionProposal> proposals, String str) {
 			for (int i=0; i<proposals.size(); i++) {
 				if (proposals.get(i).getDisplayString().compareTo(str) == 0) {

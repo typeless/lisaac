@@ -64,6 +64,12 @@ public class LisaacTextHover implements ITextHover, ITextHoverExtension {
 						IVariable variable = slot.getVariable(text, hoverRegion.getOffset());
 						if (variable != null) {
 							return variable.getHoverInformation();
+						} else {
+							// is 'text' a slot-call argument?
+							slot = prototype.lookupSlot(text);
+							if (slot != null) {
+								return "<I>Argument</I> : "+slot.getHoverInformation();
+							}
 						}
 					}
 				}

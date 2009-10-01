@@ -32,6 +32,10 @@ public class AbstractLisaacParser {
 	public Position getPosition(int len) {
 		Position result=null;
 
+		if (position > source.length()) { // outline thread bug
+			return new Position(pos_line, pos_col, pos_cur, len);
+		}
+		
 		while (pos_cur < position) {
 			if (source.charAt(pos_cur) == '\n') {
 				pos_col = 0;
@@ -137,7 +141,7 @@ public class AbstractLisaacParser {
 	}
 	
 	public char lastCharacter() {
-		if (position > source.length()-1) {
+		if (position >= source.length()) {
 			return 0;
 		} 
 		return source.charAt(position);
@@ -798,9 +802,9 @@ public class AbstractLisaacParser {
 		return result;
 	}
 
-	private final String operators = "!@#$%^&<|*-+=~/?\\>";
+	private static final String operators = "!@#$%^&<|*-+=~/?\\>";
 
-	public boolean isOperatorSymbol(char c) {
+	public static boolean isOperatorSymbol(char c) {
 		return operators.indexOf(c) != -1;
 	}
 	

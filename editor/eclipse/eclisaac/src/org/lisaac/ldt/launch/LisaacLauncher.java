@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.IStreamListener;
@@ -18,7 +19,7 @@ import org.lisaac.ldt.views.LisaacConsole;
 
 public class LisaacLauncher {
 
-	public static boolean executeCommandInConsole(final ILaunch launch, final IProgressMonitor monitor,
+	public static boolean executeCommandInConsole(final ILaunch launch, IProgressMonitor monitorParent,
 			final IContainer container, final String[] commandLine, final LisaacCompiler compiler) throws CoreException {
 		// get & clear lisaac console
 		final LisaacConsole console = ConsoleFactory.getConsole();
@@ -27,6 +28,8 @@ public class LisaacLauncher {
 		if (compiler == null) {
 			console.activate();// show console		
 		}
+		final IProgressMonitor monitor = new NullProgressMonitor();
+		
 		Runnable getStandardOutput = new Runnable() {
 			public void run() {
 				monitor.beginTask("Executing... ", 100);

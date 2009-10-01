@@ -102,7 +102,14 @@ public class PrototypeHyperLink implements IHyperlink {
 							}
 							position = new Position(0, 0, p.offset-len, len);
 						} else {
-							prototype = null;
+							// is 'text' a slot-call argument?
+							slot = prototype.lookupSlot(fPrototypeString);
+							if (slot != null) {
+								prototype = slot.getPrototype();
+								position = slot.getPosition();
+							} else {
+								prototype = null;
+							}
 						}					
 					}
 				}

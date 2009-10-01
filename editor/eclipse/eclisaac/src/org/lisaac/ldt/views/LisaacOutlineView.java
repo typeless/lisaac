@@ -38,7 +38,7 @@ import org.lisaac.ldt.outline.OutlineLabelProvider;
 public class LisaacOutlineView extends ContentOutlinePage implements IDocumentListener {
 
 	/** the delay before the outline view is updated. */
-	private static final long UPDATE_DELAY = 2000; 
+	private static final long UPDATE_DELAY = 1500; 
 
 	/** the document provider. */
 	private IDocumentProvider documentProvider;
@@ -124,15 +124,6 @@ public class LisaacOutlineView extends ContentOutlinePage implements IDocumentLi
 		IToolBarManager toolbarManager = actionBars.getToolBarManager();
 		toolbarManager.add(sortByName);
 		toolbarManager.add(sortBySection);
-		
-		/* IMenuManager menuManager = actionBars.getMenuManager();
-        menuManager.add(new OutlineHideCommentsAction(this, imageCache));
-        menuManager.add(new OutlineHideImportsAction(this, imageCache));
-        menuManager.add(new OutlineHideMagicObjectsAction(this, imageCache));
-        menuManager.add(new OutlineHideFieldsAction(this, imageCache));
-        menuManager.add(new OutlineHideNonPublicMembersAction(this, imageCache));
-        menuManager.add(new OutlineHideStaticMethodsAction(this, imageCache));
-		 */
 	}
 
 	/**
