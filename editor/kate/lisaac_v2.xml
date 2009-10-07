@@ -1140,6 +1140,7 @@
 			<!--############################################################-->
 			<!--le contexte pour les commentaires multi-lignes -->
 			<context name="comment" attribute="comment" fallthrough="true" fallthroughContext="#pop">
+				<RegExpr String="/[*]" context="comment" attribute="comment" endRegion="multiline_comment" />
 				<RegExpr String="[*]/" context="#pop" attribute="comment" endRegion="multiline_comment" />
 				<!--evalué que si la 1ere ne marche pas.-->
 				<RegExpr String="." context="#stay" />
