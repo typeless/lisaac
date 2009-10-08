@@ -1,7 +1,11 @@
-/src/path.h
+*~
+/*.c
+/*.patch
 /.project
+/src/path.h
 /path.h
 /lisaac
 /lisaac.c
-/doc
-*~
+/l
+/l.c
+/doc/

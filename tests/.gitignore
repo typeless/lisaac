@@ -1,3 +1,11 @@
+*.c
+*.exe
 lib_tests
-lib_tests.c
-lib_tests.exe
+abstract_string_test
+boolean_test
+boolean_test2
+boolean_test3
+character_test
+lib_tests
+living_external
+print_char_test
