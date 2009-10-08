@@ -26,14 +26,15 @@ Section Header
   
   - comment  := "X11 - Event System";
   
-  - external := `volatile char is_sleep=0;`;
-  
 Section Inherit
   
   - parent_object:OBJECT := OBJECT;
   
 Section Public  
-
+  
+  - x_root:INTEGER;
+  - y_root:INTEGER;
+  
   - sleep n:INTEGER <-
   // Milisecond
   (
@@ -49,92 +50,89 @@ Section Public
     mask := mask | `ClientMessage`:UINTEGER_32;
     //mask := mask | `ResizeRedirectMask`:UINTEGER_32;
     mask := mask | `StructureNotifyMask`:UINTEGER_32;
-    `XSelectInput(display,window,@mask)`;
+    `XSelectInput(display,window,@mask)`;    
   );
     
   - get_event <-
   ( //+ nb_ev:INTEGER;
     + type:INTEGER;
     + x0,y0,x1,y1:INTEGER;
-      
-    //nb_ev := `XPending(display)`:INTEGER;
-    //(nb_ev != 0).if {
-    `{ XEvent ev`; 
-      (`XPending(display)`:INTEGER = 0).if {
-	`is_sleep = 1`;
-      };
-      `XNextEvent(display,&ev)`;
-      `is_sleep = 0`;
-      type := `ev.type`:INTEGER;
-      
-      //(type != 21h).if {
-//	"Event:".print; type.to_hexadecimal.print; "h\n".print;
-//      };
-      
-      type
-      .when `ClientMessage`:INTEGER then {
-	TIMER.get_event;
-      }
-      //
-      // Event Window
-      //
-      .when `Expose`:INTEGER then {
-	// Refresh X Window
-	x0 := `ev.xexpose.x`:INTEGER;
-	y0 := `ev.xexpose.y`:INTEGER;
-	x1 := x0 + `ev.xexpose.width` :INTEGER - 1;
-	y1 := y0 + `ev.xexpose.height`:INTEGER - 1;		
-	DESK.physical_screen.redraw (x0,y0) to (x1,y1);
-      }
-      .when `ResizeRequest`:INTEGER then {
-	// Resize X Window
-	x1 := `ev.xresizerequest.width`:INTEGER;
-	y1 := `ev.xresizerequest.height`:INTEGER;
-	`XResizeWindow(display,window,@x1,@y1)`;
-	
-	VIDEO.pixel_hard (x1,10) color 0FF0000h;
-	
-	DESK.resize_window (x1,y1);
-      }
-      
-      .when `ConfigureNotify`:INTEGER then {
-	// Resize X Window
-	x1 := `ev.xconfigure.width`:INTEGER;
-	y1 := `ev.xconfigure.height`:INTEGER;		
-	DESK.resize_window (x1,y1);
-      }
-      
-      //
-      // Event Keyboard
-      //
-      .when `KeyPress`:INTEGER then {
-	KEYBOARD.key `ev.xkey.keycode`:UINTEGER_8 press TRUE;
-      }
-      .when `KeyRelease`:INTEGER then {
-	KEYBOARD.key `ev.xkey.keycode`:UINTEGER_8 press FALSE;
-      }	
-      //
-      // Event Mouse
-      //
-      .when `ButtonPress`:INTEGER then {
-	(`ev.xbutton.button`:INTEGER = 1).if {
-	  MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (TRUE,(MOUSE.right));
-	} else {
-	  MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with ((MOUSE.left),TRUE);
-	};
-      }
-      .when `ButtonRelease`:INTEGER then {
-	(`ev.xbutton.button`:INTEGER = 1).if {
-	  MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (FALSE,(MOUSE.right));
-	} else {
-	  MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with ((MOUSE.left),FALSE);
-	};
-      }
-      .when `MotionNotify`:INTEGER then {
-	MOUSE.set (`ev.xmotion.x`:INTEGER,`ev.xmotion.y`:INTEGER) with ((MOUSE.left),(MOUSE.right));
+       
+    TIMER.get_event;        
+    `{ XEvent ev`;             
+      (`XPending(display)`:INTEGER != 0).if {	      
+        `XNextEvent(display,&ev)`;
+        type := `ev.type`:INTEGER;
+            
+        type
+        //
+        // Event Window
+        //
+        .when `Expose`:INTEGER then {
+          // Refresh X Window
+          x0 := `ev.xexpose.x`:INTEGER;
+          y0 := `ev.xexpose.y`:INTEGER;
+          x1 := x0 + `ev.xexpose.width` :INTEGER - 1;
+          y1 := y0 + `ev.xexpose.height`:INTEGER - 1;		
+          DESK.physical_screen.redraw (x0,y0) to (x1,y1);
+        }
+        .when `ResizeRequest`:INTEGER then {
+          // Resize X Window
+          x1 := `ev.xresizerequest.width`:INTEGER;
+          y1 := `ev.xresizerequest.height`:INTEGER;
+          `XResizeWindow(display,window,@x1,@y1)`;
+          
+          VIDEO.pixel_hard (x1,10) color 0FF0000h;
+          
+          DESK.resize_window (x1,y1);
+        }
+        
+        .when `ConfigureNotify`:INTEGER then {
+          // Resize X Window
+          x1 := `ev.xconfigure.width`:INTEGER;
+          y1 := `ev.xconfigure.height`:INTEGER;		
+          DESK.resize_window (x1,y1);
+        }
+        
+        //
+        // Event Keyboard
+        //
+        .when `KeyPress`:INTEGER then {
+          KEYBOARD.key `ev.xkey.keycode`:UINTEGER_8 press TRUE;
+        }
+        .when `KeyRelease`:INTEGER then {
+          KEYBOARD.key `ev.xkey.keycode`:UINTEGER_8 press FALSE;
+        }	
+        //
+        // Event Mouse
+        //
+        .when `ButtonPress`:INTEGER then {        
+          x_root := `ev.xmotion.x_root`:INTEGER;
+          y_root := `ev.xmotion.y_root`:INTEGER;
+          (`ev.xbutton.button`:INTEGER = 1).if {
+            MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (TRUE,MOUSE.right);
+          } else {
+            MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (MOUSE.left,TRUE);
+          };
+        }
+        .when `ButtonRelease`:INTEGER then {
+          x_root := `ev.xmotion.x_root`:INTEGER;
+          y_root := `ev.xmotion.y_root`:INTEGER;
+          (`ev.xbutton.button`:INTEGER = 1).if {
+            MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (FALSE,MOUSE.right);
+          } else {
+            MOUSE.set (`ev.xbutton.x`:INTEGER,`ev.xbutton.y`:INTEGER) with (MOUSE.left,FALSE);
+          };
+        }
+        .when `MotionNotify`:INTEGER then {
+          x_root := `ev.xmotion.x_root`:INTEGER;
+          y_root := `ev.xmotion.y_root`:INTEGER;
+          MOUSE.set (`ev.xmotion.x`:INTEGER,`ev.xmotion.y`:INTEGER) with (MOUSE.left,MOUSE.right);
+        };
       };
     `}`;
   );
+    
   
   
 

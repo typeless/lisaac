@@ -54,9 +54,14 @@ Section Public
   
   - get_color:UINTEGER_32 <-
   ( + result:UINTEGER_32;
+    
+    result := `&(@Self)`:UINTEGER_32;
+    result := result & 0FFFFFFh;
+    /*
     result := map_red;
     result := (result << 8) | map_green;
     result := (result << 8) | map_blue;
+    */
     result
   );
     

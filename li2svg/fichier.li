@@ -1,0 +1,86 @@
+Section Header
+  + name := FICHIER;
+  
+  - author:="HILBERT Jérôme (hilbertjerome@gmail.com), FUHLHABER Simon(simon.fuhlhaber@gmail.com), Jacquemin Grégoire(greg-jacquemin@hotmail.fr)";
+  - comment:="protoype qui stocke toutes les informations d'un fichier lisaac (nom,méthodes,attributs,parents)";
+  
+Section Inherit
+  + parent_object:OBJECT := OBJECT;
+  
+Section Private
+  
+  + nom:STRING;
+  + methodes:ENS_METHODES;
+  + attributs:ENS_ATTRIBUTS;
+  + parents:ENS_PARENTS;
+  
+Section Public
+  
+  - make (n:STRING,meths:ENS_METHODES,atts:ENS_ATTRIBUTS,p:ENS_PARENTS) <-
+  (
+    nom:=n;
+    nom.to_upper;
+    methodes:=meths;
+    attributs:=atts;
+    parents:=p;
+  );
+  
+  - get_nom :STRING <-
+  (
+    nom
+  );
+  
+  - get_methodes :ENS_METHODES <-
+  (
+    methodes
+  );
+  
+  - get_attributs :ENS_ATTRIBUTS <-
+  (
+    attributs
+  );
+  
+  - get_parents :ENS_PARENTS <-
+  (
+    parents
+  );
+  
+  //supprime un parent trouvé dans un fichier.li mais qui ne se trouve pas
+  //dans ensemble_fichier, autrement dit un parent qui n'existe pas dans le 
+  //répertoire passé en argument, mais qui se trouve dans la lib, par exemple
+  - remove_parents ef:ENS_FICHIERS <-
+  (
+    + isin:BOOLEAN;
+    +i:INTEGER;
+    i := parents.lower;
+    
+    {i<= (parents.upper)}.while_do{
+      + p:STRING;
+      isin := FALSE;
+      p := parents.item i;
+      (ef.lower).to (ef.upper)do{ j:INTEGER;
+        + f:FICHIER;
+        f := ef.item j;
+        (p==(f.get_nom)).if{
+          isin := TRUE;
+        };
+      };
+      isin.if_false{
+        parents.remove i;
+      }else{ i := i+1; };
+    };
+  );
+  
+  - print <-
+  (
+    + s:STRING;
+    s := STRING.create 100;
+    s.copy nom;
+    s.append "\nparents:\n";
+    (parents.lower).to(parents.upper)do{i:INTEGER;
+      s.append (parents.item i);
+      s.append "\n";
+    };
+    s.append "\n";
+    s.print;
+  );

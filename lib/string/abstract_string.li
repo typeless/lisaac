@@ -1259,7 +1259,7 @@ Section Public
     Self == other.to_string
   );
   
-  - to_string:Strict STRING <-
+  - to_string:STRING <-
   // New STRING having the same character sequence as self.
   // Useful in proper descendants of STRING.
   (

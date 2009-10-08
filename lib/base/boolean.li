@@ -76,6 +76,10 @@ Section Public
   //
   // Binary operator :
   //
+
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <- Self = other;
+  
+  - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- Self != other;
   
   - Self:SELF '||' Left 10  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean;
   

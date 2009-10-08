@@ -106,6 +106,8 @@ Section Public
   - prototype_n_a_character   :STRING_CONSTANT := "NATIVE_ARRAY__CHARACTER";
   - prototype_n_a_n_a_character:STRING_CONSTANT := 
   "NATIVE_ARRAY__NATIVE_ARRAY__CHARACTER";
+  - prototype_system_io       :STRING_CONSTANT := "SYSTEM_IO";
+  - prototype_lip             :STRING_CONSTANT := "LIP";
   
   - variable_self          :STRING_CONSTANT := "Self";  
   - variable_context       :STRING_CONSTANT := "__pos";
@@ -396,8 +398,11 @@ Section Public
     list.add prototype_integer_32;
     list.add prototype_integer_16;
     list.add prototype_integer_8;
+    //
     list.add prototype_n_a_character;
     list.add prototype_n_a_n_a_character;    
+    list.add prototype_system_io;
+    list.add prototype_lip;
     
     // Les variables de base :
     list.add variable_self;    

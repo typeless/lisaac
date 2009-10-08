@@ -288,7 +288,19 @@ Section Public
     };
     storage.copy (s.storage) to (start - 1) until (s.count);
   );
-        
+  
+  - replace_all_substring motif:ABSTRACT_STRING with txt:ABSTRACT_STRING <-
+  ( + idx:INTEGER;
+    
+    idx := lower;
+    {
+      idx := substring_index (motif,idx);
+      (idx != 0).if {
+        replace_substring txt from idx to (idx+motif.count-1);
+      };
+    }.do_while {idx != 0};
+  );
+  
   - put ch:CHARACTER to index:INTEGER<-
   // Put `ch' at position `index'.
   ( ? {valid_index index};

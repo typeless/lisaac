@@ -119,7 +119,7 @@ path.h src/path.h:
 bin/lisaac: bin/lisaac.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@ -lm -fomit-frame-pointer
 
-bin/shorter: bin/lisaac
+bin/shorter: bin/lisaac bin/path.h
 	cd bin && ./lisaac ../src/make.lip -shorter -boost
 
 doc: doc/html

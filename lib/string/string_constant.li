@@ -39,7 +39,7 @@ Section Public
   
 Section Public
   
-  - to_string:Strict STRING <-
+  - to_string:STRING <-
   ( + new:Strict STRING;
     new := STRING.create capacity;
     new.copy Self;

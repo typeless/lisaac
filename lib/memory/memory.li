@@ -23,9 +23,9 @@ Section Header
   + name     := Strict MEMORY;
 
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
+  - copyright   := "2003-2007 Benoit Sonntag";
   
-  - comment  := "Memory manager.";
+  - comment  := "Memory manager 32/64 bits.";
   
   - external :=
 `
@@ -45,9 +45,9 @@ Section Inherit
 Section Mapping
   
   + previous_linear:POINTER;  
-  + size_and_id:UINTEGER_32;
+  + size_and_id:UINTEGER_CPU;
     
-  //---------------> Limit for Busy (64 bits)
+  //---------------> Limit for Busy 
   
   + next_free    :MEMORY;
   + previous_free:MEMORY;
@@ -74,103 +74,80 @@ Section Private
   */  
 Section MEMORY
     
-  - object_size:INTEGER <- 8; // 2x32bits = 64bits
+  - object_size:INTEGER               <- POINTER.object_size + UINTEGER_CPU.object_size; 
   
-  - this:POINTER        <- CONVERT(MEMORY,POINTER).on Self;
+  - this:POINTER                      <- CONVERT(MEMORY,POINTER).on Self;
   
-  - begin:POINTER       <- this + object_size;
+  - begin:POINTER                     <- this + object_size;
   
-  - size:UINTEGER_32    <- size_and_id & 0FFFF_FFFCh;
+  - size:UINTEGER_CPU                 <- size_and_id & ~ 3.to_uinteger_cpu;
   
-  - next_linear:MEMORY  <- CONVERT(POINTER,MEMORY).on (begin + size.to_pointer);
+  - next_linear:MEMORY                <- CONVERT(POINTER,MEMORY).on (begin + size);
     
-  - id:UINTEGER_32      <- size_and_id & 01b;
+  - id:UINTEGER_CPU                   <- size_and_id & 01b;
   
-  - id_end:UINTEGER_32  <- 10b;
+  - id_end:UINTEGER_CPU               <- 10b;
   
-  - is_end:BOOLEAN      <- (size_and_id & id_end).to_boolean;
+  - is_end:BOOLEAN                    <- (size_and_id & id_end).to_boolean;
   
-  - set_previous_linear p:POINTER    <- ( previous_linear := p; );
+  - set_previous_linear p:POINTER     <- ( previous_linear := p; );
   
-  - set_size_and_id s:UINTEGER_32    <- ( size_and_id     := s; );
+  - set_size_and_id s:UINTEGER_CPU    <- ( size_and_id     := s; );
   
-  - get_index p:POINTER :UINTEGER_32 <- (p - begin_memory).to_uinteger_32 >> 26;
+  - get_index p:POINTER :UINTEGER_CPU <- (p - begin_memory).to_uinteger_cpu >> 26;
   
-  - nb_page:UINTEGER_32;
+  - nb_page:UINTEGER_CPU;
   
-  - put_last m:MEMORY to idx:UINTEGER_32 <-  
+  - put_last m:MEMORY to idx:UINTEGER_CPU <-  
   (
     ? {idx < nb_page};
     `last_block[@idx] = @m`;
   );
   
-  - get_last idx:UINTEGER_32 :MEMORY <-
+  - get_last idx:UINTEGER_CPU :MEMORY <-
   ( 
     ? {idx < nb_page};
     `last_block[@idx]`:MEMORY
   );
   
-  - bound_test ptr:POINTER :BOOLEAN <-
-  (
-    (ptr < begin_memory) || {ptr > (begin_memory+capacity_max-4)}.if {
-      "out of bound memory\n".print;
-    };
-    TRUE;
-  );
-
   - search_capacity <-
   ( 
     capacity_max := SYSTEM.get_memory_capacity;
     begin_memory := SYSTEM.get_begin_memory;
     /*
-    `#if 0
-    `;
-    malloc(10.to_uinteger);
-    free(NULL);
-    calloc (10.to_uinteger,1.to_uinteger);
-    `#endif
-    `;
+    "Capacity : ".print; capacity_max.print_hex; '\n'.print;
+    "Begin    : ".print; begin_memory.print_hex; '\n'.print;
     */
-    //
-    //(capacity_max >> 20).print; "MB\n".print;
-    
-    //'['.print; begin_memory.print_hex; '-'.print; (begin_memory+capacity_max).print_hex; "]\n".print;
-    
-    //
     {begin_memory != NULL} ? "Memory: Not memory.";
     {(begin_memory & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
   );
 
   - new_page:MEMORY <-
-  ( + old_size,new_size:POINTER;
+  ( + old_size,new_size:UINTEGER_CPU;
     + block:MEMORY;
     
     (capacity_max = 0).if {
       search_capacity;
     };
     
-    old_size := nb_page.to_pointer << 26;
+    old_size := nb_page << 26;
     nb_page  := nb_page + 1;
     new_size := old_size + 64.mb;
     (new_size > capacity_max).if {
       "Not enough memory.\n".print;
       die_with_code exit_failure_code;
     };
-    
-    {nb_page < 64} ? "Memory: 4GB limit.";    
-        
-    block := CONVERT(POINTER,MEMORY).on (begin_memory + old_size);    
-    
+    /*
+    "Begin_memory + old_size : ".print;  
+    (begin_memory + old_size).print_hex; '\n'.print;
+    "object_size : ".print; object_size.print; '\n'.print;
+    */
+    block := CONVERT(POINTER,MEMORY).on (begin_memory + old_size);        
     block.set_previous_linear NULL; 
-    block.set_size_and_id ((64.mb - object_size) | id_free | id_end);
+    block.set_size_and_id (id_free | id_end | (64.mb - object_size));
     block.add_link_free;    
     put_last block to (nb_page - 1);
-    
-    /*    
-    (nb_page < 7).if {
-      new_page;
-    };
-    */  
+
     block
   );
     
@@ -178,8 +155,8 @@ Section MEMORY
   // Busy / Free Block.
   //
   
-  - id_free:UINTEGER_32 <- 00b;
-  - id_busy:UINTEGER_32 <- 01b;
+  - id_free:UINTEGER_CPU <- 00b;
+  - id_busy:UINTEGER_CPU <- 01b;
   
   - set_next_free     n:MEMORY <- ( next_free     := n; );
   - set_previous_free p:MEMORY <- ( previous_free := p; );
@@ -217,29 +194,29 @@ Section MEMORY
   // Management.
   //
   
-  - to_free idx:UINTEGER_32 <-
+  - to_free idx:UINTEGER_CPU <-
   ( + new_free,next:MEMORY;
     + prev:POINTER;
-    + new_size:UINTEGER_32;
+    + new_size:UINTEGER_CPU;
     {id = id_busy} ? "Memory: Macro block not busy.";
     {idx.in_range 0 to 63} ? "Memory: Bound index.";    
         
     prev := previous_linear;
     next := next_linear;
     new_free := CONVERT(POINTER,MEMORY).on (begin_memory + prev);
-    new_size := size_and_id & 0FFFF_FFFEh;
+    new_size := size_and_id & ~ 1.to_uinteger_cpu;
     ((prev = NULL) || {new_free.id != id_free}).if {
       // `Self' => Free
       new_free := Self;      
       add_link_free;
     } else {
       // `previous_linear' => Free
-      new_size := new_size + new_free.size_and_id + object_size.to_uinteger_32;      
+      new_size := new_size + new_free.size_and_id + object_size;
     };
         
     ((! is_end) && {next.id = id_free}).if {
       // Delete and concat `next_linear'
-      new_size := new_size + next.size_and_id + object_size.to_uinteger_32;
+      new_size := new_size + next.size_and_id + object_size;
       next.delete_link_free;	
     };    
     new_free.set_size_and_id new_size;
@@ -251,21 +228,21 @@ Section MEMORY
     };    
   );
   
-  - to_busy sz:POINTER index idx:UINTEGER_32 <-
-  ( + siz,new_size:POINTER;    
+  - to_busy sz:POINTER index idx:UINTEGER_CPU <-
+  ( + siz,new_size:UINTEGER_CPU;    
     + new,next:MEMORY;
     {id = id_free} ? "Memory: Macro block not free.";    
-    {(sz & (POINTER.object_size.to_pointer - 1)) = 0} ? "Memory: Alignment.";
+    {(sz & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     
     delete_link_free;
     //    
-    siz      := size_and_id.to_pointer;
+    siz      := size_and_id;
     new_size := siz - sz;
-    (new_size > (minimum_size+2+object_size.to_pointer)).if {
+    (new_size > (minimum_size+2+object_size)).if {
       siz := sz;
       new := CONVERT(POINTER,MEMORY).on (begin+sz);
       new.set_previous_linear (this - begin_memory);
-      new.set_size_and_id (new_size.to_uinteger_32 - object_size.to_uinteger_32);
+      new.set_size_and_id (new_size - object_size);
       new.add_link_free;
       (new.is_end).if {
 	put_last new to idx;
@@ -274,40 +251,37 @@ Section MEMORY
 	next.set_previous_linear (new.this - begin_memory);
       };
     };
-    size_and_id := siz.to_uinteger_32 | id_busy;
+    size_and_id := siz | id_busy;
     {id = id_busy} ? "Memory: Macro Block not busy.";
   );
   
-  - resize new_size:UINTEGER_32 index idx:UINTEGER_32 :MEMORY <-
+  - resize new_size:UINTEGER_CPU index idx:UINTEGER_CPU :MEMORY <-
   ( + nxt,result:MEMORY;
-    + old_size,sz:UINTEGER_32;    
+    + old_size,sz:UINTEGER_CPU;    
     
-    {(new_size & (POINTER.object_size.to_uinteger_32 -1)) = 0} ? "Memory: Alignment.";
+    {(new_size & (POINTER.object_size -1)) = 0} ? "Memory: Alignment.";
     {idx.in_range 0 to 63} ? "Memory: Bound index.";
     
     old_size := size;
     (new_size > old_size).if {      
       (! is_end).if {	
 	nxt := next_linear;
-	sz  := new_size - old_size - object_size.to_uinteger_32;
+	sz  := new_size - old_size - object_size;
 	((nxt.id = id_free) && {nxt.size >= sz}).if {
 	  nxt.to_busy (sz.to_pointer) index idx;
-	  size_and_id := size_and_id + (nxt.size_and_id&0FFFF_FFFEh) + object_size.to_uinteger_32;
+	  size_and_id := size_and_id + (nxt.size_and_id & ~ 1.to_uinteger_cpu) + object_size;
 	  (is_end).if {
 	    put_last Self to idx;
 	  } else {
 	    nxt := next_linear;
-	    nxt.set_previous_linear ((this - begin_memory).to_pointer);
+	    nxt.set_previous_linear (this - begin_memory);
 	  };
 	  result := Self;
 	};
       };
       (result = NULL).if { 
 	// new allocation.	
-	result := search (new_size.to_pointer);
-	
-	//fill_memory (result.begin) size new_size;
-	
+	result := search new_size;		
 	copy begin to (result.begin) size old_size;
 	to_free idx;
       };
@@ -321,15 +295,15 @@ Section MEMORY
   // Searching.
   //
   
-  - search new_size:POINTER :MEMORY <-
+  - search new_size:UINTEGER_CPU :MEMORY <-
   ( + result:MEMORY;
-    + idx:UINTEGER_32;
+    + idx:UINTEGER_CPU;
     
-    {new_size > minimum_size-POINTER.object_size.to_pointer} ? "Memory: Big block.";
-    {(new_size & (POINTER.object_size.to_pointer - 1)) = 0} ? "Memory: Alignment.";
+    {new_size > minimum_size-POINTER.object_size} ? "Memory: Big block.";
+    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     
     result := first_free;        
-    {(result != NULL) && {result.size.to_pointer < new_size}}.while_do {
+    {(result != NULL) && {result.size < new_size}}.while_do {
       result := result.next_free;
     };
     (result = NULL).if {
@@ -343,7 +317,7 @@ Section MEMORY
   );
   
   - new_lab t:UINTEGER_32 :POINTER <-
-  ( + idx:UINTEGER_32;
+  ( + idx:UINTEGER_CPU;
     + blc,prev:MEMORY;
     + result:POINTER;
     + pv:POINTER;
@@ -358,30 +332,30 @@ Section MEMORY
       idx := idx + 1;
     };
     
-    (idx >= nb_page).if {    
+    (idx >= nb_page).if {          
       blc := new_page;
     };        
     blc.set_size_and_id (blc.size_and_id - 4096);
     result := blc.next_linear.this;        
  
-    (blc.size.to_pointer < minimum_size).if {
+    (blc.size < minimum_size).if {
       blc.delete_link_free;
       pv := blc.previous_linear;
       (pv != NULL).if {
 	prev := CONVERT(POINTER,MEMORY).on (begin_memory + pv);
-	prev.set_size_and_id (prev.size_and_id + blc.size_and_id + object_size.to_uinteger_32);
+	prev.set_size_and_id (prev.size_and_id + blc.size_and_id + object_size);
 	put_last prev to idx;
       };
     };
-    put (t.to_pointer) to result;    
+    put_32 t to result;    
     
-    {((result - begin_memory).to_uinteger_32 & 0FFFh) = 0} ? "Memory: Alignment LAB.";
-    result + POINTER.object_size
+    {((result - begin_memory) & 0FFFh) = 0} ? "Memory: Alignment LAB.";
+    result + UINTEGER_32.object_size
   );  
   
 Section Private
     
-  - minimum_size:POINTER <- `MINIMUM_SIZE`:POINTER;
+  - minimum_size:UINTEGER_CPU <- `MINIMUM_SIZE`:UINTEGER_CPU;
   
   - table_type idx:UINTEGER_32 :POINTER <- 
   (
@@ -389,59 +363,65 @@ Section Private
     `&(table_type[@idx])`:POINTER
   );
   
-  - table_size idx:UINTEGER_32 :POINTER <- 
+  - table_size idx:UINTEGER_CPU :POINTER <- 
   (
-    {idx.in_range 1 to (minimum_size.to_uinteger_32/POINTER.object_size.to_uinteger_32)} ? 
+    {idx.in_range 1 to (minimum_size/POINTER.object_size)} ? 
     "Memory: Bound table_size.";
     `&(table_size[@idx-1])`:POINTER
   );
           
   - begin_memory:POINTER;
   
-  - capacity_max:POINTER;
+  - capacity_max:UINTEGER_CPU;
   
-  - read p:POINTER :POINTER <-
+  - read_ptr p:POINTER :POINTER <-
   ( + mem:NATIVE_ARRAY(POINTER);
     mem := CONVERT(POINTER, NATIVE_ARRAY(POINTER)).on p;
     mem.item 0
   );
   
-  - put v:POINTER to p:POINTER <-
+  - put_ptr v:POINTER to p:POINTER <-
   ( + mem:NATIVE_ARRAY(POINTER);
     mem := CONVERT(POINTER, NATIVE_ARRAY(POINTER)).on p;
     mem.put v to 0;
   );
+  
+  - put_32 v:UINTEGER_32 to p:POINTER <-
+  ( + mem:NATIVE_ARRAY(UINTEGER_32);
+    mem := CONVERT(POINTER, NATIVE_ARRAY(UINTEGER_32)).on p;
+    mem.put v to 0;
+  );
       
-  - micro_alloc new_size:POINTER table ptr_table:POINTER lab lab_type:UINTEGER_32 :POINTER <-
+  - micro_alloc new_size:UINTEGER_CPU table ptr_table:POINTER lab lab_type:UINTEGER_32 :POINTER <-
   ( + result,next,next2:POINTER;
     + page:POINTER;
-    {(new_size & (POINTER.object_size.to_pointer - 1)) = 0} ? "Memory: Alignment.";
-    {new_size >= POINTER.object_size.to_pointer} ? "Memory: Size = 0.";
+    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
+    {new_size >= POINTER.object_size} ? "Memory: Size = 0.";
 
-    result := read ptr_table;            
+    result := read_ptr ptr_table;            
     (result = NULL).if {      
-      // Allocation new LAB.            
+      // Allocation new LAB.                  
       result := new_lab lab_type;          
-      next := result + new_size.to_pointer;            
-      put NULL to next;
-      put next to ptr_table;                
+      next := result + new_size;            
+      put_ptr NULL to next;
+      put_ptr next to ptr_table;                
     } else {      
       // Next Linked list.
-      next := read result;
+      next := read_ptr result;
       (next = NULL).if {
 	// Linear allocation.
 	page := (result - begin_memory) & 0FFFh;
 	((page + (new_size << 1)) <= 4096).if {
-	  next := result + new_size.to_pointer;
+	  next := result + new_size;
 	} else {
 	  next := new_lab lab_type;	  
 	};
-	put NULL to next;
-	put next to ptr_table;
+	put_ptr NULL to next;
+	put_ptr next to ptr_table;
       } else {	
 	// Linked list allocation.	
-	next2 := read next & ~11b;
-	put next2 to result;	
+	next2 := read_ptr next & ~ 11b.to_uinteger_cpu;
+	put_ptr next2 to result;	
 	result := next;	
       };		      
     }; 
@@ -455,16 +435,16 @@ Section Private
     //"Free : ".print;
     //ptr_table.print_hex; '\n'.print;
     
-    last := read ptr_table;
+    last := read_ptr ptr_table;
     {last != NULL} ? "Memory: Table NULL.";
-    next := read last;
-    put (next | 11b) to p;
-    put p to last;
+    next := read_ptr last;
+    put_ptr (next | 11b) to p;
+    put_ptr p to last;
   );
   
 Section Private
 
-  - copy src:POINTER to dst:POINTER size sz:UINTEGER_32 <-
+  - copy src:POINTER to dst:POINTER size sz:UINTEGER_CPU <-
   ( + na_src,na_dst:NATIVE_ARRAY(POINTER);
     + siz:INTEGER;
     
@@ -479,15 +459,16 @@ Section Private
     };        
   );
   
-  - fill_memory src:POINTER size sz:UINTEGER_32 <-
+  - fill_memory src:POINTER size sz:UINTEGER_CPU <-
   // Just for debug.
   ( + na_src:NATIVE_ARRAY(POINTER);
     + siz:INTEGER;
     
-    siz := sz.to_integer;
-    {(siz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
+    {(sz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
+    
+    siz := sz / POINTER.object_size;    
     na_src := CONVERT(POINTER,NATIVE_ARRAY(POINTER)).on src;    
-    ((siz / POINTER.object_size)-1).downto 0 do { j:INTEGER;
+    (siz-1).downto 0 do { j:INTEGER;
       na_src.put NULL to j;
     };    
   );  
@@ -539,16 +520,18 @@ Section Public
   // MICRO ALLOCATOR
   //
   
-  - alloc_type t:UINTEGER_32 size sz:POINTER :POINTER <-
+  - alloc_type t:UINTEGER_32 size sz:UINTEGER_CPU :POINTER <-
   // Allocation for object without type. (LAB_TYPE)
   ( + ptr_table,result:POINTER;    
-    + new_size:POINTER;
+    + new_size:UINTEGER_CPU;
     
     {sz <= minimum_size} ? "Memory: Size bound.";
 
-    new_size  := sz.align_power (POINTER.object_size.to_pointer); 
+    new_size  := sz.align_power (POINTER.object_size); 
     
-    {(new_size & (POINTER.object_size.to_pointer - 1)) = 0} ? "Memory: Alignment.";        
+    //"alloc_type : ".print; new_size.print; '\n'.print;
+    
+    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";        
         
     ptr_table := table_type t;
     result := micro_alloc new_size table ptr_table lab (t | 1b);        
@@ -563,50 +546,52 @@ Section Public
     micro_free p table ptr_table;
   );
   
-  - alloc_size sz:POINTER :POINTER <-
+  - alloc_size sz:UINTEGER_CPU :POINTER <-
   // Allocation for object with type. (LAB_SIZE)
   ( + ptr_table,result:POINTER;
-    + new_size:POINTER;
+    + new_size:UINTEGER_CPU;
     
     {sz <= minimum_size} ? "Memory: Size bound.";
         
-    new_size  := sz.align_power (POINTER.object_size.to_pointer); 
+    new_size  := sz.align_power (POINTER.object_size); 
     
-    {(new_size & (POINTER.object_size.to_pointer - 1)) = 0} ? "Memory: Alignment.";
+    //"alloc_size : ".print; new_size.print; '\n'.print;
     
-    ptr_table := table_size ((new_size / POINTER.object_size.to_pointer).to_integer);    
-    result := micro_alloc new_size table ptr_table lab (new_size.to_integer);
+    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
+    
+    ptr_table := table_size (new_size / POINTER.object_size);    
+    result := micro_alloc new_size table ptr_table lab (new_size.to_uinteger_32);
         
     //fill_memory result size new_size;
     
     result
   );
   
-  - free p:POINTER size sz:POINTER <-
+  - free p:POINTER size sz:UINTEGER_CPU <-
   ( + ptr_table:POINTER;
-    + new_size:POINTER;
+    + new_size:UINTEGER_CPU;
     {p != NULL} ? "Memory: Pointer NULL.";
 
-    new_size  := sz.align_power (POINTER.object_size.to_pointer); 
+    new_size  := sz.align_power (POINTER.object_size); 
     
-    {(new_size & (POINTER.object_size.to_pointer - 1)) = 0} ? "Memory: Alignment.";
+    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     
-    ptr_table := table_size ((new_size / POINTER.object_size.to_pointer).to_integer);
+    ptr_table := table_size (new_size / POINTER.object_size);
     micro_free p table ptr_table;
   );
     
-  - alloc_dynamic sz:POINTER :POINTER <-
+  - alloc_dynamic sz:UINTEGER_CPU :POINTER <-
   // Allocation NATIVE_ARRAY[E]. (LAB_SIZE or malloc)
-  ( + new_size,new_size2:POINTER;
+  ( + new_size,new_size2:UINTEGER_CPU;
     + result:POINTER;
     {sz != 0} ? "Memory: Size = 0";
         
-    new_size  := sz.align_power (POINTER.object_size.to_pointer); 
-    new_size2 := new_size + POINTER.object_size.to_pointer;
+    new_size  := sz.align_power (POINTER.object_size); 
+    new_size2 := new_size + UINTEGER_32.object_size;
     (new_size2 <= minimum_size).if {
       result := alloc_size new_size2;      
-      put 3 to result; // 3 : 2=NATIVE_ARRAY
-      result := result + POINTER.object_size;
+      put_32 3 to result; // 3 : 2=NATIVE_ARRAY
+      result := result + UINTEGER_32.object_size;
     } else {      
       result := search new_size .begin;      
     };
@@ -616,22 +601,19 @@ Section Public
     result    
   );
     
-  - realloc_dynamic p:POINTER old_size old_sz:UINTEGER_32 new_size new_sz:UINTEGER_32 :POINTER <-
-  ( + old_size,old_size2,new_size:UINTEGER_32;
+  - realloc_dynamic p:POINTER old_size old_sz:UINTEGER_CPU new_size new_sz:UINTEGER_CPU :POINTER <-
+  ( + old_size,old_size2,new_size:UINTEGER_CPU;
     + mem:MEMORY;
     + result:POINTER;    
     {old_size < new_sz} ? "Memory: New size < Old size.";
       
-    old_size  := old_sz.align_power (POINTER.object_size.to_uinteger_32); 
-    old_size2 := old_size + POINTER.object_size.to_uinteger_32;    
-    new_size  := new_sz.align_power (POINTER.object_size.to_uinteger_32); 
-    (old_size2.to_pointer <= minimum_size).if {
-      result := alloc_dynamic (new_size.to_pointer);
-      
-      //fill_memory result size new_size;
-      
+    old_size  := old_sz.align_power (POINTER.object_size); 
+    old_size2 := old_size + UINTEGER_32.object_size;    
+    new_size  := new_sz.align_power (POINTER.object_size); 
+    (old_size2 <= minimum_size).if {
+      result := alloc_dynamic new_size;
       copy p to result size old_size;
-      free (p - POINTER.object_size) size (old_size2.to_pointer);
+      free (p - UINTEGER_32.object_size) size old_size2;
     } else {
       mem := CONVERT(POINTER, MEMORY).on (p - object_size);
       result := mem.resize new_size index (get_index p).begin;      
@@ -640,14 +622,14 @@ Section Public
     result
   );
   
-  - free_dynamic p:POINTER size sz:POINTER <-
-  ( + new_size,new_size2:POINTER;
+  - free_dynamic p:POINTER size sz:UINTEGER_CPU <-
+  ( + new_size,new_size2:UINTEGER_CPU;
     + mem:MEMORY;
     
-    new_size  := sz.align_power (POINTER.object_size.to_pointer); // BSBS: Optim, alignment by compilo.
-    new_size2 := new_size + POINTER.object_size.to_pointer;
+    new_size  := sz.align_power (POINTER.object_size); // BSBS: Optim, alignment by compilo.
+    new_size2 := new_size + UINTEGER_32.object_size;
     (new_size2 <= minimum_size).if {
-      free (p-POINTER.object_size) size new_size2;
+      free (p - UINTEGER_32.object_size) size new_size2;
     } else {
       mem := CONVERT(POINTER, MEMORY).on (p - object_size);
       mem.to_free (get_index p);

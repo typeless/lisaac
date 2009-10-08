@@ -66,7 +66,8 @@ Section Private
   - standard_path <-
   // Standard library.
   ( 
-    path ("lib/*");
+    //LIP.create "lib/make.lip".init;
+    path ("lib/*");    
   );
   
   //
@@ -130,7 +131,7 @@ Section Private
       exit;
     };
   );
-      
+    
   - add_lib lib:STRING <-
   (
     (target = "windows").if {
@@ -149,7 +150,7 @@ Section Private
         lib_gcc := lib_gcc + " " + lib;
         run "rm __tmp__.c __tmp__";
       } else {
-        "\nERROR: `" + lib + "' library for GCC not found.\n".print;
+        ("\nERROR: `" + lib + "' library for GCC not found.\n").print;
         run "rm __tmp__.c";
         exit;
       };    
@@ -213,6 +214,7 @@ Section Private
   
 Section Public
   
+   
   //
   // Debug information.
   // 
@@ -278,8 +280,14 @@ Section Public
   // Generate code.
   //
   
+  - o outputfile:STRING <-  
+  // output file (default: `input_file').
+  (
+    output_file := outputfile;
+  );
+  
   - target idf:STRING <-
-  // Target for backend (UNIX,WINDOWS,DOS,JAVA)
+  // Target for backend (unix,windows,dos,java)
   (
     target := idf;
   );

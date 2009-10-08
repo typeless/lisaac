@@ -38,7 +38,7 @@ Section Inherit
   
 Section PROFIL_LIST
   
-  - is_alias_struct:BOOLEAN := TRUE;
+  - is_alias_struct:BOOLEAN := TRUE; 
   
 Section Private
   
@@ -345,7 +345,7 @@ Section Public
   (
     TYPE_NULL.genere_typedef;    
     (genere_list.lower).to (genere_list.upper) do { j:INTEGER;            
-      genere_list.item j.genere_typedef;      
+      genere_list.item j.genere_typedef_struct;      
     };
     TYPE_NULL.genere_struct;
     (genere_list.lower).to (genere_list.upper) do { j:INTEGER;            
@@ -441,7 +441,8 @@ Section Public
     + count_slot:SLOT_DATA;
     + storage_slot:SLOT_DATA;
     
-    ((slot_run.is_empty) || {slot_run.first != NULL}).if {                        
+    
+    ((slot_run.is_empty) || {slot_run.first != NULL}).if {                                    
       (detect_recursivity_generation).if {
         string_tmp.copy "Compiler limit: Cyclic depending structure definition for ";
         append_name_in string_tmp;
@@ -452,7 +453,8 @@ Section Public
             
       // Depending.
       (slot_run.lower).to (slot_run.upper) do { j:INTEGER;
-	slot := slot_run.item j;
+        slot := slot_run.item j;
+        
 	((slot.style = '+') && {slot.lower_style = 0}).if {
           action := { s:SLOT_DATA;
 	    (
@@ -461,9 +463,12 @@ Section Public
 		{s.id_section.is_mapping}
 	      ) && 
 	      {s.type.raw != Self} &&
-	      {(s.type.is_expanded) || {s.type.raw.is_block}}
+	      {
+                (s.type.raw.is_block) ||
+                {is_far_expanded (s.type)}
+              }
             ).if {	                    
-              s.type.raw.genere_struct;                           
+              s.type.raw.genere_struct;                                         
             };
 	  };
 	  (slot.slot_data_list != NULL).if {
@@ -520,7 +525,7 @@ Section Public
 	  };
 	};
       };
-      
+            
       (
 	(prototype.name = ALIAS_STR.prototype_native_array) || 
 	{prototype.name = ALIAS_STR.prototype_native_array_volatile}
@@ -536,6 +541,10 @@ Section Public
 	      semantic_error (tab.first.position,"Slot is not possible with a type C");
 	    };	  
           };
+          (intern_name == "UINTEGER_16__0D").if {
+            "Genere 2\n".print;
+          };
+
           (is_java).if_false {            
             ((name = ALIAS_STR.prototype_true) || 
             {name = ALIAS_STR.prototype_false}).if {
@@ -544,9 +553,12 @@ Section Public
               output_decl.append "__ ";
               output_decl.add_last ((name = ALIAS_STR.prototype_true).to_character);
               output_decl.add_last '\n';            
-            }.elseif {is_late_binding} then {	    
-              semantic_error (tab.first.position,"Late binding is not possible with a type C");
-            };            
+            } else {           
+              genere_typedef_type_c;
+              (is_late_binding).if {	    
+                semantic_error (tab.first.position,"Late binding is not possible with a type C");
+              };            
+            };
           };
         } else {	  
           output_decl.append "// ";
@@ -566,7 +578,7 @@ Section Public
 	    id_counter_with_type.append_in output_decl;	  
             id_counter_with_type := id_counter_with_type + 1;
             (prototype.style != '-').if {
-              string_tmp.append "  unsigned long __id;\n";
+              string_tmp.append "  unsigned int __id;\n";
             };
 	    (prototype.is_mapping).if {	    
 	      semantic_error (prototype.position,	    
@@ -720,37 +732,52 @@ Section Public
     };    
   );
   
-  - genere_typedef <-
+  - genere_typedef_type_c <-  
   ( + tg:TYPE_GENERIC;              
-    + t:TYPE;
     (
       (prototype.name = ALIAS_STR.prototype_native_array) || 
       {prototype.name = ALIAS_STR.prototype_native_array_volatile}
     ).if {
       tg ?= Self;
-      tg.generic_list.first.raw.genere_typedef;
+      tg.generic_list.first.raw.genere_typedef_type_c;
     } else {      
-      output_decl.append "typedef ";
-      (type_c != NULL).if {        
-        output_decl.append type_c;
-      } else {
-        t := Self;        
-        {t.alias_slot = NULL}.until_do {
-          t := t.alias_type;
-        };        
-        output_decl.append "struct ";
-        output_decl.append (t.intern_name);
-        output_decl.append "_struct";        
-      };
+      output_decl.append "typedef ";      
+      output_decl.append type_c;      
+      output_decl.append " __";
+      output_decl.append intern_name;	  
+      output_decl.add_last ';';            
+      output_decl.add_last '\n';
+    };    
+  );
+  
+  - genere_typedef_struct <-
+  ( + tg:TYPE_GENERIC;              
+    + t:TYPE;
+        
+    (
+      (prototype.name = ALIAS_STR.prototype_native_array) || 
+      {prototype.name = ALIAS_STR.prototype_native_array_volatile}
+    ).if {
+      tg ?= Self;
+      tg.generic_list.first.raw.genere_typedef_struct;
+    }.elseif {type_c = NULL} then {        
+      output_decl.append "typedef ";      
+      t := Self;        
+      {t.alias_slot = NULL}.until_do {
+        t := t.alias_type;
+      };        
+      output_decl.append "struct ";
+      output_decl.append (t.intern_name);
+      output_decl.append "_struct";        
       output_decl.append " __";
       output_decl.append intern_name;	  
       output_decl.add_last ';';      
-      ((type_c = NULL) && {alias_slot != NULL}).if {
+      (alias_slot != NULL).if {
         output_decl.append " // ALIAS with ";
         output_decl.append (alias_type.intern_name);
       };
       output_decl.add_last '\n';
-    };    
+    };
   );
     
 Section Private  
@@ -950,7 +977,7 @@ Section TYPE
       };
       j := path_file.lower;      
       {(j > path_file.upper) || {result != NULL}}.until_do {      
-        path := path_file.item j;            
+        path := path_file.item j;                            
         idx_name := n.upper;
         idx_path := path.upper-3; // ".li"
         {
@@ -993,10 +1020,12 @@ Section TYPE
             found := path;
           };
         };        
+        //"FOUND : ".print;
+        //found.print; '\n'.print;
         (found != NULL).if {          
           result := PROTOTYPE.prototype_dico.fast_reference_at found;
           (result = NULL).if {
-            entry := FS_MIN.open_read found;
+            entry := FS_MIN.open_read found;            
             ((entry != NULL) /*&& {entry.is_file}*/).if {
               // Load prototype.
               FS_MIN.close entry;
@@ -1015,7 +1044,7 @@ Section TYPE
       };
       (result = NULL).if {
         string_tmp.copy n;
-        string_tmp.append " is not found.";
+        string_tmp.append " is not found.\n";
         POSITION.put_error semantic text string_tmp;
         (list_current != NULL).if {
           list_current.position.put_position;
@@ -1121,5 +1150,21 @@ Section TYPE, TYPE_FULL
     result
   );
   
+Section Private
   
+  - is_far_expanded t:TYPE_FULL :BOOLEAN <-
+  // BSBS: Met en non recurssif!!
+  ( + tg:TYPE_GENERIC;
+    + result:BOOLEAN;
+    (t.is_expanded).if {
+      result := TRUE;
+    }.elseif {
+      (t.raw.prototype.name = ALIAS_STR.prototype_native_array) || 
+      {t.raw.prototype.name = ALIAS_STR.prototype_native_array_volatile}
+    } then {
+      tg ?= t.raw;
+      result := is_far_expanded (tg.generic_list.first);
+    };
+    result
+  );
   

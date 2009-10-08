@@ -140,11 +140,13 @@ Section Public
     ((! variable.is_static) && {! variable.type.is_strict}).if {
       tmp_type := TYPES_TMP.new;
       variable.get_type tmp_type;
-      (tmp_type.first = TYPE_NULL).if {
-        tmp_type.remove_first;
-      };      
-      (tmp_type.count = 1).if {        
-        variable.set_type (tmp_type.first.default.to_strict);        
+      (tmp_type.count != 0).if {
+        (tmp_type.first = TYPE_NULL).if {
+          tmp_type.remove_first;
+        };      
+        (tmp_type.count = 1).if {        
+          variable.set_type (tmp_type.first.default.to_strict);        
+        };
       };
       tmp_type.free;
     };

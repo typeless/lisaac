@@ -59,7 +59,7 @@ LPSTR lpCmdLine, int nCmdShow)
 
 Section Inherit
   
-  + parent_bitmap:Expanded BITMAP[PIXEL_24];
+  + parent_bitmap:Expanded BITMAP(PIXEL_24);
   
 Section Public
   // Section VIDEO
@@ -69,7 +69,7 @@ Section Public
 Section Public
   
   - message str:ABSTRACT_STRING <-
-  ( + msg:NATIVE_ARRAY[CHARACTER];
+  ( + msg:NATIVE_ARRAY(CHARACTER);
     msg := str.to_external;
     `MessageBox(hwnd_glob,@msg, "Message", MB_OK)`;
   );
@@ -120,22 +120,22 @@ Section Public
     planes
     .when 15 then {
       size_pixel := 2;
-      line_tmp := BMP_LINE[PIXEL_15].create w;
+      line_tmp := BMP_LINE(PIXEL_15).create w;
       `Bmp = CreateBitmap(@w, 1, 1, 15, NULL)`;
     }
     .when 16 then { 
       size_pixel := 2;
-      line_tmp := BMP_LINE[PIXEL_16].create w; 
+      line_tmp := BMP_LINE(PIXEL_16).create w; 
       `Bmp = CreateBitmap(@w, 1, 1, 16, NULL)`;
     }
     .when 24 then { 
       size_pixel := 3;
-      line_tmp := BMP_LINE[PIXEL_24].create w; 
+      line_tmp := BMP_LINE(PIXEL_24).create w; 
       `Bmp = CreateBitmap(@w, 1, 1, 24, NULL)`;
     }
     .when 32 then { 
       size_pixel := 4;
-      line_tmp := BMP_LINE[PIXEL_32].create w; 
+      line_tmp := BMP_LINE(PIXEL_32).create w; 
       `Bmp = CreateBitmap(@w, 1, 1, 32, NULL)`;
     };
     `SelectObject(hdcbmp, Bmp)`;
@@ -180,7 +180,7 @@ Section Public
   - line_h_hard (x,y:INTEGER) until x1:INTEGER 
   image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   ( + len:INTEGER;
-    + data:NATIVE_ARRAY[UINTEGER_8];
+    + data:NATIVE_ARRAY(UINTEGER_8);
     + sz_pix:INTEGER;
     len := x1 - x;
     VIDEO.line_tmp.put line offset ofs from 0 to len;

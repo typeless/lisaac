@@ -128,13 +128,13 @@ Section Public
     ? {idx_begin <= idx_end};
     ? {idx_begin >= 0};
     ? {idx_end.in_range 0 to upper};
-    ? {ofs >= 0};
+    ? {ofs >= 0};    
     ? {(ofs + (idx_end - idx_begin)) <= bmp.upper}; 
         
     offset := ofs;
     bmp_self ?= bmp;
     (bmp_self != NULL).if {
-      // Speed version.      
+      // Speed version.            
       idx_begin.to idx_end do { n:INTEGER;
 	storage.put (bmp_self.item offset) to n;	
 	offset := offset + 1;

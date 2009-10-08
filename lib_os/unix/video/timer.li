@@ -67,14 +67,17 @@ Section Interrupt
     // ((timer_count % 20)=0).if {
     //   CLOCK.rtc;
     // };
-    
+    /*
     (`is_sleep`:INTEGER = 1).if {
       `timer_ev.type           = ClientMessage`;
       `timer_ev.xclient.format = 32`;
       (`XSendEvent(display,window,0,ClientMessage,&timer_ev)`:INTEGER != 0).if {
 	`XFlush(display)`;
       };
-    };
+    } else {
+     // "BREAK!!!!!\n".print;
+   };
+   */
     `ualarm(50000,0)`;    
   );
   
@@ -114,14 +117,20 @@ Section Public
     
     p := p_beg;
     { p != p_end }.while_do {
-      evt := buffer_event.item p;
+      evt := buffer_event.item p;      
       (list_client.lower).to (list_client.upper) do { j:INTEGER;
+        buffer_event.item p.set_destination NULL;
 	list_client.item j.receive (buffer_event.item p);
       };      
       p := (p + 1) & 03h;
     };    
   );
-
+  
+  - clear <-
+  (
+    p_beg := p_end;
+  );
+  
 
 /* 
 //Other solution :

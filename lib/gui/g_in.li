@@ -99,7 +99,7 @@ Section Public
     result
   );
 
-  - create (car,line:INTEGER) justify j:UINTEGER_8 action a:{G_IN;} :SELF <-
+  - create (car,line:INTEGER) justify j:UINTEGER_8 action a:{G_IN; } :SELF <-
   [
     -? {j.in_range 0 to 2};
   ]
@@ -110,7 +110,7 @@ Section Public
     result
   );
   
-  - make (car,line:INTEGER) justify j:UINTEGER_8 action a:{G_IN;} <-
+  - make (car,line:INTEGER) justify j:UINTEGER_8 action a:{G_IN; } <-
   [
     -? {car > 1}; 
     -? {line > 0};

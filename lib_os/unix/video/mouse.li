@@ -147,7 +147,6 @@ Section Public
     m:=mask.item y;
     m:=m | (1<<x);
     mask.put m to y;
-
     parent_window.pixel_hard (x,y) color col;
   );
   
@@ -231,7 +230,54 @@ Section Public
     NULL
   );
   
+  //
+  // Extern robot.
+  //
   
+  - extern_event_move (x,y:INTEGER) <-
+  (
+    `XTestFakeMotionEvent(display,-1,@x,@y,1)`;
+    `XFlush(display)`;
+  );
+
+  - extern_event_left_down <-
+  (
+    `XTestFakeButtonEvent(display,1,True,1)`;      
+    `XFlush(display)`;
+  );
+
+  - extern_event_left_up <-
+  (
+    `XTestFakeButtonEvent(display,1,False,1)`;      
+    `XFlush(display)`;
+  );
+  
+  - extern_event_right_down <-
+  (
+    `XTestFakeButtonEvent(display,3,True,1)`;      
+    `XFlush(display)`;
+  );
+
+  - extern_event_right_up <-
+  (
+    `XTestFakeButtonEvent(display,3,False,1)`;      
+    `XFlush(display)`;
+  );
+  
+  - extern_get_mouse:(INTEGER,INTEGER,BOOLEAN,BOOLEAN) <-
+  ( + x,y,mask:INTEGER;
+    + l,r:BOOLEAN;
+    `{ Window	dummy1, dummy2`;
+      `int x,y,winx,winy,mask`;
+      `XQueryPointer(display,RootWindow(display, DefaultScreen(display)), &dummy1, &dummy2, &x,&y, &winx, &winy, &mask)`;
+      x := `winx`:INTEGER;
+      y := `winy`:INTEGER;
+      mask := `mask`:INTEGER;
+    `}`;     
+    l := (mask & 100h)!=0;
+    r := (mask & 400h)!=0;
+    x,y,l,r
+  );  
 
 
 

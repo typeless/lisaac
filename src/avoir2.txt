@@ -1,7 +1,42 @@
-lip_integer.li:  - storage:FAST_ARRAY[LIP_INTEGER] := FAST_ARRAY[LIP_INTEGER].create_with_capacity 10;
-lip_slot_code.li:  + code:FAST_ARRAY[LIP_CODE];
-lip_slot_code.li:  code c:FAST_ARRAY[LIP_CODE] :LIP_SLOT_CODE <-
-lip_slot_code.li:      ALIAS_ARRAY[LIP_CODE].free c;
-lip_slot_code.li:  code c:FAST_ARRAY[LIP_CODE] <-
-lip_slot_data.li:  [
-lip_string.li:  - storage:FAST_ARRAY[LIP_STRING] := FAST_ARRAY[LIP_STRING].create_with_capacity 10;
+  // You can to get current grammar with `grep "//++" parser.li'
+  //++ PROGRAM      -> { "Section" (section|TYPE_LIST) { SLOT } } [CONTRACT ';'] 
+  //++ SLOT         -> style TYPE_SLOT [':' (TYPE|'('TYPE_LIST')') ][ affect DEF_SLOT ]';'
+  //++ TYPE_SLOT    -> [ LOC_ARG '.' ] identifier [ LOC_ARG { identifier LOC_ARG } ]
+  //++               | [ LOC_ARG ] '\'' operator '\'' [("Left"|"Right") [integer]] [LOC_ARG]
+  //++ DEF_SLOT     -> [CONTRACT] EXPR [CONTRACT]
+  //++ LOC_ARG      -> identifier ':' TYPE
+  //++               | '(' LOCAL ')'
+  //++ LOCAL        -> { identifier [ ':' TYPE ] ',' } identifier ':' TYPE
+  //++ TYPE_LIST    -> TYPE { ',' TYPE }
+  //++ TYPE         -> '{' [ (TYPE | '(' TYPE_LIST ')') ';' ] [ TYPE_LIST ] '}'
+  //++               | [type] PROTOTYPE [ CONTRACT ]
+  //++ PROTOTYPE    -> cap_identifier{('.'|'...')cap_identifier}['('PARAM_TYPE{','PARAM_TYPE}')']
+  //++ PARAM_TYPE   -> TYPE
+  //++               | CONSTANT
+  //++               | identifier
+  //++ EXPR         -> { ASSIGN !!AMBIGU!! affect } EXPR_OPERATOR
+  //++ ASSIGN       -> '(' IDF_ASSIGN { ',' IDF_ASSIGN } ')'
+  //++               | IDF_ASSIGN
+  //++ IDF_ASSIGN   -> identifier { identifier }
+  //++ EXPR_OPERATOR-> { operator } EXPR_MESSAGE { operator {operator} EXPR_MESSAGE } {operator}
+  //++ EXPR_MESSAGE -> EXPR_BASE { '.' SEND_MSG }
+  //++ EXPR_BASE    -> "Old" EXPR
+  //++               | EXPR_PRIMARY
+  //++               | SEND_MSG
+  //++ EXPR_PRIMARY -> "Self"
+  //++               | result
+  //++               | PROTOTYPE
+  //++               | CONSTANT
+  //++               | '(' GROUP ')'
+  //++               | '{' [ LOC_ARG ';' !! AMBIGU!! ] GROUP '}'
+  //++               | external [ ':' ['('] TYPE ['{' TYPE_LIST '}'] [')'] ]
+  //++ CONSTANT     -> integer
+  //++               | real
+  //++               | characters
+  //++               | string
+  //++ GROUP        -> DEF_LOCAL {EXPR ';'} [ EXPR {',' {EXPR ';'} EXPR } ]
+  //++ CONTRACT     -> '[' DEF_LOCAL { ( EXPR ';' | "..." ) } ']'
+  //++ DEF_LOCAL    -> { style LOCAL ';' } !! AMBIGU !!
+  //++ SEND_MSG     -> identifier [ ARGUMENT { identifier ARGUMENT } ]
+  //++ ARGUMENT     -> EXPR_PRIMARY
+  //++               | identifier

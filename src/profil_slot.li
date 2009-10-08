@@ -67,7 +67,8 @@ Section Public
       result := type_self;                
     } else {
       // For Genericity.    
-      result := type_self.raw.parameter_to_type p;
+      //result := type_self.raw.parameter_to_type p;
+      result := slot_code.receiver_type.parameter_to_type p;
       (result = NULL).if {            
         // For Type parametric.
         idx := slot_code.get_index_argument_type p;
@@ -76,7 +77,6 @@ Section Public
         };
       };
     };
-    
     result
   );
   
@@ -147,7 +147,7 @@ Section Public
     } else {      
       ts ?= s.result_type;      
       (ts != ITM_TYPE_SIMPLE.type_void).if {
-        typ := ts.to_run_for Self;	        
+        typ := ts.to_run_for Self;	                
         result_list.add_last (typ.get (s.position) result 0);         
       };
     };           

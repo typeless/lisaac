@@ -230,6 +230,7 @@ Section Public
     + self_main:EXPR;
     + base:NODE;
     + pass_count_depend:INTEGER;
+    + pass_recur:BOOLEAN;
     + i:INSTR;
     + cmd:STRING_CONSTANT;
     
@@ -319,32 +320,34 @@ Section Public
     
     // First pass (recursive)    
     is_executing_pass := TRUE;            
-    (is_quiet).if_false {
-      STD_ERROR.put_string "*";
-    };
-    pass_count := pass_count + 1;
-    PROFIL_LIST.execute_pass_recursive;
-    // End first pass.    
     {
-      modify_count := 0;
-      null_counter := 0;
       (is_quiet).if_false {
-	STD_ERROR.put_string ".";            
+        STD_ERROR.put_string "*";
       };
-      pass_count := pass_count + 1;            
+      pass_count := pass_count + 1;
+      PROFIL_LIST.execute_pass_recursive;
+      pass_recur := FALSE;
+      // End first pass.    
+      {
+        modify_count := 0;
+        null_counter := 0;
+        (is_quiet).if_false {
+          STD_ERROR.put_string ".";            
+        };
+        pass_count := pass_count + 1;            
       
-      SWITCH.reset_switch_new_pass;
+        SWITCH.reset_switch_new_pass;
       
-      PROFIL_LIST.execute_pass;      
+        PROFIL_LIST.execute_pass;      
       
-      (SWITCH.switch_new_pass).if {
-	new_execute_pass;	
-      };
-      
-    }.do_while 
-    //{pass_count < 40};
-    {modify_count != 0};
-    
+        (SWITCH.switch_new_pass).if {
+          new_execute_pass;	
+        };        
+        (modify_count != 0).if {
+          pass_recur := TRUE;
+        };
+      }.do_while {modify_count != 0};
+    }.do_while {pass_recur};
     (is_quiet).if_false {
       STD_ERROR.put_string " (";
       STD_ERROR.put_integer (pass_count - pass_count_depend);

@@ -143,6 +143,8 @@ Section Private
     + cop_arg:EXPR;
     + new_val:EXPR;
     
+    
+    
     result := LIST.create position;
     
     data_rd ?= data;      
@@ -248,7 +250,7 @@ Section Private
       ((rd != NULL) && {rd.variable.name = ALIAS_STR.variable_self}).if {
         // Fix Self type for resend call (else it's fixed by NODE_TYPE)        
         new_type_self := type;               
-      } else {
+      } else {        
 	new_type_self := type_self;
       };
       /*

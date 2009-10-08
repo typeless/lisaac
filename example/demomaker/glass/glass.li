@@ -65,16 +65,18 @@ Section Public
       0.to (size/2-4) do { i:INTEGER;
         px := a.cos * i;
         py := a.sin * i;
-        di := ((REAL.pi/size * i).sqrt) * i;
+        //di := ((REAL.pi/size * i).sqrt) * i;
+        di := ((i / (size/2)) * (i / (size/2))) * (size/2);  //((REAL.pi/size * i).atan ) * i;
         npx := a.cos * di;
         npy := a.sin * di;
+        //mask.item (px.to_integer+size/2,py.to_integer+size/2).make (npx.to_integer+size/2,npy.to_integer+size/2);
         mask.item (px.to_integer+size/2,py.to_integer+size/2).make (npx.to_integer+size/2,npy.to_integer+size/2);
       };
       a := a + 0.001;
     }.do_while {a < REAL.pi*2};
   );
   
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_32).create 2048;
   
   //
   // Width / Height
@@ -112,8 +114,8 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP(PIXEL_24).create (w,h);
-    background := BITMAP(PIXEL_24).create (width_min,height_min);
+    bitmap := BITMAP(PIXEL_32).create (w,h);
+    background := BITMAP(PIXEL_32).create (width_min,height_min);
     fmt.put_image_in bitmap;    
     compute_mask;
     f.close;
@@ -155,21 +157,23 @@ Section Public
 
     clipping (x0,y0) to (x1,y1);
     
-    0.to height by (bitmap.height) do { y:INTEGER;
-      0.to width by (bitmap.width) do { x:INTEGER;
-        background.put_bitmap bitmap to (x,y);
+    (is_new).if {
+      0.to height by (bitmap.height) do { y:INTEGER;
+        0.to width by (bitmap.width) do { x:INTEGER;
+          background.put_bitmap bitmap to (x,y);
+        };
       };
+      
+      0.to (size-1) do { y:INTEGER;      
+        0.to (size-1) do { x:INTEGER;        
+          px := (x_origin + mask.item (x,y).x) & 0FFh;
+          py := (y_origin + mask.item (x,y).y) & 0FFh;
+          col := bitmap.get_color_hard (px,py);
+          bmp_line.put col to x;
+        };      
+        background.line_h_hard (x_origin,y_origin+y) until (x_origin+size-1) image bmp_line offset 0;
+      };        
     };
-    
-    0.to (size-1) do { y:INTEGER;      
-      0.to (size-1) do { x:INTEGER;        
-        px := (x_origin + mask.item (x,y).x) & 0FFh;
-        py := (y_origin + mask.item (x,y).y) & 0FFh;
-        col := bitmap.get_color_hard (px,py);
-        bmp_line.put col to x;
-      };      
-      background.line_h_hard (x_origin,y_origin+y) until (x_origin+size-1) image bmp_line offset 0;
-    };        
     put_bitmap background to (0,0);
   );
   
@@ -191,7 +195,7 @@ Section Public
     };
     
     evt_time ?= msg;    
-    (evt_time != NULL).if {
+    ((evt_time != NULL) && {evt_time.destination = NULL}).if {
       x_origin := x_origin + x_inc;
       y_origin := y_origin + y_inc;
       ((x_origin <= 0) || {x_origin >= width - size}).if {
@@ -200,6 +204,10 @@ Section Public
       ((y_origin <= 0) || {y_origin >= height - size}).if {
         y_inc := -y_inc;
       };      
+      is_new := TRUE;
       refresh;
+      is_new := FALSE;
     };    
   );
+  
+  - is_new:BOOLEAN;

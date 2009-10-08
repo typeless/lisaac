@@ -63,12 +63,12 @@ Section Public
     } else {
       list.clear;
     };
+        
     p := path.to_external;
     dir := `opendir(@p)`:POINTER; 
     (dir != NULL).if {
-      result := TRUE;
+      result := TRUE;            
       {
-
 	dirent := `readdir(@dir)`:POINTER;
 	(dirent != NULL).if {
 	  n := `((struct dirent *)@dirent)->d_name`:NATIVE_ARRAY(CHARACTER);	
@@ -82,9 +82,10 @@ Section Public
 	    string_tmp.add_first '/';
             string_tmp.prepend path;            
             reduce_path string_tmp;            
-	    new_entry := get_entry string_tmp;
-	    (new_entry = NULL).if {	      	      
-	      result := FALSE;
+            new_entry := get_entry string_tmp;                                   
+            (new_entry = NULL).if {	      	                    
+              "WARNING: ".print; string_tmp.print; " no readable!\n".print;              
+	      //result := FALSE;
 	    } else {
 	      (new_entry.path.count >= path.count).if {
 		list.add_last new_entry;
@@ -105,8 +106,8 @@ Section DIRECTORY
     + result:ENTRY;
         
     pe := new_path.to_external;
-    `{ struct stat t`; 
-      (`stat(@pe,&t)`:INTEGER = 0).if {		  
+    `{ struct stat64 t`; 
+      (`stat64(@pe,&t)`:INTEGER = 0).if {		  
         (`S_ISDIR(t.st_mode)`:INTEGER = 0).if {
           // File.
           result := FILE_UNIX.clone;

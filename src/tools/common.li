@@ -36,7 +36,7 @@ Section Inherit
 
 Section Public
 
-  - version :STRING_CONSTANT := "0.14";
+  - version :STRING_CONSTANT := "0.17";
 
   - command_line_header name:STRING_CONSTANT :STRING_CONSTANT <-
   ( + before, after :STRING_CONSTANT;
@@ -72,8 +72,8 @@ Section Public
   - command_line_footer:STRING_CONSTANT :=
     "                                                                \n\
     \Bug report:                                                     \n\
-    \\t post in : https://alioth.debian.org/projects/lisaac/         \n\
-    \\t mail to : sonntag@icps.u-strasbg.fr                          \n";
+    \\t post in: https://alioth.debian.org/projects/lisaac/          \n\
+    \\t mail to: sonntag@icps.u-strasbg.fr                           \n";
 
   - print_info <-
   ( + b:BOOLEAN;

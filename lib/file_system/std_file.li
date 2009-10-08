@@ -117,6 +117,16 @@ Section Public
     result / src.element_sizeof
   );
   
+  - write src:ARRAYED size nb_elt:INTEGER :INTEGER <-
+  (
+    write src from (src.lower) size nb_elt
+  );
+  
+  - write src:ARRAYED :INTEGER <-
+  (
+    write src size (src.count)
+  );
+  
   //
   // Close.
   //

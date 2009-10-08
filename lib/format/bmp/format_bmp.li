@@ -153,16 +153,20 @@ Section Public
       0.to (header.height - 1) do { i:INTEGER;
         1.to (header.width) do { j:INTEGER;          
           line_24.item_24 (j-1).make_rgb (
-            buffer_item pos,
+            buffer_item (pos + 2),
             buffer_item (pos + 1),
-            buffer_item (pos + 2)
+            buffer_item (pos)
           );          
           pos := pos + 3;
         };
         pos := pos + align;
+        /*
+        "bmp.width    : ".print; bmp.width.print; '\n'.print;
+        "header.width : ".print; header.width.print; '\n'.print;
+        "line_24.width: ".print; line_24.count.print; '\n'.print;
+        */
         bmp.line_h (0,header.height - i - 1) 
-        until (header.width - 1) image line_24;
-        line_24.clear;
+        until (header.width - 1) image line_24;        
       };	    
     };
   );
@@ -182,7 +186,12 @@ Section Private
   (     
     (file != NULL).if {
       header := BMP_HEADER.clone;
-      file.open;
+      (file.is_open).if_false {
+        (file.open).if_false {
+          "FORMAT_BMP : Open file fail!\n".print;
+          die_with_code 0;
+        };
+      };
       file.read header;
     } else {
       header := CONVERT(NATIVE_ARRAY(UINTEGER_8),BMP_HEADER).on (buffer.storage);

@@ -31,17 +31,17 @@ Section Header
   
 Section Inherit
   
-  - parent_video:ABSTRACT_BITMAP := ABSTRACT_BITMAP;
+  - parent_video:VIDEO := VIDEO; //ABSTRACT_BITMAP := ABSTRACT_BITMAP;
   
   - parent_inbox:INBOX := INBOX;
   
 Section INTERFACE  
-  
+  /*
   - set_video_support bmp:ABSTRACT_BITMAP <-
   (
     parent_video := bmp;
   );
-  
+  */
 Section Public  
   
   //

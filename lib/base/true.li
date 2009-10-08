@@ -75,11 +75,7 @@ Section Public
   //
   // Binary operator :
   //
-  
-  - Self:SELF '=='  Right 60 other:BOOLEAN :BOOLEAN <- other;
-  
-  - Self:SELF '!==' Right 60 other:BOOLEAN :BOOLEAN <- ! other;
-  
+    
   - Self:SELF '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- TRUE;   // or else
   
   - Self:SELF '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- other.value;  // and then
@@ -117,4 +113,18 @@ Section Public
   - to_integer:INTEGER     <- 1;
   
   - to_character:CHARACTER <- '1';
+
+  //
+  // Output.
+  //
+
+  - print <-
+  (
+    "TRUE".print;
+  );
+
+
+
+
+
 

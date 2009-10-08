@@ -110,14 +110,14 @@ Section Private
     + list:FAST_ARRAY(CASE);
     + case:CASE;
     + result:BOOLEAN;
-                
+    
     typ_f := expr.static_type;
     
     (typ_f.is_expanded && {typ_f.raw != type_boolean}).if {
       (first_code = NULL).if {
 	first_type := typ_f.raw;
 	first_code := data.product first_type with expr self type_self;
-      };
+      };      
       result := TRUE;
     }.elseif {(typ_f.raw = type_boolean) && {count = 2}} then {
       result := TRUE;
@@ -125,12 +125,21 @@ Section Private
       ((typ_f.raw.is_block) || {typ_f.raw.subtype_list.count != count}).if {
 	lst_typ := TYPES_TMP.new;      
         expr.get_type lst_typ;      
+                
         /*
-        ((data.slot != NULL) && {data.slot.name == "storage"}).if {
-          lst_typ.print; '\n'.print;
+        ((typ_f.raw = type_boolean) && {! lst_typ.is_empty}).if {                    
+          expr.debug_display; '\n'.print;
+          (lst_typ.first = type_boolean).if {
+            
+            crash_with_message "NODE_TYPE : BUG";
+          };
+          /*
+          lst_typ.print;
+          '\n'.print;
+          warning_error (position,"ICI");
+          */
         };
         */
-        
 	(! lst_typ.is_empty).if {
 	  (lst_typ.count = 1).if {
 	    (first_code = NULL).if {
@@ -175,7 +184,7 @@ Section Private
       (first_code != NULL).if {
 	(self_type = NULL).if {	  
 	  new_type_self := expr.static_type;
-	  (! new_type_self.is_expanded).if {
+	  ((! new_type_self.is_expanded) || {new_type_self.raw = type_boolean}).if {
 	    new_type_self := first_type.default.to_strict;
 	  };	  
 	} else {

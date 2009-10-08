@@ -126,9 +126,9 @@ Section Public
         
     idf := ALIASER_LOCAL.push Self; 
     (is_first).if {      
-      buffer.append "push_first(&";
+      buffer.append "lisaac_push_first(&";
     } else {
-      buffer.append "push(&";
+      buffer.append "lisaac_push(&";
     };
     buffer.append idf;
     buffer.add_last ',';
