@@ -25,6 +25,10 @@ Section Header
   - copyright := "2009 Mildred Ki'Lya <http://ki.lya.online.fr>";
   - comment   := "Test dynamic type";
 
+Section Inherit
+
+  + parent:Expanded OBJECT;
+
 Section Public
 
   - get_dynamic_type e:Strict E :E <- E;
@@ -32,6 +36,9 @@ Section Public
   - main <-
   ( + s:ABSTRACT_STRING;
     + t:ABSTRACT_STRING;
+    + c:INTEGER;
+
+    c := exit_failure_code;
 
     s := "test";
     t := get_dynamic_type s;
@@ -43,7 +50,10 @@ Section Public
       "STRING".println;
     }.elseif {t = STRING_CONSTANT} then {
       "STRING_CONSTANT".println;
+      c := exit_success_code;
     } else {
       "???".println;
     };
+
+    die_with_code c;
   );
