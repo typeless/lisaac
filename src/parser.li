@@ -2742,14 +2742,19 @@ Section Private
       (t = NULL).if {
         syntax_error (current_position,"type is incorrect.");
       };      
-      data := LIP_SLOT_DATA.create current_position name n value t argument FALSE;
-      (read_symbol (ALIAS_STR.symbol_affect_immediate)).if {
+      (! read_symbol (ALIAS_STR.symbol_affect_immediate)).if {
+        data := LIP_SLOT_DATA.create current_position name n value t argument FALSE;
+      } else {
         cst := readlip_expr_constant;
         (cst = NULL).if {
           syntax_error (current_position,"Incorrect expression.");
         };
-        data.set_value cst;                
-        cst.free;
+        (cst.name !== t.name).if {
+          syntax_error (current_position,"Incorrect expression type.");
+        };
+        data := LIP_SLOT_DATA.create current_position name n value cst argument FALSE;
+        //data.set_value cst;
+        //cst.free;
       };
     }.elseif {read_character '-'} then {
       // Function.
