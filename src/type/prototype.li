@@ -40,12 +40,20 @@ Section Public
   
   - prototype_dico:HASHED_DICTIONARY(PROTOTYPE,STRING_CONSTANT) := 
   HASHED_DICTIONARY(PROTOTYPE,STRING_CONSTANT).create;
+  // Index by filename
+
+  - prototype_canonical_name:HASHED_DICTIONARY(PROTOTYPE,STRING_CONSTANT) :=
+  HASHED_DICTIONARY(PROTOTYPE,STRING_CONSTANT).create;
   
 Section Public
   
   + index:INTEGER; // in `prototype_list', for POSITION.
   
   + shortname:STRING_CONSTANT;
+
+  + longname:STRING_CONSTANT;
+
+  - is_lip :BOOLEAN <- (filename.last = 'p');
   
   //
   // Slots
@@ -177,15 +185,18 @@ Section Public
   );
   
   - make f:STRING_CONSTANT name n:STRING_CONSTANT generic_count c:INTEGER <-
+  [
+    -? {! prototype_dico.fast_has f};
+    -? {n != NULL};
+  ]
   ( //+ file:STD_FILE;
     //+ entry:ENTRY;
     + file:POINTER;
     + sz,idx:INTEGER;
-    ? {! prototype_dico.fast_has n};
-    ? {n != NULL};
-    
+
     filename := f;
-    name     := n;    
+    longname := protopath_from_path filename;
+    name     := n;
     idx := n.fast_last_index_of '.';
     (idx != 0).if {
       string_tmp.copy n;
@@ -196,7 +207,11 @@ Section Public
     };
     generic_count := c;
     idf_generic_list := FAST_ARRAY(ITM_TYPE_PARAMETER).create_with_capacity c;
-        
+
+    is_lip.if_false {
+      insert_prototype;
+    };
+
     // Collection.    
     index := prototype_list.count;
     prototype_list.add_last Self;
@@ -757,5 +772,125 @@ Section PROTOTYPE
         };
         put str_tmp to buf like code_balise;
       };
+    };
+  );
+
+Section Private
+
+  - protopath_from_path filename:ABSTRACT_STRING :STRING_CONSTANT <-
+  ( + strip_end :INTEGER;
+    is_lip.if {
+      // *.lip
+      strip_end := 4;
+    } else {
+      // *.li
+      strip_end := 3;
+    };
+
+    string_tmp.clear;
+    (filename.lower).to (filename.count - strip_end) do { i:INTEGER;
+      + c:CHARACTER;
+      c := filename.item i.to_upper;
+      c.is_upper.if {
+        string_tmp.add_last c;
+      }.elseif {c.is_digit} then {
+        string_tmp.add_last c;
+      }.elseif {c = '/'} then {
+        ((string_tmp.count >= 1) && {string_tmp.last != '.'}).if {
+          string_tmp.add_last '.';
+        };
+      } else {
+        ((string_tmp.count >= 1) && {string_tmp.last != '_'} && {string_tmp.last != '.'}).if {
+          string_tmp.add_last '_';
+        };
+      };
+    };
+    ALIAS_STR.get string_tmp
+  );
+
+  - name_last n:INTEGER :STRING_CONSTANT <-
+  [
+    -? { n > 0 };
+  ]
+  ( + j, idx :INTEGER;
+    j := 0;
+
+    idx := longname.upper;
+    {(idx >= longname.lower) && {j < n}}.while_do {
+      (longname.item idx = '.').if {
+        j := j + 1;
+      };
+      idx := idx - 1;
+    };
+    // idx contains the position of the n-th '.' from the right
+    idx := idx + 1;
+    (longname.item idx = '.').if {
+      idx := idx + 1;
+    };
+    // idx contains the position of first desired character
+
+    // Copy last n members to string_tmp
+    string_tmp.clear;
+    idx.to (longname.upper) do { k:INTEGER;
+      string_tmp.add_last (longname.item k);
+    };
+    ALIAS_STR.get string_tmp
+  )
+  [
+    +? { Result != NULL };
+    +? { (n != 1) | (Result = shortname) };
+  ];
+
+  - insert_prototype <- insert_prototype_start 1;
+
+  - insert_prototype_start start:INTEGER <-
+  ( + i:INTEGER;
+    + proto:PROTOTYPE;
+
+    // Find canonical name
+    // If we find PROTOTYPE in the dictionary, it's a marker to notify that more
+    // than one prototype matches the name. We can't take the slot and we must
+    // add more members to `name'
+    i := start;
+    (i = 1).if {
+      name := shortname;
+    } else {
+      name := name_last i;
+    };
+    proto := prototype_canonical_name.fast_reference_at name;
+    { proto = PROTOTYPE }.while_do {
+      i := i + 1;
+      name  := name_last i;
+      proto := prototype_canonical_name.fast_reference_at name;
+    };
+
+    // We find either an empty slot or a conflicting prototype
+
+    (proto = NULL).if {
+
+      ((debug_proto_bestname) && {i > 1}).if {
+        "Prototype: ".print; name.println;
+        "       is: ".print; longname.println;
+      };
+
+      prototype_canonical_name.fast_put Self to name;
+
+    } else {
+
+      // We find a conflicting prototype.
+      ? { proto != Self };
+
+      (debug_proto_bestname).if {
+        "Conflict: ".print; name.println;
+        "          ".print; longname.println;
+        "          ".print; proto.longname.println;
+      };
+
+      // Add PROTOTYPE marker and add more members to `name' of both prototypes
+      prototype_canonical_name.fast_put PROTOTYPE to name;
+      // Insert both prototypes again with another member to the name
+      i := i + 1;
+      proto.insert_prototype_start i;
+      insert_prototype_start i;
     };
   );

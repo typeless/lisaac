@@ -6,10 +6,12 @@ Section Public
 
   - main <-
   ( + a0 :PROTO;
+    + a0b:AMBIGUOUS_PROTONAME.PROTO;
     + a1 :DIR1.PROTO;
     + a2 :DIR2.PROTO;
     a1.println;
     a2.println;
     "Hello".println;
     a0.toto;
+    a0b.toto;
   );

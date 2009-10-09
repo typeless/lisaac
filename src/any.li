@@ -324,3 +324,11 @@ Section Public
   - last_position:POSITION;
 
 
+  //
+  // Activate debug
+  //
+
+  - debug_proto_bestname :BOOLEAN <- FALSE;
+  // Debug the name of the prototypes choosen to avoid conflicts
+  // See PROTOTYPE.insert_prototype
+
