@@ -45,6 +45,7 @@ Section Private
   + is_java:BOOLEAN;
   + is_cop:BOOLEAN; // Correct value after compilation.
   + execute_back_end:BOOLEAN := TRUE;
+  + execute_status_code:INTEGER := 0;
   
   // Other.
   + is_statistic:BOOLEAN;
@@ -164,11 +165,28 @@ Section Private
       cmd.print;
       "'\n".print;
     };
-    (run cmd != 0).if {
-      "FAILURE!\n".print;
+    execute_status_code := run cmd;
+    (execute_status_code != 0).if {
+      (is_quiet).if {
+        "FAILURE run `".print;
+        cmd.print;
+        "' (".print;
+      } else {
+        "FAILURE (".print;
+      };
+      execute_status_code.print;
+      ")\n".print;
     };
   );
-  
+
+  - execute_fail cmd:STRING <-
+  (
+    execute cmd;
+    (execute_status_code != 0).if {
+      exit execute_status_code;
+    };
+  );
+
   //
   // Execute function.
   //
@@ -183,19 +201,19 @@ Section Private
   (
     (execute_back_end).if {
       (target = "java").if {
-        execute ("javac " + output_file + ".java");
+        execute_fail ("javac " + output_file + ".java");
       };
       (target = "dos").if {
-        execute ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
+        execute_fail ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
       };
       (target = "windows").if {
-        execute ("gcc " + output_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
+        execute_fail ("gcc " + output_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
       };
       (target = "unix").if {
         (is_cop).if {
           lib_gcc := lib_gcc + " -lpthread";
         };
-        execute ("gcc " + output_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
+        execute_fail ("gcc " + output_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
       };
     };
   );

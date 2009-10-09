@@ -68,7 +68,8 @@ Section Public
   - run <-
   ( + slot:LIP_SLOT_CODE;
     + val,rec:LIP_CONSTANT;
-    + str:LIP_STRING;    
+    + str:LIP_STRING;
+    + int:LIP_INTEGER;
     + path:STRING_CONSTANT;
     + is_rec:BOOLEAN;
     
@@ -87,10 +88,17 @@ Section Public
       };
       rec.print;      
     }.elseif {name = ALIAS_STR.slot_exit} then {
-      (val != NULL).if {
-        warning_error (position,"No argument for `exit' method.");
+      int ?= val;
+      ((val != NULL) && {int = NULL}).if {
+        warning_error (position,"Optional integer argument for `exit' method.");
       };
-      die_with_code exit_failure_code;
+      (int = NULL).if {
+        die_with_code exit_failure_code;
+      }.elseif { (int.value != 0) && {int.value % 256 = 0} } then {
+        die_with_code exit_failure_code;
+      } else {
+        die_with_code (int.value);
+      }
     }.elseif {name = ALIAS_STR.slot_help} then {
       (val != NULL).if {
         warning_error (position,"No argument for `help' method.");
