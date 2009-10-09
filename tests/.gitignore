@@ -4,7 +4,6 @@ lib_tests
 abstract_string_test
 boolean_test
 boolean_test2
-boolean_test3
 character_test
 lib_tests
 living_external

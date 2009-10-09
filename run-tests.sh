@@ -74,7 +74,6 @@ if $op_runcwd; then
   res=1
   echo
   header 80 '*' "$op_testname"
-  #echo "******************** $op_testname ********************"
   if [ -f test.sh -a -x test.sh ]; then
     ./test.sh
     res=$?
@@ -84,6 +83,8 @@ if $op_runcwd; then
   header 80 '*'
   if [ $res != 0 ]; then
     header 80 ' ' "error: $res"
+  else
+    header 80 ' ' "ok"
   fi
   echo
   exit $res
