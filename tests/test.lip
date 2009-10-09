@@ -19,28 +19,70 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 
-Section Inherit
-
-  + parent :STRING;
-
-  + parent_test :STRING := "../test.lip";
-
 Section Private
 
-  - front_end <-
+  - exit_true <-
   (
-    general_front_end;
-    path "./*";
-    input_file := "main";
+    exit 0;
   );
 
-  + m_test_description :STRING :=
-    "Test if the error message contains non ambiguous prototype names\n\
-    \Test also if the compiler choose the nearer prototype in case of\n\
-    \conflicting prototype names\n";
+  - exit_false <-
+  (
+    exit 1;
+  );
 
-  + m_test_compile :BOOLEAN := FALSE;
-  + m_test_run :BOOLEAN := FALSE;
+  + m_test_description :STRING := "<NO DESCRIPTION>\n";
+  + m_test_compile :BOOLEAN := TRUE;
+  + m_test_run :BOOLEAN := TRUE;
+  + m_test_compile_pattern :STRING := "";
+  + m_test_run_pattern :STRING := "";
 
-  + m_test_compile_pattern :STRING :=
-    "Slot `toto' not found in `AMBIGUOUS_PROTONAME\\.PROTO'\\.";
+Section Public
+
+  - test <-
+  // Compile as a test
+  (
+  );
+
+  - test_description <-
+  // Print the description of the test
+  (
+    m_test_description.print;
+    exit_true;
+  );
+
+  - test_compile <-
+  // Exit successfully if the compilation must succeed
+  (
+    m_test_compile.if {
+      exit_true;
+    } else {
+      exit_false;
+    };
+  );
+
+  - test_run <-
+  // Exit successfully if the result of the compilation must be executed
+  (
+    m_test_run.if {
+      exit_true;
+    } else {
+      exit_false;
+    };
+  );
+
+  - test_compile_patterns <-
+  // Regular expressions that must be found in the result of the compilation for
+  // the test to succeed
+  (
+    m_test_compile_pattern.print;
+    exit_true;
+  );
+
+  - test_run_patterns <-
+  // Regular expressions that must be found in the result of the program's
+  // execution for the test to succeed
+  (
+    m_test_run_pattern.print;
+    exit_true;
+  );

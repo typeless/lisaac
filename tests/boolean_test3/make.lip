@@ -31,16 +31,10 @@ Section Private
   (
     general_front_end;
     path "./*";
-    input_file := "main";
+    input_file := "boolean_test3";
   );
 
   + m_test_description :STRING :=
-    "Test if the error message contains non ambiguous prototype names\n\
-    \Test also if the compiler choose the nearer prototype in case of\n\
-    \conflicting prototype names\n";
+    "Test that ( + b:BOOLEAN; b == TRUE) compiles\n";
 
-  + m_test_compile :BOOLEAN := FALSE;
   + m_test_run :BOOLEAN := FALSE;
-
-  + m_test_compile_pattern :STRING :=
-    "Slot `toto' not found in `AMBIGUOUS_PROTONAME\\.PROTO'\\.";
