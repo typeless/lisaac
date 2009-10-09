@@ -81,10 +81,10 @@ if $op_runcwd; then
   else
     echo "Unknown test: $op_testname"
   fi
-  header 80 '*'
   if [ $res != 0 ]; then
     header 80 ' ' "error: $res"
   fi
+  header 80 '*'
   echo
   exit $res
 fi
