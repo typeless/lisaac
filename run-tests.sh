@@ -23,6 +23,14 @@ done
 
 if $op_default; then
   cd "`dirname "$0"`"
+  if [ -x bin/lisaac -o -x shorter ]; then
+    echo "Add to PATH: `pwd`/bin"
+    export PATH="`pwd`/bin:$PATH"
+  fi
+  if [ -x lisaac -o -x shorter ]; then
+    echo "Add to PATH: `pwd`"
+    export PATH="`pwd`:$PATH"
+  fi
   n=0
   failed=()
   for f in tests/*; do
