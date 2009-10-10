@@ -145,7 +145,7 @@ if $op_runcwd; then
           echo
           echo "$run"
         fi
-      else
+      elif [ $res = 0 ]; then
         echo
         echo "$compile"
       fi

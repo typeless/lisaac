@@ -1,0 +1,16 @@
+Section Header
+
+  + name := MAIN;
+
+Section Public
+
+  - main <-
+  ( + b :INTEGER;
+    (b = NULL).if {
+      "0 is NULL".println;
+    } else {
+      "0 is not NULL".println;
+    };
+    "If it compiles without an error, there is a bug".println;
+  );
+
