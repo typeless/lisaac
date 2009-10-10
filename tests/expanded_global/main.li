@@ -1,0 +1,24 @@
+Section Header
+
+  + name := MAIN;
+
+  - external := `struct { char flag; } container = { 1 };`;
+
+Section External
+
+  - test i:ITM_KEYWORD :INTEGER <-
+  ( + c:CONTAINER;
+    c := `&container`:CONTAINER;
+    (c.keyword = i).if {
+      "equal".println;
+    };
+    i.flags
+  );
+
+Section Public
+
+  - main <-
+  (
+    test (ITM_KEYWORD.keyword_empty).println;
+  );
+

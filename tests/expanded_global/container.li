@@ -1,0 +1,11 @@
+Section Header
+
+  + name := CONTAINER;
+
+Section Mapping
+
+  + m_keyword :ITM_KEYWORD;
+
+Section Public
+
+  - keyword :ITM_KEYWORD <- m_keyword;
