@@ -1,0 +1,15 @@
+Section Header
+
+  + name := MAIN;
+
+Section Inherit
+
+  + parent :FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 1;
+
+Section Public
+
+  - main <-
+  (
+    add_last 1;
+    "1 = ".print; last.print; '\n'.print;
+  );
