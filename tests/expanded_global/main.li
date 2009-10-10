@@ -15,10 +15,20 @@ Section External
     i.flags
   );
 
+  - test2 i:ITM_KEYWORD :(ITM_KEYWORD,ITM_KEYWORD) <-
+    (
+      i, i
+    )
+    [
+      -? { Result_1 = i };
+      -? { Result_2 = i };
+    ];
+
 Section Public
 
   - main <-
   (
     test (ITM_KEYWORD.keyword_empty).println;
+    test2 (ITM_KEYWORD.keyword_empty);
   );
 
