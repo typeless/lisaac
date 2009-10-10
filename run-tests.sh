@@ -137,6 +137,9 @@ if $op_runcwd; then
           echo
           echo "$run"
         fi
+      else
+        echo
+        echo "$compile"
       fi
     fi
   else
