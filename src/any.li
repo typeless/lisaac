@@ -260,10 +260,26 @@ Section Public
     POSITION.send_error;
   );
 
+  - syntax_error2 (p1:POSITION, p2:POSITION,txt:ABSTRACT_STRING) <-
+  (
+    p1.put_error syntax text txt;
+    p1.put_position;
+    p2.put_position;
+    POSITION.send_error;
+  );
+
   - semantic_error (pos:POSITION,txt:ABSTRACT_STRING) <-
   ( 
     pos.put_error semantic text txt;
     pos.put_position;
+    POSITION.send_error;
+  );
+
+  - semantic_error2 (p1:POSITION, p2:POSITION,txt:ABSTRACT_STRING) <-
+  (
+    p1.put_error semantic text txt;
+    p1.put_position;
+    p2.put_position;
     POSITION.send_error;
   );
   
@@ -271,6 +287,14 @@ Section Public
   (
     pos.put_error warning text txt;
     pos.put_position;
+    POSITION.send_error;
+  );
+
+  - warning_error2 (p1:POSITION, p2:POSITION,txt:ABSTRACT_STRING) <-
+  (
+    p1.put_error warning text txt;
+    p1.put_position;
+    p2.put_position;
     POSITION.send_error;
   );
 
