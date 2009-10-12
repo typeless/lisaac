@@ -56,6 +56,8 @@ Section Public
     rd ?= other;
     ((rd != NULL) && {slot = rd.slot} && {receiver ~= rd.receiver})    
   );
+
+Section SLOT
     
   //
   // Creation.
@@ -75,6 +77,8 @@ Section Public
     receiver := r;
     slot     := s;
   );
+
+Section Public
   
   - my_copy:SELF <-
   ( + result:SELF;
