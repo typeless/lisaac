@@ -1,0 +1,37 @@
+Section Header
+
+  + name := MAIN;
+
+  - external := `struct { char flag; } container = { 1 };`;
+
+Section External
+
+  - test i:ITM_KEYWORD :INTEGER <-
+  ( + c:CONTAINER;
+    + nc:NATIVE_ARRAY(CONTAINER);
+    nc := `&container`:NATIVE_ARRAY(CONTAINER);
+    `/* @nc */`;
+    c := nc.item 0;
+    (c.keyword = i).if {
+      "equal".println;
+    };
+    i.flags
+  );
+
+  - test2 i:ITM_KEYWORD :(ITM_KEYWORD,ITM_KEYWORD) <-
+    (
+      i, i
+    )
+    [
+      -? { Result_1 = i };
+      -? { Result_2 = i };
+    ];
+
+Section Public
+
+  - main <-
+  (
+    test (ITM_KEYWORD.keyword_empty).println;
+    test2 (ITM_KEYWORD.keyword_empty);
+  );
+
