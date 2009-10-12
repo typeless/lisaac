@@ -536,13 +536,10 @@ Section Public
 	(type_c != NULL).if {
 	  0.to 4 do { j:INTEGER;
 	    tab := slot_size.item j;
-	    // BSBS: A tester sont utilité !
+	    // BSBS: A tester sont utilitÃ© !
 	    (! tab.is_empty).if {
 	      semantic_error (tab.first.position,"Slot is not possible with a type C");
 	    };	  
-          };
-          (intern_name == "UINTEGER_16__0D").if {
-            "Genere 2\n".print;
           };
 
           (is_java).if_false {            
