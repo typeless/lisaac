@@ -1,0 +1,187 @@
+%%%%%%%%%%%%
+% Settings %
+%%%%%%%%%%%%
+\documentclass{article}
+
+% Packages %
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+\usepackage{alltt}
+\usepackage{url}
+
+\title{Lisaac mode for Eclipse IDE}
+\author{Damien Bouvarel}
+
+%%%%%%%%%%%%%%%%%%
+% Document start %
+%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%
+% COUVERTURE %
+%%%%%%%%%%%%%%
+\maketitle
+%\tableofcontents
+
+
+%=========================================================
+\section{Installation}
+%=========================================================
+%
+
+{\sc{}Important Note~:}\\
+The Lisaac plugin is available in the website repository (git.debian.org/git/lisaac/eclisaac.git).\\
+The plugin sources are maintained in the eclisaac repository (git.debian.org/git/lisaac/eclisaac.git).\\
+
+\begin{itemize}
+\item{Install lastest Lisaac Compiler.}
+\item{Install latest Eclipse distribution ($\geq 3.4$, {\it{}see http://www.eclipse.org/downloads)}}.
+\item{Copy the org.lisaac.ldt\_\{version\}.jar from eclisaac.git repository to your eclipse plugins/ installation directory.}
+\item{Or, Use the Eclipse Update Manager to install the Lisaac plugin.  Clone the website.git, add the website/eclipse/update in the manager. The update-site is also hosted on {\it{}http://isaacproject.u-strasbg.fr/eclipse/update/}. Select Lisaac feature and click 'Install'.}\\
+\end{itemize}
+
+%=========================================================
+\section{User Guide}
+%=========================================================
+%
+
+The following is assumed:
+\begin{itemize}
+\item{You are starting with a new Eclipse installation with default settings.}
+\item{You are familiar with the basic Eclipse workbench mechanisms, such as views and perspectives.}
+\item{The Lisaac compiler is installed in the environment where the Eclipse workbench is executed.}
+\end{itemize}
+
+\subsection{Creating your first Lisaac Project} 
+
+\begin{enumerate}
+\item{Inside Eclipse select the menu item File $\rightarrow New \rightarrow Project....$ to open the New Project wizard.}
+\item{Select Lisaac Project then click Next to start the New Lisaac Project wizard.}
+\item{Enter your project name then click Finish.}
+\end{enumerate}
+ 
+Your project is added to your workspace with the following default files: 
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Resource & Description \\
+\hline
+make.lip & Default settings for your project\\
+bin/ & Output for compiled project\\
+lib/ & Contain links to the library files you are using\\
+src/ & Default Main prototype\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The Lisaac Perspective is designed for working with Lisaac Projects. It consist of an editor area and the following views:
+\begin{itemize}
+\item{Navigator}
+\item{Outline}
+\item{Problems}
+\item{History}
+\end{itemize}
+
+\subsection{Creating a Prototype file} 
+\begin{enumerate} 
+\item{In the Navigator view, select the folder where you want to create the prototype. Click on the New Prototype wizard.}
+\item{Enter the prototype name.}
+\item{Write description, choose inheritance, etc...}
+\end{enumerate}
+
+\subsection{Using Content Assist} 
+\subsubsection{Auto-Indentation} 
+
+When the Auto-identation is enabled, three types of events can fire auto-indentation:
+\begin{itemize}
+\item{Indent on new line.}
+\item{Indent cursor line with 'tab' character.}
+\item{Indent whole document with F2 binding.}
+\end{itemize}
+
+\subsubsection{Code Completion} 
+
+Code Completion can be activated at any time in the Lisaac editor with
+the 'Ctrl+space' key binding.\\
+The completion is also auto-activated while typing the '.' character.\\
+
+The completion proposals can be either: keywords, slots, prototypes, variables or arguments names.
+
+\subsubsection{Code Navigation} 
+
+Lisaac development is made easier with code navigation~:
+\begin{enumerate}
+\item{Hyperlinks~: When the Ctrl key is pressed, Lisaac element become hyperlinks, the mouse click open the editor at the definition point of the hyperlink text.}
+\item{Hovering~: Display infopop information about the Lisaac element pointed by the mouse cursor.
+} 
+\item{Outline View~: Display the outline information about the current prototype in editor.\\
+It lists the slots and sections defined in the prototype file.\\
+The buttons on top of the view allows two types of sorting for the list~: appearance order and alphabetical order.\\
+The selection of an item in the view synchronize the editor around the item definition in Lisaac code.
+}
+\end{enumerate}
+  
+\subsection{Running your program} 
+
+While typing code or building a project, the Lisaac program is not compiled.\\
+The compilation is explicitely run by the user, therefore semantic errors in projects can only be detected at that time.\\
+\begin{enumerate}
+\item{Select (one of) the main prototype of you project. In the run (respect. debug) menu/button choose $Run As \rightarrow Lisaac Application$ to launch a run (respect. debug) default configuration.
+\item{Or, edit a run or debug configuration in $Run \rightarrow Run$ configuration....}
+\item{Set the Lisaac compiler options (from the project make.lip file).}
+\item{Give the command-line arguments of your program.}
+}
+\end{enumerate}
+ 
+When a run configuration is launched~:
+\begin{itemize}
+\item{if the program is modified or not compiled~: The program is compiled with Lisaac Compiler.}
+\item{if the program is compiled and not modified~: The compiled program is executed.}
+\end{itemize} 
+
+Note~: The debug configuration only add a -no\_debug option to the compiler.
+
+\subsection{Other Features} 
+\subsubsection{Preferences}
+
+Syntax highlighting colors and styles are customizable in the Lisaac preference page (menu $Window \rightarrow Preferences \rightarrow Lisaac$).
+
+\subsubsection{Slot and Section folding}
+
+To shorten the prototype display in the editor, sections and multi-line slots can be folded with the fold/unfold button in the left of editor.
+
+\subsubsection{Refactoring (experimental)}
+
+The 'refactoring' is code re-formating over a set of source files ('Refactor' menu)~:
+\begin{itemize}
+\item{Change Project Headers~: Re-format the Section Header of all prototypes in the project with the given author, copyright, license or bibliography.}
+\item{Rename prototype~: Update all references of the old prototype name with the new name. Do not affect comments and strings.}
+\end{itemize}
+
+Note~: The refactorings should be applied on syntactically correct programs, otherwise some parts of the code might not be updated.
+
+%=========================================================
+\section{Plugin Developer Guide}
+%=========================================================
+%
+
+\subsection{Getting Started}
+
+\begin{itemize}
+\item{Install latest Eclipse SDK ($\geq 3.4$, {\it{} see http://www.eclipse.org/downloads}).}\\
+\item{Clone the eclisaac.git repository to get the plugin sources.}\\
+\item{Import the 'eclisaac' project (File $\rightarrow$ Import then select 'Existing Projects into Workspace').}\\
+\item{First Run : open META-INF/MANIFEST.MF and click on the link 'Launch an Eclipse application'.}
+\item{Other Run : Green toolbar button  Run or $Run \rightarrow Run As \rightarrow EclipseApplication$.}\\
+\item{Export the plugin project to a suitable jar file. (optional)}
+\end{itemize}
+
+\subsection{Bug Report and plugin improvement}
+
+Mail me at damien.bouvarel@gmail.com, or on the Lisaac devel mailing list.
+\end{document}
+ 
