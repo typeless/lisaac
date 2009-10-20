@@ -27,36 +27,36 @@ Section Private
   + is_valid:BOOLEAN;
   
   + is_shorter:BOOLEAN;
-  
+    
   - src_path <-
   ( 
-    path (lisaac + "src/");
-    path (lisaac + "src/tools/");
-    path (lisaac + "src/type/");
-    path (lisaac + "src/item/");
-    path (lisaac + "src/constant/");
-    path (lisaac + "src/variable/");
-    path (lisaac + "src/external/");
-    path (lisaac + "src/external/logic/");
-    path (lisaac + "src/external/arithmetic/");
-    path (lisaac + "src/external/comparison/");
-    path (lisaac + "src/dispatcher/");
-    path (lisaac + "src/code_life/");    
-    path (lisaac + "src/lip/");    
+    path_li "src/";
+    path_li "src/tools/";
+    path_li "src/type/";
+    path_li "src/item/";
+    path_li "src/constant/";
+    path_li "src/variable/";
+    path_li "src/external/";
+    path_li "src/external/logic/";
+    path_li "src/external/arithmetic/";
+    path_li "src/external/comparison/";
+    path_li "src/dispatcher/";
+    path_li "src/code_life/";    
+    path_li "src/lip/";    
   );
   
   - compiler_path <-
   (
     src_path;    
     input_file := "lisaac";
-    path (lisaac + "src/compiler_any/");
+    path_li "src/compiler_any/";
   );
     
   - shorter_path <-
   (
     src_path;    
     input_file := "shorter";
-    path (lisaac + "src/shorter_any/");
+    path_li "src/shorter_any/";
   );
     
   //

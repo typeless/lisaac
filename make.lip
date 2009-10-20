@@ -58,14 +58,22 @@ Section Private
   + target:STRING := "unix";
   
   //
+  // Service
+  //
+  
+  - path_li p:STRING <-
+  (
+    path (lisaac + p);
+  );
+
+  //
   // Directory.
   //
   
   - standard_path <-
   // Standard library.
-  ( 
-    //LIP.create "lib/make.lip".init;
-    path (lisaac + "lib/*");    
+  (    
+    path_li "lib/*";    
   );
   
   //
@@ -74,31 +82,31 @@ Section Private
   
   - unix_target <-
   (
-    path (lisaac + "lib_os/unix/system/");
-    path (lisaac + "lib_os/unix/file_system/");
-    path (lisaac + "lib_os/unix/video/");
+    path_li "lib_os/unix/system/";
+    path_li "lib_os/unix/file_system/";
+    path_li "lib_os/unix/video/";
   );
   
   - windows_target <-
   (
-    path (lisaac + "lib_os/unix/system/");
-    path (lisaac + "lib_os/windows/file_system/");
-    path (lisaac + "lib_os/unix/file_system/");  // BSBS: ??
-    path (lisaac + "lib_os/windows/video/");
+    path_li "lib_os/unix/system/";
+    path_li "lib_os/windows/file_system/";
+    path_li "lib_os/unix/file_system/";  // BSBS: ??
+    path_li "lib_os/windows/video/";
   );
 
   - dos_target <-
   (
-    path (lisaac + "lib_os/unix/system/");
-    path (lisaac + "lib_os/unix/file_system/"); // BSBS: ??    
-    path (lisaac + "lib_os/dos/file_system/");
-    path (lisaac + "lib_os/dos/video/");
+    path_li "lib_os/unix/system/";
+    path_li "lib_os/unix/file_system/"; // BSBS: ??    
+    path_li "lib_os/dos/file_system/";
+    path_li "lib_os/dos/video/";
   );
   
   - java_target <-
   (
-    path (lisaac + "lib_os/java/system/");
-    path (lisaac + "lib_os/java/file_system/");
+    path_li "lib_os/java/system/";
+    path_li "lib_os/java/file_system/";
   );
   
   - get_target <-
