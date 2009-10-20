@@ -40,8 +40,54 @@ Section Inherit
   
   - parent_any:ANY := ANY;
   
+Section Public
+  
+  - print_help <-
+  (
+    begin_usage1.print;
+    version.print;
+    (15- version.count).times { 
+      ' '.print;
+    };
+    begin_usage2.print;
+    LIP_CODE.print_usage;
+    end_usage.print;    
+  );
+  
+  - print_version <-
+  (
+    "Compiler version: ".print;
+    version.print; '\n'.print;
+    //
+    "Built on:         ".print;    
+    compiler_built_on.print;
+    '\n'.print;
+    //
+    "Debug level:      ".print; 
+    (debug_level = 0).if {
+      "No debug.".print;
+    } else {
+      debug_level.print;
+    }; 
+    '\n'.print;
+    //
+    "Inlining level:   ".print;
+    compiler_inlining_level.print;
+    '\n'.print;
+    //
+    "Optimization:     ".print;
+    compiler_optimization.print;
+    '\n'.print;
+  );
+  
 Section Private
-
+  
+  - version:STRING_CONSTANT := "0.18";
+  
+  //
+  //
+  //
+  
   - output_name:STRING_CONSTANT;
   
   - input_name:STRING_CONSTANT;
@@ -74,9 +120,12 @@ Section Private
   // Command.
   //
 
-  - begin_usage: STRING_CONSTANT :=
+  - begin_usage1: STRING_CONSTANT :=
   "----------------------------------------------------------------\n\
-  \--            Lisaac IS An Advanced Compiler V.0.17           --\n\
+  \--            Lisaac IS An Advanced Compiler V.";
+
+  - begin_usage2: STRING_CONSTANT :=
+  "--\n\
   \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
   \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
   \--                   http://www.IsaacOS.com                   --\n\
@@ -96,10 +145,8 @@ Section Private
   \\t mail to: sonntag@icps.u-strasbg.fr                          \n";
 
   - display_usage <-
-  (
-    begin_usage.print;
-    LIP_CODE.print_usage;
-    end_usage.print;
+  (    
+    print_help;
     die_with_code exit_failure_code;
   );
   
@@ -137,6 +184,9 @@ Section Private
           }
           .when 'r' then {
             is_readable := TRUE;
+          }
+          .when 'g' then {
+            is_readable := is_graph := TRUE;
           };
         } else {
           (lip_ok).if_false {
@@ -623,6 +673,7 @@ Section Public
     + time:INTEGER;    
     + txt:STRING;
     + s:LIP_SLOT_CODE;
+    + f:POINTER;
 
     ALIAS_STR.make;
     
@@ -734,7 +785,8 @@ Section Public
     };
     output_code.append "{\n";
     indent.append "  ";
-        
+    
+    profil_current := NULL;
     list_main.genere_extern output_code;    
         
     (is_java).if_false {
@@ -781,6 +833,27 @@ Section Public
     };    
     FS_MIN.write file_output with output_code size (output_code.count);
     FS_MIN.close file_output;
+    //
+    (is_graph).if {      
+      + p:PROFIL;
+      (PROFIL_LIST.profil_list.lower).to (PROFIL_LIST.profil_list.upper) do { j:INTEGER;
+        p := PROFIL_LIST.profil_list.item j;
+        (p.external_present).if {
+          p.set_external_present FALSE;
+          p.propagation_external;
+        };
+      };
+      //
+      output_code.copy "digraph G {\n";      
+      profil_main.genere_graph output_code;
+      (PROFIL_LIST.profil_list.lower).to (PROFIL_LIST.profil_list.upper) do { j:INTEGER;
+        PROFIL_LIST.profil_list.item j.genere_graph output_code;
+      };
+      output_code.append "}\n";
+      f := FS_MIN.open_write "graph.txt";    
+      FS_MIN.write f with output_code size (output_code.count);    
+      FS_MIN.close f;      
+    };    
     //
     end_time := SYSTEM.get_universal_time;
     (is_quiet).if_false {

@@ -32,7 +32,7 @@ Section Inherit
   
   + parent_any:Expanded ANY; 
   
-Section Private
+Section LISAAC
   
   - profil_list:FAST_ARRAY(PROFIL) := FAST_ARRAY(PROFIL).create_with_capacity 65536;  
   

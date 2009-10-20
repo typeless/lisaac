@@ -57,6 +57,8 @@ Section Private
   
   + target:STRING := "unix";
   
+  + output_file:STRING;
+  
   //
   // Service
   //
@@ -65,6 +67,10 @@ Section Private
   (
     path (lisaac + p);
   );
+  
+  + exit_success_code:INTEGER := 0;
+  
+  + exit_failure_code:INTEGER := 1;
 
   //
   // Directory.
@@ -125,7 +131,7 @@ Section Private
     };
     (target = "").if {
       "Target code needed.\n".print;
-      exit;
+      die_with_code exit_failure_code;
     };
   );
     
@@ -139,7 +145,7 @@ Section Private
       } else {
         "\nERROR: `" + lib + "' library for GCC not found.\n".print;
         run "del __tmp__.c";
-        exit;
+        die_with_code exit_failure_code;
       };    
     } else {
       run "echo \"int main(){ return(1); }\" > __tmp__.c";    
@@ -149,7 +155,7 @@ Section Private
       } else {
         ("\nERROR: `" + lib + "' library for GCC not found.\n").print;
         run "rm __tmp__.c";
-        exit;
+        die_with_code exit_failure_code;
       };    
     };
   );
@@ -173,11 +179,14 @@ Section Private
   - general_front_end <-
   (
     standard_path;
-    get_target;
+    get_target;    
   );
   
   - general_back_end <-
   (
+    (output_file = "").if {
+      output_file := input_file;
+    };    
     (target = "java").if {
       (is_cop).if {
         "Warning: COP not yet implemented\n".print;
@@ -194,13 +203,13 @@ Section Private
       (is_cop).if {
         "Warning: COP not yet implemented\n".print;
       };
-      execute ("gcc " + input_file + ".c -o " + input_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
+      execute ("gcc " + input_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
     };
     (target = "unix").if {      
       (is_cop).if {
         lib_gcc := lib_gcc + " -lpthread";
       };
-      execute ("gcc " + input_file + ".c -o " + input_file + " -lm " + option_gcc + lib_gcc);
+      execute ("gcc " + input_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
     };
   );
   
@@ -235,7 +244,7 @@ Section Public
   (
     ((level < 1) | (level > 20)).if {
       "Incorrect debug level.\n".print;
-      exit;
+      die_with_code exit_failure_code;
     };
     debug_level := level;
   );
@@ -279,7 +288,7 @@ Section Public
   //
   
   - o outputfile:STRING <-  
-  // output file (default: `input_file').
+  // Change output file (default: `input_file').
   (
     output_file := outputfile;
   );
@@ -318,4 +327,18 @@ Section Public
   // Statistic information.
   (
     is_statistic := TRUE;
+  );
+  
+  - h <-
+  // Help
+  (
+    help;
+    die_with_code exit_success_code;
+  );
+  
+  - version <-
+  // Version
+  (
+    version;
+    die_with_code exit_success_code;
   );

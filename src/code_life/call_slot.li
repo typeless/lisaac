@@ -472,6 +472,15 @@ Section Public
         wrt.genere_first_result buffer;      
       };
       buffer.append (profil.name);
+      
+      (is_graph).if {
+        (profil_current = NULL).if {
+          profil_main.add_call profil; 
+        } else {
+          profil_current.add_call profil; 
+        };                
+      };
+            
       (is_interrupt || {is_external}).if {
         (argument_list.first != NULL).if {
           semantic_error (argument_list.first.position,

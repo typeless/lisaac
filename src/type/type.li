@@ -541,9 +541,6 @@ Section Public
 	      semantic_error (tab.first.position,"Slot is not possible with a type C");
 	    };	  
           };
-          (intern_name == "UINTEGER_16__0D").if {
-            "Genere 2\n".print;
-          };
 
           (is_java).if_false {            
             ((name = ALIAS_STR.prototype_true) || 

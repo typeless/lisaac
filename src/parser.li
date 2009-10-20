@@ -27,8 +27,10 @@ Section Header
   - author    := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment   := "Parser for Lisaac language.";
   
-  // You can to get current grammar with `grep "//++" parser.li'
-  
+  // You can to get with 
+  // `grep "//++" parser.li' : Current grammar.
+  // `grep "//--" parser.li' : Syntax rules.
+  // `grep "////" parser.li' : lip grammar. 
 Section Inherit
   
   - parent_any:ANY := ANY;
@@ -391,7 +393,7 @@ Section Private
     result
   );
   
-  //-- affect -> ":=" | "<-" | "?="
+  //-- affect         -> ":=" | "<-" | "?="
   - read_affect:BOOLEAN <-
   ( 
     (read_symbol (ALIAS_STR.symbol_affect_immediate)) ||
@@ -399,7 +401,7 @@ Section Private
     {read_symbol (ALIAS_STR.symbol_affect_code)}
   );
   
-  //-- style         -> '-' | '+'
+  //-- style          -> '-' | '+'
   - read_style:CHARACTER <-
   ( + result:CHARACTER;
     read_character '-'.if {
@@ -414,7 +416,7 @@ Section Private
     result
   );
   
-  //-- identifier    -> 'a'-'z' {'a'-'z' | '0'-'9' | '_'}
+  //-- identifier     -> 'a'-'z' {'a'-'z' | '0'-'9' | '_'}
   - read_identifier:BOOLEAN <-
   ( + result:BOOLEAN;
     + posold,idx:INTEGER;
@@ -490,7 +492,7 @@ Section Private
     result
   );
   
-  //-- keyword -> 'A'-'Z' 'a'-'z' {'a'-'z' | '0'-'9' | '_'}
+  //-- keyword        -> 'A'-'Z' 'a'-'z' {'a'-'z' | '0'-'9' | '_'}
   - read_keyword:BOOLEAN <-
   ( + result:BOOLEAN;
     // On passe les espaces :
@@ -560,11 +562,11 @@ Section Private
     result
   );
   
-  //-- integer -> number 
-  //-- number  -> {'0'-'9'} ['d'] 
-  //--          | '0'-'9' {'0'-'9' | 'A'-'F' | 'a'-'f'} 'h'
-  //--          | {'0'-'7'} 'o'
-  //--          | {'0' | '1'} 'b'
+  //-- integer        -> number 
+  //-- number         -> {'0'-'9'} ['d'] 
+  //--                 | '0'-'9' {'0'-'9' | 'A'-'F' | 'a'-'f'} 'h'
+  //--                 | {'0'-'7'} 'o'
+  //--                 | {'0' | '1'} 'b'
   - read_integer:BOOLEAN <-
   ( + result:BOOLEAN;
     + pos_old:INTEGER;
@@ -620,7 +622,7 @@ Section Private
   );
 
   - read_real:BOOLEAN <-
-  //-- real -> '0'-'9' {'0'-'9'_} [ '.' {'0'-'9'} ] [ 'E' ['+'|'-'] '0'-'9' {'0'-'9'}
+  //-- real           -> '0'-'9' {'0'-'9'_} [ '.' {'0'-'9'} ] [ 'E' ['+'|'-'] '0'-'9' {'0'-'9'}
   ( + result:BOOLEAN;
     + pos_old:INTEGER;
 
@@ -744,7 +746,7 @@ Section Private
     };
   );
   
-  //-- character  -> '\'' ascii '\''
+  //-- character      -> '\'' ascii '\''
   - read_characters:BOOLEAN <-
   ( + result:BOOLEAN;
     + old_pos:INTEGER;
@@ -786,7 +788,7 @@ Section Private
     result
   );
   
-  //-- string -> '\"' ascii_string '\"'
+  //-- string         -> '\"' ascii_string '\"'
   - read_string:BOOLEAN <-
   ( + result:BOOLEAN;
     + old_pos:INTEGER;
@@ -821,7 +823,7 @@ Section Private
     result
   );
   
-  //-- external -> '`' ascii_c_code '`'
+  //-- external       -> '`' ascii_c_code '`'
   - read_external:BOOLEAN <-
   ( + result:BOOLEAN;
     + pos_old:INTEGER;
@@ -856,8 +858,8 @@ Section Private
     result
   );
   
-  //-- operator -> '!' | '@' | '#' | '$' | '%' | '^' | '&' | '<' | '|'  
-  //--           | '*' | '-' | '+' | '=' | '~' | '/' | '?' | '\' | '>'
+  //-- operator       -> '!' | '@' | '#' | '$' | '%' | '^' | '&' | '<' | '|'  
+  //--                 | '*' | '-' | '+' | '=' | '~' | '/' | '?' | '\' | '>'
   - read_operator:BOOLEAN <-
   ( + result:BOOLEAN;
     + old_pos:INTEGER;

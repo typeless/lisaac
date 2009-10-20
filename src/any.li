@@ -91,6 +91,7 @@ Section Public
   - is_verbose:BOOLEAN <- (verbose_level != 0);
   
   - is_readable:BOOLEAN;
+  - is_graph:BOOLEAN;
   
   //
   // Other flags.
@@ -149,6 +150,14 @@ Section Public
   
   - list_main:LIST;
   - context_main:LOCAL;
+  
+  - profil_main:PROFIL_SLOT := // BSBS: A REVOIR (a uniformiser ((graph)))
+  ( + result:PROFIL_SLOT;
+    
+    result := PROFIL_SLOT.clone; 
+    result.alloc_profil_main;
+    result
+  );  
   
   - list_current:LIST;
   

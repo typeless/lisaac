@@ -67,10 +67,12 @@ Section Public
   
   - run <-
   ( + slot:LIP_SLOT_CODE;
-    + val,rec:LIP_CONSTANT;
+    + val,rec:LIP_CONSTANT;    
     + str:LIP_STRING;    
+    + int:LIP_INTEGER;
     + path:STRING_CONSTANT;
     + is_rec:BOOLEAN;
+    
     
     (receiver != NULL).if {
       rec := receiver.run_expr;
@@ -86,11 +88,25 @@ Section Public
         warning_error (position,"No argument for `print' method.");
       };
       rec.print;      
-    }.elseif {name = ALIAS_STR.slot_exit} then {
-      (val != NULL).if {
-        warning_error (position,"No argument for `exit' method.");
+    }.elseif {name = ALIAS_STR.slot_die_with_code} then {      
+      int ?= val;
+      (int = NULL).if {
+        "C'est : \n".print; 
+        val.print;
+        '\n'.print;
+        semantic_error (position,"Integer argument needed.");
       };
-      die_with_code exit_failure_code;      
+      die_with_code (int.value);
+    }.elseif {name = ALIAS_STR.slot_help} then {
+      (val != NULL).if {
+        warning_error (position,"No argument for `help' method.");
+      };
+      LISAAC.print_help;
+    }.elseif {name = ALIAS_STR.slot_version} then {
+      (val != NULL).if {
+        warning_error (position,"No argument for `version' method.");
+      };
+      LISAAC.print_version;
     }.elseif {name = ALIAS_STR.slot_path} then {
       str ?= val;
       (str = NULL).if {

@@ -37,6 +37,11 @@ Section Public
   ( + result:TYPE_FULL;
         
     result := p.parameter_to_type Self;        
+    (result = NULL).if {
+      string_tmp.copy "Cannot resolve type for type parameter ";
+      append_in string_tmp;
+      semantic_error(p.position, string_tmp);
+    };
     result
   );
   

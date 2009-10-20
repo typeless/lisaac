@@ -156,6 +156,15 @@ Section Public
 
   - genere buffer:STRING <-
   ( + idx,beg:INTEGER;
+
+    ((is_graph) && {is_persistant}).if {
+      (profil_current != NULL).if {
+        profil_current.set_external_present TRUE;
+      } else {
+        profil_main.set_external_present TRUE;
+      };
+      buffer.append "/* PERSISTANT */";
+    };    
      
     (static_type.raw != TYPE_VOID).if {
       buffer.append "((";

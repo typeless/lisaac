@@ -94,7 +94,10 @@ Section Public
     + ts:ITM_TYPE_MONO;
     
     PROFIL_LIST.add Self;
-    
+    (is_graph).if {
+      set_call := HASHED_DICTIONARY(INTEGER,PROFIL).create;
+      set_back := HASHED_SET(PROFIL).create;
+    };    
     (s.id_section.is_external).if {
       name := s.name;
     } else {

@@ -157,7 +157,24 @@ Section Public
       .when 17 then { // LIST.item index:INTEGER :E
         not_yet_implemented;
       }
-      .when 18 to 31 then { // FREE
+      .when 18 then { // compiler_inlining_level -> INTEGER.
+	result := INTEGER_CST.create position value inline_level type (type_integer.default);
+      }
+      .when 19 then { // compiler_optimization -> BOOLEAN.
+        (is_optimization).if {          
+          result := PROTOTYPE_CST.create position type (type_true.default);	
+        } else {
+          result := PROTOTYPE_CST.create position type (type_false.default);	
+        };	
+      }
+      .when 20 then { // compiler_built_on -> STRING_CONSTANT.        
+        string_tmp.clear;
+        CLOCK.date.append_in string_tmp;
+        string_tmp.add_last ' ';
+        CLOCK.time.append_in string_tmp;
+	result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
+      }
+      .when 21 to 31 then { // FREE
         syntax_error (position,"Free external lisaac code.");
       };
     } else {

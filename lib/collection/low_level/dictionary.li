@@ -181,7 +181,7 @@ Section Public
     deferred
   )
   [ ...
-    +? {v = at k}; 
+    +? {v = fast_at k}; 
   ];
 
   - add v:V to k:K <-
@@ -393,7 +393,7 @@ Section Public
     result
   )
   [ ...
-    +? {(at Result) = item index};
+    +? {(fast_at Result) = item index};
   ];
 	
   - key_map_in buffer:COLLECTION(K) <-
