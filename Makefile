@@ -22,7 +22,7 @@
 #  values suit your needs. This option is used in order to install lisaac in a
 #  non-userland way.
 #
-#  - interactive_userland  Starts the installer in userland interactive mode
+#  - user                  Starts the installer in userland interactive mode
 #
 #  - install               Copy all files in a proper place (non-userland)
 #
@@ -119,7 +119,7 @@ bin/lisaac: bin/lisaac.c bin/path.h
 bin/shorter: bin/shorter.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@
 
-interactive_userland: install_lisaac.c
+user: install_lisaac.c
 	@echo - Lisaac compiler installation For Unix / Linux / Windows -
 	@echo Please wait...
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
