@@ -65,11 +65,9 @@ Section Public
       0.to (size/2-4) do { i:INTEGER;
         px := a.cos * i;
         py := a.sin * i;
-        //di := ((REAL.pi/size * i).sqrt) * i;
-        di := ((i / (size/2)) * (i / (size/2))) * (size/2);  //((REAL.pi/size * i).atan ) * i;
+        di := ((REAL.pi/size * i).sqrt) * i;
         npx := a.cos * di;
         npy := a.sin * di;
-        //mask.item (px.to_integer+size/2,py.to_integer+size/2).make (npx.to_integer+size/2,npy.to_integer+size/2);
         mask.item (px.to_integer+size/2,py.to_integer+size/2).make (npx.to_integer+size/2,npy.to_integer+size/2);
       };
       a := a + 0.001;
