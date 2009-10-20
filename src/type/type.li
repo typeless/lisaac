@@ -38,7 +38,7 @@ Section Inherit
   
 Section PROFIL_LIST
   
-  - is_alias_struct:BOOLEAN := TRUE; 
+  - is_alias_struct:BOOLEAN := FALSE; //TRUE; 
   
 Section Private
   

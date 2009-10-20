@@ -573,14 +573,11 @@ Section Private
       body := switch.list.item k.code;
       (body.is_empty).if_false {	
 	msg_slot ?= body.last;
-	(msg_slot != NULL).if {	  
+	((msg_slot != NULL) && {msg_slot.profil = profil}).if {	  
 	  // DEBUG
 	  (msg_slot = Self).if {
 	    semantic_error (position,"CALL_SLOT : BUG!!!!");
-	  };
-	  (msg_slot.profil != profil).if {
-	    semantic_error (position,"CALL_SLOT : BUG2!!!!");
-	  };
+          };
 	  // FIN DEBUG
 	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE;
 	  body.put (LOOP_END.create (msg_slot.position) loop result) to (body.upper);
