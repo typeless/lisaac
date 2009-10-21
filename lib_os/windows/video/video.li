@@ -26,6 +26,11 @@ Section Header
   
   - comment     := "Video Driver for Windows";
 
+  - lip      <-
+  (
+    add_lib "-lgdi32";
+  );
+
   - external := 
 `
 #include <windows.h>

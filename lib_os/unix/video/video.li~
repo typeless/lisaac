@@ -25,7 +25,12 @@ Section Header
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
   
   - comment     := "X11 Driver video - Xlib -";
-
+  
+  - lip      <-
+  (
+    add_lib "-lX11";
+  );
+  
   - external := 
 `
 #include <X11/Xlib.h>
@@ -45,7 +50,7 @@ XImage  *ximage=NULL;
 
 Section Inherit
   
-  + parent_bitmap:Expanded BITMAP[PIXEL_24];
+  + parent_bitmap:Expanded BITMAP(PIXEL_24);
   
 Section Public //VIDEO
   
@@ -73,7 +78,7 @@ Section Public
   );
   
   - make (w,h:INTEGER) <-
-  ( + data:NATIVE_ARRAY[UINTEGER_8];
+  ( + data:NATIVE_ARRAY(UINTEGER_8);
     + w_max:INTEGER;
     
     // Init BITMAP:
@@ -107,22 +112,22 @@ Section Public
     
     planes
     .when 15 then {
-      line_tmp := BMP_LINE[PIXEL_15].create w_max;
+      line_tmp := BMP_LINE(PIXEL_15).create w_max;
       data := line_tmp.get_storage;
       `ximage = XCreateImage(display,None,15,ZPixmap,0,(char *)@data,@w_max,1,16,0)`;
     }
     .when 16 then { 
-      line_tmp := BMP_LINE[PIXEL_16].create w_max; 
+      line_tmp := BMP_LINE(PIXEL_16).create w_max; 
       data := line_tmp.get_storage;
       `ximage = XCreateImage(display,None,16,ZPixmap,0,(char *)@data,@w_max,1,16,0)`;
     }
     .when 24 then { 
-      line_tmp := BMP_LINE[PIXEL_32].create w_max; 
+      line_tmp := BMP_LINE(PIXEL_32).create w_max; 
       data := line_tmp.get_storage;
       `ximage = XCreateImage(display,None,24,ZPixmap,0,(char *)@data,@w_max,1,32,0)`;
     }
     .when 32 then { 
-      line_tmp := BMP_LINE[PIXEL_32].create w_max; 
+      line_tmp := BMP_LINE(PIXEL_32).create w_max; 
       data := line_tmp.get_storage;
       `ximage = XCreateImage(display,None,32,ZPixmap,0,(char *)@data,@w_max,1,32,0)`;
     };
@@ -200,7 +205,7 @@ Section Public
   image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   ( + len:INTEGER;
 
-    len := x1 - x;
+    len := x1 - x;    
     VIDEO.line_tmp.put line offset ofs from 0 to len;
     `XPutImage(display,window,gc, ximage, 0, 0, @x, @y, @len+1, 1)`;
   );
@@ -226,9 +231,9 @@ Section Public
     w := screen_width;
     h := screen_height;
     view_screen := `mmap(0, @w*@h*3, PROT_READ | PROT_WRITE,MAP_SHARED,@fb, 0)`:
-    NATIVE_ARRAY[UINTEGER_8];
+    NATIVE_ARRAY(UINTEGER_8);
     
-    (CONVERT[NATIVE_ARRAY[UINTEGER_8],INTEGER].on view_screen = -1).if {
+    (CONVERT(NATIVE_ARRAY(UINTEGER_8),INTEGER).on view_screen = -1).if {
       "Error: failed to map framebuffer device to memory.\n".print;
       die_with_code 0;
     };
@@ -248,7 +253,7 @@ Section Public
       "MERDE Y\n".print;
     };
     */
-    ofs := (y * screen_width + x) * 3;
+    ofs := (y * screen_width + x) * 4;
     (view_screen.item  ofs   .to_uinteger_32      ) | 
     (view_screen.item (ofs+1).to_uinteger_32 <<  8) |
     (view_screen.item (ofs+2).to_uinteger_32 << 16)    
@@ -257,7 +262,7 @@ Section Public
   - set_pixel_screen (x,y:INTEGER) color col:UINTEGER_32 <-
   ( + ofs:INTEGER;
     
-    ofs := (y * screen_width + x) * 3;
+    ofs := (y * screen_width + x) * 4;
     view_screen.put ((col >> 16).to_uinteger_8)         to (ofs+2);
     view_screen.put (((col >> 8) & 0FFh).to_uinteger_8) to (ofs+1);
     view_screen.put ((col & 0FFh).to_uinteger_8)        to (ofs+0);    
@@ -265,7 +270,7 @@ Section Public
   
 Section Private
   
-  - view_screen:NATIVE_ARRAY[UINTEGER_8];
+  - view_screen:NATIVE_ARRAY(UINTEGER_8);
 
   /* A voir pour bloquer la size minimum
   

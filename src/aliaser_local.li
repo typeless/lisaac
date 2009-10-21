@@ -66,7 +66,7 @@ Section Public
     + result:STRING_CONSTANT;
     
     loc  := wr.local;
-    (is_on).if {      
+    ((is_on) && {loc.style != ' '}).if {      
       loc2 := loc.my_alias;
       (loc2 = NULL).if {
         loc2 := search_alias loc;
@@ -86,7 +86,9 @@ Section Public
       };
       result := loc2.intern_name;
     } else {
-      add_var_size loc;
+      (loc.style != ' ').if {
+        add_var_size loc;
+      };
       result := loc.intern_name;
     };
     result
@@ -157,7 +159,7 @@ Section ALIASER_LOCAL, READ_LOCAL
     (v.style != '+').if {
       v.intern_name.print; " style [".print; v.style.print; "] ".print;
       '\n'.print;
-      warning_error (v.position,"BUG ANY.add_var_size Error");
+      warning_error (v.position,"BUG ALIASER_LOCAL.add_var_size Error");
     };
     // BSBS: C'est pas top, avec des HASHED_SET ce serait mieux...
     t := v.type;

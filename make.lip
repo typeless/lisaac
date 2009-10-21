@@ -203,7 +203,7 @@ Section Private
       (is_cop).if {
         "Warning: COP not yet implemented\n".print;
       };
-      execute ("gcc " + input_file + ".c -o " + output_file + ".exe -lgdi32 " + option_gcc + lib_gcc);
+      execute ("gcc " + input_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
     };
     (target = "unix").if {      
       (is_cop).if {
@@ -329,16 +329,16 @@ Section Public
     is_statistic := TRUE;
   );
   
-  - h <-
+  - help <-
   // Help
   (
-    help;
+    help_command;
     die_with_code exit_success_code;
   );
   
   - version <-
   // Version
   (
-    version;
+    compiler_version;
     die_with_code exit_success_code;
   );

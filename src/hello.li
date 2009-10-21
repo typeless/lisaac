@@ -34,9 +34,13 @@ Section Inherit
 Section Public
 
   - main <-
-  ( //+ txt:STRING;
-    
-    "Hello\n".print;
-    
+  ( + j:INTEGER;    
+    j := 10;
+    'A'.print;
+    {j > 0}.while_do {
+      'e'.print;
+      j := j - 1;
+    };
+    '\n'.print;
   );
 

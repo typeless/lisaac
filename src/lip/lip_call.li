@@ -97,12 +97,12 @@ Section Public
         semantic_error (position,"Integer argument needed.");
       };
       die_with_code (int.value);
-    }.elseif {name = ALIAS_STR.slot_help} then {
+    }.elseif {name = ALIAS_STR.slot_help_command} then {
       (val != NULL).if {
-        warning_error (position,"No argument for `help' method.");
+        warning_error (position,"No argument for `help_command' method.");
       };
       LISAAC.print_help;
-    }.elseif {name = ALIAS_STR.slot_version} then {
+    }.elseif {name = ALIAS_STR.slot_compiler_version} then {
       (val != NULL).if {
         warning_error (position,"No argument for `version' method.");
       };

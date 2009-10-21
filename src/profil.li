@@ -310,21 +310,21 @@ Section Public
     code.remove;    
   );
   
-  - search_tail_recursive:BOOLEAN <-
+  - search_and_convert_tail_recursive <-
   ( + switch:SWITCH;
     + msg:CALL_SLOT;
     + lst:LIST;
     + count_recur:INTEGER;
-    + result:BOOLEAN;
-        
+            
     (
       (! mode_recursive)      &&
       {is_not_tail_recursive} &&       
-      {! code.is_empty}
-    ).if {          
+      {! code.is_empty} && 
+      {result_list.is_empty}
+    ).if {                      
       switch ?= code.last;            
-      (switch != NULL).if {	
-	// Verification des cases :		
+      (switch != NULL).if {	                
+	// Verification cases:
 	(switch.list.lower).to (switch.list.upper) do { j:INTEGER;
 	  lst := switch.list.item j.code;
 	  (lst.is_empty).if_false {
@@ -336,18 +336,16 @@ Section Public
 	};
 	(count_recur = switch.list.count).if {
 	  semantic_error (slot.position,"Recursivity without end.");
-	};
-	(count_recur = switch.list.count - 1).if {	  	  
-	  ((count_intern_call - 1) = count_recur).if {
-	    (link_count = count_intern_call).if {
-	      result := TRUE;
-	      stat := stat | tail_bit;
-	    };
-	  };
-	};
+        };        	
+        ((count_intern_call - 1) = count_recur).if {
+          ((link_count = count_intern_call) || {! is_context_sensitive}).if {
+            new_execute_pass;              
+            stat := 0; 
+            convert_tail_recursive;
+          };
+        };
       };
     };
-    result    
   );
   
   - i_am_the_last i:INSTR :BOOLEAN <-
@@ -385,7 +383,9 @@ Section Public
     CALL_SLOT.reset_count_context_sensitive;  
     
     seq_call_and_loop := seq_call_and_loop + 1;
-          
+    
+    search_and_convert_tail_recursive;    
+    
     code ?= code.execute; 
     
     // BSBS: Netoyer les result pas utile
@@ -681,3 +681,40 @@ Section PROFIL, LISAAC
   
   - counter_function:INTEGER;
   - counter_recursivity_function:INTEGER;
+  
+Section Private
+  
+  - convert_tail_recursive <-
+  ( + switch:SWITCH;
+    + msg_slot:CALL_SLOT;    
+    + body:LIST;     
+    + loop:LOOP;
+    + push:PUSH;
+    + new_code:LIST;
+        
+    new_code := LIST.create (code.position);        
+    (debug_level_option != 0).if {      
+      push ?= code.first;
+      new_code.add_last (push.my_copy);      
+      push.set_first FALSE;
+    };
+            
+    loop := LOOP.create position name name body code;
+    new_code.add_last loop;
+        
+    // Extract Switch/body:
+    switch ?= code.last;
+    (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
+      body := switch.list.item k.code;
+      (body.is_empty).if_false {	
+	msg_slot ?= body.last;
+        ((msg_slot != NULL) && {msg_slot.profil = Self}).if {	  	  
+          link_count := link_count - 1;          
+	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE argument TRUE;
+	  body.put (LOOP_END.create (msg_slot.position) loop loop) to (body.upper);
+	};	
+      };
+    };
+    count_intern_call := 1;
+    code := new_code;    
+  );
