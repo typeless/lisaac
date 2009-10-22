@@ -448,11 +448,7 @@ Section Public
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
-        ? {v.style = ' '};
-        
-        (v.style != ' ').if {
-          semantic_error (v.position,"BUG PROFIL.genere_handler Error");
-        };
+        ? {(v.style = ' ') || {v.style = '!'}};        
         genere v result FALSE in buffer;	
         buffer.add_last ',';
       };
@@ -710,7 +706,7 @@ Section Private
 	msg_slot ?= body.last;
         ((msg_slot != NULL) && {msg_slot.profil = Self}).if {	  	  
           link_count := link_count - 1;          
-	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE argument TRUE;
+	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE style '!';
 	  body.put (LOOP_END.create (msg_slot.position) loop loop) to (body.upper);
 	};	
       };

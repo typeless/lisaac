@@ -66,7 +66,7 @@ Section Public
     + result:STRING_CONSTANT;
     
     loc  := wr.local;
-    ((is_on) && {loc.style != ' '}).if {      
+    ((is_on) && {loc.style = '+'}).if {      
       loc2 := loc.my_alias;
       (loc2 = NULL).if {
         loc2 := search_alias loc;
@@ -86,7 +86,7 @@ Section Public
       };
       result := loc2.intern_name;
     } else {
-      (loc.style != ' ').if {
+      (loc.style = '+').if {
         add_var_size loc;
       };
       result := loc.intern_name;
