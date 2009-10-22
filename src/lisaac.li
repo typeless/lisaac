@@ -128,7 +128,7 @@ Section Private
   "--\n\
   \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
   \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
-  \--                   http://www.IsaacOS.com                   --\n\
+  \--                   http://www.lisaac.org                    --\n\
   \----------------------------------------------------------------\n\
   \Usage:                                                          \n\
   \  lisaac [<lip_file.lip>] [<input_file[.li]>] {<Options>}       \n\
