@@ -31,15 +31,10 @@ Section Private
   (
     general_front_end;
     path "./*";
-    input_file := "main";
+    input_file := "child";
   );
 
   + m_test_description :STRING :=
-    "Test that (INTEGER = NULL) raise a compilation error\n\
-    \The generated C code compare a pointer with a non pointer variable\n";
+    "Test that we can resend even if the child redefined the inherit slot\n";
 
-  + m_test_run :BOOLEAN := FALSE;
-
-  + m_test_compile :BOOLEAN := FALSE;
-
-  + m_test_compile_pattern :STRING := "--SEMANTIC---------";
+  + m_test_run :BOOLEAN := TRUE;
