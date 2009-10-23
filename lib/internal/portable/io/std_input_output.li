@@ -71,8 +71,8 @@ Section Public
     std_input.end_of_input
   );
   
-  - read_line_in str:STRING <-
+  - read_line_in buffer:STRING <-
   (
-    std_input.read_line_in str;
+    std_input.read_line_in buffer;
   );
 
