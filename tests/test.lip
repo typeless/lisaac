@@ -23,12 +23,12 @@ Section Private
 
   - exit_true <-
   (
-    exit 0;
+    die_with_code 0;
   );
 
   - exit_false <-
   (
-    exit 1;
+    die_with_code 1;
   );
 
   + m_test_description :STRING := "<NO DESCRIPTION>\n";

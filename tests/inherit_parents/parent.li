@@ -1,0 +1,15 @@
+Section Header
+
+  + name := PARENT;
+
+Section Inherit
+
+  + parent :Expanded OBJECT;
+
+Section Public
+
+  - test <-
+  (
+    parent.test;
+    "PARENT".println;
+  );

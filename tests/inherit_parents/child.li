@@ -1,0 +1,14 @@
+Section Header
+
+  + name := CHILD;
+
+Section Inherit
+
+  + parent :Expanded PARENT;
+
+Section Public
+
+  - main <-
+  (
+    test
+  );
