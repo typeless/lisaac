@@ -26,8 +26,6 @@ Section Private
   
   + is_valid:BOOLEAN;
   
-  + is_shorter:BOOLEAN;
-    
   - src_path <-
   ( 
     path_li "src/";
@@ -80,9 +78,6 @@ Section Private
     (is_valid).if {
       execute "cp lisaac.c ../bin/.";
       execute "cp lisaac ../bin/.";
-    };
-    (is_shorter).if {
-      execute "cp shorter ../bin/.";
     };    
   );
   
@@ -98,7 +93,6 @@ Section Public
   // Compile the shorter.
   (
     shorter_path;
-    is_shorter := TRUE;
   );
   
   - valid <-

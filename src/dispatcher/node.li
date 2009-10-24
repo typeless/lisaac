@@ -48,8 +48,6 @@ Section PROTOTYPE
   ( + j:INTEGER;
     + is_ok:BOOLEAN;
     
-    //NODE_TYPE.reset_count_flat;
-    
     VARIABLE.update;
     j := node_list.lower;    
     {j <= node_list.upper}.while_do {
@@ -60,12 +58,6 @@ Section PROTOTYPE
 	j := j + 1;
       };	            
     };   
-    /*
-    NODE_TYPE.count_flat.print;
-    '/'.print;
-    (NODE_TYPE.count_flat + NODE_TYPE.count_not_flat).print;
-    '\n'.print;
-    */
   );
   
 Section Public

@@ -174,7 +174,10 @@ Section Public
         CLOCK.time.append_in string_tmp;
 	result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
       }
-      .when 21 to 31 then { // FREE
+      .when 21 then { // forall_data action:{ E; } 
+        //result := forall_data_product;
+      }
+      .when 22 to 31 then { // FREE
         syntax_error (position,"Free external lisaac code.");
       };
     } else {
@@ -185,3 +188,14 @@ Section Public
     result
   );
   
+Section Private
+  
+  //
+  // Reflexivity
+  //
+  
+  - forall_data_product:EXPR <-
+  ( + type:TYPE_FULL;
+    type := profil_slot.argument_list.first.type;
+    
+  );

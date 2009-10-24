@@ -82,7 +82,7 @@ Section Public
   
 Section Private
   
-  - version:STRING_CONSTANT := "0.18 (unstable)";
+  - version:STRING_CONSTANT := "0.18";
   
   //
   //

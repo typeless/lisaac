@@ -572,6 +572,23 @@ Section Private
     '\n'.print;
   );    
   
+  - compile_shorter <-
+  ( 
+    "  Compile `shorter' tools for your system (please wait ...)\n".print;
+    (ENVIRONMENT.execute_command 
+    "bin/lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/." = 0).if {    
+      "  Shorter ok!\n".print;
+      (system = system_windows).if {
+        ENVIRONMENT.execute_command "del shorter.c";
+      } else {
+        ENVIRONMENT.execute_command "rm shorter.c";
+      };
+    } else {
+      "  Sorry, `shorter' not ready...\n".print;
+    };
+    '\n'.print;
+  );
+  
   //
   // Build lib doc.
   //
@@ -634,7 +651,9 @@ Section Public
         compile_file "lisaac";
         
         title "Compilation of Shorter tool." count 5; 
-        compile_file "shorter";
+        
+        compile_shorter;
+        
         "Welcome to the Lisaac World !                           \n\
         \=============================                           \n\
         \  Installation successfull.                             \n\

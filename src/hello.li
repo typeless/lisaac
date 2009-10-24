@@ -34,13 +34,29 @@ Section Inherit
 Section Public
 
   - main <-
-  ( + j:INTEGER;    
-    j := 10;
-    'A'.print;
-    {j > 0}.while_do {
-      'e'.print;
-      j := j - 1;
+  ( + str:STRING;
+    
+    str := STRING.create 100;
+    str.copy "Hello ";
+    str.append "world\n";
+    str.forall_data { dta:E;
+      //
+      "Type:  ".print;
+      (dta.is_expanded_type).if {        
+        "Expanded.\n".print;;
+      } else {
+        "Reference.\n".print;
+      };
+      //
+      "Size:  ".print;
+      dta.object_size.print;
+      '\n'.print;
+      //
+      "Value: ".print;
+      dta.print;
+      '\n'.print;
+      //
+      "------------------\n".print;
     };
-    '\n'.print;
   );
 

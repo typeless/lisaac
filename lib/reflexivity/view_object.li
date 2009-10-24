@@ -112,7 +112,7 @@ Section MEMORY
         
     ((! is_separate) && {! is_non_mutable}).if {
       result := dico_clone.at Self else_add { 
-	+ new_clone:VIEW_OBJECT;
+	+ new_clone:VIEW_OBJECT(E);
 	
 	new_clone := clone;
 	new_clone.for_all_set_data { obj:VIEW_OBJECT(F);
