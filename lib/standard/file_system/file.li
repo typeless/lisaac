@@ -155,7 +155,7 @@ Section FILE
     0
   )
   [
-    +? {cursor = Old cursor + s};
+    +? { (cursor = Old cursor + s ) || {cursor = size} };
   ];
     
   - physical_write buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-

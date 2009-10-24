@@ -85,7 +85,7 @@ Section Public
   - open_read_only:BOOLEAN <-
   ( + pa:NATIVE_ARRAY(CHARACTER);    
     pa := path.to_external;
-    stream := `fopen((char*)@path_pointer,"rb")`:(POINTER); 
+    stream := `fopen((char*)@pa,"rb")`:(POINTER);
     stream != NULL
   ); 
   
