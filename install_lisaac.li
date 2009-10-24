@@ -573,16 +573,19 @@ Section Private
   );    
   
   - compile_shorter <-
-  ( 
+  ( + rm,compile:STRING_CONSTANT;
+    
     "  Compile `shorter' tools for your system (please wait ...)\n".print;
-    (ENVIRONMENT.execute_command 
-    "bin/lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/." = 0).if {    
-      "  Shorter ok!\n".print;
-      (system = system_windows).if {
-        ENVIRONMENT.execute_command "del shorter.c";
-      } else {
-        ENVIRONMENT.execute_command "rm shorter.c";
-      };
+    (system = system_windows).if {
+      rm := "del shorter.c";
+      compile := "bin\\lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
+    } else {
+      rm := "rm shorter.c";
+      compile := "bin/lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
+    };
+    (ENVIRONMENT.execute_command compile = 0).if {    
+      "  Shorter ok!\n".print;      
+      ENVIRONMENT.execute_command rm; 
     } else {
       "  Sorry, `shorter' not ready...\n".print;
     };

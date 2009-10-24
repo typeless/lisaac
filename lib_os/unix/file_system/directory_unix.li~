@@ -84,8 +84,8 @@ Section Public
             reduce_path string_tmp;            
             new_entry := get_entry string_tmp;                                   
             (new_entry = NULL).if {	      	                    
-            //  "FILE NOT FOUND : ".print; string_tmp.print; '\n'.print;              
-	      result := FALSE;
+              "WARNING: ".print; string_tmp.print; " no readable!\n".print;              
+	      //result := FALSE;
 	    } else {
 	      (new_entry.path.count >= path.count).if {
 		list.add_last new_entry;

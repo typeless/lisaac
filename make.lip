@@ -55,7 +55,7 @@ Section Private
   + option_gcc:STRING;  
   + lib_gcc:STRING;
   
-  + target:STRING := "unix";
+  + target:STRING := "windows";
   
   + output_file:STRING;
   
