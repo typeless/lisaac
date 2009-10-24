@@ -44,8 +44,6 @@ Section Public
   //
   
   - object_size:INTEGER := 1;
-
-//  - pointer_size:INTEGER := 1;
   
   - maximum:INTEGER := 255;
   
@@ -69,9 +67,6 @@ Section Public
   );
   
   - to_integer_8:INTEGER_8 <- CONVERT(CHARACTER,INTEGER_8).on Self;
-  // Auto-cast.
-  
-  //- to_char_unicode:CHAR_UNICODE <- CHAR_UNICODE.force_conversion Self;
   // Auto-cast.
   
   - to_uinteger_8:UINTEGER_8 <- CONVERT(CHARACTER,UINTEGER_8).on Self;
