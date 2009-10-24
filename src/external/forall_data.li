@@ -33,9 +33,9 @@ Section Inherit
   
 Section Public
     
-  + action:ITM_BLOCK;
+  + action:ITM_READ_ARG2;
   
-  + list_data:FAST_ARRAY(COUPLE(SLOT_DATA,LIST));
+  + list_data:FAST_ARRAY(COUPLE(SLOT_DATA,EXPR));
   
   //
   // Creation.
@@ -49,11 +49,21 @@ Section Public
   );
 
   - make t:TYPE_FULL action ac:ITM_BLOCK <-
-  ( 
-    type   := t;
-    action := ac;
-    list_data := HASHED_DICTIONARY(LIST,SLOT_DATA).create;    
-    list.add_last Self;
+  ( + lst:FAST_ARRAY(SLOT);
+    + dta:SLOT_DATA;
+    + c:COUPLE(SLOT_DATA,EXPR);
+    
+    action := ITM_READ_ARG2.create (ac.position) name (ALIAS_STR.slot_value) args (,);
+    list_data := FAST_ARRAY(COUPLE(SLOT_DATA,EXPR)).create;    
+    t.add_reflexivity Self;
+    lst := t.slot_run;
+    (lst.lower).to (lst.upper) do { i:INTEGER;
+      dta := lst.item i.slot_data_intern;
+      (dta != NULL).if {
+        c := COUPLE(SLOT_DATA,LIST).create dta and ();
+        list_data.add_last c;
+      };
+    };
   );
   
   //
@@ -62,14 +72,17 @@ Section Public
   
   - my_copy:SELF <-
   (
-    
+    clone
   );
   
   //
   // Depend. 
   //
   
-  - depend
+  - add var:SLOT_DATA <-
+  (
+    
+  );
   
   //
   // Execute.
@@ -96,7 +109,17 @@ Section Public
   //
   
   - display buffer:STRING <-
-  (
-    
+  ( 
+    buffer.append "Forall_data:\n";
+    indent.append "  ";
+    (list_data.lower).to (list_data.upper) do { i:INTEGER;
+      buffer.append indent;
+      buffer.append "- ";
+      buffer.append (list_data.item i.first.intern_name);
+      buffer.append ":\n";
+      buffer.append indent;
+      list_data.item i.second.genere buffer;
+    };
+    indent.remove_last 2;    
   );
   
