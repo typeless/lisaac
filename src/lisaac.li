@@ -141,8 +141,7 @@ Section Private
   - end_usage:STRING_CONSTANT :=
   "                                                                \n\
   \Bug report:                                                     \n\
-  \\t post in: https://alioth.debian.org/projects/lisaac/         \n\
-  \\t mail to: sonntag@icps.u-strasbg.fr                          \n";
+  \\t post in: https://alioth.debian.org/projects/lisaac/         \n";
 
   - display_usage <-
   (    
