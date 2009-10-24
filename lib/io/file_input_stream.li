@@ -52,6 +52,7 @@ Section Public
   - make std_file:STD_FILE <-
   (
     file := std_file;
+    tmp  := FAST_ARRAY(CHARACTER).create 1;
     is_connected := (file != NULL);
   );
 
@@ -64,7 +65,7 @@ Section Public
 
 Section Private
 
-  - tmp :NATIVE_ARRAY(UINTEGER_8) := NATIVE_ARRAY(UINTEGER_8).create 1;
+  + tmp :FAST_ARRAY(CHARACTER);
 
   + real_end_of_input :BOOLEAN;
 
@@ -72,21 +73,18 @@ Section Public
 
   - read_character <-
   // Return last character from stream
-  ( + result:INTEGER;
-    
+  ( + result   :INTEGER;
+
     push_back_flag.if {
       push_back_flag := FALSE;
-    } else {  
-      result := file.physical_read tmp size 1;
+    } else {
+      tmp.clear;
+      result := file.read tmp size 1;
       (result = 0).if {
         // nothing was read
         real_end_of_input := TRUE;
       } else {
-        last_character := tmp.first.to_character;
-        //( + tmp2 :UINTEGER_8;
-        //  tmp2 := tmp.first;
-        //  `printf("Read '%c' (%02x)\n", @tmp2, @tmp2);`;
-        //);
+        last_character := tmp.first;
       };
     };
   );
@@ -106,5 +104,12 @@ Section Public
     };
   );
 
-// kate: hl Lisaac v0.2; indent-width 2; space-indent on; replace-tabs off;
+Section Private
+
+  - raw_read_character :CHARACTER <-
+  (
+    
+  );
+
+// kate: hl Lisaac v0.2; indent-width 2; space-indent on; replace-tabs on;
 // kate: tab-width 8; remove-trailing-space on;
