@@ -944,7 +944,7 @@ Section Public
     result
   )
   [
-    +? {Result.count = count + other.count};
+    +? {Result.count = Old count + other.count};
   ];
     
   - as_lower:STRING <-
@@ -1265,6 +1265,8 @@ Section Public
   (
     STRING.create_from_string Self
   );
+
+  - to_abstract_string :ABSTRACT_STRING <- Self;
   
   - string_buffer:STRING := STRING.create 256; // Private, temporary once buffer.
   
@@ -1291,9 +1293,9 @@ Section Public
   );
   
   - println <-
-  [ -? {storage.item count = '\0'}; ]
   (
-    to_external.println;
+    print;
+    '\n'.print;
   );
   
   //

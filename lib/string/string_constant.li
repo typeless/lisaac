@@ -106,6 +106,14 @@ Section Public
     };
   );
 
+  - println <-
+  [
+    -? {storage.item count = '\0'};
+  ]
+  (
+    to_external.println;
+  );
+
   //
   // Debug: Require / Ensure / Check
   //
@@ -116,4 +124,3 @@ Section Public
   
   - Self:SELF '+?' test:{BOOLEAN} <- test +? Self;
     
-
