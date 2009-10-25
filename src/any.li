@@ -188,20 +188,20 @@ Section Public
   
   - title txt:STRING_CONSTANT in buf:STRING <-
   (
-    buf.append "\n//";
+    buf.append "\n/*";
     3.to 28 do { j:INTEGER;
       buf.add_last '=';      
     };
-    buf.append "//\n// ";
+    buf.append "*/\n/* ";
     buf.append txt;
     (txt.count+5).to 28 do { j:INTEGER;
       buf.add_last ' ';
     };
-    buf.append " //\n//";
+    buf.append " */\n/*";
     3.to 28 do { j:INTEGER;
       buf.add_last '=';      
     };
-    buf.append "//\n\n";
+    buf.append "*/\n\n";
   );
   
   

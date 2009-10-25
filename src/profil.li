@@ -623,7 +623,7 @@ Section Private
   
   - add_comment buffer:STRING <-
   (
-    buffer.append "// ";
+    buffer.append "/* ";
     append_type buffer;
     ((stat & 10b) = 0).if {
       buffer.append "No recursive, ";
@@ -635,7 +635,7 @@ Section Private
     } else {
       buffer.append "Inlinable.";
     };
-    buffer.add_last '\n';
+    buffer.append " */\n";
   );
   
   - append_type buffer:STRING <-

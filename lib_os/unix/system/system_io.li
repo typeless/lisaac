@@ -30,13 +30,13 @@ Section Header
 #include <stdio.h>
 #include <stdlib.h>
   
-// Hardware 'print_char'
+/* Hardware 'print_char' */
 void print_char(char car)
 {
   fputc(car,stdout);
 }
 
-// Hardware 'exit'
+/* Hardware 'exit' */
 int die_with_code(int code)
 {
   exit(code);

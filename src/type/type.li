@@ -558,9 +558,9 @@ Section Public
             };
           };
         } else {	  
-          output_decl.append "// ";
+          output_decl.append "/* ";
           output_decl.append intern_name;
-          output_decl.add_last '\n';
+          output_decl.append " */\n";
           (is_java).if {
             output_decl.append "static private int __";
             output_decl.append intern_name;
@@ -770,8 +770,9 @@ Section Public
       output_decl.append intern_name;	  
       output_decl.add_last ';';      
       (alias_slot != NULL).if {
-        output_decl.append " // ALIAS with ";
+        output_decl.append " /* ALIAS with ";
         output_decl.append (alias_type.intern_name);
+        output_decl.append " */";
       };
       output_decl.add_last '\n';
     };
