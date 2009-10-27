@@ -69,7 +69,7 @@ Section Public
   //-- E(unsigned) >> E(unsigned) -> 0
   ( + result:EXPR;
     /*
-    (left == right) && {left.is_unsigned_type}.if {
+    (left ~= right) && {left.is_unsigned_type}.if {
       result := INTEGER_CST.create position value 0 type static_type;
       left .remove;
       right.remove;

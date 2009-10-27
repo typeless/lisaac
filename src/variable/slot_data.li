@@ -175,7 +175,7 @@ Section Public
 	  is_rec_ok := TRUE;	
 	}.elseif {rec.is_constant} then {	
 	  wrt_slot ?= last_write;
-	  is_rec_ok := rec == wrt_slot.receiver;
+	  is_rec_ok := rec ~= wrt_slot.receiver;
 	} else {
 	  rd ?= rec;
 	  (rd != NULL).if {
