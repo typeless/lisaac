@@ -120,7 +120,7 @@ Section Public
   
   - is_equal_profil other:ITM_SLOT <-
   (         
-    (Self != other).if {
+    (Self != other).if {            
       (result_type != other.result_type).if {
 	string_tmp.copy "Invariance type result invalid."; // (";
 	//type.to_run.append_name_in string_tmp;

@@ -265,7 +265,7 @@ Section Public
     
   - is_block:BOOLEAN := TRUE;
 
-  - Self:SELF '==' Right 60 other:TYPE :BOOLEAN <- 
+  - Self:SELF '~=' Right 60 other:TYPE :BOOLEAN <- 
   ( 
     other = to_type_block
   );
@@ -362,7 +362,7 @@ Section Public
   ( + result:BOOLEAN;
     + t:TYPE_BLOCK;
         
-    result := Self == other;
+    result := Self ~= other;
     (result).if_false {
       t ?= other;
       result := (

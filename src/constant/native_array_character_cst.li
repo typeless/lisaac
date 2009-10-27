@@ -64,7 +64,7 @@ Section Public
   // Comparaison.
   //
   
-  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <-  
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-  
   ( + p:NATIVE_ARRAY_CHARACTER_CST;
     p ?= other;
     (p != NULL) && {string = p.string}

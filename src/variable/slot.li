@@ -46,7 +46,7 @@ Section Public
   
   - create s:ITM_SLOT type t:TYPE :SLOT <-
   ( + result:SLOT;
-    
+        
     result := clone;
     result.make s type t    
   );
@@ -98,7 +98,7 @@ Section Public
     (slot_data_intern = NULL).if {
       create_slot_data;      
       (slot_id = NULL).if {
-	slot_id := SLOT_DATA.create common_slot type (TYPE_ID.get_index 1.default);
+	slot_id := SLOT_DATA.create common_slot type_full (TYPE_ID.get_index 1.default);
 	slot_id.init;
       };
     };
@@ -123,7 +123,7 @@ Section Public
     slot := SLOT_CODE.create common_slot with v;
     (slot_code_intern = NULL).if {
       slot_code_intern := slot;
-      slot_id := SLOT_DATA.create common_slot type (TYPE_ID.get_index 0.default);
+      slot_id := SLOT_DATA.create common_slot type_full (TYPE_ID.get_index 0.default);
       slot_id.init;
       result := 1;
     } else {
@@ -132,7 +132,7 @@ Section Public
       };
       slot_code_list.add_last slot;
       (slot_id = NULL).if {
-	slot_id := SLOT_DATA.create common_slot type (TYPE_ID.get_index 1.default);
+	slot_id := SLOT_DATA.create common_slot type_full (TYPE_ID.get_index 1.default);
 	slot_id.init;
       };
       result := slot_code_list.upper + 2;
@@ -170,7 +170,7 @@ Section Public
       (tm.lower).to (tm.upper-1) do { k:INTEGER;	
 	typ := tm.item k.to_run_for receiver_type;
 	slot_data_list.add_last (
-	  SLOT_DATA.create common_slot type typ
+	  SLOT_DATA.create common_slot type_full typ
 	);
       };      
       typ := tm.last.to_run_for NULL;
@@ -178,5 +178,5 @@ Section Public
       ts ?= result_type;
       typ := ts.to_run_for receiver_type;
     };
-    slot_data_intern := SLOT_DATA.create common_slot type typ;    
+    slot_data_intern := SLOT_DATA.create common_slot type_full typ;    
   );

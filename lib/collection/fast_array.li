@@ -313,7 +313,7 @@ Section Public
     +? { capacity = Old capacity };    
   ]; 
     
-  - copy other:FAST_ARRAY(V) <-
+  - copy other:SELF <-
   // Copy `other' onto Current.
   ( + other_upper, new_capacity:INTEGER;
     
@@ -387,16 +387,14 @@ Section Public
     }; 
   ); 
     
-  - Self:SELF '=='  Right 60 other:COLLECTION(V) :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <-
   ( + result:BOOLEAN;
-    + o:SELF;
-    
+     
     ( Self = other).if {
       result := TRUE;
-    } else {
-      o ?= other;
-      ((o != NULL) && { upper = o.upper }).if {
-	result := storage.fast_memcmp (o.storage) until (upper + 1) ;
+    } else {      
+      ((other != NULL) && { upper = other.upper }).if {
+	result := storage.fast_memcmp (other.storage) until (upper + 1) ;
       };
     };
     

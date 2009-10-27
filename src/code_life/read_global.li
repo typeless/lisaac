@@ -44,7 +44,7 @@ Section Public
   // Comparison.
   //
   
-  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <- 
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <- 
   ( + rd:READ_GLOBAL;
     
     rd ?= other;

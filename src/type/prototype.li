@@ -91,15 +91,18 @@ Section Public
             
     // Parent.
     cur := first_slot;
-    {(cur != NULL) && {cur.id_section.is_inherit_or_insert}}.while_do {      
+    {(cur != NULL) && {cur.id_section.is_inherit_or_insert}}.while_do {            
       typ.slot_run.add_last (SLOT.create cur type typ);
+      typ.verify_cyclic_inheritance typ;
+      typ.verify_itm_slot_parent cur;
       cur := cur.next;
     };
     // Mapping.
     (is_mapping).if {
       {cur != NULL}.while_do {
 	(cur.id_section.is_mapping).if {
-	  ? {cur.style = '+'};
+          ? {cur.style = '+'};
+          typ.verify_itm_slot_parent cur;
 	  typ.slot_run.add_last (SLOT.create cur type typ);
 	};
 	cur := cur.next;

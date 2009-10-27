@@ -37,7 +37,7 @@ Section Insert
   
 Section Public
       
-  - in_range low:CHARACTER to up:CHARACTER :BOOLEAN <- ((Self >= low) && {Self<= up});
+  - in_range lower:SELF to upper:SELF :BOOLEAN <- ((Self >= lower) && {Self<= upper});
   
   //
   // General :
@@ -153,19 +153,19 @@ Section Public
   - Self:SELF '!==' other:CHARACTER :BOOLEAN <- (code !== other.code);
   // Comparison using `code'.
   
-  - Self:SELF '==' Right 60 other:CHARACTER :BOOLEAN <- (code == other.code);
+  - Self:SELF '==' Right 60 other:SELF :BOOLEAN <- (code == other.code);
   // Comparison using `code'.
   
-  - Self:SELF '<' other:CHARACTER :BOOLEAN <- ( code < other.code );
+  - Self:SELF '<' other:SELF :BOOLEAN <- ( code < other.code );
   // Comparison using `code'.
   
-  - Self:SELF '<=' other:CHARACTER :BOOLEAN <- ( code <= other.code );
+  - Self:SELF '<=' other:SELF :BOOLEAN <- ( code <= other.code );
   // Comparison using `code'.
   
-  - Self:SELF '>' other:CHARACTER :BOOLEAN <- ( code > other.code );
+  - Self:SELF '>' other:SELF :BOOLEAN <- ( code > other.code );
   // Comparison using `code'.
   
-  - Self:SELF '>=' other:CHARACTER :BOOLEAN <- ( code >= other.code );
+  - Self:SELF '>=' other:SELF :BOOLEAN <- ( code >= other.code );
   // Comparison using `code'.
   
   - decimal_value:INTEGER <-
@@ -229,9 +229,9 @@ Section Public
     result
   );
   
-  - to_upper:CHARACTER <-
+  - to_upper:SELF <-
   // Conversion to the corresponding upper case.
-  ( + result:CHARACTER;
+  ( + result:SELF;
     ((code < 97) || {code > 122}).if {
       result := Self;
     } else {
@@ -240,9 +240,9 @@ Section Public
     result
   );
   
-  - to_lower:CHARACTER <-
+  - to_lower:SELF <-
   // Conversion to the corresponding lower case.
-  ( + result:CHARACTER;
+  ( + result:SELF;
     ((code < 65) || {code > 90}).if {
       result := Self;
     } else {

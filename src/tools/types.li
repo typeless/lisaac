@@ -76,7 +76,7 @@ Section Public
   )
   [ +? {Result != NULL};            ];
 
-  - Self:SELF '==' Right 60 other:TYPES :BOOLEAN <-
+  - Self:SELF '~=' Right 60 other:TYPES :BOOLEAN <-
   ( 
     (Self = other) || 
     {

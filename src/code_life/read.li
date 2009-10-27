@@ -98,7 +98,7 @@ Section Public
 	  j := req_list.lower;
 	  {(j > req_list.upper) || {result = NULL}}.until_do {
 	    val := req_list.item j.value;
-	    ((! val.is_constant) || {result !== val}).if {
+	    ((! val.is_constant) || {result !~= val}).if {
 	      result := NULL;
 	    };
 	    j := j + 1;

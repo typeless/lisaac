@@ -121,12 +121,12 @@ Section Public
   
   - is_expanded_c:BOOLEAN <- (is_expanded) && {raw.type_c != NULL};
   
-  - Self:SELF '==' Right 60 other:TYPE_FULL :BOOLEAN <-
+  - Self:SELF '==' Right 60 other:SELF :BOOLEAN <-
   (
     (Self = other) || {(raw = other.raw) && {(flag & 01111b) = (other.flag & 01111b)}}
   );
   
-  - Self:SELF '!==' Right 60 other:TYPE_FULL :BOOLEAN <- ! (Self == other);
+  - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- ! (Self == other);
   
   - append_name_in buffer:STRING <-
   (

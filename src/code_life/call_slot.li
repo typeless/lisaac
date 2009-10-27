@@ -187,8 +187,7 @@ Section Private
     + loc:LOCAL;
     + prof_block:PROFIL_BLOCK;
         
-    (source = list_current).if {
-      list_current.debug_display;
+    (source = list_current).if {      
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
       source.position.put_position;
       position.put_position;

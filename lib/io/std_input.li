@@ -75,17 +75,17 @@ Section Public
     result
   );
   
-  - read_line_in str:STRING <-
+  - read_line_in buffer:STRING <-
   // Real all character until \n (so read a line)
   (
     + mem:CHARACTER;
     read_character;
     ( (last_character != '\n') && { memory != basic_io_eof } ).if {
-      str.extend memory;
+      buffer.extend memory;
       mem := basic_io_getc;
       
       { (mem = basic_io_eof) || {mem = '\n'} }.until_do {
-	str.extend mem;
+	buffer.extend mem;
 	mem := basic_io_getc;
       };
       memory := mem;

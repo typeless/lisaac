@@ -30,7 +30,7 @@ Section Header
     
 Section Inherit
   
-  + parent_dta:Expanded DTA_RD;
+  + parent_dta_rd:Expanded DTA_RD;
   
 Section Public
   

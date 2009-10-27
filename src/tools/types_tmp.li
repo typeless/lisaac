@@ -111,7 +111,7 @@ Section Public
 	bucket.fast_add result;
       };
     };
-    20 ? {result == Self};
+    20 ? {result ~= Self};
         
     free;
     result

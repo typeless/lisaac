@@ -215,9 +215,9 @@ Section Private
             arg := NULL;            
             (t = ALIAS_STR.prototype_boolean).if {
               cmd.to_upper;
-              (cmd == "TRUE").if {
+              (cmd ~= "TRUE").if {
                 arg := LIP_BOOLEAN.get TRUE;
-              }.elseif {cmd == "FALSE"} then {
+              }.elseif {cmd ~= "FALSE"} then {
                 arg := LIP_BOOLEAN.get FALSE;
               };
             }.elseif {t = ALIAS_STR.prototype_integer} then {              

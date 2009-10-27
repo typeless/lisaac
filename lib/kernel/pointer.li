@@ -38,7 +38,7 @@ Section Insert
   
 Section Public
   
-  - in_range low:INTEGER_64 to up:UINTEGER_64 :BOOLEAN <- TRUE; // BSBS: A revoir.
+  - in_range low:SELF to up:SELF :BOOLEAN <- TRUE; // BSBS: A revoir.
 
   
   - object_size:INTEGER <- `sizeof(void *)`:INTEGER;

@@ -278,7 +278,7 @@ Section Public
     } else {
       result ?= tmp;      
     };
-    ? {result == str};
+    ? {result ~= str};
     result
   );
   

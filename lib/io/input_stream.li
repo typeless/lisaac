@@ -67,12 +67,13 @@ Section Public
   
   // To read one character at a time:
   
-  - read_character <-
+  - read_character:CHARACTER <-
   // Read a character and assign it to `last_character'.
-  (
+  ( + result:CHARACTER;
     ? {! end_of_input};
     deferred;
     ? {! push_back_flag};
+    result
   );
   
   

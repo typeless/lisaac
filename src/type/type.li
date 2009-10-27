@@ -263,7 +263,8 @@ Section Public
       result := slot_run.item j;
     } else {
       itm_slot := prototype.slot_list.fast_reference_at n;
-      (itm_slot != NULL).if {	
+      (itm_slot != NULL).if {	        
+        verify_itm_slot_parent itm_slot;
 	result := SLOT.create itm_slot type Self;
 	slot_run.add_last result;		
       };
@@ -905,7 +906,7 @@ Section Public
   
   - is_block:BOOLEAN := FALSE;
   
-  - Self:SELF '==' Right 60 other:TYPE :BOOLEAN <- (Self = other);
+  - Self:SELF '~=' Right 60 other:TYPE :BOOLEAN <- (Self = other);
   
   - is_sub_type other:TYPE :BOOLEAN <-
   ( + result:BOOLEAN;
@@ -1166,3 +1167,48 @@ Section Private
     result
   );
   
+Section TYPE,PROTOTYPE
+  
+  - verify_itm_slot_parent ref:ITM_SLOT <-
+  ( + idx:INTEGER;
+    + type_parent:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
+    + other:ITM_SLOT;
+    
+    idx := slot_run.lower;
+    {
+      (idx <= slot_run.upper) && 
+      {slot_run.item idx.id_section.is_inherit_or_insert}  
+    }.while_do {      
+      ts ?= slot_run.item idx.result_type;
+      type_parent := ts.to_run_for Self.raw;	
+      other := type_parent.prototype.slot_list.fast_reference_at (ref.name);
+      (other != NULL).if {
+        ref.is_equal_profil other;        
+      };
+      type_parent.verify_itm_slot_parent ref;
+      idx := idx + 1;
+    };
+  );
+  
+  - verify_cyclic_inheritance ref:TYPE <-
+  ( + idx:INTEGER;
+    + type_parent:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
+    + s:SLOT;
+    
+    idx := slot_run.lower;
+    {
+      (idx <= slot_run.upper) && 
+      {slot_run.item idx.id_section.is_inherit_or_insert}  
+    }.while_do {      
+      s := slot_run.item idx;
+      ts ?= s.result_type;
+      type_parent := ts.to_run_for Self.raw;	
+      (type_parent = ref).if {
+        semantic_error (s.position,"Static cyclic inheritance.");
+      };
+      type_parent.verify_cyclic_inheritance ref;
+      idx := idx + 1;
+    };
+  );

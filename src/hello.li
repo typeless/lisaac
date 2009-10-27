@@ -29,10 +29,16 @@ Section Header
 
 Section Inherit
 
-  - parent_object:OBJECT := OBJECT;
+  + parent_string:Expanded STRING; 
 
 Section Public
+  - main <-
+  ( + c:HELLO;
+    c := HELLO;
+    `/* @c */`;
+  );
 
+/*
   - main <-
   ( + str:STRING;
     
@@ -59,4 +65,4 @@ Section Public
       "------------------\n".print;
     };
   );
-
+*/

@@ -79,14 +79,14 @@ Section Public
   - when value:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
   // When `Self' equal `value', execute `block'
   (
-    (Self == value).if block;
+    (Self ~= value).if block;
     Self
   );
 
   - when value1:ABSTRACT_STRING or value2:ABSTRACT_STRING then block:{} :ABSTRACT_STRING <-
   // When `Self' equal `value1' or `value2', execute `block'
   (
-    ((Self == value1) || {Self == value2}).if block;
+    ((Self ~= value1) || {Self ~= value2}).if block;
     Self
   );
 
@@ -94,7 +94,7 @@ Section Public
   // * See: `when_then'
   ( + result :ABSTRACT_STRING;
     
-    ((Self != ABSTRACT_STRING) && {Self == value}).if {
+    ((Self != ABSTRACT_STRING) && {Self ~= value}).if {
       block.value;
       result := ABSTRACT_STRING;
     } else {
@@ -220,7 +220,13 @@ Section Public
     result
   );
   
-  - Self:SELF '==' Left 40 other:ABSTRACT_STRING :BOOLEAN <-
+  - Self:SELF '==' Left 40 other:SELF :BOOLEAN <-
+  // Has Current the same text as `other' ?
+  ( 
+    Self ~= other
+  );
+
+  - Self:SELF '~=' Left 40 other:ABSTRACT_STRING :BOOLEAN <-
   // Has Current the same text as `other' ?
   ( + result:BOOLEAN;
     ? {other != NULL};
