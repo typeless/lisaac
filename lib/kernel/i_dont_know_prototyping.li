@@ -66,7 +66,7 @@ Section Public
   // Print.
   //
   
-  - print str:ABSTRACT_STRING <-
+  - printf str:ABSTRACT_STRING <-
   (
     str.print;
   );

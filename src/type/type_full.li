@@ -243,7 +243,7 @@ Section Public
       }.elseif {is_expanded} then {
         // A: Expanded.
         result := 
-        ((other.is_strict)    && {raw == other.raw      }) ||
+        ((other.is_strict)    && {raw ~= other.raw      }) ||
         {(raw = type_boolean) && {other.is_sub_type Self}} ||
         {(raw = type_pointer) && {other.raw = TYPE_NULL }};	  
       } else {

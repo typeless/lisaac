@@ -139,11 +139,21 @@ Section Public
 	(other.position).put_position;
 	POSITION.send_error;
       };
-      (argument_list != NULL).if {
-	? {argument_list.count = other.argument_list.count};
-	(argument_list.lower).to (argument_list.upper) do { j:INTEGER;
-	  argument_list.item j.is_equal (other.argument_list.item j);
-	};	  
+      (
+        ((other.argument_list = NULL) ^ (argument_list = NULL)) || 
+        {(argument_list != NULL) && {argument_list.count != other.argument_list.count}}
+      ).if {
+        POSITION.put_error warning text 
+        "Invariance argument number.";
+        position.put_position;
+        (other.position).put_position;
+        POSITION.send_error;
+      } else {
+        (argument_list != NULL).if {        
+          (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
+            argument_list.item j.is_equal (other.argument_list.item j);
+          };	  
+        };
       };
     };
   );
