@@ -36,7 +36,7 @@ Section Header
 #include <X11/Xlib.h>
 
 // For Frame buffer.
-#include <X11/extensions/XTest.h>  
+//#include <X11/extensions/XTest.h>  
 #include <linux/fb.h>
 #include <sys/mman.h>
 #include <fcntl.h>

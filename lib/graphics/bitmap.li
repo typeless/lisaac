@@ -52,7 +52,7 @@ Section Public
   // Creation. 
   //
 
-  - make (w,h:INTEGER) <-
+  - make_size (w,h:INTEGER) <-
   (
     width  := w;
     height := h;
@@ -142,16 +142,16 @@ Section Public
     get_y_line y.put col to x;
   );
   
-  - line_h_hard (x,y:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
+  - line_h_hard (x0,y0:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
   ( 
     //image.item y.put col from x to x1;
-    get_y_line y.put col from x to x1;
+    get_y_line y0.put col from x0 to x1;
   );
     
-  - line_h_hard (x,y:INTEGER) until x1:INTEGER image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
+  - line_h_hard (x0,y0:INTEGER) until x1:INTEGER image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   (     
     //image.item y.put line offset ofs from x to x1;
-    get_y_line y.put line offset ofs from x to x1;
+    get_y_line y0.put line offset ofs from x0 to x1;
   );
   
   - get_pixel_hard (x,y:INTEGER) :PIXEL <-

@@ -56,7 +56,7 @@ Section Public
   - multimedia:G_WIN_OUT;
   - game:G_WIN_OUT;
     
-  - create path_dir:ABSTRACT_STRING :SELF <-
+  - create_with path_dir:ABSTRACT_STRING :SELF <-
   (         
     path_base := path_dir;
     isaac := G_WIN_OUT.create (

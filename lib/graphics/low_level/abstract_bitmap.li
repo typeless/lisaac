@@ -168,15 +168,15 @@ Section Public
   // Creation. 
   //
 
-  - create (w,h:INTEGER) :SELF <-
+  - create_size (w,h:INTEGER) :SELF <-
   ( + result:SELF;
         
     result:=clone;
-    result.make (w,h);
+    result.make_size (w,h);
     result
   );
   
-  - make (w,h:INTEGER) <-
+  - make_size (w,h:INTEGER) <-
   (
     deferred;
   );
@@ -205,12 +205,12 @@ Section Public
     deferred;
   );
   
-  - line_h_hard (x,y:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
+  - line_h_hard (x0,y0:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
   ( 
     deferred;
   );
     
-  - line_h_hard (x,y:INTEGER) until x1:INTEGER image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
+  - line_h_hard (x0,y0:INTEGER) until x1:INTEGER image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   (     
     deferred;
   );

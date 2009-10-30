@@ -1694,7 +1694,7 @@ Section Public
     height := (s *# height).ceiling;
     // BSBS: Avec b.make tu reallou de la mémoire, c'est à revoir ...
     ((width != b.width) || {height != b.height}).if {
-      b.make (width,height);
+      b.make_size (width,height);
       b.rectangle_fill (0,0) to ((width -1),(height - 1)) color 083AAD3h;
     };    
     (s <= 0).if {

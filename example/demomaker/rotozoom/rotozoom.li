@@ -91,7 +91,7 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP(PIXEL_24).create (w,h);
+    bitmap := BITMAP(PIXEL_24).create_size (w,h);
     fmt.put_image_in bitmap;    
     f.close;
     TIMER.add_client Self;
@@ -107,7 +107,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (width_min+64,height_min+64);
+    VIDEO.make_size (width_min+64,height_min+64);
     DESK.make VIDEO with (
       G_OUT.create "Rotozoom" justify (G_OUT.center) / init "./"
     );        

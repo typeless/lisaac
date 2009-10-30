@@ -31,7 +31,7 @@ Section Private
   - bitmap:ABSTRACT_BITMAP := 
   ( + result:ABSTRACT_BITMAP;
     
-    result := BITMAP(PIXEL_24).create (90,30);
+    result := BITMAP(PIXEL_24).create_size (90,30);
     result.color (result.red);
     result.print "No image" to (10,10);
     result
@@ -95,7 +95,7 @@ Section Private
     bmp := FORMAT_BMP.create_with buffer;
     (bmp != NULL).if {      
       ((bmp.width != bitmap.width) || {bmp.height != bitmap.height}).if {
-        bitmap.make (bmp.width,bmp.height);	  
+        bitmap.make_size (bmp.width,bmp.height);	  
       };      
       bmp.put_image_in bitmap;
       ((page != NULL) && {page.parent != NULL} && {page.width != width_min}).if {

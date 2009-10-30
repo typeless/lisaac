@@ -45,8 +45,8 @@ Section Public
   
   - mask:FAST_ARRAY2(XY);
   
-  - x_origin:INTEGER;
-  - y_origin:INTEGER;
+  - x_ori:INTEGER;
+  - y_ori:INTEGER;
 
   - x_inc:INTEGER := 2;
   - y_inc:INTEGER := 2;
@@ -112,8 +112,8 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP(PIXEL_32).create (w,h);
-    background := BITMAP(PIXEL_32).create (width_min,height_min);
+    bitmap := BITMAP(PIXEL_32).create_size (w,h);
+    background := BITMAP(PIXEL_32).create_size (width_min,height_min);
     fmt.put_image_in bitmap;    
     compute_mask;
     f.close;
@@ -164,12 +164,12 @@ Section Public
       
       0.to (size-1) do { y:INTEGER;      
         0.to (size-1) do { x:INTEGER;        
-          px := (x_origin + mask.item (x,y).x) & 0FFh;
-          py := (y_origin + mask.item (x,y).y) & 0FFh;
+          px := (x_ori + mask.item (x,y).x) & 0FFh;
+          py := (y_ori + mask.item (x,y).y) & 0FFh;
           col := bitmap.get_color_hard (px,py);
           bmp_line.put col to x;
         };      
-        background.line_h_hard (x_origin,y_origin+y) until (x_origin+size-1) image bmp_line offset 0;
+        background.line_h_hard (x_ori,y_ori+y) until (x_ori+size-1) image bmp_line offset 0;
       };        
     };
     put_bitmap background to (0,0);
@@ -194,12 +194,12 @@ Section Public
     
     evt_time ?= msg;    
     ((evt_time != NULL) && {evt_time.destination = NULL}).if {
-      x_origin := x_origin + x_inc;
-      y_origin := y_origin + y_inc;
-      ((x_origin <= 0) || {x_origin >= width - size}).if {
+      x_ori := x_ori + x_inc;
+      y_ori := y_ori + y_inc;
+      ((x_ori <= 0) || {x_ori >= width - size}).if {
         x_inc := -x_inc;
       };
-      ((y_origin <= 0) || {y_origin >= height - size}).if {
+      ((y_ori <= 0) || {y_ori >= height - size}).if {
         y_inc := -y_inc;
       };      
       is_new := TRUE;

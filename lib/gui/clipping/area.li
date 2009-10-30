@@ -413,12 +413,12 @@ Section Public
   // Resize window.
   //
   
-  - resize (lx,ly:INTEGER) <-
+  - resize (w,h:INTEGER) <-
   // Resize window.
   ( + x0,y0,x1,y1:INTEGER;
     //? {parent!=NULL};
 
-    ((lx != width) || {ly != height}).if {
+    ((w != width) || {h != height}).if {
       (plan=NULL).if {
 	y0:=x0:=INTEGER.maximum.to_integer;
 	y1:=x1:=INTEGER.minimum.to_integer;
@@ -428,18 +428,18 @@ Section Public
 	y0:=plan.y0.value;    
 	y1:=plan.y1.value;
       };
-      width :=lx;
-      height:=ly;
+      width  := w;
+      height := h;
       sub_resize;
       clip_type1;
       clipping_off;
       (plan!=NULL).if {
-	x0:=x0.min (plan.x0.value);
-	x1:=x1.max (plan.x1.value);
-	y0:=y0.min (plan.y0.value);
-	y1:=y1.max (plan.y1.value);
+	x0 := x0.min (plan.x0.value);
+	x1 := x1.max (plan.x1.value);
+	y0 := y0.min (plan.y0.value);
+	y1 := y1.max (plan.y1.value);
       };
-      (x0<=x1).if {
+      (x0 <= x1).if {
 	redraw (x0,y0) to (x1,(y1-1));
       };
     };

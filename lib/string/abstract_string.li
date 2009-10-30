@@ -146,7 +146,9 @@ Section Public
     result
   );
   
-  - Self:SELF '<' other:ABSTRACT_STRING :BOOLEAN <-
+  - Self:SELF '<' other:SELF :BOOLEAN <- Self ~< other;
+  
+  - Self:SELF '~<' other:ABSTRACT_STRING :BOOLEAN <-
   // Is Current less than `other' ?
   ( + i: INTEGER;
     + result: BOOLEAN;
