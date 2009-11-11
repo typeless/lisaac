@@ -579,7 +579,9 @@ Section Private
     style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_real    := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_real)   
     style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
-    type_integer_32 := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_integer_32)   
+    type_integer_32 := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_integer_32)
+    style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
+    type_uinteger_32 := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_uinteger_32)
     style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
     type_string_constant := ITM_TYPE_SIMPLE.get (ALIAS_STR.prototype_string_constant)
     .to_run_for NULL.raw;

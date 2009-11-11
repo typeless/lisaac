@@ -43,8 +43,14 @@ Section Public
 
   - is_debug_mode:BOOLEAN <- debug_level != 0;
     
-  - debug_level:INTEGER <- `11`;
-  
+  - debug_level:INTEGER               <- `11`;
+  - compiler_inlining_level:INTEGER   <- `18`;
+  - compiler_optimization:BOOLEAN     <- `19`;
+  - compiler_built_on:STRING_CONSTANT <- `20`;
+  - compiler_debug_with_code:BOOLEAN  <- `21`;
+  - compile_time:TIME                 <- TIME.create_csecond `22`;
+  - compile_date:DATE                 <- DATE.decode `23`;
+
   - is_ansi:BOOLEAN := SYSTEM.is_ansi;
   
   //
