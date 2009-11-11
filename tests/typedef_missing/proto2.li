@@ -13,9 +13,9 @@ Section Public
   - println <-
   (
     name.print;
-    ' '.print;
-    var.println;
-    ' '.print;
+    " var:".print;
+    var.print;
+    " var2:".print;
     var2.println;
   );
 
