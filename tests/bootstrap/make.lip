@@ -19,86 +19,22 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 
+Section Inherit
+
+  + parent :STRING;
+
+  + parent_test :STRING := "../test.lip";
+
 Section Private
 
-  - exit_true <-
+  + m_test_importance  :INTEGER := 10;
+  + m_test_description :STRING  := "Boostrap test\n";
+  + m_test_run         :BOOLEAN := FALSE;
+  + m_test_execute     :STRING  := "../bootstrap.sh";
+
+  - front_end <-
   (
-    die_with_code 0;
-  );
-
-  - exit_false <-
-  (
-    die_with_code 1;
-  );
-
-  + m_test_description     :STRING  := "<NO DESCRIPTION>\n";
-  + m_test_importance      :INTEGER := 0;
-  + m_test_compile         :BOOLEAN := TRUE;
-  + m_test_run             :BOOLEAN := TRUE;
-  + m_test_execute         :STRING  := "";
-  + m_test_compile_pattern :STRING  := "";
-  + m_test_run_pattern     :STRING  := "";
-
-Section Public
-
-  - test <-
-  // Compile as a test
-  (
-  );
-
-  - test_description <-
-  // Print the description of the test
-  (
-    m_test_description.print;
     exit_true;
   );
+  
 
-  - test_importance <-
-  // How important is the test (integer)
-  (
-    m_test_importance.print;
-    exit_true;
-  );
-
-  - test_compile <-
-  // Exit successfully if the compilation must succeed
-  (
-    m_test_compile.if {
-      exit_true;
-    } else {
-      exit_false;
-    };
-  );
-
-  - test_run <-
-  // Exit successfully if the result of the compilation must be executed
-  (
-    m_test_run.if {
-      exit_true;
-    } else {
-      exit_false;
-    };
-  );
-
-  - test_execute <-
-  // Command to execute for the test to succeed
-  (
-    m_test_execute.print;
-    exit_true;
-  );
-
-  - test_compile_patterns <-
-  // Regular expressions that must be found in the result of the compilation for
-  // the test to succeed
-  (
-    m_test_compile_pattern.print;
-    exit_true;
-  );
-
-  - test_run_patterns <-
-  // Regular expressions that must be found in the result of the program's
-  // execution for the test to succeed
-  (
-    m_test_run_pattern.print;
-    exit_true;
-  );
