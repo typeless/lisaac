@@ -150,7 +150,7 @@ Section Private
           is_shorter  := FALSE;
           is_shorter2 := TRUE;
           is_short_recursive := TRUE;
-        }.elseif {cmd == "-version"} then {
+        }.elseif {cmd ~= "-version"} then {
           display_version;
 	} else {
 	  display_usage;
