@@ -37,4 +37,7 @@ Section Private
   + m_test_description :STRING :=
     "Test that we can resend even if the child redefined the inherit slot\n";
 
-  + m_test_run :BOOLEAN := TRUE;
+  + m_test_compile :BOOLEAN := FALSE;
+  + m_test_run :BOOLEAN := FALSE;
+
+  + m_test_compile_pattern :STRING := "Invariance type result invalid.";
