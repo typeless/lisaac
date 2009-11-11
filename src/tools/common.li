@@ -36,7 +36,7 @@ Section Inherit
 
 Section Public
 
-  - version :STRING_CONSTANT := "0.17";
+  - version :STRING_CONSTANT := "0.18 (unstable)";
 
   - command_line_header name:STRING_CONSTANT :STRING_CONSTANT <-
   ( + before, after :STRING_CONSTANT;
@@ -49,7 +49,7 @@ Section Public
     after :=                                                      "--\n\
     \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
     \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
-    \--                   http://www.IsaacOS.com                   --\n\
+    \--                   http://www.lisaac.org/                   --\n\
     \----------------------------------------------------------------\n";
     string_tmp.copy name;
     string_tmp.append " - version ";
@@ -71,9 +71,7 @@ Section Public
 
   - command_line_footer:STRING_CONSTANT :=
     "                                                                \n\
-    \Bug report:                                                     \n\
-    \\t post in: https://alioth.debian.org/projects/lisaac/          \n\
-    \\t mail to: sonntag@icps.u-strasbg.fr                           \n";
+    \Bug report: https://alioth.debian.org/projects/lisaac/          \n";
 
   - print_info <-
   ( + b:BOOLEAN;
