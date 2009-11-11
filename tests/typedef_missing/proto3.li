@@ -9,7 +9,7 @@ Section Public
   - println <-
   (
     name.print;
-    ' '.print;
+    " var:".print;
     var.println;
   );
 

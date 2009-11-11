@@ -2,14 +2,26 @@ Section Header
 
   + name := MAIN;
 
+Section External
+
+  - show2 p:PROTO2 <-
+  (
+    p.println;
+  );
+
+  - show3 p:PROTO3 <-
+  (
+    p.println;
+  );
+
 Section Public
 
   - main <-
   (
     PROTO2.set_var 1;
     PROTO2.set_var2 2;
-    PROTO2.println;
+    show2 PROTO2;
     PROTO3.set_var 3;
-    PROTO3.println;
+    show3 PROTO3;
   );
 
