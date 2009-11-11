@@ -22,7 +22,7 @@
 #  values suit your needs. This option is used in order to install lisaac in a
 #  non-userland way.
 #
-#  - interactive_userland  Starts the installer in userland interactive mode
+#  - user                  Starts the installer in userland interactive mode
 #
 #  - install               Copy all files in a proper place (non-userland)
 #
@@ -92,7 +92,41 @@ CFLAGS=-O3
 DIST_NAME=$(PROJECT)-$(VERSION_FULL)
 export LISAAC_DIRECTORY=..
 
+
+help:
+	@echo "----------------------------------------------------------------"
+	@echo "--               Lisaac IS An Advanced Compiler               --"
+	@echo "--            LORIA - LSIIT - ULP - CNRS - FRANCE             --"
+	@echo "--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --"
+	@echo "--                   http://www.lisaac.org/                   --"
+	@echo "----------------------------------------------------------------"
+	@echo "  make help      - display this help message"
+	@echo ""
+	@echo ""
+	@echo "Quick installation:"
+	@echo ""
+	@echo "  make user      - compile the installer and run it"
+	@echo ""
+	@echo "For packagers:"
+	@echo ""
+	@echo "  make install   - install everything"
+	@echo "  make uninstall - uninstall everything"
+	@echo "  make dist      - create a package with the sources only"
+	@echo "  make distclean - clean the source directory"
+	@echo ""
+	@echo "For developpers:"
+	@echo ""
+	@echo "  make all       - compile the compiler, the shorter and the"
+	@echo "                   documentation"
+	@echo "  make doc       - create documentation for the library"
+	@echo "  make bootstrap - bootstrap the compiler"
+	@echo "  make check     - check the bootstrap (probably broken)"
+	@echo "  make clean     - clean the source directory"
+	@echo ""
+
 all: bin/lisaac bin/shorter doc
+
+.PHONY: all bootstrap check doc user install uninstall clean dist distclean help
 
 bootstrap/path.h:
 	mkdir bootstrap
@@ -127,11 +161,12 @@ doc/html: bin/shorter lib
 	mkdir -p doc/html
 	cd doc && ../bin/shorter -d -f belinda ../lib -o html 
 
-interactive_userland: install_lisaac.c
-	@echo - Lisaac compiler installation For Unix / Linux / Windows -
-	@echo Please wait...
+user: install_lisaac.c
+	@echo "- Lisaac compiler installation For Unix / Linux / Windows -"
+	@echo "Please wait..."
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
-	@echo - please run ./install_lisaac to finish the installation
+	@echo "- please run ./install_lisaac to finish the installation"
+	./install_lisaac
 
 install: bin/lisaac bin/shorter
 	mkdir -p $(DESTDIR)$(LIB) 
@@ -160,6 +195,7 @@ clean:
 	-rm -f bin/lisaac
 	-rm -f bin/shorter bin/shorter.c
 	-rm -rf doc
+	find . -name "*.orig" -o -name "*.BACKUP.*" -o -name "*.BASE.*" -o -name "*.LOCAL.*" -o -name "*.REMOTE.*" | xargs rm
 
 dist: clean
 	if ! test -d $(DIST_NAME) ; then mkdir $(DIST_NAME) ; fi
