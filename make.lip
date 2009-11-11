@@ -189,6 +189,9 @@ Section Private
   - execute_fail cmd:STRING <-
   (
     execute cmd;
+    (execute_status_code > 255).if {
+      die_with_code exit_failure_code;
+    };
     (execute_status_code != 0).if {
       die_with_code execute_status_code;
     };
