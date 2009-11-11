@@ -187,7 +187,7 @@ Section Private
     + loc:LOCAL;
     + prof_block:PROFIL_BLOCK;
         
-    (source = list_current).if {
+    (source = list_current).if {      
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
       source.position.put_position;
       position.put_position;
@@ -203,7 +203,7 @@ Section Private
 	// Inlining simple.
 	//	  	  	  	  
 	(list_current.old_seq_or_and = seq_or_and).if {
-	  argument_to_assignment source index 1 alias FALSE;	  
+	  argument_to_assignment source index 1 alias FALSE style '+';	  
           (result_list.lower).to (result_list.upper) do { j:INTEGER;                        
             source.add_last (result_list.item j.write);
           };
@@ -233,7 +233,7 @@ Section Private
           //LOCAL.alias_on;
           
           new_src := source.my_copy;	                     
-          argument_to_assignment new_src index 1 alias TRUE;	                                
+          argument_to_assignment new_src index 1 alias TRUE style '+';
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
             wrt := result_list.item j.write;                        
             old_val := wrt.value;            
@@ -320,16 +320,16 @@ Section Public
   - execute:INSTR <-
   ( + result:INSTR;        
     + is_good:BOOLEAN;    
-    
+    /*
     (profil.search_tail_recursive).if {
       //
       // Inline Tail recursive:
       //	  
-      profil.remove_inline;		
+      profil.remove_inline;		      
       result := to_tail_recursive;
       result.execute;
       new_execute_pass;
-    } else {      
+    } else { */      
       (is_good,result) := execute_inline;
       (! is_good).if {      
 	execute_normal;
@@ -342,7 +342,7 @@ Section Public
 	  profil.set_life;
 	};
       };
-    };
+    //};
     
     result
   );
@@ -472,6 +472,15 @@ Section Public
         wrt.genere_first_result buffer;      
       };
       buffer.append (profil.name);
+      
+      (is_graph).if {
+        (profil_current = NULL).if {
+          profil_main.add_call profil; 
+        } else {
+          profil_current.add_call profil; 
+        };                
+      };
+            
       (is_interrupt || {is_external}).if {
         (argument_list.first != NULL).if {
           semantic_error (argument_list.first.position,
@@ -508,8 +517,8 @@ Section Public
   // Intern routine.
   //
   
-Section Private  
-      
+Section PROFIL
+/*      
   - to_tail_recursive:LOOP <-
   ( + switch:SWITCH;
     + msg_slot:CALL_SLOT;    
@@ -564,14 +573,11 @@ Section Private
       body := switch.list.item k.code;
       (body.is_empty).if_false {	
 	msg_slot ?= body.last;
-	(msg_slot != NULL).if {	  
+	((msg_slot != NULL) && {msg_slot.profil = profil}).if {	  
 	  // DEBUG
 	  (msg_slot = Self).if {
 	    semantic_error (position,"CALL_SLOT : BUG!!!!");
-	  };
-	  (msg_slot.profil != profil).if {
-	    semantic_error (position,"CALL_SLOT : BUG2!!!!");
-	  };
+          };
 	  // FIN DEBUG
 	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE;
 	  body.put (LOOP_END.create (msg_slot.position) loop result) to (body.upper);
@@ -580,8 +586,11 @@ Section Private
     };
     result
   );
-  
-  - argument_to_assignment lst:LIST index idx:INTEGER alias is_alias:BOOLEAN <-
+  */
+  - argument_to_assignment lst:LIST 
+  index idx:INTEGER 
+  alias is_alias:BOOLEAN 
+  style styl:CHARACTER <-
   ( + val,new_wrt:WRITE;        
     + loc:LOCAL;
     
@@ -597,8 +606,8 @@ Section Private
 	} else {
 	  new_wrt := val;	  
 	};
-	lst.insert new_wrt to idx;
-	new_wrt.variable.set_style '+';
+        lst.insert new_wrt to idx;        
+        new_wrt.variable.set_style styl;
       };
     };    
   );

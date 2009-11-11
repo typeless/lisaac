@@ -74,7 +74,7 @@ Section Public
     (output_type = 0).if {
       
       (screen = NULL).if {
-	screen := BITMAP(PIXEL_24).create (horizontal_size,vertical_size);
+	screen := BITMAP(PIXEL_24).create_size (horizontal_size,vertical_size);
       };      
       output src bitmap screen;
     } else {      

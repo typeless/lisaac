@@ -200,6 +200,12 @@ Section Public
   ];    
   
   //
+  // Reflexivity.
+  //
+  
+  - forall_data action:{ E; } <- `24`;
+  
+  //
   // The Guru section (Don't touch, don't use !)
   //
     

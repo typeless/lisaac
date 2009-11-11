@@ -72,9 +72,12 @@ Section Private
   
   - demark_object ptr:POINTER type t:INTEGER <- `demark_object(@ptr,@t)`;
   */  
-Section MEMORY
+  
+Section Public
     
   - object_size:INTEGER               <- POINTER.object_size + UINTEGER_CPU.object_size; 
+  
+Section MEMORY  
   
   - this:POINTER                      <- CONVERT(MEMORY,POINTER).on Self;
   

@@ -91,6 +91,7 @@ Section Public
   - is_verbose:BOOLEAN <- (verbose_level != 0);
   
   - is_readable:BOOLEAN;
+  - is_graph:BOOLEAN;
   
   //
   // Other flags.
@@ -150,6 +151,14 @@ Section Public
   - list_main:LIST;
   - context_main:LOCAL;
   
+  - profil_main:PROFIL_SLOT := // BSBS: A REVOIR (a uniformiser ((graph)))
+  ( + result:PROFIL_SLOT;
+    
+    result := PROFIL_SLOT.clone; 
+    result.alloc_profil_main;
+    result
+  );  
+  
   - list_current:LIST;
   
   - current_list_level:INTEGER;
@@ -179,20 +188,20 @@ Section Public
   
   - title txt:STRING_CONSTANT in buf:STRING <-
   (
-    buf.append "\n//";
+    buf.append "\n/*";
     3.to 28 do { j:INTEGER;
       buf.add_last '=';      
     };
-    buf.append "//\n// ";
+    buf.append "*/\n/* ";
     buf.append txt;
     (txt.count+5).to 28 do { j:INTEGER;
       buf.add_last ' ';
     };
-    buf.append " //\n//";
+    buf.append " */\n/*";
     3.to 28 do { j:INTEGER;
       buf.add_last '=';      
     };
-    buf.append "//\n\n";
+    buf.append "*/\n\n";
   );
   
   

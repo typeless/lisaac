@@ -32,7 +32,7 @@ Section Inherit
   
   + parent_any:Expanded ANY; 
   
-Section Private
+Section LISAAC
   
   - profil_list:FAST_ARRAY(PROFIL) := FAST_ARRAY(PROFIL).create_with_capacity 65536;  
   
@@ -51,7 +51,7 @@ Section Private
   (
     reduce_profil := profil_list.upper >= life_limit;
     {profil_list.upper >= life_limit}.while_do {
-      profil_list.last.remove;	
+      profil_list.last.remove;	             
       ! {profil_list.last.set_life_index (-1)};
       profil_list.remove_last;
     };
@@ -69,6 +69,10 @@ Section Public
   
   - set_life p:PROFIL <-
   [ 
+    (p.life_index = -1).if {
+      p.name.print;
+      semantic_error (p.slot.position,"LA");
+    };
     -? { p.life_index != -1 };
     -? { profil_list.item (p.life_index) = p };
   ]
@@ -120,7 +124,7 @@ Section Public
       swap idx with (profil_list.upper);
     };
     profil_list.remove_last;
-    // Debug.
+    // Debug.    
     ! {p.set_life_index (-1)};
   );
     

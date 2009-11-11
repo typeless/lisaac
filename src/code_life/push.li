@@ -142,10 +142,11 @@ Section Public
     id.append_in buffer;
     buffer.add_last ')';    
     
-    buffer.append "; // L";
+    buffer.append "; /* L";
     position.line.append_in buffer;
     buffer.add_last ' ';
     buffer.append (position.prototype.name);    
+    buffer.append "*/";
   );
 
   //

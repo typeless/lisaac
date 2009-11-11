@@ -42,6 +42,93 @@ Section PROFIL_LIST
   );
   
 Section Public
+  - propagation_external <-
+  (
+    (external_present).if_false {
+      external_present := TRUE;
+      (set_back.lower).to (set_back.upper) do { j:INTEGER;
+        set_back.item j.propagation_external;
+      };
+    };
+  );
+  
+Section Public
+  
+  //  
+  // Graph info.
+  //
+  
+  - hash_code:INTEGER <- name.hash_code;
+  
+  + external_present:BOOLEAN;
+    
+  + set_call:HASHED_DICTIONARY(INTEGER,PROFIL);
+  
+  + set_back:HASHED_SET(PROFIL);
+  
+  - add_call p:PROFIL <-
+  ( + cnt:INTEGER;    
+    (set_call.fast_has p).if {      
+      cnt := set_call.fast_at p;
+      cnt := cnt + 1;
+    } else {
+      cnt := 1;
+    };    
+    set_call.fast_put cnt to p;
+    p.set_back.fast_add Self;        
+  );
+  
+  - alloc_profil_main <-
+  (
+    set_call := HASHED_DICTIONARY(INTEGER,PROFIL).create;
+    set_back := HASHED_SET(PROFIL).create;
+    name := "main";
+  );
+  
+  - set_external_present b:BOOLEAN <-
+  (
+    external_present := b;
+  );
+  
+  - genere_graph out:STRING <-
+  ( + key:PROFIL;
+    + cnt:INTEGER;
+    + is_force:BOOLEAN;
+    + j:INTEGER;
+    
+    (external_present).if {
+      j := set_call.lower;
+      {(j <= set_call.upper) && {! is_force}}.while_do {
+        is_force := ! set_call.key j.external_present;
+        j := j + 1;
+      };
+    } else {
+      is_force := TRUE;
+    };
+    (is_force).if {
+      (set_call.lower).to (set_call.upper) do { j:INTEGER;        
+        key := set_call.key j;
+        cnt := set_call.item j;
+        output_code.append name;
+        output_code.append " -> ";
+        output_code.append (key.name);
+        (cnt > 1).if {
+          output_code.append "[label=\"";
+          cnt.append_in output_code;
+          output_code.append "\"]";
+        };      
+        output_code.append ";\n";
+      };
+      (external_present).if {      
+        out.append name;
+        out.append " [color=red];\n";
+      };
+    };
+  );
+  
+  //
+  //
+  //
     
   - slot:SLOT <- deferred;
 
@@ -223,21 +310,21 @@ Section Public
     code.remove;    
   );
   
-  - search_tail_recursive:BOOLEAN <-
+  - search_and_convert_tail_recursive <-
   ( + switch:SWITCH;
     + msg:CALL_SLOT;
     + lst:LIST;
     + count_recur:INTEGER;
-    + result:BOOLEAN;
-        
+            
     (
       (! mode_recursive)      &&
       {is_not_tail_recursive} &&       
-      {! code.is_empty}
-    ).if {          
+      {! code.is_empty} && 
+      {result_list.is_empty}
+    ).if {                      
       switch ?= code.last;            
-      (switch != NULL).if {	
-	// Verification des cases :		
+      (switch != NULL).if {	                
+	// Verification cases:
 	(switch.list.lower).to (switch.list.upper) do { j:INTEGER;
 	  lst := switch.list.item j.code;
 	  (lst.is_empty).if_false {
@@ -249,18 +336,16 @@ Section Public
 	};
 	(count_recur = switch.list.count).if {
 	  semantic_error (slot.position,"Recursivity without end.");
-	};
-	(count_recur = switch.list.count - 1).if {	  	  
-	  ((count_intern_call - 1) = count_recur).if {
-	    (link_count = count_intern_call).if {
-	      result := TRUE;
-	      stat := stat | tail_bit;
-	    };
-	  };
-	};
+        };        	
+        ((count_intern_call - 1) = count_recur).if {
+          ((link_count = count_intern_call) || {! is_context_sensitive}).if {
+            new_execute_pass;              
+            stat := 0; 
+            convert_tail_recursive;
+          };
+        };
       };
     };
-    result    
   );
   
   - i_am_the_last i:INSTR :BOOLEAN <-
@@ -298,7 +383,9 @@ Section Public
     CALL_SLOT.reset_count_context_sensitive;  
     
     seq_call_and_loop := seq_call_and_loop + 1;
-          
+    
+    search_and_convert_tail_recursive;    
+    
     code ?= code.execute; 
     
     // BSBS: Netoyer les result pas utile
@@ -361,11 +448,7 @@ Section Public
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
-        ? {v.style = ' '};
-        
-        (v.style != ' ').if {
-          semantic_error (v.position,"BUG PROFIL.genere_handler Error");
-        };
+        ? {(v.style = ' ') || {v.style = '!'}};        
         genere v result FALSE in buffer;	
         buffer.add_last ',';
       };
@@ -540,7 +623,7 @@ Section Private
   
   - add_comment buffer:STRING <-
   (
-    buffer.append "// ";
+    buffer.append "/* ";
     append_type buffer;
     ((stat & 10b) = 0).if {
       buffer.append "No recursive, ";
@@ -552,7 +635,7 @@ Section Private
     } else {
       buffer.append "Inlinable.";
     };
-    buffer.add_last '\n';
+    buffer.append " */\n";
   );
   
   - append_type buffer:STRING <-
@@ -594,3 +677,40 @@ Section PROFIL, LISAAC
   
   - counter_function:INTEGER;
   - counter_recursivity_function:INTEGER;
+  
+Section Private
+  
+  - convert_tail_recursive <-
+  ( + switch:SWITCH;
+    + msg_slot:CALL_SLOT;    
+    + body:LIST;     
+    + loop:LOOP;
+    + push:PUSH;
+    + new_code:LIST;
+        
+    new_code := LIST.create (code.position);        
+    (debug_level_option != 0).if {      
+      push ?= code.first;
+      new_code.add_last (push.my_copy);      
+      push.set_first FALSE;
+    };
+            
+    loop := LOOP.create position name name body code;
+    new_code.add_last loop;
+        
+    // Extract Switch/body:
+    switch ?= code.last;
+    (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
+      body := switch.list.item k.code;
+      (body.is_empty).if_false {	
+	msg_slot ?= body.last;
+        ((msg_slot != NULL) && {msg_slot.profil = Self}).if {	  	  
+          link_count := link_count - 1;          
+	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE style '!';
+	  body.put (LOOP_END.create (msg_slot.position) loop loop) to (body.upper);
+	};	
+      };
+    };
+    count_intern_call := 1;
+    code := new_code;    
+  );

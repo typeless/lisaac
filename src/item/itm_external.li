@@ -187,7 +187,10 @@ Section Public
       .when 23 then { // compile_date -> UINTEGER_32.
         result := INTEGER_CST.create position value (CLOCK.date.encode) type (type_uinteger_32.default);
       }
-      .when 24 to 31 then { // FREE
+      .when 24 then { // forall_data action:{ E; } 
+        //result := forall_data_product;
+      }
+      .when 25 to 31 then { // FREE
         syntax_error (position,"Free external lisaac code.");
       };
     } else {
@@ -198,3 +201,14 @@ Section Public
     result
   );
   
+Section Private
+  
+  //
+  // Reflexivity
+  //
+  
+  - forall_data_product:EXPR <-
+  ( + type:TYPE_FULL;
+    type := profil_slot.argument_list.first.type;
+    
+  );

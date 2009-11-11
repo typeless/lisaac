@@ -50,11 +50,11 @@ Section Public
   // Comparison.
   //
   
-  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <- 
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <- 
   ( + rd:READ_SLOT;
     
     rd ?= other;
-    ((rd != NULL) && {slot = rd.slot} && {receiver == rd.receiver})    
+    ((rd != NULL) && {slot = rd.slot} && {receiver ~= rd.receiver})    
   );
 
 Section SLOT

@@ -59,7 +59,7 @@ Section Public
   - genere_struct <-
   ( 
     output_decl.append 
-    "// ___CONTEXT\n\
+    "/* ___CONTEXT */\n\
     \typedef struct ___CONTEXT_struct _____CONTEXT; \n\
     \struct ___CONTEXT_struct {\n\
     \  unsigned long code; \n\

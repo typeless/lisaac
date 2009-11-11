@@ -53,9 +53,9 @@ Section Public
   );
   
   /*
-  - set_comment_chapter c:STRING_CONSTANT <-
+  - set_comment_chapter cmt:STRING_CONSTANT <-
   (
-    comment_chapter := c;
+    comment_chapter := cmt;
   );
   */
   

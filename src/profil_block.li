@@ -92,6 +92,11 @@ Section Public
     + r_list:FAST_ARRAY(TYPE_FULL);
     + stack_top:INTEGER;
     
+    (is_graph).if {
+      set_call := HASHED_DICTIONARY(INTEGER,PROFIL).create;
+      set_back := HASHED_SET(PROFIL).create;
+    };    
+    
     list := base.list;
     stack_top := stack_local .upper + 1;
         
@@ -260,7 +265,7 @@ Section Public
     
   - is_block:BOOLEAN := TRUE;
 
-  - Self:SELF '==' Right 60 other:TYPE :BOOLEAN <- 
+  - Self:SELF '~=' Right 60 other:TYPE :BOOLEAN <- 
   ( 
     other = to_type_block
   );
@@ -357,7 +362,7 @@ Section Public
   ( + result:BOOLEAN;
     + t:TYPE_BLOCK;
         
-    result := Self == other;
+    result := Self ~= other;
     (result).if_false {
       t ?= other;
       result := (

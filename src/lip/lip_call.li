@@ -87,26 +87,20 @@ Section Public
         warning_error (position,"No argument for `print' method.");
       };
       rec.print;      
-    }.elseif {name = ALIAS_STR.slot_exit} then {
+    }.elseif {name = ALIAS_STR.slot_die_with_code} then {      
       int ?= val;
-      ((val != NULL) && {int = NULL}).if {
-        warning_error (position,"Optional integer argument for `exit' method.");
-      };
       (int = NULL).if {
-        die_with_code exit_failure_code;
-      }.elseif { (int.value != 0) && {int.value % 256 = 0} } then {
-        die_with_code exit_failure_code;
-      } else {
-        die_with_code (int.value);
-      }
-    }.elseif {name = ALIAS_STR.slot_help} then {
+        semantic_error (position,"Integer argument needed.");
+      };
+      die_with_code (int.value);
+    }.elseif {name = ALIAS_STR.slot_help_command} then {
       (val != NULL).if {
-        warning_error (position,"No argument for `help' method.");
+        warning_error (position,"No argument for `help_command' method.");
       };
       LISAAC.show_help;
-    }.elseif {name = ALIAS_STR.slot_version} then {
+    }.elseif {name = ALIAS_STR.slot_compiler_version} then {
       (val != NULL).if {
-        warning_error (position,"No argument for `version' method.");
+        warning_error (position,"No argument for `compiler_version' method.");
       };
       LISAAC.show_version;
     }.elseif {name = ALIAS_STR.slot_path} then {

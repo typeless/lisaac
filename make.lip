@@ -61,13 +61,20 @@ Section Private
   + target:STRING := "unix";
   
   //
+  // Service
+  //
+  
+  + exit_success_code:INTEGER := 0;
+  
+  + exit_failure_code:INTEGER := 1;
+
+  //
   // Directory.
   //
   
   - standard_path <-
   // Standard library.
-  ( 
-    //LIP.create "lib/make.lip".init;
+  (
     path ("lib/*");    
   );
   
@@ -129,7 +136,7 @@ Section Private
     };
     (target = "").if {
       "Target code needed.\n".print;
-      exit;
+      die_with_code exit_failure_code;
     };
   );
     
@@ -143,7 +150,7 @@ Section Private
       } else {
         "\nERROR: `" + lib + "' library for GCC not found.\n".print;
         run "del __tmp__.c";
-        exit;
+        die_with_code exit_failure_code;
       };    
     } else {
       run "echo \"int main(){ return(1); }\" > __tmp__.c";    
@@ -153,7 +160,7 @@ Section Private
       } else {
         ("\nERROR: `" + lib + "' library for GCC not found.\n").print;
         run "rm __tmp__.c";
-        exit;
+        die_with_code exit_failure_code;
       };    
     };
   );
@@ -183,7 +190,7 @@ Section Private
   (
     execute cmd;
     (execute_status_code != 0).if {
-      exit execute_status_code;
+      die_with_code execute_status_code;
     };
   );
 
@@ -249,7 +256,7 @@ Section Public
   (
     ((level < 1) | (level > 20)).if {
       "Incorrect debug level.\n".print;
-      exit;
+      die_with_code exit_failure_code;
     };
     debug_level := level;
   );
@@ -271,7 +278,7 @@ Section Public
   //
 
   - optim <-
-  // Full lisaac optimization.
+  // Full Lisaac optimization.
   (
     no_debug;
     is_optimization := TRUE;
@@ -299,7 +306,7 @@ Section Public
   //
   
   - o outputfile:STRING <-  
-  // output file (default: `input_file').
+  // Change output file (default: `input_file').
   (
     output_file := outputfile;
   );
@@ -324,12 +331,6 @@ Section Public
     option_gcc := option_gcc + " " + option;
   );
 
-  - o output:STRING <-
-  // Change output file
-  (
-    output_file := output;
-  );
-
   - partial <-
   // Only generate C code and don't compile it with GCC
   (
@@ -352,16 +353,16 @@ Section Public
     is_statistic := TRUE;
   );
 
-  - h <-
+  - help <-
   // Help
   (
-    help;
-    exit;
+    help_command;
+    die_with_code exit_success_code;
   );
 
   - version <-
   // Version
   (
-    version;
-    exit;
+    compiler_version;
+    die_with_code exit_success_code;
   );

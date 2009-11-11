@@ -510,7 +510,21 @@ Section Public
   // Looking and comparison:
   //
   
-  - Self:SELF '=='  Right 60 other:COLLECTION(V) :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <-
+  // Do both collections have the same `lower', `upper', and
+  // items?
+  // The basic `=' is used for comparison of items.
+  //
+  // * See: `is_equal_map', `same_items'.
+  ( 
+    deferred;
+    FALSE
+  )
+  [ 
+    +? { Result ->> {(lower = other.lower) & (upper = other.upper)} };   
+  ];
+
+  - Self:SELF '~='  Right 60 other:COLLECTION(V) :BOOLEAN <-
   // Do both collections have the same `lower', `upper', and
   // items?
   // The basic `=' is used for comparison of items.

@@ -23,7 +23,6 @@ Section Header
   + name        := WRITE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
-
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Write local, global or slot";

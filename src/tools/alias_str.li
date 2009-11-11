@@ -155,8 +155,10 @@ Section Public
   - slot_if           :STRING_CONSTANT := "if";
   - slot_else         :STRING_CONSTANT := "else";  
   - slot_print        :STRING_CONSTANT := "print";
-  - slot_exit         :STRING_CONSTANT := "exit";
+  - slot_die_with_code:STRING_CONSTANT := "die_with_code";
   - slot_run          :STRING_CONSTANT := "run";
+  - slot_help_command :STRING_CONSTANT := "help_command";
+  - slot_compiler_version:STRING_CONSTANT := "compiler_version";
   - slot_path         :STRING_CONSTANT := "path";
   - slot_front_end    :STRING_CONSTANT := "front_end";
   - slot_back_end     :STRING_CONSTANT := "back_end";
@@ -278,7 +280,7 @@ Section Public
     } else {
       result ?= tmp;      
     };
-    ? {result == str};
+    ? {result ~= str};
     result
   );
   
@@ -452,7 +454,9 @@ Section Public
     list.add slot_if;
     list.add slot_else;    
     list.add slot_print;
-    list.add slot_exit;
+    list.add slot_die_with_code;
+    list.add slot_help_command;
+    list.add slot_compiler_version;
     list.add slot_run;
     list.add slot_path;
     list.add slot_front_end;

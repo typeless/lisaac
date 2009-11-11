@@ -57,13 +57,13 @@ Section Public
     parent_area.make father from (x0,y0) size (w,h);    
   );
   
-  - resize (lx,ly:INTEGER) <-
+  - resize (w,h:INTEGER) <-
   (
-    mask.resize ly;
-    height.to (ly-1) do { y:INTEGER;
+    mask.resize h;
+    height.to (h-1) do { y:INTEGER;
       mask.put (FAST_ARRAY(UINTEGER_16).create_with_capacity 2) to y;
     };
-    parent_area.resize (lx,ly);
+    parent_area.resize (w,h);
   );
   
   //

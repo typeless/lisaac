@@ -27,10 +27,10 @@ Section Header
   - author    := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment   := "Parser for Lisaac language.";
   
-  // You can to get current grammar with `grep "//++" parser.li'
-  // `grep "//--" parser.li' can be used to have more details
-  // `grep "////" parser.li' for lip grammar
-  
+  // You can to get with 
+  // `grep "//++" parser.li' : Current grammar.
+  // `grep "//--" parser.li' : Syntax rules.
+  // `grep "////" parser.li' : lip grammar. 
 Section Inherit
   
   - parent_any:ANY := ANY;
@@ -564,7 +564,7 @@ Section Private
     result
   );
   
-  //-- integer        -> number 
+  //-- integer        -> number
   //-- number         -> {'0'-'9'} ['d']
   //--                 | '0'-'9' {'0'-'9' | 'A'-'F' | 'a'-'f'} 'h'
   //--                 | {'0'-'7'} 'o'
@@ -624,9 +624,7 @@ Section Private
   );
 
   - read_real:BOOLEAN <-
-  //-- real           -> '0'-'9' {'0'-'9'_} [real_decimal] [real_exp]
-  //-- real_decimal   -> '.' {'0'-'9'}
-  //-- real_exp       -> 'E' ['+'|'-'] '0'-'9' {'0'-'9'}
+  //-- real           -> '0'-'9' {'0'-'9'_} [ '.' {'0'-'9'} ] [ 'E' ['+'|'-'] '0'-'9' {'0'-'9'}
   ( + result:BOOLEAN;
     + pos_old:INTEGER;
 
@@ -2533,9 +2531,9 @@ Section Private
 	(read_external).if_false {
 	  syntax_error (current_position,"Incorrect external.");
 	};
-	output_decl.append "// ";
+	output_decl.append "/* ";
 	output_decl.append (object.name);
-	output_decl.add_last '\n';
+	output_decl.append " */\n";
 	output_decl.append last_string;	
 	output_decl.add_last '\n';
       }.elseif {read_word(ALIAS_STR.slot_default)} then {

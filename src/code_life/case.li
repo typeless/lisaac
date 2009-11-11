@@ -98,7 +98,7 @@ Section Public
         (wrt1 != NULL) && 
         {wrt2 != NULL} && 
         {wrt1.variable = wrt2.variable} && 
-        {wrt1.value == wrt2.value}
+        {wrt1.value ~= wrt2.value}
       );
     };
     result

@@ -166,6 +166,7 @@ user: install_lisaac.c
 	@echo "Please wait..."
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
 	@echo "- please run ./install_lisaac to finish the installation"
+	@echo "Running installer..."
 	./install_lisaac
 
 install: bin/lisaac bin/shorter

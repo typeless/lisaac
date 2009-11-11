@@ -49,42 +49,42 @@ Section Private
     //
     // Entry command.
     //
-    (cmd == "help").if {
+    (cmd ~= "help").if {
       help;
-    }.elseif {cmd == "ls"} then {
+    }.elseif {cmd ~= "ls"} then {
       ls;
-    }.elseif {cmd == "version"} then {
-      print "Small Lisaac shell Version 0.2\n";
-    }.elseif {cmd == "rm"} then {
+    }.elseif {cmd ~= "version"} then {
+      print_screen "Small Lisaac shell Version 0.2\n";
+    }.elseif {cmd ~= "rm"} then {
       rm;      
-    }.elseif {cmd == "mv"} then {
+    }.elseif {cmd ~= "mv"} then {
       mv;
     //  
     // Directory Manager.  
     //
-    }.elseif {cmd == "cd"} then {
+    }.elseif {cmd ~= "cd"} then {
       cd;
-    }.elseif {cmd == "mkdir"} then {
+    }.elseif {cmd ~= "mkdir"} then {
       mkdir;
     //  
     // File Manager.  
     //
-    }.elseif {cmd == "cat"} then {
+    }.elseif {cmd ~= "cat"} then {
       cat;
-    }.elseif {cmd == "mkfile"} then {
+    }.elseif {cmd ~= "mkfile"} then {
       mkfile;
-    }.elseif {(cmd == "exit") || {cmd == "bye"}} then {
+    }.elseif {(cmd ~= "exit") || {cmd ~= "bye"}} then {
       exit_shell;
     } else {
-      print "`";
-      print cmd;
-      print "\': Command not found.\n";
+      print_screen "`";
+      print_screen cmd;
+      print_screen "\': Command not found.\n";
     };
   );
   
   - help <-
   (
-    print
+    print_screen
     "Shell manager:\n\
     \  help                : Display this help.\n\
     \  exit / bye          : Exit Lisaac Shell.\n\
@@ -110,9 +110,9 @@ Section Private
     + f:STD_FILE;
     
     (dir.open).if_false {
-      print "`ls\': Permission denied.\n";
+      print_screen "`ls\': Permission denied.\n";
     } else {
-      print "----Access----  ----Update----  ---Size--   ----Name----\n";    
+      print_screen "----Access----  ----Update----  ---Size--   ----Name----\n";    
       dir.lower.to (dir.upper) do { i:INTEGER;
         e := dir.item i;
         string_tmp.clear;
@@ -137,7 +137,7 @@ Section Private
         };
         string_tmp.append (e.name);
         string_tmp.add_last '\n';
-        print string_tmp;
+        print_screen string_tmp;
       };
     };
   );
@@ -145,16 +145,16 @@ Section Private
   - mv <-
   ( + src,dst:STRING;
     (cmds.count < 3).if {
-      print "`mv\': Too few arguments.\n";
+      print_screen "`mv\': Too few arguments.\n";
     }.elseif {cmds.count != 3} then {
-      print "`mv\': Too many arguments.\n";
+      print_screen "`mv\': Too many arguments.\n";
     } else {
       src := cmds.item 1;
       dst := cmds.item 2;      
       (dir.move src to dst).if_false {
-        print "`mv\': cannot rename file `";
-        print dst;
-        print "\': Permission denied.\n";
+        print_screen "`mv\': cannot rename file `";
+        print_screen dst;
+        print_screen "\': Permission denied.\n";
       };
     };
   );
@@ -162,15 +162,15 @@ Section Private
   - rm <-
   ( + param:STRING;
     (cmds.count = 1).if {
-      print "`rm\': Too few arguments.\n";
+      print_screen "`rm\': Too few arguments.\n";
     }.elseif {cmds.count != 2} then {
-      print "`rm\': Too many arguments.\n";
+      print_screen "`rm\': Too many arguments.\n";
     } else {
       param := cmds.item 1;      
       (dir.remove param).if_false {
-        print "`rm\': cannot remove `";
-        print param;
-        print "\': Permission denied.\n";
+        print_screen "`rm\': cannot remove `";
+        print_screen param;
+        print_screen "\': Permission denied.\n";
       };
     };
   );
@@ -184,7 +184,7 @@ Section Private
     + param:STRING;
     
     (cmds.count > 2).if {
-      print "`cd\': Too many arguments.\n";
+      print_screen "`cd\': Too many arguments.\n";
     }.elseif {cmds.count = 1} then {      
       dir := FILE_SYSTEM;
     } else {
@@ -194,14 +194,14 @@ Section Private
         (e.is_directory).if {
           dir ?= e;                    
         } else {
-          print "`";
-          print param;
-          print "\': Not a directory.\n";
+          print_screen "`";
+          print_screen param;
+          print_screen "\': Not a directory.\n";
         };
       } else {
-        print "`";
-        print param;
-        print "\': No such file or directory.\n";
+        print_screen "`";
+        print_screen param;
+        print_screen "\': No such file or directory.\n";
       };
     };
   );
@@ -211,16 +211,16 @@ Section Private
     + param:STRING;
        
     (cmds.count = 1).if {
-      print "`mkdir\': Too few arguments.\n";
+      print_screen "`mkdir\': Too few arguments.\n";
     }.elseif {cmds.count != 2} then {
-      print "`mkdir\': Too many arguments.\n";
+      print_screen "`mkdir\': Too many arguments.\n";
     } else {
       param := cmds.item 1;
       e := dir.make_directory param;
       (e = NULL).if {
-        print "`";
-        print param;
-        print "\': File exists, cannot create directory.\n";
+        print_screen "`";
+        print_screen param;
+        print_screen "\': File exists, cannot create directory.\n";
       };
     };
   );
@@ -235,28 +235,28 @@ Section Private
     + file:STD_FILE;
     
     (cmds.count = 1).if {
-      print "`cat\': Too few arguments.\n";
+      print_screen "`cat\': Too few arguments.\n";
     }.elseif {cmds.count != 2} then {
-      print "`cat\': Too many arguments.\n";
+      print_screen "`cat\': Too many arguments.\n";
     } else {
       param := cmds.item 1;
       e := dir.get_entry param;
       ((e = NULL) || {! e.is_file}).if {
-        print "`";
-        print param;
-        print "\': No such file.\n";
+        print_screen "`";
+        print_screen param;
+        print_screen "\': No such file.\n";
       } else {
         file ?= e;
         (! file.open).if {
-          print "`";
-          print param;
-          print "\': Not open.\n";
+          print_screen "`";
+          print_screen param;
+          print_screen "\': Not open.\n";
         } else {          
           string_tmp.clear;
           string_tmp.set_capacity (file.size.to_integer);          
           file.read string_tmp size (file.size);
-          print string_tmp;
-          print "\n";
+          print_screen string_tmp;
+          print_screen "\n";
           file.close;
         };
       };
@@ -268,14 +268,14 @@ Section Private
     + param:STRING;
        
     (cmds.count = 1).if {
-      print "`mkfile\': Too few arguments.\n";
+      print_screen "`mkfile\': Too few arguments.\n";
     } else {
       param := cmds.item 1;
       f := dir.make_file param;
       (f = NULL).if {
-        print "`";
-        print param;
-        print "\': File exists, cannot create file.\n";
+        print_screen "`";
+        print_screen param;
+        print_screen "\': File exists, cannot create file.\n";
       }.elseif {cmds.count > 2} then {
         f.open;
         2.to (cmds.upper) do { j:INTEGER;
@@ -290,7 +290,7 @@ Section Private
   
   - exit_shell <-
   (    
-    print "Good bye.\n";
+    print_screen "Good bye.\n";
     (is_isaac).if {
       x_screen := y_screen := 0;
       my_window.close;
@@ -313,8 +313,8 @@ Section Public
     dir := FILE_SYSTEM;
     
     {
-      print (dir.path);
-      print " > ";
+      print_screen (dir.path);
+      print_screen " > ";
       command.clear;
       IO.read_line_in command;
       
@@ -336,7 +336,7 @@ Section Public
   
   - run s:ABSTRACT_STRING :G_WIN_OUT <-
   (
-    line_tmp  := BMP_LINE(PIXEL_32).create (VIDEO.width);
+    video_line_tmp  := BMP_LINE(PIXEL_32).create (VIDEO.width);
     x_screen := y_screen := 0;
     load_font s;
     command := STRING.create 100;    
@@ -372,7 +372,7 @@ Section Public
     mask_draw (x0,y0) to (x1,y1) color green;         
   );
   
-  - print st:ABSTRACT_STRING <-
+  - print_screen st:ABSTRACT_STRING <-
   ( + car:CHARACTER;
     + line:FAST_ARRAY(UINTEGER_16);
     
@@ -498,7 +498,7 @@ Section Private
     color_table.item idx
   );
   
-  + line_tmp:ABSTRACT_BMP_LINE;
+  + video_line_tmp:ABSTRACT_BMP_LINE;
   
   - y_command:INTEGER;
   
@@ -523,13 +523,13 @@ Section Private
     };
     y_screen := y_command;
     x_screen := 0;
-    print (dir.path);
-    print " > ";
+    print_screen (dir.path);
+    print_screen " > ";
     string_tmp.copy command;
     (is_actif).if {
       string_tmp.insert '|' to cursor;
     };
-    print string_tmp;
+    print_screen string_tmp;
     redraw (x_window,y_window+y_command) to (x_window+width-1,y_window+y_max);
   );
   
@@ -556,7 +556,7 @@ Section Public
 	// Enter
 	.when '\13\' then {
 	  update_command FALSE;
-	  print "\n";
+	  print_screen "\n";
 	  (command.is_empty).if_false {       
 	    cmds.clear;
 	    command.split_in cmds;
@@ -617,8 +617,8 @@ Section Public
     
     ofs.to (ofs+x2-x1) do { o:INTEGER;
       col := line.get_color o;
-      line_tmp.put (col_trans col) to o;      
+      video_line_tmp.put (col_trans col) to o;      
     };
-    parent_area_mask.slave_line_h_hard (x1,y) until x2 image line_tmp offset ofs;
+    parent_area_mask.slave_line_h_hard (x1,y) until x2 image video_line_tmp offset ofs;
   );
 

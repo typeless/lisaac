@@ -26,37 +26,35 @@ Section Private
   
   + is_valid:BOOLEAN;
   
-  + is_shorter:BOOLEAN;
-  
   - src_path <-
   ( 
-    path (".");
-    path ("tools/");
-    path ("type/");
-    path ("item/");
-    path ("constant/");
-    path ("variable/");
-    path ("external/");
-    path ("external/logic/");
-    path ("external/arithmetic/");
-    path ("external/comparison/");
-    path ("dispatcher/");
-    path ("code_life/");
-    path ("lip/");
+    path ".";
+    path "tools/";
+    path "type/";
+    path "item/";
+    path "constant/";
+    path "variable/";
+    path "external/";
+    path "external/logic/";
+    path "external/arithmetic/";
+    path "external/comparison/";
+    path "dispatcher/";
+    path "code_life/";
+    path "lip/";
   );
   
   - compiler_path <-
   (
     src_path;    
     input_file := "lisaac";
-    path ("compiler_any/");
+    path "compiler_any/";
   );
     
   - shorter_path <-
   (
     src_path;    
     input_file := "shorter";
-    path ("shorter_any/");
+    path "shorter_any/";
   );
     
   //
@@ -78,14 +76,9 @@ Section Private
   (
     general_back_end;
     (is_valid).if {
-      (is_shorter).if {
-        execute "cp shorter ../bin/.";
-      } else {
-        execute "cp lisaac.c ../bin/.";
-        execute "cp lisaac ../bin/.";
-      };
-    };
-   
+      execute "cp lisaac.c ../bin/.";
+      execute "cp lisaac ../bin/.";
+    };    
   );
   
 Section Public
@@ -100,7 +93,6 @@ Section Public
   // Compile the shorter.
   (
     shorter_path;
-    is_shorter := TRUE;
   );
   
   - valid <-

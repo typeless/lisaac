@@ -115,13 +115,13 @@ Section Public
       };
       w := fmt.width;
       h := fmt.height;
-      bmp := BITMAP(PIXEL_24).create (w,h);
+      bmp := BITMAP(PIXEL_24).create_size (w,h);
       fmt.put_image_in bmp;          
       f.close;      
     }.elseif {entry.path.has_suffix ".ai"} then {      
       entry.open;      
       f ?= entry;
-      bmp := BITMAP(PIXEL_24).create (10,10);	
+      bmp := BITMAP(PIXEL_24).create_size (10,10);	
       ai_file := AI_FILE.clone;
       ai_file.fill_bitmap f in bmp scale 3;	
       f.close;

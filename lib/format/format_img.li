@@ -60,14 +60,14 @@ Section Public
   // Creation.
   //
 
-  - create_with_file file:STD_FILE :SELF <-
+  - create_with_file f:STD_FILE :SELF <-
   ( + result:SELF;
     result := clone;
-    result.make_with_file file;
+    result.make_with_file f;
     result
   );
 
-  - make_with_file file:STD_FILE <-
+  - make_with_file f:STD_FILE :SELF <-
   ( 
     deferred;
   );
@@ -79,7 +79,7 @@ Section Public
     result
   );
 
-  - make_with buf:FAST_ARRAY(UINTEGER_8) <-
+  - make_with buf:FAST_ARRAY(UINTEGER_8) :SELF <-
   ( 
     deferred;
   );

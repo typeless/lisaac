@@ -82,7 +82,7 @@ Section Public
   - init:G_EXPR <-
   ( 
     // Initialization bitmap.    
-    background := BITMAP(PIXEL_32).create (width_min,height_min);
+    background := BITMAP(PIXEL_32).create_size (width_min,height_min);
     bg := FAST_ARRAY2(UINTEGER_8).create (width_min>>2,height_min>>2+2);
     TIMER.add_client Self;
     G_RAW.create (Self.fix_height.fix_width)

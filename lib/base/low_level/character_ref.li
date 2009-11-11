@@ -47,7 +47,7 @@ Section Public
     item < other.item
   );
   
-  - code:INTEGER <-
+  - code:INTEGER_8 <-
   // ASCII code of Current
   (
     item.code

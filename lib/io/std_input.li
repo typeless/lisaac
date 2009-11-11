@@ -40,7 +40,7 @@ Section Public
   
   - is_connected:BOOLEAN := TRUE;
   
-  - read_character<-
+  - read_character :CHARACTER <-
   // Read character from stdin
   (
     push_back_flag.if {
@@ -48,6 +48,7 @@ Section Public
     } else {
       memory := basic_io_getc;
     };
+    last_character
   );
   
   

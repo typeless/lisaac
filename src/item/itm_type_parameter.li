@@ -29,7 +29,7 @@ Section Header
  
 Section Inherit
   
-  + parent_itm_type:Expanded ITM_TYPE_SIMPLE;
+  + parent_itm_type_simple:Expanded ITM_TYPE_SIMPLE;
   
 Section Public
   
