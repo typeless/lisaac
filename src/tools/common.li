@@ -74,43 +74,32 @@ Section Public
     \Bug report: https://alioth.debian.org/projects/lisaac/          \n";
 
   - print_info <-
-  ( + b:BOOLEAN;
-    + i:INTEGER;
-    "Built on:           ".print;  compile_date.print; " ".print;
-                         compile_time.print; "\n".print;
-    `
-    #if defined(_LISAAC_DEBUG_LEVEL) && defined(_LISAAC_DEBUG_CODE)
-    `;
-    b := `_LISAAC_DEBUG_CODE`:BOOLEAN{TRUE,FALSE};
-    i := `_LISAAC_DEBUG_LEVEL`:INTEGER;
-    "Debug Level:        ".print; i.print;
-    b.if {
-      " (with source code)".println;
+  ( + debug_code, lisaac_optim :STRING_CONSTANT;
+
+    compiler_debug_with_code.if {
+      debug_code := " (with source code)";
     } else {
-      " (without source code)".println;
+      debug_code := " (without source code)";
     };
-    `
-    #endif
-    #ifdef _LISAAC_INLINE_LEVEL
-    `;
-    i := `_LISAAC_INLINE_LEVEL`:INTEGER;
-    "Inline Level:       ".print; i.println;
-    `
-    #endif
-    #ifdef _LISAAC_OPTIM
-    `;
-    i := `_LISAAC_OPTIM`:INTEGER;
-    "Optimization Level: ".print; i.println;
-    `
-    #endif
-    `;
+    compiler_optimization.if {
+      lisaac_optim := "yes";
+    } else {
+      lisaac_optim := "no";
+    };
+
+    "Built on:             ".print; compile_date.print; " ".print;
+                                    compile_time.print; "\n".print;
+    "Debug Level:          ".print; debug_level.print; debug_code.println;
+    "Inline Level:         ".print; compiler_inlining_level.println;
+    "Lisaac optimizations: ".print; lisaac_optim.println;
+
     '\n'.print;
     (path_lisaac_builtin = path_lisaac).if {
-      "Lisaac path:        ".print; path_lisaac.println;
+      "Lisaac path:          ".print; path_lisaac.println;
     } else {
       "Lisaac path:".println;
-      "  builtin:          ".print; path_lisaac_builtin.println;
-      "  current:          ".print; path_lisaac.println;
+      "  builtin:            ".print; path_lisaac_builtin.println;
+      "  current:            ".print; path_lisaac.println;
     };
   );
 
@@ -154,31 +143,4 @@ Section Public
       path_lisaac := path_lisaac_builtin;
     };
     path_lisaac
-  );
-
-  - compile_time :TIME <-
-  ( + i:INTEGER;
-    `
-    #ifdef _LISAAC_COMPILE_TIME
-    `;
-    i := `_LISAAC_COMPILE_TIME`:INTEGER;
-    `
-    #endif
-    `;
-    TIME.create_csecond i
-  );
-
-  - compile_date :DATE <-
-  ( + i,j,k,l:INTEGER;
-    `
-    #ifdef _LISAAC_COMPILE_DATE
-    `;
-    i := `_LISAAC_COMPILE_DATE_YEAR`:INTEGER;
-    j := `_LISAAC_COMPILE_DATE_MONTH`:INTEGER;
-    k := `_LISAAC_COMPILE_DATE_DAY`:INTEGER;
-    l := `_LISAAC_COMPILE_DATE_WDAY`:INTEGER;
-    `
-    #endif
-    `;
-    DATE.create (i, j, k, l)
   );
