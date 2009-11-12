@@ -46,7 +46,7 @@ Section Inherit
   
   + parent_directory:Expanded DIRECTORY;
   
-Section Private  
+Section Public
   
   //
   // Physical implementation.

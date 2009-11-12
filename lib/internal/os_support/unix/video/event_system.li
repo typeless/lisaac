@@ -97,7 +97,7 @@ Section Public
         //
         // Event Keyboard
         //
-        .when `KeyPress`:INTEGER then {
+        .when `KeyPress`:INTEGER then {          
           KEYBOARD.key `ev.xkey.keycode`:UINTEGER_8 press TRUE;
         }
         .when `KeyRelease`:INTEGER then {
