@@ -292,6 +292,7 @@ Section Public
       buffer.append "if (";
       //                        
       ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {        
+        buffer.append "/* ICI */";
         expr.genere buffer;
         is_genered := TRUE;
         buffer.append ".__id==0";

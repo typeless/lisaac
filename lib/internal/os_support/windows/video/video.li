@@ -85,7 +85,7 @@ Section Public
   
   - size_pixel:INTEGER;
   
-  - make (w,h:INTEGER) <-
+  - make_size (w,h:INTEGER) <-
   ( 
     // Init BITMAP:
     width  := w;
@@ -149,7 +149,7 @@ Section Public
   
   - auto_make <-
   (
-    make (800,600);
+    make_size (800,600);
   );
   
   - close <-
@@ -171,14 +171,14 @@ Section Public
     `SetPixel(hdc_glob,@x,@y,@real_col)`;    
   );
   
-  - line_h_hard (x,y:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
+  - line_h_hard (x0,y0:INTEGER) until x1:INTEGER color col:UINTEGER_32 <-
   ( + real_col:UINTEGER_32;
     + pen:UINTEGER_32;
     real_col := ((col>>16) & 0000FFh) | ((col<<16) & 0FF0000h) | (col & 00FF00h);
     pen := `CreatePen(PS_SOLID,1,@real_col)`:UINTEGER_32;
     `SelectObject(hdc_glob,(HPEN)@pen)`;
-    `MoveToEx(hdc_glob,@x,@y,NULL)`;
-    `LineTo(hdc_glob,@x1+1,@y)`;
+    `MoveToEx(hdc_glob,@x0,@y0,NULL)`;
+    `LineTo(hdc_glob,@x1+1,@y0)`;
     `DeleteObject((HPEN)@pen)`;
   );
     

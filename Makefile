@@ -20,7 +20,6 @@ CFLAGS=-O2
 
 all: install_lisaac
 	./install_lisaac
-	. ~/.bashrc
 
 install_lisaac:
 	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
