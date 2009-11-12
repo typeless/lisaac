@@ -51,14 +51,14 @@ struct ___OBJ {
 
 typedef struct __VB_struct ____VB;
 typedef struct __V_struct ____V;
-typedef struct __APE_struct ____APE;
+typedef struct __BPE_struct ____BPE;
 /* NULL */
 #ifndef NULL
 #define NULL ((void *)0)
 #endif
 
 typedef void * ____DB;
-typedef unsigned long ____4NE;
+typedef unsigned long ____5NE;
 typedef unsigned int ____MZ;
 typedef char ____4;
 typedef signed int ____L;
@@ -67,8 +67,8 @@ typedef signed int ____L;
 struct __VB_struct {
   unsigned int __id;
   ____L __AC;
-  ____L __DRE;
-  ____4 *__0QE;
+  ____L __ERE;
+  ____4 *__1QE;
 };
 /* __V */
 #define ____V__ 5
@@ -77,13 +77,13 @@ struct __V_struct {
   ____L __TB;
   ____4 *__UB;
 };
-/* __APE */
-#define ____APE__ 0
-struct __APE_struct {
-  volatile ____DB __CPE;
-  volatile ____4NE __DPE;
-  ____APE *__EPE;
-  ____APE *__FPE;
+/* __BPE */
+#define ____BPE__ 0
+struct __BPE_struct {
+  volatile ____DB __DPE;
+  volatile ____5NE __EPE;
+  ____BPE *__FPE;
+  ____BPE *__GPE;
 } __attribute__ ((packed));
 typedef char ____G;
 #define __F__ 1
@@ -103,14 +103,14 @@ ____VB __VB_={____VB__};
 ____V __V_={____V__};
 #define __V__ (&__V_)
 
-____APE __APE_;
-#define __APE__ (&__APE_)
+____BPE __BPE_;
+#define __BPE__ (&__BPE_)
 
-____4NE __WOE;
-____4NE __MSG;
-____4NE __UNN;
-____DB __51F;
-____APE *__B0N;
+____5NE __XOE;
+____5NE __NSG;
+____5NE __VNN;
+____DB __A2F;
+____BPE *__C0N;
 ____VB *__0B;
 ____VB *__EC;
 ____VB *__JC;
@@ -122,8 +122,8 @@ ____V *__MC;
 ____V *__2G;
 ____V *__5G;
 ____V *__CH;
-____G __PWC;
-____4 __1WC;
+____G __QWC;
+____4 __2WC;
 ____VB *__1N;
 
 /*==========================*/
@@ -205,14 +205,16 @@ ____V __string_67={____V__,24,"#define LISAAC_DIRECTORY"};
 ____V __string_68={____V__,10,"src/path.h"};
 ____V __string_69={____V__,31,"Compilation of Lisaac compiler."};
 ____V __string_70={____V__,28,"Compilation of Shorter tool."};
-____V __string_71={____V__,227,"Welcome to the Lisaac World !               \
+____V __string_71={____V__,228,"Welcome to the Lisaac World !               \
             \n=============================                           \n  In\
 stallation successfull.                             \n  Run `lisaac' to comp\
-ile.                              "};
-____V __string_72={____V__,237,"\n  Note: You'll have to reboot or reloaded \
-environnement   \n        to acknowledge the changes.                       \
-\n     OR for bash users, doing a `source ~/.bashrc' should \n        do the\
- job.                                       \n"};
+ile.                              \n"};
+____V __string_72={____V__,360,"*-------------------------------------------\
+--------------*\n| Note: You'll have to reboot or reloaded environnement   |\
+\n|       to acknowledge the changes.                       |\n|    OR for b\
+ash users, doing a `source ~/.bashrc' should |\n|       do the job.         \
+                              |\n*------------------------------------------\
+---------------*\n"};
 ____V __string_73={____V__,23,"Editor mode for Lisaac."};
 ____V __string_74={____V__,75,"1- Emacs.\n2- Vim.\n3- Kate.\n4- Hippoedit.\n\
 5- eFTE.\n6- Eclipse.\n0- Exit menu."};
@@ -296,65 +298,66 @@ ____V __string_126={____V__,70,"bin/lisaac src/make.lip -shorter -q -boost -\
 o bin/shorter -gcc -Isrc/."};
 ____V __string_127={____V__,14,"  Shorter ok!\n"};
 ____V __string_128={____V__,32,"  Sorry, `shorter' not ready...\n"};
-____V __string_129={____V__,17,"mkdir -p doc/html"};
+____V __string_129={____V__,14,"mkdir doc\\html"};
 ____V __string_130={____V__,50,"bin\\shorter -d -f belinda lib\\standard -o \
 doc\\html"};
-____V __string_131={____V__,50,"bin/shorter -d -f belinda lib/standard -o do\
+____V __string_131={____V__,17,"mkdir -p doc/html"};
+____V __string_132={____V__,50,"bin/shorter -d -f belinda lib/standard -o do\
 c/html"};
-____V __string_132={____V__,69,"  OK\n\n  Note: you'll find this documentati\
+____V __string_133={____V__,69,"  OK\n\n  Note: you'll find this documentati\
 on in `doc/html/index.html'"};
-____V __string_133={____V__,7,"  Fail!"};
-____V __string_134={____V__,5,"  A `"};
-____V __string_135={____V__,50,"' file has no need to change. Current versio\
+____V __string_134={____V__,7,"  Fail!"};
+____V __string_135={____V__,5,"  A `"};
+____V __string_136={____V__,50,"' file has no need to change. Current versio\
 n is:\n"};
-____V __string_136={____V__,39,"' file has been updated. Old value is:\n"};
-____V __string_137={____V__,16,"  New value is:\n"};
-____V __string_138={____V__,30,"' file has been updated with:\n"};
-____V __string_139={____V__,30,"' file has been created with:\n"};
-____V __string_140={____V__,7,"Error: "};
-____V __string_141={____V__,16,"Not create file!"};
-____V __string_142={____V__,16,"  Confirmation ?"};
-____V __string_143={____V__,34,"Not open file (Write protection) !"};
-____V __string_144={____V__,7," (y/n) "};
-____V __string_145={____V__,19,"Not enough memory.\n"};
+____V __string_137={____V__,39,"' file has been updated. Old value is:\n"};
+____V __string_138={____V__,16,"  New value is:\n"};
+____V __string_139={____V__,30,"' file has been updated with:\n"};
+____V __string_140={____V__,30,"' file has been created with:\n"};
+____V __string_141={____V__,7,"Error: "};
+____V __string_142={____V__,16,"Not create file!"};
+____V __string_143={____V__,16,"  Confirmation ?"};
+____V __string_144={____V__,34,"Not open file (Write protection) !"};
+____V __string_145={____V__,7," (y/n) "};
+____V __string_146={____V__,19,"Not enough memory.\n"};
 
 /*==========================*/
 /* FUNCTION HEADER          */
 /*==========================*/
 
 /* Source code */
-static ____DB __D0F(____4NE __F0F,____DB __G0F,____MZ __H0F);
-static ____4* __IIH(____L __KIH);
-static void __OZC(void *__QZC);
-static ____4* __3IH(____4 *__4IH,____L __5IH,____L __AJH);
-static void __BQE(____VB *__CQE,____4 *__DQE);
-static void __BBI(____VB *__CBI,void *__DBI);
+static ____DB __E0F(____5NE __G0F,____DB __H0F,____MZ __I0F);
+static ____4* __JIH(____L __LIH);
+static void __PZC(void *__RZC);
+static ____4* __4IH(____4 *__5IH,____L __AJH,____L __BJH);
+static void __CQE(____VB *__DQE,____4 *__EQE);
+static void __CBI(____VB *__DBI,void *__EBI);
 static void __KE(____V *__ME,____L __NE);
-static ____L __RGF(____VB *__SGF,____V *__TGF);
-static void __JDI(____VB *__KDI,void *__LDI);
+static ____L __SGF(____VB *__TGF,____V *__UGF);
+static void __KDI(____VB *__LDI,void *__MDI);
 static ____L __ON(____V *__QN,____V *__RN,____L __SN);
 static void __DP();
 static void __OHB();
 static void __5HB();
 static void __JJB();
-static ____L __JQB(void *__LQB);
-static ____DB __1RG(____MZ __3RG);
-static ____APE* __4YN(____4NE __AZN);
-static void __BRN(____DB __DRN,____DB __ERN,____4NE __FRN);
-static void __A3Q(____APE *__B3Q,____DB __C3Q,____4NE __D3Q);
-static void __OAJ(____4 *__PAJ,____L __QAJ,____L __RAJ);
-static void __RMJ(____4 *__SMJ,____4 *__TMJ,____L __UMJ);
+static ____L __KQB(void *__MQB);
+static ____DB __2RG(____MZ __4RG);
+static ____BPE* __5YN(____5NE __BZN);
+static void __CRN(____DB __ERN,____DB __FRN,____5NE __GRN);
+static void __B3Q(____BPE *__C3Q,____DB __D3Q,____5NE __E3Q);
+static void __PAJ(____4 *__QAJ,____L __RAJ,____L __SAJ);
+static void __SMJ(____4 *__TMJ,____4 *__UMJ,____L __VMJ);
 static void __2R(____L __3R,____VB *__4R);
-static void __CHJ(____4 *__DHJ,____4 *__EHJ,____L __FHJ,____L __GHJ);
-static void __YBP(____L __ZBP);
-static void __TLB(void *__VLB,____V *__WLB,void *__XLB,____G __YLB);
-static void __FOI(____VB *__GOI);
-static void __YJJ(____VB *__ZJJ,____L __0JJ);
-static void __ERL(____4 *__FRL,____L __GRL,____L __HRL,____L __IRL);
-static ____4 __2TC(____V *__4TC);
-static ____APE* __KNN();
-static ____L __SPC(____4 *__TPC,____L __VPC);
-static void __PVI(____VB *__QVI,____L __RVI);
+static void __DHJ(____4 *__EHJ,____4 *__FHJ,____L __GHJ,____L __HHJ);
+static void __ZBP(____L __0BP);
+static void __ULB(void *__WLB,____V *__XLB,void *__YLB,____G __ZLB);
+static void __GOI(____VB *__HOI);
+static void __ZJJ(____VB *__0JJ,____L __1JJ);
+static void __FRL(____4 *__GRL,____L __HRL,____L __IRL,____L __JRL);
+static ____4 __3TC(____V *__5TC);
+static ____BPE* __LNN();
+static ____L __TPC(____4 *__UPC,____L __WPC);
+static void __QVI(____VB *__RVI,____L __SVI);
 
 /*==========================*/
 /* SOURCE CODE              */
@@ -362,16 +365,16 @@ static void __PVI(____VB *__QVI,____L __RVI);
 
 int main(int argc,char **argv)
 {
-  ____VB *__LZY,*__YZY,*__M0Y,*__A1Y,*__Z1Y,*__11Y,*__I2Y,*__L3Y,*__1NE;
-  ____VB *__RPE,*__S3Y;
-  ____DB __MZY,__SZY,__C2Y,__5RF;
-  ____4NE __NZY,__PZY,__QZY,__51Y,__A2Y,__MIY,__FRF;
-  ____L __OZY,__E1Y,__41Y,__P3Y,__U3Y;
-  ____MZ __UZY,__E2Y,__MPE;
-  void *__P0B;
-  ____4 *__JZY,*__D1Y,*__22Y,*__O3Y,*__T3Y;
-  ____G __IG,__OG,__DSX,__IHD,__EHD,__UIW,__U3C,__R3C;
-  ____4 __ESX,__KSX,__PID,__VHY;
+  ____VB *__MZY,*__ZZY,*__N0Y,*__B1Y,*__01Y,*__21Y,*__J2Y,*__M3Y,*__2NE;
+  ____VB *__SPE,*__T3Y;
+  ____DB __NZY,__TZY,__D2Y,__ASF;
+  ____5NE __OZY,__QZY,__RZY,__A2Y,__B2Y,__NIY,__GRF;
+  ____L __PZY,__F1Y,__51Y,__Q3Y,__V3Y;
+  ____MZ __VZY,__F2Y,__NPE;
+  void *__Q0B;
+  ____4 *__KZY,*__E1Y,*__32Y,*__P3Y,*__U3Y;
+  ____G __IG,__OG,__ESX,__JHD,__FHD,__VIW,__V3C,__S3C;
+  ____4 __FSX,__LSX,__QID,__WHY;
   arg_count  = argc;
   arg_vector = argv;
 #ifdef _PTHREAD_H
@@ -380,281 +383,281 @@ int main(int argc,char **argv)
   /*pthread_attr_setdetachstate(&thread_attr,PTHREAD_CREATE_DETACHED);*/
 #endif
   ;
-  __WOE=((____4NE ) 0);
-  __MSG=((____4NE ) 0);
-  __APE__->__DPE=((____4NE ) 0);
-  __UNN=((____4NE ) 0);
-  __51F=((____DB )(NULL));
-  __APE__->__CPE=((____DB )(NULL));
-  __LZY=NULL;
-  __MZY=((____DB )(NULL));
-  __NZY=((____4NE )sizeof(____VB));
-  if ((__NZY ==  0)) {
-    __LZY=__VB__;
+  __XOE=((____5NE ) 0);
+  __NSG=((____5NE ) 0);
+  __BPE__->__EPE=((____5NE ) 0);
+  __VNN=((____5NE ) 0);
+  __A2F=((____DB )(NULL));
+  __BPE__->__DPE=((____DB )(NULL));
+  __MZY=NULL;
+  __NZY=((____DB )(NULL));
+  __OZY=((____5NE )sizeof(____VB));
+  if ((__OZY ==  0)) {
+    __MZY=__VB__;
   } else /* FALSE */ {
-    __OZY=-1;
-    __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __NZY));
-    if ((__OZY == (____L)(-  1))) {
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __PZY=(____4NE)(__QZY / ((____4NE )((____L )(sizeof(void *)))));
-      __SZY=__D0F(__QZY,((____DB )(&(table_size[(__PZY)-1]))),((____MZ )__QZY));
-      __MZY=__SZY;
+    __PZY=-1;
+    __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __OZY));
+    if ((__PZY == (____L)(-  1))) {
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __QZY=(____5NE)(__RZY / ((____5NE )((____L )(sizeof(void *)))));
+      __TZY=__E0F(__RZY,((____DB )(&(table_size[(__QZY)-1]))),((____MZ )__RZY));
+      __NZY=__TZY;
     } else /* FALSE */ {
-      __UZY=((____MZ )__OZY);
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __SZY=__D0F(__QZY,((____DB )(&(table_type[(__UZY)]))),(____MZ)(__UZY |  1));
-      __MZY=__SZY;
+      __VZY=((____MZ )__PZY);
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __TZY=__E0F(__RZY,((____DB )(&(table_type[(__VZY)]))),(____MZ)(__VZY |  1));
+      __NZY=__TZY;
     };
-    __YZY=((____VB *)__MZY);
-    __LZY=__YZY;
-    *(__YZY) = *(__VB__);
+    __ZZY=((____VB *)__NZY);
+    __MZY=__ZZY;
+    *(__ZZY) = *(__VB__);
   };
-  __YZY=((____VB *)__LZY);
-  if ((__YZY->__DRE <  256)) {
-    __JZY=__IIH( 256);
-    __YZY->__0QE=__JZY;
-    __YZY->__DRE= 256;
+  __ZZY=((____VB *)__MZY);
+  if ((__ZZY->__ERE <  256)) {
+    __KZY=__JIH( 256);
+    __ZZY->__1QE=__KZY;
+    __ZZY->__ERE= 256;
   };
-  __YZY->__AC= 0;
-  __0B=__LZY;
-  __YZY=NULL;
-  __MZY=((____DB )(NULL));
-  __NZY=((____4NE )sizeof(____VB));
-  if ((__NZY ==  0)) {
-    __YZY=__VB__;
+  __ZZY->__AC= 0;
+  __0B=__MZY;
+  __ZZY=NULL;
+  __NZY=((____DB )(NULL));
+  __OZY=((____5NE )sizeof(____VB));
+  if ((__OZY ==  0)) {
+    __ZZY=__VB__;
   } else /* FALSE */ {
-    __OZY=-1;
-    __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __NZY));
-    if ((__OZY == (____L)(-  1))) {
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __PZY=(____4NE)(__QZY / ((____4NE )((____L )(sizeof(void *)))));
-      __SZY=__D0F(__QZY,((____DB )(&(table_size[(__PZY)-1]))),((____MZ )__QZY));
-      __MZY=__SZY;
+    __PZY=-1;
+    __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __OZY));
+    if ((__PZY == (____L)(-  1))) {
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __QZY=(____5NE)(__RZY / ((____5NE )((____L )(sizeof(void *)))));
+      __TZY=__E0F(__RZY,((____DB )(&(table_size[(__QZY)-1]))),((____MZ )__RZY));
+      __NZY=__TZY;
     } else /* FALSE */ {
-      __UZY=((____MZ )__OZY);
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __SZY=__D0F(__QZY,((____DB )(&(table_type[(__UZY)]))),(____MZ)(__UZY |  1));
-      __MZY=__SZY;
+      __VZY=((____MZ )__PZY);
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __TZY=__E0F(__RZY,((____DB )(&(table_type[(__VZY)]))),(____MZ)(__VZY |  1));
+      __NZY=__TZY;
     };
-    __M0Y=((____VB *)__MZY);
-    __YZY=__M0Y;
-    *(__M0Y) = *(__VB__);
+    __N0Y=((____VB *)__NZY);
+    __ZZY=__N0Y;
+    *(__N0Y) = *(__VB__);
   };
-  __M0Y=((____VB *)__YZY);
-  if ((__M0Y->__DRE <  256)) {
-    __JZY=__IIH( 256);
-    __M0Y->__0QE=__JZY;
-    __M0Y->__DRE= 256;
+  __N0Y=((____VB *)__ZZY);
+  if ((__N0Y->__ERE <  256)) {
+    __KZY=__JIH( 256);
+    __N0Y->__1QE=__KZY;
+    __N0Y->__ERE= 256;
   };
-  __M0Y->__AC= 0;
-  __WE=__YZY;
-  __1WC='\0';
-  __YZY=NULL;
-  __MZY=((____DB )(NULL));
-  __NZY=((____4NE )sizeof(____VB));
-  if ((__NZY ==  0)) {
-    __YZY=__VB__;
+  __N0Y->__AC= 0;
+  __WE=__ZZY;
+  __2WC='\0';
+  __ZZY=NULL;
+  __NZY=((____DB )(NULL));
+  __OZY=((____5NE )sizeof(____VB));
+  if ((__OZY ==  0)) {
+    __ZZY=__VB__;
   } else /* FALSE */ {
-    __OZY=-1;
-    __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __NZY));
-    if ((__OZY == (____L)(-  1))) {
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __PZY=(____4NE)(__QZY / ((____4NE )((____L )(sizeof(void *)))));
-      __SZY=__D0F(__QZY,((____DB )(&(table_size[(__PZY)-1]))),((____MZ )__QZY));
-      __MZY=__SZY;
+    __PZY=-1;
+    __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __OZY));
+    if ((__PZY == (____L)(-  1))) {
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __QZY=(____5NE)(__RZY / ((____5NE )((____L )(sizeof(void *)))));
+      __TZY=__E0F(__RZY,((____DB )(&(table_size[(__QZY)-1]))),((____MZ )__RZY));
+      __NZY=__TZY;
     } else /* FALSE */ {
-      __UZY=((____MZ )__OZY);
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __SZY=__D0F(__QZY,((____DB )(&(table_type[(__UZY)]))),(____MZ)(__UZY |  1));
-      __MZY=__SZY;
+      __VZY=((____MZ )__PZY);
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __TZY=__E0F(__RZY,((____DB )(&(table_type[(__VZY)]))),(____MZ)(__VZY |  1));
+      __NZY=__TZY;
     };
-    __A1Y=((____VB *)__MZY);
-    __YZY=__A1Y;
-    *(__A1Y) = *(__VB__);
+    __B1Y=((____VB *)__NZY);
+    __ZZY=__B1Y;
+    *(__B1Y) = *(__VB__);
   };
-  __M0Y=((____VB *)__YZY);
-  if ((__M0Y->__DRE <  1024)) {
-    __JZY=__IIH( 1024);
-    __M0Y->__0QE=__JZY;
-    __M0Y->__DRE= 1024;
+  __N0Y=((____VB *)__ZZY);
+  if ((__N0Y->__ERE <  1024)) {
+    __KZY=__JIH( 1024);
+    __N0Y->__1QE=__KZY;
+    __N0Y->__ERE= 1024;
   };
-  __M0Y->__AC= 0;
-  __M0Y=__YZY;
-  __1N=__YZY;
-  __OZC((&__string_1));
-  ((____VB *)__LZY)->__AC= 0;
-  __A1Y=((____VB *)__LZY);
-  if ((__A1Y->__DRE > __A1Y->__AC)) {
-    ((____4 *)__A1Y->__0QE)[__A1Y->__AC]='\0';
+  __N0Y->__AC= 0;
+  __N0Y=__ZZY;
+  __1N=__ZZY;
+  __PZC((&__string_1));
+  ((____VB *)__MZY)->__AC= 0;
+  __B1Y=((____VB *)__MZY);
+  if ((__B1Y->__ERE > __B1Y->__AC)) {
+    ((____4 *)__B1Y->__1QE)[__B1Y->__AC]='\0';
   } else /* FALSE */ {
-    if ((__A1Y->__DRE <= __A1Y->__AC)) {
-      if ((__A1Y->__DRE ==  0)) {
-        __A1Y->__DRE= 32;
-        __D1Y=__IIH( 32);
-        __A1Y->__0QE=__D1Y;
+    if ((__B1Y->__ERE <= __B1Y->__AC)) {
+      if ((__B1Y->__ERE ==  0)) {
+        __B1Y->__ERE= 32;
+        __E1Y=__JIH( 32);
+        __B1Y->__1QE=__E1Y;
       } else /* FALSE */ {
-        __E1Y=(____L)(__A1Y->__DRE <<  1);
-        __D1Y=__3IH(((____4 *)__A1Y->__0QE),__A1Y->__DRE,__E1Y);
-        __A1Y->__0QE=__D1Y;
-        __A1Y->__DRE=__E1Y;
+        __F1Y=(____L)(__B1Y->__ERE <<  1);
+        __E1Y=__4IH(((____4 *)__B1Y->__1QE),__B1Y->__ERE,__F1Y);
+        __B1Y->__1QE=__E1Y;
+        __B1Y->__ERE=__F1Y;
       };
     };
-    ((____4 *)__A1Y->__0QE)[__A1Y->__AC]='\0';
-    __A1Y->__AC=(____L)(__A1Y->__AC +  1);
-    __A1Y->__AC=(____L)(__A1Y->__AC -  1);
+    ((____4 *)__B1Y->__1QE)[__B1Y->__AC]='\0';
+    __B1Y->__AC=(____L)(__B1Y->__AC +  1);
+    __B1Y->__AC=(____L)(__B1Y->__AC -  1);
   };
-  __JZY=__A1Y->__0QE;
-  getcwd((__JZY),255);
-  __BQE(((____VB *)__LZY),__JZY);
-  __OZY=__LZY->__AC;
-  __A1Y=NULL;
-  __MZY=((____DB )(NULL));
-  __NZY=((____4NE )sizeof(____VB));
-  if ((__NZY ==  0)) {
-    __A1Y=__VB__;
+  __KZY=__B1Y->__1QE;
+  getcwd((__KZY),255);
+  __CQE(((____VB *)__MZY),__KZY);
+  __PZY=__MZY->__AC;
+  __B1Y=NULL;
+  __NZY=((____DB )(NULL));
+  __OZY=((____5NE )sizeof(____VB));
+  if ((__OZY ==  0)) {
+    __B1Y=__VB__;
   } else /* FALSE */ {
-    __E1Y=-1;
-    __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __NZY));
-    if ((__E1Y == (____L)(-  1))) {
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __PZY=(____4NE)(__QZY / ((____4NE )((____L )(sizeof(void *)))));
-      __SZY=__D0F(__QZY,((____DB )(&(table_size[(__PZY)-1]))),((____MZ )__QZY));
-      __MZY=__SZY;
+    __F1Y=-1;
+    __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __OZY));
+    if ((__F1Y == (____L)(-  1))) {
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __QZY=(____5NE)(__RZY / ((____5NE )((____L )(sizeof(void *)))));
+      __TZY=__E0F(__RZY,((____DB )(&(table_size[(__QZY)-1]))),((____MZ )__RZY));
+      __NZY=__TZY;
     } else /* FALSE */ {
-      __UZY=((____MZ )__E1Y);
-      __PZY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __QZY=(____4NE)((____4NE)(__NZY - (____4NE)(((____4NE ) 0) - __PZY)) & (____4NE)((____4NE)(((____4NE ) 0) - __PZY) - ((____4NE ) 1)));
-      __SZY=__D0F(__QZY,((____DB )(&(table_type[(__UZY)]))),(____MZ)(__UZY |  1));
-      __MZY=__SZY;
+      __VZY=((____MZ )__F1Y);
+      __QZY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __RZY=(____5NE)((____5NE)(__OZY - (____5NE)(((____5NE ) 0) - __QZY)) & (____5NE)((____5NE)(((____5NE ) 0) - __QZY) - ((____5NE ) 1)));
+      __TZY=__E0F(__RZY,((____DB )(&(table_type[(__VZY)]))),(____MZ)(__VZY |  1));
+      __NZY=__TZY;
     };
-    __Z1Y=((____VB *)__MZY);
-    __A1Y=__Z1Y;
-    *(__Z1Y) = *(__VB__);
+    __01Y=((____VB *)__NZY);
+    __B1Y=__01Y;
+    *(__01Y) = *(__VB__);
   };
-  __Z1Y=((____VB *)__A1Y);
-  if ((__OZY >  0)) {
-    if ((__Z1Y->__DRE < __OZY)) {
-      __D1Y=__IIH(__OZY);
-      __Z1Y->__0QE=__D1Y;
-      __Z1Y->__DRE=__OZY;
+  __01Y=((____VB *)__B1Y);
+  if ((__PZY >  0)) {
+    if ((__01Y->__ERE < __PZY)) {
+      __E1Y=__JIH(__PZY);
+      __01Y->__1QE=__E1Y;
+      __01Y->__ERE=__PZY;
     };
   };
-  __Z1Y->__AC= 0;
-  __EC=__A1Y;
-  __BBI(((____VB *)__A1Y),__LZY);
-  __A1Y=NULL;
-  __JZY=((____4 *)(getenv((char*)("HOME"))));
-  if (((void *)__JZY != (void *)NULL)) {
-    __11Y=NULL;
-    __SZY=((____DB )(NULL));
-    __PZY=((____4NE )sizeof(____VB));
-    if ((__PZY ==  0)) {
-      __11Y=__VB__;
+  __01Y->__AC= 0;
+  __EC=__B1Y;
+  __CBI(((____VB *)__B1Y),__MZY);
+  __B1Y=NULL;
+  __KZY=((____4 *)(getenv((char*)("HOME"))));
+  if (((void *)__KZY != (void *)NULL)) {
+    __21Y=NULL;
+    __TZY=((____DB )(NULL));
+    __QZY=((____5NE )sizeof(____VB));
+    if ((__QZY ==  0)) {
+      __21Y=__VB__;
     } else /* FALSE */ {
-      __41Y=-1;
-      __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __PZY));
-      if ((__41Y == (____L)(-  1))) {
-        __51Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __A2Y=(____4NE)((____4NE)(__PZY - (____4NE)(((____4NE ) 0) - __51Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __51Y) - ((____4NE ) 1)));
-        __51Y=(____4NE)(__A2Y / ((____4NE )((____L )(sizeof(void *)))));
-        __C2Y=__D0F(__A2Y,((____DB )(&(table_size[(__51Y)-1]))),((____MZ )__A2Y));
-        __SZY=__C2Y;
+      __51Y=-1;
+      __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __QZY));
+      if ((__51Y == (____L)(-  1))) {
+        __A2Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __B2Y=(____5NE)((____5NE)(__QZY - (____5NE)(((____5NE ) 0) - __A2Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __A2Y) - ((____5NE ) 1)));
+        __A2Y=(____5NE)(__B2Y / ((____5NE )((____L )(sizeof(void *)))));
+        __D2Y=__E0F(__B2Y,((____DB )(&(table_size[(__A2Y)-1]))),((____MZ )__B2Y));
+        __TZY=__D2Y;
       } else /* FALSE */ {
-        __E2Y=((____MZ )__41Y);
-        __51Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __A2Y=(____4NE)((____4NE)(__PZY - (____4NE)(((____4NE ) 0) - __51Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __51Y) - ((____4NE ) 1)));
-        __C2Y=__D0F(__A2Y,((____DB )(&(table_type[(__E2Y)]))),(____MZ)(__E2Y |  1));
-        __SZY=__C2Y;
+        __F2Y=((____MZ )__51Y);
+        __A2Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __B2Y=(____5NE)((____5NE)(__QZY - (____5NE)(((____5NE ) 0) - __A2Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __A2Y) - ((____5NE ) 1)));
+        __D2Y=__E0F(__B2Y,((____DB )(&(table_type[(__F2Y)]))),(____MZ)(__F2Y |  1));
+        __TZY=__D2Y;
       };
-      __I2Y=((____VB *)__SZY);
-      __11Y=__I2Y;
-      *(__I2Y) = *(__VB__);
+      __J2Y=((____VB *)__TZY);
+      __21Y=__J2Y;
+      *(__J2Y) = *(__VB__);
     };
-    __A1Y=__11Y;
-    __BQE(((____VB *)__11Y),__JZY);
+    __B1Y=__21Y;
+    __CQE(((____VB *)__21Y),__KZY);
   };
-  __JC=__A1Y;
-  __A1Y=NULL;
-  __JZY=((____4 *)(getenv((char*)("SHELL"))));
-  if (((void *)__JZY != (void *)NULL)) {
-    __11Y=NULL;
-    __SZY=((____DB )(NULL));
-    __PZY=((____4NE )sizeof(____VB));
-    if ((__PZY ==  0)) {
-      __11Y=__VB__;
+  __JC=__B1Y;
+  __B1Y=NULL;
+  __KZY=((____4 *)(getenv((char*)("SHELL"))));
+  if (((void *)__KZY != (void *)NULL)) {
+    __21Y=NULL;
+    __TZY=((____DB )(NULL));
+    __QZY=((____5NE )sizeof(____VB));
+    if ((__QZY ==  0)) {
+      __21Y=__VB__;
     } else /* FALSE */ {
-      __41Y=-1;
-      __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __PZY));
-      if ((__41Y == (____L)(-  1))) {
-        __51Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __A2Y=(____4NE)((____4NE)(__PZY - (____4NE)(((____4NE ) 0) - __51Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __51Y) - ((____4NE ) 1)));
-        __51Y=(____4NE)(__A2Y / ((____4NE )((____L )(sizeof(void *)))));
-        __C2Y=__D0F(__A2Y,((____DB )(&(table_size[(__51Y)-1]))),((____MZ )__A2Y));
-        __SZY=__C2Y;
+      __51Y=-1;
+      __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __QZY));
+      if ((__51Y == (____L)(-  1))) {
+        __A2Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __B2Y=(____5NE)((____5NE)(__QZY - (____5NE)(((____5NE ) 0) - __A2Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __A2Y) - ((____5NE ) 1)));
+        __A2Y=(____5NE)(__B2Y / ((____5NE )((____L )(sizeof(void *)))));
+        __D2Y=__E0F(__B2Y,((____DB )(&(table_size[(__A2Y)-1]))),((____MZ )__B2Y));
+        __TZY=__D2Y;
       } else /* FALSE */ {
-        __E2Y=((____MZ )__41Y);
-        __51Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __A2Y=(____4NE)((____4NE)(__PZY - (____4NE)(((____4NE ) 0) - __51Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __51Y) - ((____4NE ) 1)));
-        __C2Y=__D0F(__A2Y,((____DB )(&(table_type[(__E2Y)]))),(____MZ)(__E2Y |  1));
-        __SZY=__C2Y;
+        __F2Y=((____MZ )__51Y);
+        __A2Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __B2Y=(____5NE)((____5NE)(__QZY - (____5NE)(((____5NE ) 0) - __A2Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __A2Y) - ((____5NE ) 1)));
+        __D2Y=__E0F(__B2Y,((____DB )(&(table_type[(__F2Y)]))),(____MZ)(__F2Y |  1));
+        __TZY=__D2Y;
       };
-      __I2Y=((____VB *)__SZY);
-      __11Y=__I2Y;
-      *(__I2Y) = *(__VB__);
+      __J2Y=((____VB *)__TZY);
+      __21Y=__J2Y;
+      *(__J2Y) = *(__VB__);
     };
-    __A1Y=__11Y;
-    __BQE(((____VB *)__11Y),__JZY);
+    __B1Y=__21Y;
+    __CQE(((____VB *)__21Y),__KZY);
   };
-  __LC=__A1Y;
+  __LC=__B1Y;
   __KE((&__string_2), 0);
   if (((void *)__LC != (void *)NULL)) {
-    __11Y=__JC;
-    __E1Y=__JC->__AC;
-    __I2Y=NULL;
-    __SZY=((____DB )(NULL));
-    __PZY=((____4NE )sizeof(____VB));
-    if ((__PZY ==  0)) {
-      __I2Y=__VB__;
+    __21Y=__JC;
+    __F1Y=__JC->__AC;
+    __J2Y=NULL;
+    __TZY=((____DB )(NULL));
+    __QZY=((____5NE )sizeof(____VB));
+    if ((__QZY ==  0)) {
+      __J2Y=__VB__;
     } else /* FALSE */ {
-      __41Y=-1;
-      __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __PZY));
-      if ((__41Y == (____L)(-  1))) {
-        __51Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __A2Y=(____4NE)((____4NE)(__PZY - (____4NE)(((____4NE ) 0) - __51Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __51Y) - ((____4NE ) 1)));
-        __51Y=(____4NE)(__A2Y / ((____4NE )((____L )(sizeof(void *)))));
-        __C2Y=__D0F(__A2Y,((____DB )(&(table_size[(__51Y)-1]))),((____MZ )__A2Y));
-        __SZY=__C2Y;
+      __51Y=-1;
+      __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __QZY));
+      if ((__51Y == (____L)(-  1))) {
+        __A2Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __B2Y=(____5NE)((____5NE)(__QZY - (____5NE)(((____5NE ) 0) - __A2Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __A2Y) - ((____5NE ) 1)));
+        __A2Y=(____5NE)(__B2Y / ((____5NE )((____L )(sizeof(void *)))));
+        __D2Y=__E0F(__B2Y,((____DB )(&(table_size[(__A2Y)-1]))),((____MZ )__B2Y));
+        __TZY=__D2Y;
       } else /* FALSE */ {
-        __E2Y=((____MZ )__41Y);
-        __51Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __A2Y=(____4NE)((____4NE)(__PZY - (____4NE)(((____4NE ) 0) - __51Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __51Y) - ((____4NE ) 1)));
-        __C2Y=__D0F(__A2Y,((____DB )(&(table_type[(__E2Y)]))),(____MZ)(__E2Y |  1));
-        __SZY=__C2Y;
+        __F2Y=((____MZ )__51Y);
+        __A2Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __B2Y=(____5NE)((____5NE)(__QZY - (____5NE)(((____5NE ) 0) - __A2Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __A2Y) - ((____5NE ) 1)));
+        __D2Y=__E0F(__B2Y,((____DB )(&(table_type[(__F2Y)]))),(____MZ)(__F2Y |  1));
+        __TZY=__D2Y;
       };
-      __L3Y=((____VB *)__SZY);
-      __I2Y=__L3Y;
-      *(__L3Y) = *(__VB__);
+      __M3Y=((____VB *)__TZY);
+      __J2Y=__M3Y;
+      *(__M3Y) = *(__VB__);
     };
-    __L3Y=((____VB *)__I2Y);
-    if ((__E1Y >  0)) {
-      if ((__L3Y->__DRE < __E1Y)) {
-        __22Y=__IIH(__E1Y);
-        __L3Y->__0QE=__22Y;
-        __L3Y->__DRE=__E1Y;
+    __M3Y=((____VB *)__J2Y);
+    if ((__F1Y >  0)) {
+      if ((__M3Y->__ERE < __F1Y)) {
+        __32Y=__JIH(__F1Y);
+        __M3Y->__1QE=__32Y;
+        __M3Y->__ERE=__F1Y;
       };
     };
-    __L3Y->__AC= 0;
-    __BBI(((____VB *)__I2Y),__11Y);
-    __3F=__I2Y;
+    __M3Y->__AC= 0;
+    __CBI(((____VB *)__J2Y),__21Y);
+    __3F=__J2Y;
     if ((((____VB *)__LC)->__AC ==  0)) {
-      __OZC((&__string_3));
+      __PZC((&__string_3));
       __MC=(&__string_4);
       __IG=__F__;
     } else /* FALSE */ {
@@ -663,10 +666,10 @@ int main(int argc,char **argv)
     if (__IG) {
       __IG=__F__;
     } else /* FALSE */ {
-      __41Y=__RGF(((____VB *)__LC),(&__string_5));
-      __OG=(__41Y !=  0);
+      __51Y=__SGF(((____VB *)__LC),(&__string_5));
+      __OG=(__51Y !=  0);
       if (__OG) {
-        __JDI(((____VB *)__3F),(&__string_6));
+        __KDI(((____VB *)__3F),(&__string_6));
         __MC=(&__string_7);
         __2G=(&__string_8);
         __5G=(&__string_9);
@@ -677,10 +680,10 @@ int main(int argc,char **argv)
     if (__IG) {
       __IG=__F__;
     } else /* FALSE */ {
-      __41Y=__RGF(((____VB *)__LC),(&__string_11));
-      __OG=(__41Y !=  0);
+      __51Y=__SGF(((____VB *)__LC),(&__string_11));
+      __OG=(__51Y !=  0);
       if (__OG) {
-        __JDI(((____VB *)__3F),(&__string_12));
+        __KDI(((____VB *)__3F),(&__string_12));
         __MC=(&__string_13);
         __2G=(&__string_8);
         __5G=(&__string_14);
@@ -689,82 +692,82 @@ int main(int argc,char **argv)
       __IG=__OG;
     };
     if ((! __IG)) {
-      __41Y=__RGF(((____VB *)__LC),(&__string_16));
-      if ((__41Y !=  0)) {
-        __JDI(((____VB *)__3F),(&__string_17));
+      __51Y=__SGF(((____VB *)__LC),(&__string_16));
+      if ((__51Y !=  0)) {
+        __KDI(((____VB *)__3F),(&__string_17));
         __MC=(&__string_18);
         __2G=(&__string_8);
         __5G=(&__string_9);
         __CH=(&__string_10);
       } else /* FALSE */ {
-        __OZC((&__string_19));
-        __OZC(((____VB *)__LC));
+        __PZC((&__string_19));
+        __PZC(((____VB *)__LC));
         fputc((int)('\n'),stdout);
         __MC=(&__string_4);
       };
     };
   } else /* FALSE */ {
-    __BBI(((____VB *)__LZY),(&__string_20));
-    __11Y=((____VB *)__LZY);
-    if ((__11Y->__DRE > __11Y->__AC)) {
-      ((____4 *)__11Y->__0QE)[__11Y->__AC]='\0';
+    __CBI(((____VB *)__MZY),(&__string_20));
+    __21Y=((____VB *)__MZY);
+    if ((__21Y->__ERE > __21Y->__AC)) {
+      ((____4 *)__21Y->__1QE)[__21Y->__AC]='\0';
     } else /* FALSE */ {
-      if ((__11Y->__DRE <= __11Y->__AC)) {
-        if ((__11Y->__DRE ==  0)) {
-          __11Y->__DRE= 32;
-          __O3Y=__IIH( 32);
-          __11Y->__0QE=__O3Y;
+      if ((__21Y->__ERE <= __21Y->__AC)) {
+        if ((__21Y->__ERE ==  0)) {
+          __21Y->__ERE= 32;
+          __P3Y=__JIH( 32);
+          __21Y->__1QE=__P3Y;
         } else /* FALSE */ {
-          __P3Y=(____L)(__11Y->__DRE <<  1);
-          __O3Y=__3IH(((____4 *)__11Y->__0QE),__11Y->__DRE,__P3Y);
-          __11Y->__0QE=__O3Y;
-          __11Y->__DRE=__P3Y;
+          __Q3Y=(____L)(__21Y->__ERE <<  1);
+          __P3Y=__4IH(((____4 *)__21Y->__1QE),__21Y->__ERE,__Q3Y);
+          __21Y->__1QE=__P3Y;
+          __21Y->__ERE=__Q3Y;
         };
       };
-      ((____4 *)__11Y->__0QE)[__11Y->__AC]='\0';
-      __11Y->__AC=(____L)(__11Y->__AC +  1);
-      __11Y->__AC=(____L)(__11Y->__AC -  1);
+      ((____4 *)__21Y->__1QE)[__21Y->__AC]='\0';
+      __21Y->__AC=(____L)(__21Y->__AC +  1);
+      __21Y->__AC=(____L)(__21Y->__AC -  1);
     };
-    __SZY=((____DB )(fopen((char*)(__11Y->__0QE),"rb")));
-    if ((__SZY != (void *)NULL)) {
-      fclose((FILE*)((__SZY)));
-      __41Y=(&__string_21)->__TB;
-      __1NE=NULL;
-      __C2Y=((____DB )(NULL));
-      __QZY=((____4NE )sizeof(____VB));
-      if ((__QZY ==  0)) {
-        __1NE=__VB__;
+    __TZY=((____DB )(fopen((char*)(__21Y->__1QE),"rb")));
+    if ((__TZY != (void *)NULL)) {
+      fclose((FILE*)((__TZY)));
+      __51Y=(&__string_21)->__TB;
+      __2NE=NULL;
+      __D2Y=((____DB )(NULL));
+      __RZY=((____5NE )sizeof(____VB));
+      if ((__RZY ==  0)) {
+        __2NE=__VB__;
       } else /* FALSE */ {
-        __P3Y=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __QZY));
-        if ((__P3Y == (____L)(-  1))) {
-          __MIY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __FRF=(____4NE)((____4NE)(__QZY - (____4NE)(((____4NE ) 0) - __MIY)) & (____4NE)((____4NE)(((____4NE ) 0) - __MIY) - ((____4NE ) 1)));
-          __MIY=(____4NE)(__FRF / ((____4NE )((____L )(sizeof(void *)))));
-          __5RF=__D0F(__FRF,((____DB )(&(table_size[(__MIY)-1]))),((____MZ )__FRF));
-          __C2Y=__5RF;
+        __Q3Y=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __RZY));
+        if ((__Q3Y == (____L)(-  1))) {
+          __NIY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __GRF=(____5NE)((____5NE)(__RZY - (____5NE)(((____5NE ) 0) - __NIY)) & (____5NE)((____5NE)(((____5NE ) 0) - __NIY) - ((____5NE ) 1)));
+          __NIY=(____5NE)(__GRF / ((____5NE )((____L )(sizeof(void *)))));
+          __ASF=__E0F(__GRF,((____DB )(&(table_size[(__NIY)-1]))),((____MZ )__GRF));
+          __D2Y=__ASF;
         } else /* FALSE */ {
-          __MPE=((____MZ )__P3Y);
-          __MIY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __FRF=(____4NE)((____4NE)(__QZY - (____4NE)(((____4NE ) 0) - __MIY)) & (____4NE)((____4NE)(((____4NE ) 0) - __MIY) - ((____4NE ) 1)));
-          __5RF=__D0F(__FRF,((____DB )(&(table_type[(__MPE)]))),(____MZ)(__MPE |  1));
-          __C2Y=__5RF;
+          __NPE=((____MZ )__Q3Y);
+          __NIY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __GRF=(____5NE)((____5NE)(__RZY - (____5NE)(((____5NE ) 0) - __NIY)) & (____5NE)((____5NE)(((____5NE ) 0) - __NIY) - ((____5NE ) 1)));
+          __ASF=__E0F(__GRF,((____DB )(&(table_type[(__NPE)]))),(____MZ)(__NPE |  1));
+          __D2Y=__ASF;
         };
-        __RPE=((____VB *)__C2Y);
-        __1NE=__RPE;
-        *(__RPE) = *(__VB__);
+        __SPE=((____VB *)__D2Y);
+        __2NE=__SPE;
+        *(__SPE) = *(__VB__);
       };
-      __RPE=((____VB *)__1NE);
-      if ((__41Y >  0)) {
-        if ((__RPE->__DRE < __41Y)) {
-          __O3Y=__IIH(__41Y);
-          __RPE->__0QE=__O3Y;
-          __RPE->__DRE=__41Y;
+      __SPE=((____VB *)__2NE);
+      if ((__51Y >  0)) {
+        if ((__SPE->__ERE < __51Y)) {
+          __P3Y=__JIH(__51Y);
+          __SPE->__1QE=__P3Y;
+          __SPE->__ERE=__51Y;
         };
       };
-      __RPE->__AC= 0;
-      __BBI(((____VB *)__1NE),(&__string_21));
-      __3F=__1NE;
+      __SPE->__AC= 0;
+      __CBI(((____VB *)__2NE),(&__string_21));
+      __3F=__2NE;
       __MC=(&__string_22);
       __2G=(&__string_23);
       __5G=(&__string_24);
@@ -773,1001 +776,1001 @@ int main(int argc,char **argv)
       __MC=(&__string_4);
     };
   };
-  __OZC((&__string_26));
-  __OZC(((____V *)__MC));
+  __PZC((&__string_26));
+  __PZC(((____V *)__MC));
   if (((void *)__MC != (void *)(&__string_22))) {
-    __E1Y=__ON((&__string_27),(&__string_28), 2);
-    if ((__E1Y ==  1)) {
+    __F1Y=__ON((&__string_27),(&__string_28), 2);
+    if ((__F1Y ==  1)) {
       __DP();
     };
-    if ((__E1Y ==  2)) {
+    if ((__F1Y ==  2)) {
       __OHB();
       __5HB();
       __JJB();
-      __P0B=NULL;
-      __OZC((&__string_29));
-      __OZC((&__string_30));
-      __OZC((&__string_31));
-      __OZC((&__string_32));
-      __RHY:
-      {
-        __DSX=__J__;
-        if ((! __PWC)) {
-          __ESX=__1WC;
-          __DSX=(__1WC == ((____4 )(EOF)));
-        };
-        if (__DSX) {
-          __IHD=__F__;
-        } else /* FALSE */ {
-          __EHD=(((((((__1WC == ' ') || (__1WC == '\t')) || (__1WC == '\n')) || (__1WC == '\r')) || (__1WC == '\0')) || (__1WC == '\f')) || (__1WC == '\v'));
-          __IHD=(! __EHD);
-        };
-        if ((! __IHD)) {
-          if (__PWC) {
-            __PWC=__J__;
-          } else /* FALSE */ {
-            __1WC=((____4 )(fgetc(stdin)));
-          };
-          goto __RHY;
-        };
-      };
-      __IG=__J__;
-      if ((! __PWC)) {
-        __KSX=__1WC;
-        __IG=(__KSX == ((____4 )(EOF)));
-      };
-      if (((! __IG) && (! __PWC))) {
-        __PWC=__F__;
-      };
-      __OG=__J__;
-      if ((! __PWC)) {
-        __PID=__1WC;
-        __OG=(__PID == ((____4 )(EOF)));
-      };
-      if (__OG) {
-        if (__PWC) {
-          __PWC=__J__;
-        } else /* FALSE */ {
-          __1WC=((____4 )(fgetc(stdin)));
-        };
-      };
-      ((____VB *)__YZY)->__AC= 0;
+      __Q0B=NULL;
+      __PZC((&__string_29));
+      __PZC((&__string_30));
+      __PZC((&__string_31));
+      __PZC((&__string_32));
       __SHY:
       {
-        __UIW=__J__;
-        if ((! __PWC)) {
-          __UIW=(__1WC == ((____4 )(EOF)));
+        __ESX=__J__;
+        if ((! __QWC)) {
+          __FSX=__2WC;
+          __ESX=(__2WC == ((____4 )(EOF)));
         };
-        if (__UIW) {
-          __U3C=__F__;
+        if (__ESX) {
+          __JHD=__F__;
         } else /* FALSE */ {
-          __VHY=__1WC;
-          __R3C=(((((((__VHY == ' ') || (__VHY == '\t')) || (__VHY == '\n')) || (__VHY == '\r')) || (__VHY == '\0')) || (__VHY == '\f')) || (__VHY == '\v'));
-          __U3C=__R3C;
+          __FHD=(((((((__2WC == ' ') || (__2WC == '\t')) || (__2WC == '\n')) || (__2WC == '\r')) || (__2WC == '\0')) || (__2WC == '\f')) || (__2WC == '\v'));
+          __JHD=(! __FHD);
         };
-        if ((! __U3C)) {
-          __S3Y=((____VB *)__M0Y);
-          __VHY=__1WC;
-          if ((__S3Y->__DRE <= __S3Y->__AC)) {
-            if ((__S3Y->__DRE ==  0)) {
-              __S3Y->__DRE= 32;
-              __T3Y=__IIH( 32);
-              __S3Y->__0QE=__T3Y;
-            } else /* FALSE */ {
-              __U3Y=(____L)(__S3Y->__DRE <<  1);
-              __T3Y=__3IH(((____4 *)__S3Y->__0QE),__S3Y->__DRE,__U3Y);
-              __S3Y->__0QE=__T3Y;
-              __S3Y->__DRE=__U3Y;
-            };
-          };
-          ((____4 *)__S3Y->__0QE)[__S3Y->__AC]=__VHY;
-          __S3Y->__AC=(____L)(__S3Y->__AC +  1);
-          if (__PWC) {
-            __PWC=__J__;
+        if ((! __JHD)) {
+          if (__QWC) {
+            __QWC=__J__;
           } else /* FALSE */ {
-            __1WC=((____4 )(fgetc(stdin)));
+            __2WC=((____4 )(fgetc(stdin)));
           };
           goto __SHY;
         };
       };
-      if ((((____VB *)__YZY)->__AC ==  0)) {
-        __P0B=(&__string_31);
-      } else /* FALSE */ {
-        __P0B=__YZY;
-      };
-      __BBI(((____VB *)__LZY),(&__string_33));
-      __JDI(((____VB *)__LZY),__P0B);
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
-      };
-      __BBI(((____VB *)__LZY),(&__string_36));
-      __JDI(((____VB *)__LZY),__P0B);
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
-      };
-      __BBI(((____VB *)__LZY),(&__string_33));
-      __JDI(((____VB *)__LZY),(&__string_31));
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
-      };
-      __BBI(((____VB *)__LZY),(&__string_37));
-      __JDI(((____VB *)__LZY),(&__string_31));
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
-      };
-      __P0B=NULL;
-      __OZC((&__string_38));
-      __OZC((&__string_30));
-      __OZC((&__string_39));
-      __OZC((&__string_32));
-      __BIY:
-      {
-        __DSX=__J__;
-        if ((! __PWC)) {
-          __ESX=__1WC;
-          __DSX=(__ESX == ((____4 )(EOF)));
-        };
-        if (__DSX) {
-          __IHD=__F__;
-        } else /* FALSE */ {
-          __VHY=__1WC;
-          __EHD=(((((((__VHY == ' ') || (__VHY == '\t')) || (__VHY == '\n')) || (__VHY == '\r')) || (__VHY == '\0')) || (__VHY == '\f')) || (__VHY == '\v'));
-          __IHD=(! __EHD);
-        };
-        if ((! __IHD)) {
-          if (__PWC) {
-            __PWC=__J__;
-          } else /* FALSE */ {
-            __1WC=((____4 )(fgetc(stdin)));
-          };
-          goto __BIY;
-        };
-      };
       __IG=__J__;
-      if ((! __PWC)) {
-        __KSX=__1WC;
-        __IG=(__KSX == ((____4 )(EOF)));
+      if ((! __QWC)) {
+        __LSX=__2WC;
+        __IG=(__LSX == ((____4 )(EOF)));
       };
-      if (((! __IG) && (! __PWC))) {
-        __PWC=__F__;
+      if (((! __IG) && (! __QWC))) {
+        __QWC=__F__;
       };
       __OG=__J__;
-      if ((! __PWC)) {
-        __PID=__1WC;
-        __OG=(__PID == ((____4 )(EOF)));
+      if ((! __QWC)) {
+        __QID=__2WC;
+        __OG=(__QID == ((____4 )(EOF)));
       };
       if (__OG) {
-        if (__PWC) {
-          __PWC=__J__;
+        if (__QWC) {
+          __QWC=__J__;
         } else /* FALSE */ {
-          __1WC=((____4 )(fgetc(stdin)));
+          __2WC=((____4 )(fgetc(stdin)));
         };
       };
-      ((____VB *)__YZY)->__AC= 0;
-      __CIY:
+      ((____VB *)__ZZY)->__AC= 0;
+      __THY:
       {
-        __UIW=__J__;
-        if ((! __PWC)) {
-          __UIW=(__1WC == ((____4 )(EOF)));
+        __VIW=__J__;
+        if ((! __QWC)) {
+          __VIW=(__2WC == ((____4 )(EOF)));
         };
-        if (__UIW) {
-          __U3C=__F__;
+        if (__VIW) {
+          __V3C=__F__;
         } else /* FALSE */ {
-          __VHY=__1WC;
-          __R3C=(((((((__VHY == ' ') || (__VHY == '\t')) || (__VHY == '\n')) || (__VHY == '\r')) || (__VHY == '\0')) || (__VHY == '\f')) || (__VHY == '\v'));
-          __U3C=__R3C;
+          __WHY=__2WC;
+          __S3C=(((((((__WHY == ' ') || (__WHY == '\t')) || (__WHY == '\n')) || (__WHY == '\r')) || (__WHY == '\0')) || (__WHY == '\f')) || (__WHY == '\v'));
+          __V3C=__S3C;
         };
-        if ((! __U3C)) {
-          __S3Y=((____VB *)__M0Y);
-          __VHY=__1WC;
-          if ((__S3Y->__DRE <= __S3Y->__AC)) {
-            if ((__S3Y->__DRE ==  0)) {
-              __S3Y->__DRE= 32;
-              __T3Y=__IIH( 32);
-              __S3Y->__0QE=__T3Y;
+        if ((! __V3C)) {
+          __T3Y=((____VB *)__N0Y);
+          __WHY=__2WC;
+          if ((__T3Y->__ERE <= __T3Y->__AC)) {
+            if ((__T3Y->__ERE ==  0)) {
+              __T3Y->__ERE= 32;
+              __U3Y=__JIH( 32);
+              __T3Y->__1QE=__U3Y;
             } else /* FALSE */ {
-              __U3Y=(____L)(__S3Y->__DRE <<  1);
-              __T3Y=__3IH(((____4 *)__S3Y->__0QE),__S3Y->__DRE,__U3Y);
-              __S3Y->__0QE=__T3Y;
-              __S3Y->__DRE=__U3Y;
+              __V3Y=(____L)(__T3Y->__ERE <<  1);
+              __U3Y=__4IH(((____4 *)__T3Y->__1QE),__T3Y->__ERE,__V3Y);
+              __T3Y->__1QE=__U3Y;
+              __T3Y->__ERE=__V3Y;
             };
           };
-          ((____4 *)__S3Y->__0QE)[__S3Y->__AC]=__VHY;
-          __S3Y->__AC=(____L)(__S3Y->__AC +  1);
-          if (__PWC) {
-            __PWC=__J__;
+          ((____4 *)__T3Y->__1QE)[__T3Y->__AC]=__WHY;
+          __T3Y->__AC=(____L)(__T3Y->__AC +  1);
+          if (__QWC) {
+            __QWC=__J__;
           } else /* FALSE */ {
-            __1WC=((____4 )(fgetc(stdin)));
+            __2WC=((____4 )(fgetc(stdin)));
+          };
+          goto __THY;
+        };
+      };
+      if ((((____VB *)__ZZY)->__AC ==  0)) {
+        __Q0B=(&__string_31);
+      } else /* FALSE */ {
+        __Q0B=__ZZY;
+      };
+      __CBI(((____VB *)__MZY),(&__string_33));
+      __KDI(((____VB *)__MZY),__Q0B);
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
+      };
+      __CBI(((____VB *)__MZY),(&__string_36));
+      __KDI(((____VB *)__MZY),__Q0B);
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
+      };
+      __CBI(((____VB *)__MZY),(&__string_33));
+      __KDI(((____VB *)__MZY),(&__string_31));
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
+      };
+      __CBI(((____VB *)__MZY),(&__string_37));
+      __KDI(((____VB *)__MZY),(&__string_31));
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
+      };
+      __Q0B=NULL;
+      __PZC((&__string_38));
+      __PZC((&__string_30));
+      __PZC((&__string_39));
+      __PZC((&__string_32));
+      __CIY:
+      {
+        __ESX=__J__;
+        if ((! __QWC)) {
+          __FSX=__2WC;
+          __ESX=(__FSX == ((____4 )(EOF)));
+        };
+        if (__ESX) {
+          __JHD=__F__;
+        } else /* FALSE */ {
+          __WHY=__2WC;
+          __FHD=(((((((__WHY == ' ') || (__WHY == '\t')) || (__WHY == '\n')) || (__WHY == '\r')) || (__WHY == '\0')) || (__WHY == '\f')) || (__WHY == '\v'));
+          __JHD=(! __FHD);
+        };
+        if ((! __JHD)) {
+          if (__QWC) {
+            __QWC=__J__;
+          } else /* FALSE */ {
+            __2WC=((____4 )(fgetc(stdin)));
           };
           goto __CIY;
         };
       };
-      if ((((____VB *)__YZY)->__AC ==  0)) {
-        __P0B=(&__string_39);
-      } else /* FALSE */ {
-        __P0B=__YZY;
+      __IG=__J__;
+      if ((! __QWC)) {
+        __LSX=__2WC;
+        __IG=(__LSX == ((____4 )(EOF)));
       };
-      __BBI(((____VB *)__LZY),(&__string_33));
-      __JDI(((____VB *)__LZY),__P0B);
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
+      if (((! __IG) && (! __QWC))) {
+        __QWC=__F__;
       };
-      __BBI(((____VB *)__LZY),(&__string_40));
-      __JDI(((____VB *)__LZY),__P0B);
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
+      __OG=__J__;
+      if ((! __QWC)) {
+        __QID=__2WC;
+        __OG=(__QID == ((____4 )(EOF)));
       };
-      __P0B=NULL;
-      __OZC((&__string_41));
-      __OZC((&__string_30));
-      __OZC((&__string_42));
-      __OZC((&__string_32));
-      __TND:
-      {
-        __DSX=__J__;
-        if ((! __PWC)) {
-          __ESX=__1WC;
-          __DSX=(__ESX == ((____4 )(EOF)));
-        };
-        if (__DSX) {
-          __IHD=__F__;
+      if (__OG) {
+        if (__QWC) {
+          __QWC=__J__;
         } else /* FALSE */ {
-          __ESX=__1WC;
-          __EHD=(((((((__ESX == ' ') || (__ESX == '\t')) || (__ESX == '\n')) || (__ESX == '\r')) || (__ESX == '\0')) || (__ESX == '\f')) || (__ESX == '\v'));
-          __IHD=(! __EHD);
+          __2WC=((____4 )(fgetc(stdin)));
         };
-        if ((! __IHD)) {
-          if (__PWC) {
-            __PWC=__J__;
-          } else /* FALSE */ {
-            __1WC=((____4 )(fgetc(stdin)));
+      };
+      ((____VB *)__ZZY)->__AC= 0;
+      __DIY:
+      {
+        __VIW=__J__;
+        if ((! __QWC)) {
+          __VIW=(__2WC == ((____4 )(EOF)));
+        };
+        if (__VIW) {
+          __V3C=__F__;
+        } else /* FALSE */ {
+          __WHY=__2WC;
+          __S3C=(((((((__WHY == ' ') || (__WHY == '\t')) || (__WHY == '\n')) || (__WHY == '\r')) || (__WHY == '\0')) || (__WHY == '\f')) || (__WHY == '\v'));
+          __V3C=__S3C;
+        };
+        if ((! __V3C)) {
+          __T3Y=((____VB *)__N0Y);
+          __WHY=__2WC;
+          if ((__T3Y->__ERE <= __T3Y->__AC)) {
+            if ((__T3Y->__ERE ==  0)) {
+              __T3Y->__ERE= 32;
+              __U3Y=__JIH( 32);
+              __T3Y->__1QE=__U3Y;
+            } else /* FALSE */ {
+              __V3Y=(____L)(__T3Y->__ERE <<  1);
+              __U3Y=__4IH(((____4 *)__T3Y->__1QE),__T3Y->__ERE,__V3Y);
+              __T3Y->__1QE=__U3Y;
+              __T3Y->__ERE=__V3Y;
+            };
           };
-          goto __TND;
+          ((____4 *)__T3Y->__1QE)[__T3Y->__AC]=__WHY;
+          __T3Y->__AC=(____L)(__T3Y->__AC +  1);
+          if (__QWC) {
+            __QWC=__J__;
+          } else /* FALSE */ {
+            __2WC=((____4 )(fgetc(stdin)));
+          };
+          goto __DIY;
+        };
+      };
+      if ((((____VB *)__ZZY)->__AC ==  0)) {
+        __Q0B=(&__string_39);
+      } else /* FALSE */ {
+        __Q0B=__ZZY;
+      };
+      __CBI(((____VB *)__MZY),(&__string_33));
+      __KDI(((____VB *)__MZY),__Q0B);
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
+      };
+      __CBI(((____VB *)__MZY),(&__string_40));
+      __KDI(((____VB *)__MZY),__Q0B);
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
+      };
+      __Q0B=NULL;
+      __PZC((&__string_41));
+      __PZC((&__string_30));
+      __PZC((&__string_42));
+      __PZC((&__string_32));
+      __UND:
+      {
+        __ESX=__J__;
+        if ((! __QWC)) {
+          __FSX=__2WC;
+          __ESX=(__FSX == ((____4 )(EOF)));
+        };
+        if (__ESX) {
+          __JHD=__F__;
+        } else /* FALSE */ {
+          __FSX=__2WC;
+          __FHD=(((((((__FSX == ' ') || (__FSX == '\t')) || (__FSX == '\n')) || (__FSX == '\r')) || (__FSX == '\0')) || (__FSX == '\f')) || (__FSX == '\v'));
+          __JHD=(! __FHD);
+        };
+        if ((! __JHD)) {
+          if (__QWC) {
+            __QWC=__J__;
+          } else /* FALSE */ {
+            __2WC=((____4 )(fgetc(stdin)));
+          };
+          goto __UND;
         };
       };
       __IG=__J__;
-      if ((! __PWC)) {
-        __KSX=__1WC;
-        __IG=(__KSX == ((____4 )(EOF)));
+      if ((! __QWC)) {
+        __LSX=__2WC;
+        __IG=(__LSX == ((____4 )(EOF)));
       };
-      if (((! __IG) && (! __PWC))) {
-        __PWC=__F__;
+      if (((! __IG) && (! __QWC))) {
+        __QWC=__F__;
       };
       __OG=__J__;
-      if ((! __PWC)) {
-        __PID=__1WC;
-        __OG=(__PID == ((____4 )(EOF)));
+      if ((! __QWC)) {
+        __QID=__2WC;
+        __OG=(__QID == ((____4 )(EOF)));
       };
       if (__OG) {
-        if (__PWC) {
-          __PWC=__J__;
+        if (__QWC) {
+          __QWC=__J__;
         } else /* FALSE */ {
-          __1WC=((____4 )(fgetc(stdin)));
+          __2WC=((____4 )(fgetc(stdin)));
         };
       };
-      ((____VB *)__YZY)->__AC= 0;
-      __AJD:
+      ((____VB *)__ZZY)->__AC= 0;
+      __BJD:
       {
-        __UIW=__J__;
-        if ((! __PWC)) {
-          __UIW=(__1WC == ((____4 )(EOF)));
+        __VIW=__J__;
+        if ((! __QWC)) {
+          __VIW=(__2WC == ((____4 )(EOF)));
         };
-        if (__UIW) {
-          __U3C=__F__;
+        if (__VIW) {
+          __V3C=__F__;
         } else /* FALSE */ {
-          __ESX=__1WC;
-          __R3C=(((((((__ESX == ' ') || (__ESX == '\t')) || (__ESX == '\n')) || (__ESX == '\r')) || (__ESX == '\0')) || (__ESX == '\f')) || (__ESX == '\v'));
-          __U3C=__R3C;
+          __FSX=__2WC;
+          __S3C=(((((((__FSX == ' ') || (__FSX == '\t')) || (__FSX == '\n')) || (__FSX == '\r')) || (__FSX == '\0')) || (__FSX == '\f')) || (__FSX == '\v'));
+          __V3C=__S3C;
         };
-        if ((! __U3C)) {
-          __S3Y=((____VB *)__M0Y);
-          __ESX=__1WC;
-          if ((__S3Y->__DRE <= __S3Y->__AC)) {
-            if ((__S3Y->__DRE ==  0)) {
-              __S3Y->__DRE= 32;
-              __T3Y=__IIH( 32);
-              __S3Y->__0QE=__T3Y;
+        if ((! __V3C)) {
+          __T3Y=((____VB *)__N0Y);
+          __FSX=__2WC;
+          if ((__T3Y->__ERE <= __T3Y->__AC)) {
+            if ((__T3Y->__ERE ==  0)) {
+              __T3Y->__ERE= 32;
+              __U3Y=__JIH( 32);
+              __T3Y->__1QE=__U3Y;
             } else /* FALSE */ {
-              __U3Y=(____L)(__S3Y->__DRE <<  1);
-              __T3Y=__3IH(((____4 *)__S3Y->__0QE),__S3Y->__DRE,__U3Y);
-              __S3Y->__0QE=__T3Y;
-              __S3Y->__DRE=__U3Y;
+              __V3Y=(____L)(__T3Y->__ERE <<  1);
+              __U3Y=__4IH(((____4 *)__T3Y->__1QE),__T3Y->__ERE,__V3Y);
+              __T3Y->__1QE=__U3Y;
+              __T3Y->__ERE=__V3Y;
             };
           };
-          ((____4 *)__S3Y->__0QE)[__S3Y->__AC]=__ESX;
-          __S3Y->__AC=(____L)(__S3Y->__AC +  1);
-          if (__PWC) {
-            __PWC=__J__;
+          ((____4 *)__T3Y->__1QE)[__T3Y->__AC]=__FSX;
+          __T3Y->__AC=(____L)(__T3Y->__AC +  1);
+          if (__QWC) {
+            __QWC=__J__;
           } else /* FALSE */ {
-            __1WC=((____4 )(fgetc(stdin)));
+            __2WC=((____4 )(fgetc(stdin)));
           };
-          goto __AJD;
+          goto __BJD;
         };
       };
-      if ((((____VB *)__YZY)->__AC ==  0)) {
-        __P0B=(&__string_42);
+      if ((((____VB *)__ZZY)->__AC ==  0)) {
+        __Q0B=(&__string_42);
       } else /* FALSE */ {
-        __P0B=__YZY;
+        __Q0B=__ZZY;
       };
-      __BBI(((____VB *)__LZY),(&__string_33));
-      __JDI(((____VB *)__LZY),__P0B);
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
+      __CBI(((____VB *)__MZY),(&__string_33));
+      __KDI(((____VB *)__MZY),__Q0B);
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
       };
-      __BBI(((____VB *)__LZY),(&__string_43));
-      __JDI(((____VB *)__LZY),__P0B);
-      __41Y=__JQB(__LZY);
-      if ((__41Y !=  0)) {
-        __OZC((&__string_34));
-        __OZC(((____VB *)__LZY));
-        __OZC((&__string_35));
+      __CBI(((____VB *)__MZY),(&__string_43));
+      __KDI(((____VB *)__MZY),__Q0B);
+      __51Y=__KQB(__MZY);
+      if ((__51Y !=  0)) {
+        __PZC((&__string_34));
+        __PZC(((____VB *)__MZY));
+        __PZC((&__string_35));
       };
     };
   } else /* FALSE */ {
     __DP();
   };
-  __OZC((&__string_44));
+  __PZC((&__string_44));
   return(0);
 }
 
 
-static ____DB __D0F(____4NE __F0F,____DB __G0F,____MZ __H0F)
-/* ({__4NE},{__DB},{__MZ}) With result No recursive, No inlinable. */
+static ____DB __E0F(____5NE __G0F,____DB __H0F,____MZ __I0F)
+/* ({__5NE},{__DB},{__MZ}) With result No recursive, No inlinable. */
 {
-  ____DB __L0F,__BLW,__J0F,__Q1F,__R1F,__F4F,__I0F;
-  __L0F=((____DB )(NULL));
-  __BLW=((____DB *)__G0F)[ 0];
-  __J0F=__BLW;
-  if ((__BLW == (void *)NULL)) {
-    __Q1F=__1RG(__H0F);
-    __J0F=__Q1F;
-    __R1F=(void *)((unsigned long)__Q1F - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )__F0F)));
-    __L0F=__R1F;
-    ((____DB *)__R1F)[ 0]=NULL;
-    ((____DB *)__G0F)[ 0]=__R1F;
+  ____DB __M0F,__CLW,__K0F,__R1F,__S1F,__G4F,__J0F;
+  __M0F=((____DB )(NULL));
+  __CLW=((____DB *)__H0F)[ 0];
+  __K0F=__CLW;
+  if ((__CLW == (void *)NULL)) {
+    __R1F=__2RG(__I0F);
+    __K0F=__R1F;
+    __S1F=(void *)((unsigned long)__R1F - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )__G0F)));
+    __M0F=__S1F;
+    ((____DB *)__S1F)[ 0]=NULL;
+    ((____DB *)__H0F)[ 0]=__S1F;
   } else /* FALSE */ {
-    __Q1F=((____DB *)__J0F)[ 0];
-    __L0F=__Q1F;
-    if ((__Q1F == (void *)NULL)) {
-      if (((void *)((unsigned long)(void *)((unsigned long)(void *)((unsigned long)__J0F - (unsigned long)__51F) & (unsigned long)((____DB )((____4NE ) 4095))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__F0F <<  1)))) <= ((____DB )((____4NE ) 4096)))) {
-        __L0F=(void *)((unsigned long)__J0F - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )__F0F)));
+    __R1F=((____DB *)__K0F)[ 0];
+    __M0F=__R1F;
+    if ((__R1F == (void *)NULL)) {
+      if (((void *)((unsigned long)(void *)((unsigned long)(void *)((unsigned long)__K0F - (unsigned long)__A2F) & (unsigned long)((____DB )((____5NE ) 4095))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__G0F <<  1)))) <= ((____DB )((____5NE ) 4096)))) {
+        __M0F=(void *)((unsigned long)__K0F - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )__G0F)));
       } else /* FALSE */ {
-        __F4F=__1RG(__H0F);
-        __L0F=__F4F;
+        __G4F=__2RG(__I0F);
+        __M0F=__G4F;
       };
-      ((____DB *)__L0F)[ 0]=NULL;
-      ((____DB *)__G0F)[ 0]=__L0F;
+      ((____DB *)__M0F)[ 0]=NULL;
+      ((____DB *)__H0F)[ 0]=__M0F;
     } else /* FALSE */ {
-      ((____DB *)__J0F)[ 0]=(void *)((unsigned long)((____DB *)__L0F)[ 0] & (unsigned long)((____DB )(____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1))));
-      __J0F=__L0F;
+      ((____DB *)__K0F)[ 0]=(void *)((unsigned long)((____DB *)__M0F)[ 0] & (unsigned long)((____DB )(____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1))));
+      __K0F=__M0F;
     };
   };
-  __I0F=__J0F;
-  return(__I0F);
+  __J0F=__K0F;
+  return(__J0F);
 }
 
-static ____4* __IIH(____L __KIH)
+static ____4* __JIH(____L __LIH)
 /* ({__L}) With result No recursive, No inlinable. */
 {
-  ____4NE __43Y,__33Y,__53Y,__B4Y,__C4Y;
-  ____DB __23Y,__E4Y;
-  ____APE *__F4Y;
-  ____L __RAK;
-  ____4 *__ONH,*__LIH;
-  __43Y=((____4NE )__KIH);
-  __23Y=((____DB )(NULL));
-  __33Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-  __53Y=(____4NE)((____4NE)(__43Y - (____4NE)(((____4NE ) 0) - __33Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __33Y) - ((____4NE ) 1)));
-  __43Y=(____4NE)(__53Y - (____4NE)(((____4NE ) 0) - ((____4NE ) 4)));
-  if ((__43Y <= ((____4NE )(MINIMUM_SIZE)))) {
-    __B4Y=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-    __C4Y=(____4NE)((____4NE)(__43Y - (____4NE)(((____4NE ) 0) - __B4Y)) & (____4NE)((____4NE)(((____4NE ) 0) - __B4Y) - ((____4NE ) 1)));
-    __B4Y=(____4NE)(__C4Y / ((____4NE )((____L )(sizeof(void *)))));
-    __E4Y=__D0F(__C4Y,((____DB )(&(table_size[(__B4Y)-1]))),((____MZ )__C4Y));
-    ((____MZ *)__E4Y)[ 0]= 3;
-    __23Y=(void *)((unsigned long)__E4Y - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE ) 4))));
+  ____5NE __53Y,__43Y,__A4Y,__C4Y,__D4Y;
+  ____DB __33Y,__F4Y;
+  ____BPE *__G4Y;
+  ____L __SAK;
+  ____4 *__PNH,*__MIH;
+  __53Y=((____5NE )__LIH);
+  __33Y=((____DB )(NULL));
+  __43Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+  __A4Y=(____5NE)((____5NE)(__53Y - (____5NE)(((____5NE ) 0) - __43Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __43Y) - ((____5NE ) 1)));
+  __53Y=(____5NE)(__A4Y - (____5NE)(((____5NE ) 0) - ((____5NE ) 4)));
+  if ((__53Y <= ((____5NE )(MINIMUM_SIZE)))) {
+    __C4Y=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+    __D4Y=(____5NE)((____5NE)(__53Y - (____5NE)(((____5NE ) 0) - __C4Y)) & (____5NE)((____5NE)(((____5NE ) 0) - __C4Y) - ((____5NE ) 1)));
+    __C4Y=(____5NE)(__D4Y / ((____5NE )((____L )(sizeof(void *)))));
+    __F4Y=__E0F(__D4Y,((____DB )(&(table_size[(__C4Y)-1]))),((____MZ )__D4Y));
+    ((____MZ *)__F4Y)[ 0]= 3;
+    __33Y=(void *)((unsigned long)__F4Y - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE ) 4))));
   } else /* FALSE */ {
-    __F4Y=__4YN(__53Y);
-    __23Y=(void *)((unsigned long)((____DB )((____APE *)__F4Y)) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
+    __G4Y=__5YN(__A4Y);
+    __33Y=(void *)((unsigned long)((____DB )((____BPE *)__G4Y)) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
   };
-  __ONH=((____4 *)__23Y);
-  __RAK=(____L)(__KIH -  1);
-  while ((__RAK >=  0)) {
-    __ONH[__RAK]='\0';
-    __RAK=(____L)(__RAK -  1);
+  __PNH=((____4 *)__33Y);
+  __SAK=(____L)(__LIH -  1);
+  while ((__SAK >=  0)) {
+    __PNH[__SAK]='\0';
+    __SAK=(____L)(__SAK -  1);
   };
-  __LIH=__ONH;
-  return(__LIH);
+  __MIH=__PNH;
+  return(__MIH);
 }
 
-static void __OZC(void *__QZC)
+static void __PZC(void *__RZC)
 /* ({__Vx__VB}) Void No recursive, No inlinable. */
 {
-  ____L __C0C,__OFD,__PFD;
-  ____4 *__WPY,*__XPY;
-  ____4 __J0C;
-  if (((struct ___OBJ *)__QZC)->__id==____V__) {
-    __C0C=((____V *)__QZC)->__TB;
+  ____L __D0C,__PFD,__QFD;
+  ____4 *__XPY,*__YPY;
+  ____4 __K0C;
+  if (((struct ___OBJ *)__RZC)->__id==____V__) {
+    __D0C=((____V *)__RZC)->__TB;
   } else /* STRING */ {
-    __C0C=((____VB *)__QZC)->__AC;
+    __D0C=((____VB *)__RZC)->__AC;
   };
-  __OFD= 1;
-  __PFD=__C0C;
-  __WPY=((____V *)__QZC)->__UB;
-  __XPY=((____VB *)((____V *)__QZC))->__0QE;
-  while ((__OFD <= __PFD)) {
-    if (((struct ___OBJ *)__QZC)->__id==____V__) {
-      __J0C=((____4 *)__WPY)[(____L)(__OFD -  1)];
+  __PFD= 1;
+  __QFD=__D0C;
+  __XPY=((____V *)__RZC)->__UB;
+  __YPY=((____VB *)((____V *)__RZC))->__1QE;
+  while ((__PFD <= __QFD)) {
+    if (((struct ___OBJ *)__RZC)->__id==____V__) {
+      __K0C=((____4 *)__XPY)[(____L)(__PFD -  1)];
     } else /* STRING */ {
-      __J0C=((____4 *)__XPY)[(____L)(__OFD -  1)];
+      __K0C=((____4 *)__YPY)[(____L)(__PFD -  1)];
     };
-    fputc((int)(__J0C),stdout);
-    __OFD=(____L)(__OFD +  1);
+    fputc((int)(__K0C),stdout);
+    __PFD=(____L)(__PFD +  1);
   };
 }
 
-static ____4* __3IH(____4 *__4IH,____L __5IH,____L __AJH)
+static ____4* __4IH(____4 *__5IH,____L __AJH,____L __BJH)
 /* ({__HB},{__L},{__L}) With result No recursive, No inlinable. */
 {
-  ____DB __3JH,__MRH,__5VH,__YFY,__WCW,__1LQ;
-  ____4NE __FKH,__HKH,__SKY,__YRH,__ESH,__MFY,__KWH,__1FY,__UFY,__3LQ;
-  ____APE *__IXH,*__SUN,*__AWN,*__ZLQ,*__0TY,*__1TY;
-  ____4 *__JKH,*__BJH;
-  __3JH=((____DB )__4IH);
-  __FKH=((____4NE )__5IH);
-  __HKH=((____4NE )__AJH);
-  __MRH=((____DB )(NULL));
-  __SKY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-  __YRH=(____4NE)((____4NE)(__FKH - (____4NE)(((____4NE ) 0) - __SKY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SKY) - ((____4NE ) 1)));
-  __FKH=(____4NE)(__YRH - (____4NE)(((____4NE ) 0) - ((____4NE ) 4)));
-  __SKY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-  __ESH=(____4NE)((____4NE)(__HKH - (____4NE)(((____4NE ) 0) - __SKY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SKY) - ((____4NE ) 1)));
-  if ((__FKH <= ((____4NE )(MINIMUM_SIZE)))) {
-    __5VH=((____DB )(NULL));
-    __MFY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-    __KWH=(____4NE)((____4NE)(__ESH - (____4NE)(((____4NE ) 0) - __MFY)) & (____4NE)((____4NE)(((____4NE ) 0) - __MFY) - ((____4NE ) 1)));
-    __MFY=(____4NE)(__KWH - (____4NE)(((____4NE ) 0) - ((____4NE ) 4)));
-    if ((__MFY <= ((____4NE )(MINIMUM_SIZE)))) {
-      __1FY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-      __UFY=(____4NE)((____4NE)(__MFY - (____4NE)(((____4NE ) 0) - __1FY)) & (____4NE)((____4NE)(((____4NE ) 0) - __1FY) - ((____4NE ) 1)));
-      __1FY=(____4NE)(__UFY / ((____4NE )((____L )(sizeof(void *)))));
-      __YFY=__D0F(__UFY,((____DB )(&(table_size[(__1FY)-1]))),((____MZ )__UFY));
-      ((____MZ *)__YFY)[ 0]= 3;
-      __5VH=(void *)((unsigned long)__YFY - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE ) 4))));
+  ____DB __4JH,__NRH,__AWH,__ZFY,__XCW,__2LQ;
+  ____5NE __GKH,__IKH,__TKY,__ZRH,__FSH,__NFY,__LWH,__2FY,__VFY,__4LQ;
+  ____BPE *__JXH,*__TUN,*__BWN,*__0LQ,*__1TY,*__2TY;
+  ____4 *__KKH,*__CJH;
+  __4JH=((____DB )__5IH);
+  __GKH=((____5NE )__AJH);
+  __IKH=((____5NE )__BJH);
+  __NRH=((____DB )(NULL));
+  __TKY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+  __ZRH=(____5NE)((____5NE)(__GKH - (____5NE)(((____5NE ) 0) - __TKY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TKY) - ((____5NE ) 1)));
+  __GKH=(____5NE)(__ZRH - (____5NE)(((____5NE ) 0) - ((____5NE ) 4)));
+  __TKY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+  __FSH=(____5NE)((____5NE)(__IKH - (____5NE)(((____5NE ) 0) - __TKY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TKY) - ((____5NE ) 1)));
+  if ((__GKH <= ((____5NE )(MINIMUM_SIZE)))) {
+    __AWH=((____DB )(NULL));
+    __NFY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+    __LWH=(____5NE)((____5NE)(__FSH - (____5NE)(((____5NE ) 0) - __NFY)) & (____5NE)((____5NE)(((____5NE ) 0) - __NFY) - ((____5NE ) 1)));
+    __NFY=(____5NE)(__LWH - (____5NE)(((____5NE ) 0) - ((____5NE ) 4)));
+    if ((__NFY <= ((____5NE )(MINIMUM_SIZE)))) {
+      __2FY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+      __VFY=(____5NE)((____5NE)(__NFY - (____5NE)(((____5NE ) 0) - __2FY)) & (____5NE)((____5NE)(((____5NE ) 0) - __2FY) - ((____5NE ) 1)));
+      __2FY=(____5NE)(__VFY / ((____5NE )((____L )(sizeof(void *)))));
+      __ZFY=__E0F(__VFY,((____DB )(&(table_size[(__2FY)-1]))),((____MZ )__VFY));
+      ((____MZ *)__ZFY)[ 0]= 3;
+      __AWH=(void *)((unsigned long)__ZFY - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE ) 4))));
     } else /* FALSE */ {
-      __IXH=__4YN(__KWH);
-      __5VH=(void *)((unsigned long)((____DB )((____APE *)__IXH)) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
+      __JXH=__5YN(__LWH);
+      __AWH=(void *)((unsigned long)((____DB )((____BPE *)__JXH)) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
     };
-    __MRH=__5VH;
-    __BRN(__3JH,__5VH,__YRH);
-    __5VH=(void *)((unsigned long)__3JH - (unsigned long)((____DB )((____4NE ) 4)));
-    __MFY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-    __KWH=(____4NE)((____4NE)(__FKH - (____4NE)(((____4NE ) 0) - __MFY)) & (____4NE)((____4NE)(((____4NE ) 0) - __MFY) - ((____4NE ) 1)));
-    __MFY=(____4NE)(__KWH / ((____4NE )((____L )(sizeof(void *)))));
-    __YFY=((____DB )(&(table_size[(__MFY)-1])));
-    __WCW=((____DB *)__YFY)[ 0];
-    ((____DB *)__5VH)[ 0]=(void *)((unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)(void *)((unsigned long)(void *)((unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB *)__WCW)[ 0]) - (unsigned long)((____DB )((____4NE ) 1))) & (unsigned long)(void *)((unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE ) 3))) - (unsigned long)((____DB )((____4NE ) 1))))) - (unsigned long)((____DB )((____4NE ) 1)));
-    ((____DB *)__WCW)[ 0]=__5VH;
+    __NRH=__AWH;
+    __CRN(__4JH,__AWH,__ZRH);
+    __AWH=(void *)((unsigned long)__4JH - (unsigned long)((____DB )((____5NE ) 4)));
+    __NFY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+    __LWH=(____5NE)((____5NE)(__GKH - (____5NE)(((____5NE ) 0) - __NFY)) & (____5NE)((____5NE)(((____5NE ) 0) - __NFY) - ((____5NE ) 1)));
+    __NFY=(____5NE)(__LWH / ((____5NE )((____L )(sizeof(void *)))));
+    __ZFY=((____DB )(&(table_size[(__NFY)-1])));
+    __XCW=((____DB *)__ZFY)[ 0];
+    ((____DB *)__AWH)[ 0]=(void *)((unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)(void *)((unsigned long)(void *)((unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB *)__XCW)[ 0]) - (unsigned long)((____DB )((____5NE ) 1))) & (unsigned long)(void *)((unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE ) 3))) - (unsigned long)((____DB )((____5NE ) 1))))) - (unsigned long)((____DB )((____5NE ) 1)));
+    ((____DB *)__XCW)[ 0]=__AWH;
   } else /* FALSE */ {
-    __IXH=((____APE *)(void *)((unsigned long)__3JH - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
-    __MFY=(____4NE)(((____4NE )(void *)((unsigned long)__3JH - (unsigned long)__51F)) >>  26);
-    __SUN=NULL;
-    __KWH=((____4NE ) 0);
-    __1FY=(____4NE)(__IXH->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1)));
-    if ((__ESH > __1FY)) {
-      if ((! ((____4NE)(__IXH->__DPE & ((____4NE ) 2)) !=  0))) {
-        __AWN=((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__IXH) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__IXH->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1)))))));
-        __KWH=(____4NE)((____4NE)(__ESH - __1FY) - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))));
-        if ((((____4NE)(__AWN->__DPE & ((____4NE ) 1)) == ((____4NE ) 0)) && ((____4NE)(__AWN->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1))) >= __KWH))) {
-          __A3Q(__AWN,((____DB )__KWH),__MFY);
-          __IXH->__DPE=(____4NE)((____4NE)(__IXH->__DPE - (____4NE)(((____4NE ) 0) - (____4NE)(__AWN->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 1)) - ((____4NE ) 1))))) - (____4NE)(((____4NE ) 0) - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
-          if (((____4NE)(__IXH->__DPE & ((____4NE ) 2)) !=  0)) {
-            last_block[(__MFY)] = (__IXH);
+    __JXH=((____BPE *)(void *)((unsigned long)__4JH - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
+    __NFY=(____5NE)(((____5NE )(void *)((unsigned long)__4JH - (unsigned long)__A2F)) >>  26);
+    __TUN=NULL;
+    __LWH=((____5NE ) 0);
+    __2FY=(____5NE)(__JXH->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1)));
+    if ((__FSH > __2FY)) {
+      if ((! ((____5NE)(__JXH->__EPE & ((____5NE ) 2)) !=  0))) {
+        __BWN=((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__JXH) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__JXH->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1)))))));
+        __LWH=(____5NE)((____5NE)(__FSH - __2FY) - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))));
+        if ((((____5NE)(__BWN->__EPE & ((____5NE ) 1)) == ((____5NE ) 0)) && ((____5NE)(__BWN->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1))) >= __LWH))) {
+          __B3Q(__BWN,((____DB )__LWH),__NFY);
+          __JXH->__EPE=(____5NE)((____5NE)(__JXH->__EPE - (____5NE)(((____5NE ) 0) - (____5NE)(__BWN->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 1)) - ((____5NE ) 1))))) - (____5NE)(((____5NE ) 0) - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
+          if (((____5NE)(__JXH->__EPE & ((____5NE ) 2)) !=  0)) {
+            last_block[(__NFY)] = (__JXH);
           } else /* FALSE */ {
-            ((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__IXH) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__IXH->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1)))))))->__CPE=(void *)((unsigned long)((____DB )__IXH) - (unsigned long)__51F);
+            ((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__JXH) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__JXH->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1)))))))->__DPE=(void *)((unsigned long)((____DB )__JXH) - (unsigned long)__A2F);
           };
-          __SUN=__IXH;
+          __TUN=__JXH;
         };
       };
-      if (((void *)__SUN == (void *)NULL)) {
-        __AWN=__4YN(__ESH);
-        __SUN=__AWN;
-        __BRN((void *)((unsigned long)((____DB )__IXH) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))),(void *)((unsigned long)((____DB )((____APE *)__AWN)) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))),__1FY);
-        __1LQ=__IXH->__CPE;
-        __AWN=((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__IXH) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__IXH->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1)))))));
-        __ZLQ=((____APE *)(void *)((unsigned long)__51F - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)__1LQ)));
-        __3LQ=(____4NE)(__IXH->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 1)) - ((____4NE ) 1)));
-        if (((__1LQ == (void *)NULL) || ((____4NE)(__ZLQ->__DPE & ((____4NE ) 1)) != ((____4NE ) 0)))) {
-          __ZLQ=__IXH;
-          __IXH->__EPE=__B0N;
-          __IXH->__FPE=NULL;
-          if (((void *)__B0N != (void *)NULL)) {
-            ((____APE *)__B0N)->__FPE=__IXH;
+      if (((void *)__TUN == (void *)NULL)) {
+        __BWN=__5YN(__FSH);
+        __TUN=__BWN;
+        __CRN((void *)((unsigned long)((____DB )__JXH) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))),(void *)((unsigned long)((____DB )((____BPE *)__BWN)) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))),__2FY);
+        __2LQ=__JXH->__DPE;
+        __BWN=((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__JXH) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__JXH->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1)))))));
+        __0LQ=((____BPE *)(void *)((unsigned long)__A2F - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)__2LQ)));
+        __4LQ=(____5NE)(__JXH->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 1)) - ((____5NE ) 1)));
+        if (((__2LQ == (void *)NULL) || ((____5NE)(__0LQ->__EPE & ((____5NE ) 1)) != ((____5NE ) 0)))) {
+          __0LQ=__JXH;
+          __JXH->__FPE=__C0N;
+          __JXH->__GPE=NULL;
+          if (((void *)__C0N != (void *)NULL)) {
+            ((____BPE *)__C0N)->__GPE=__JXH;
           };
-          __B0N=__IXH;
+          __C0N=__JXH;
         } else /* FALSE */ {
-          __3LQ=(____4NE)((____4NE)(__3LQ - (____4NE)(((____4NE ) 0) - __ZLQ->__DPE)) - (____4NE)(((____4NE ) 0) - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
+          __4LQ=(____5NE)((____5NE)(__4LQ - (____5NE)(((____5NE ) 0) - __0LQ->__EPE)) - (____5NE)(((____5NE ) 0) - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
         };
-        if (((! ((____4NE)(__IXH->__DPE & ((____4NE ) 2)) !=  0)) && ((____4NE)(__AWN->__DPE & ((____4NE ) 1)) == ((____4NE ) 0)))) {
-          __3LQ=(____4NE)((____4NE)(__3LQ - (____4NE)(((____4NE ) 0) - __AWN->__DPE)) - (____4NE)(((____4NE ) 0) - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
-          __0TY=__AWN->__FPE;
-          __1TY=__AWN->__EPE;
-          if (((void *)__0TY == (void *)NULL)) {
-            __B0N=__1TY;
+        if (((! ((____5NE)(__JXH->__EPE & ((____5NE ) 2)) !=  0)) && ((____5NE)(__BWN->__EPE & ((____5NE ) 1)) == ((____5NE ) 0)))) {
+          __4LQ=(____5NE)((____5NE)(__4LQ - (____5NE)(((____5NE ) 0) - __BWN->__EPE)) - (____5NE)(((____5NE ) 0) - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
+          __1TY=__BWN->__GPE;
+          __2TY=__BWN->__FPE;
+          if (((void *)__1TY == (void *)NULL)) {
+            __C0N=__2TY;
           } else /* FALSE */ {
-            ((____APE *)__0TY)->__EPE=__1TY;
+            ((____BPE *)__1TY)->__FPE=__2TY;
           };
-          if (((void *)__1TY != (void *)NULL)) {
-            ((____APE *)__1TY)->__FPE=__0TY;
+          if (((void *)__2TY != (void *)NULL)) {
+            ((____BPE *)__2TY)->__GPE=__1TY;
           };
         };
-        __ZLQ->__DPE=__3LQ;
-        if (((____4NE)(__ZLQ->__DPE & ((____4NE ) 2)) !=  0)) {
-          last_block[(__MFY)] = (__ZLQ);
+        __0LQ->__EPE=__4LQ;
+        if (((____5NE)(__0LQ->__EPE & ((____5NE ) 2)) !=  0)) {
+          last_block[(__NFY)] = (__0LQ);
         } else /* FALSE */ {
-          ((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__IXH) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__IXH->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1)))))))->__CPE=(void *)((unsigned long)((____DB )__ZLQ) - (unsigned long)__51F);
+          ((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__JXH) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__JXH->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1)))))))->__DPE=(void *)((unsigned long)((____DB )__0LQ) - (unsigned long)__A2F);
         };
       };
     } else /* FALSE */ {
-      __SUN=__IXH;
+      __TUN=__JXH;
     };
-    __MRH=(void *)((unsigned long)((____DB )((____APE *)__SUN)) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
+    __NRH=(void *)((unsigned long)((____DB )((____BPE *)__TUN)) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))));
   };
-  __JKH=((____4 *)__MRH);
-  __OAJ(__JKH,__5IH,(____L)(__AJH -  1));
-  __BJH=__JKH;
-  return(__BJH);
+  __KKH=((____4 *)__NRH);
+  __PAJ(__KKH,__AJH,(____L)(__BJH -  1));
+  __CJH=__KKH;
+  return(__CJH);
 }
 
-static void __BQE(____VB *__CQE,____4 *__DQE)
+static void __CQE(____VB *__DQE,____4 *__EQE)
 /* ({__VB},{NULLx__HB}) Void No recursive, No inlinable. */
 {
-  __CQE->__AC= 0;
-  while ((((____4 *)__DQE)[__CQE->__AC] != '\0')) {
-    __CQE->__AC=(____L)(__CQE->__AC +  1);
+  __DQE->__AC= 0;
+  while ((((____4 *)__EQE)[__DQE->__AC] != '\0')) {
+    __DQE->__AC=(____L)(__DQE->__AC +  1);
   };
-  if (((void *)__CQE->__0QE != (void *)__DQE)) {
-    __CQE->__0QE=__DQE;
-    __CQE->__DRE=(____L)(__CQE->__AC +  1);
+  if (((void *)__DQE->__1QE != (void *)__EQE)) {
+    __DQE->__1QE=__EQE;
+    __DQE->__ERE=(____L)(__DQE->__AC +  1);
   };
 }
 
-static void __BBI(____VB *__CBI,void *__DBI)
+static void __CBI(____VB *__DBI,void *__EBI)
 /* ({__VB},{NULLx__Vx__VB}) Void No recursive, No inlinable. */
 {
-  ____L __EBI;
-  ____4 *__VBI,*__1BI;
-  if (((struct ___OBJ *)__DBI)->__id==____V__) {
-    __EBI=((____V *)__DBI)->__TB;
+  ____L __FBI;
+  ____4 *__WBI,*__2BI;
+  if (((struct ___OBJ *)__EBI)->__id==____V__) {
+    __FBI=((____V *)__EBI)->__TB;
   } else /* STRING */ {
-    __EBI=((____VB *)__DBI)->__AC;
+    __FBI=((____VB *)__EBI)->__AC;
   };
-  __CBI->__AC=__EBI;
-  if ((__EBI >  0)) {
-    if ((__CBI->__DRE < __EBI)) {
-      __VBI=__IIH(__EBI);
-      __CBI->__0QE=__VBI;
-      __CBI->__DRE=__CBI->__AC;
+  __DBI->__AC=__FBI;
+  if ((__FBI >  0)) {
+    if ((__DBI->__ERE < __FBI)) {
+      __WBI=__JIH(__FBI);
+      __DBI->__1QE=__WBI;
+      __DBI->__ERE=__DBI->__AC;
     };
-    __VBI=__CBI->__0QE;
-    if (((struct ___OBJ *)__DBI)->__id==____V__) {
-      __1BI=((____V *)__DBI)->__UB;
+    __WBI=__DBI->__1QE;
+    if (((struct ___OBJ *)__EBI)->__id==____V__) {
+      __2BI=((____V *)__EBI)->__UB;
     } else /* STRING */ {
-      __1BI=((____VB *)__DBI)->__0QE;
+      __2BI=((____VB *)__EBI)->__1QE;
     };
-    __RMJ(((____4 *)__VBI),__1BI,(____L)(__CBI->__AC -  1));
+    __SMJ(((____4 *)__WBI),__2BI,(____L)(__DBI->__AC -  1));
   };
 }
 
 static void __KE(____V *__ME,____L __NE)
 /* ({__V},{__L}) Void No recursive, No inlinable. */
 {
-  ____VB *__KPY;
-  ____L __MPY,__DW;
-  ____4 *__LPY;
+  ____VB *__LPY;
+  ____L __NPY,__DW;
+  ____4 *__MPY;
   __OE=(____L)(__OE +  1);
   fputc((int)('\n'),stdout);
   if ((__NE ==  0)) {
-    __BBI(((____VB *)__WE),__ME);
+    __CBI(((____VB *)__WE),__ME);
   } else /* FALSE */ {
-    __BBI(((____VB *)__WE),(&__string_45));
+    __CBI(((____VB *)__WE),(&__string_45));
     __2R(__OE,__WE);
-    __KPY=((____VB *)__WE);
-    if ((__KPY->__DRE <= __KPY->__AC)) {
-      if ((__KPY->__DRE ==  0)) {
-        __KPY->__DRE= 32;
-        __LPY=__IIH( 32);
-        __KPY->__0QE=__LPY;
+    __LPY=((____VB *)__WE);
+    if ((__LPY->__ERE <= __LPY->__AC)) {
+      if ((__LPY->__ERE ==  0)) {
+        __LPY->__ERE= 32;
+        __MPY=__JIH( 32);
+        __LPY->__1QE=__MPY;
       } else /* FALSE */ {
-        __MPY=(____L)(__KPY->__DRE <<  1);
-        __LPY=__3IH(((____4 *)__KPY->__0QE),__KPY->__DRE,__MPY);
-        __KPY->__0QE=__LPY;
-        __KPY->__DRE=__MPY;
+        __NPY=(____L)(__LPY->__ERE <<  1);
+        __MPY=__4IH(((____4 *)__LPY->__1QE),__LPY->__ERE,__NPY);
+        __LPY->__1QE=__MPY;
+        __LPY->__ERE=__NPY;
       };
     };
-    ((____4 *)__KPY->__0QE)[__KPY->__AC]='/';
-    __KPY->__AC=(____L)(__KPY->__AC +  1);
+    ((____4 *)__LPY->__1QE)[__LPY->__AC]='/';
+    __LPY->__AC=(____L)(__LPY->__AC +  1);
     __2R(__NE,__WE);
-    __JDI(((____VB *)__WE),(&__string_46));
-    __JDI(((____VB *)__WE),__ME);
+    __KDI(((____VB *)__WE),(&__string_46));
+    __KDI(((____VB *)__WE),__ME);
   };
-  __KPY=((____VB *)__WE);
-  if ((__KPY->__DRE <= __KPY->__AC)) {
-    if ((__KPY->__DRE ==  0)) {
-      __KPY->__DRE= 32;
-      __LPY=__IIH( 32);
-      __KPY->__0QE=__LPY;
+  __LPY=((____VB *)__WE);
+  if ((__LPY->__ERE <= __LPY->__AC)) {
+    if ((__LPY->__ERE ==  0)) {
+      __LPY->__ERE= 32;
+      __MPY=__JIH( 32);
+      __LPY->__1QE=__MPY;
     } else /* FALSE */ {
-      __MPY=(____L)(__KPY->__DRE <<  1);
-      __LPY=__3IH(((____4 *)__KPY->__0QE),__KPY->__DRE,__MPY);
-      __KPY->__0QE=__LPY;
-      __KPY->__DRE=__MPY;
+      __NPY=(____L)(__LPY->__ERE <<  1);
+      __MPY=__4IH(((____4 *)__LPY->__1QE),__LPY->__ERE,__NPY);
+      __LPY->__1QE=__MPY;
+      __LPY->__ERE=__NPY;
     };
   };
-  ((____4 *)__KPY->__0QE)[__KPY->__AC]='\n';
-  __KPY->__AC=(____L)(__KPY->__AC +  1);
-  __OZC(((____VB *)__WE));
-  __MPY= 1;
+  ((____4 *)__LPY->__1QE)[__LPY->__AC]='\n';
+  __LPY->__AC=(____L)(__LPY->__AC +  1);
+  __PZC(((____VB *)__WE));
+  __NPY= 1;
   __DW=(____L)(__WE->__AC -  1);
-  while ((__MPY <= __DW)) {
+  while ((__NPY <= __DW)) {
     fputc((int)('='),stdout);
-    __MPY=(____L)(__MPY +  1);
+    __NPY=(____L)(__NPY +  1);
   };
   fputc((int)('\n'),stdout);
 }
 
-static ____L __RGF(____VB *__SGF,____V *__TGF)
+static ____L __SGF(____VB *__TGF,____V *__UGF)
 /* ({__VB},{NULLx__V}) With result No recursive, No inlinable. */
 {
-  ____L __XLF,__ZLF,__YLF,__DJY,__EJY,__FJY,__HJY,__UGF;
-  ____4 *__GJY,*__VPY;
-  __XLF= 0;
-  __ZLF= 0;
-  __YLF= 1;
-  __DJY=__TGF->__TB;
-  __EJY=__SGF->__AC;
-  __FJY=__TGF->__TB;
-  __GJY=__SGF->__0QE;
-  __HJY=__TGF->__TB;
-  __VPY=((____V *)__TGF)->__UB;
-  while ((! ((__ZLF !=  0) || ((____L)((____L)(__YLF + __DJY) -  1) > __EJY)))) {
-    __XLF= 1;
-    while ((! ((__XLF > __FJY) || (((____4 *)__GJY)[(____L)((____L)((____L)(__YLF + __XLF) -  1) -  1)] != ((____4 *)__VPY)[(____L)(__XLF -  1)])))) {
-      __XLF=(____L)(__XLF +  1);
-    };
-    if ((__XLF > __HJY)) {
-      __ZLF=__YLF;
-    } else /* FALSE */ {
+  ____L __YLF,__0LF,__ZLF,__EJY,__FJY,__GJY,__IJY,__VGF;
+  ____4 *__HJY,*__WPY;
+  __YLF= 0;
+  __0LF= 0;
+  __ZLF= 1;
+  __EJY=__UGF->__TB;
+  __FJY=__TGF->__AC;
+  __GJY=__UGF->__TB;
+  __HJY=__TGF->__1QE;
+  __IJY=__UGF->__TB;
+  __WPY=((____V *)__UGF)->__UB;
+  while ((! ((__0LF !=  0) || ((____L)((____L)(__ZLF + __EJY) -  1) > __FJY)))) {
+    __YLF= 1;
+    while ((! ((__YLF > __GJY) || (((____4 *)__HJY)[(____L)((____L)((____L)(__ZLF + __YLF) -  1) -  1)] != ((____4 *)__WPY)[(____L)(__YLF -  1)])))) {
       __YLF=(____L)(__YLF +  1);
     };
-  };
-  __UGF=__ZLF;
-  return(__UGF);
-}
-
-static void __JDI(____VB *__KDI,void *__LDI)
-/* ({__VB},{NULLx__Vx__VB}) Void No recursive, No inlinable. */
-{
-  ____L __UDI,__WDI;
-  ____4 *__FEI,*__SEI;
-  if (((struct ___OBJ *)__LDI)->__id==____V__) {
-    __UDI=((____V *)__LDI)->__TB;
-  } else /* STRING */ {
-    __UDI=((____VB *)__LDI)->__AC;
-  };
-  __WDI=(____L)(__KDI->__AC + __UDI);
-  if ((__KDI->__DRE < __WDI)) {
-    if ((__KDI->__DRE ==  0)) {
-      __KDI->__DRE=__WDI;
-      __FEI=__IIH(__WDI);
-      __KDI->__0QE=__FEI;
+    if ((__YLF > __IJY)) {
+      __0LF=__ZLF;
     } else /* FALSE */ {
-      __FEI=__3IH(((____4 *)__KDI->__0QE),__KDI->__DRE,__WDI);
-      __KDI->__0QE=__FEI;
-      __KDI->__DRE=__WDI;
+      __ZLF=(____L)(__ZLF +  1);
     };
   };
-  __FEI=__KDI->__0QE;
-  if (((struct ___OBJ *)__LDI)->__id==____V__) {
-    __SEI=((____V *)__LDI)->__UB;
+  __VGF=__0LF;
+  return(__VGF);
+}
+
+static void __KDI(____VB *__LDI,void *__MDI)
+/* ({__VB},{NULLx__Vx__VB}) Void No recursive, No inlinable. */
+{
+  ____L __VDI,__XDI;
+  ____4 *__GEI,*__TEI;
+  if (((struct ___OBJ *)__MDI)->__id==____V__) {
+    __VDI=((____V *)__MDI)->__TB;
   } else /* STRING */ {
-    __SEI=((____VB *)__LDI)->__0QE;
+    __VDI=((____VB *)__MDI)->__AC;
   };
-  __CHJ(((____4 *)__FEI),__SEI,__KDI->__AC,__UDI);
-  __KDI->__AC=__WDI;
+  __XDI=(____L)(__LDI->__AC + __VDI);
+  if ((__LDI->__ERE < __XDI)) {
+    if ((__LDI->__ERE ==  0)) {
+      __LDI->__ERE=__XDI;
+      __GEI=__JIH(__XDI);
+      __LDI->__1QE=__GEI;
+    } else /* FALSE */ {
+      __GEI=__4IH(((____4 *)__LDI->__1QE),__LDI->__ERE,__XDI);
+      __LDI->__1QE=__GEI;
+      __LDI->__ERE=__XDI;
+    };
+  };
+  __GEI=__LDI->__1QE;
+  if (((struct ___OBJ *)__MDI)->__id==____V__) {
+    __TEI=((____V *)__MDI)->__UB;
+  } else /* STRING */ {
+    __TEI=((____VB *)__MDI)->__1QE;
+  };
+  __DHJ(((____4 *)__GEI),__TEI,__LDI->__AC,__VDI);
+  __LDI->__AC=__XDI;
 }
 
 static ____L __ON(____V *__QN,____V *__RN,____L __SN)
 /* ({__V},{__V},{__L}) With result No recursive, No inlinable. */
 {
-  ____L __UN,__0PY,__5PY,__ZEI,__LQY,__1HI,__FIK,__BIK,__NQY,__PQY;
-  ____L __PKK,__TN;
-  ____VB *__YPY,*__3PY;
-  ____4 __KCD,__2PY,__TFI,__ZIK;
-  ____4 *__ZPY,*__4PY;
-  ____G __2EI,__3EI,__LGI,__CUT,__FQY,__LKI,__TVT;
+  ____L __UN,__1PY,__AQY,__0EI,__MQY,__2HI,__GIK,__CIK,__OQY,__QQY;
+  ____L __QKK,__TN;
+  ____VB *__ZPY,*__4PY;
+  ____4 __LCD,__3PY,__UFI,__0IK;
+  ____4 *__0PY,*__5PY;
+  ____G __3EI,__4EI,__MGI,__DUT,__GQY,__MKI,__UVT;
   fputc((int)('\n'),stdout);
   __KE(__QN, 0);
-  __OZC(__RN);
-  __OZC((&__string_47));
+  __PZC(__RN);
+  __PZC((&__string_47));
   __UN=(____L)(-  1);
   do {
     ((____VB *)__1N)->__AC= 0;
-    __KCD='\0';
-    if (__PWC) {
-      __PWC=__J__;
+    __LCD='\0';
+    if (__QWC) {
+      __QWC=__J__;
     } else /* FALSE */ {
-      __1WC=((____4 )(fgetc(stdin)));
+      __2WC=((____4 )(fgetc(stdin)));
     };
-    if (((__1WC != '\n') && (__1WC != ((____4 )(EOF))))) {
-      __YPY=((____VB *)__1N);
-      __2PY=__1WC;
-      if ((__YPY->__DRE <= __YPY->__AC)) {
-        if ((__YPY->__DRE ==  0)) {
-          __YPY->__DRE= 32;
-          __ZPY=__IIH( 32);
-          __YPY->__0QE=__ZPY;
+    if (((__2WC != '\n') && (__2WC != ((____4 )(EOF))))) {
+      __ZPY=((____VB *)__1N);
+      __3PY=__2WC;
+      if ((__ZPY->__ERE <= __ZPY->__AC)) {
+        if ((__ZPY->__ERE ==  0)) {
+          __ZPY->__ERE= 32;
+          __0PY=__JIH( 32);
+          __ZPY->__1QE=__0PY;
         } else /* FALSE */ {
-          __0PY=(____L)(__YPY->__DRE <<  1);
-          __ZPY=__3IH(((____4 *)__YPY->__0QE),__YPY->__DRE,__0PY);
-          __YPY->__0QE=__ZPY;
-          __YPY->__DRE=__0PY;
+          __1PY=(____L)(__ZPY->__ERE <<  1);
+          __0PY=__4IH(((____4 *)__ZPY->__1QE),__ZPY->__ERE,__1PY);
+          __ZPY->__1QE=__0PY;
+          __ZPY->__ERE=__1PY;
         };
       };
-      ((____4 *)__YPY->__0QE)[__YPY->__AC]=__2PY;
-      __YPY->__AC=(____L)(__YPY->__AC +  1);
-      __KCD=((____4 )(fgetc(stdin)));
-      while ((! ((__KCD == ((____4 )(EOF))) || (__KCD == '\n')))) {
-        __3PY=((____VB *)__1N);
-        if ((__3PY->__DRE <= __3PY->__AC)) {
-          if ((__3PY->__DRE ==  0)) {
-            __3PY->__DRE= 32;
-            __4PY=__IIH( 32);
-            __3PY->__0QE=__4PY;
+      ((____4 *)__ZPY->__1QE)[__ZPY->__AC]=__3PY;
+      __ZPY->__AC=(____L)(__ZPY->__AC +  1);
+      __LCD=((____4 )(fgetc(stdin)));
+      while ((! ((__LCD == ((____4 )(EOF))) || (__LCD == '\n')))) {
+        __4PY=((____VB *)__1N);
+        if ((__4PY->__ERE <= __4PY->__AC)) {
+          if ((__4PY->__ERE ==  0)) {
+            __4PY->__ERE= 32;
+            __5PY=__JIH( 32);
+            __4PY->__1QE=__5PY;
           } else /* FALSE */ {
-            __5PY=(____L)(__3PY->__DRE <<  1);
-            __4PY=__3IH(((____4 *)__3PY->__0QE),__3PY->__DRE,__5PY);
-            __3PY->__0QE=__4PY;
-            __3PY->__DRE=__5PY;
+            __AQY=(____L)(__4PY->__ERE <<  1);
+            __5PY=__4IH(((____4 *)__4PY->__1QE),__4PY->__ERE,__AQY);
+            __4PY->__1QE=__5PY;
+            __4PY->__ERE=__AQY;
           };
         };
-        ((____4 *)__3PY->__0QE)[__3PY->__AC]=__KCD;
-        __3PY->__AC=(____L)(__3PY->__AC +  1);
-        __KCD=((____4 )(fgetc(stdin)));
+        ((____4 *)__4PY->__1QE)[__4PY->__AC]=__LCD;
+        __4PY->__AC=(____L)(__4PY->__AC +  1);
+        __LCD=((____4 )(fgetc(stdin)));
       };
-      __1WC=__KCD;
+      __2WC=__LCD;
     };
-    __YPY=((____VB *)__1N);
-    __0PY= 0;
-    __5PY= 0;
-    __2EI=__J__;
+    __ZPY=((____VB *)__1N);
+    __1PY= 0;
+    __AQY= 0;
     __3EI=__J__;
-    __ZEI= 1;
-    __LQY=__YPY->__AC;
-    __ZPY=__YPY->__0QE;
-    while ((! ((__0PY ==  4) || (__ZEI > __LQY)))) {
-      __TFI=((____4 *)__ZPY)[(____L)(__ZEI -  1)];
-      if ((__0PY ==  0)) {
-        if ((((((((__TFI == ' ') || (__TFI == '\t')) || (__TFI == '\n')) || (__TFI == '\r')) || (__TFI == '\0')) || (__TFI == '\f')) || (__TFI == '\v'))) {
-          __LGI=__F__;
+    __4EI=__J__;
+    __0EI= 1;
+    __MQY=__ZPY->__AC;
+    __0PY=__ZPY->__1QE;
+    while ((! ((__1PY ==  4) || (__0EI > __MQY)))) {
+      __UFI=((____4 *)__0PY)[(____L)(__0EI -  1)];
+      if ((__1PY ==  0)) {
+        if ((((((((__UFI == ' ') || (__UFI == '\t')) || (__UFI == '\n')) || (__UFI == '\r')) || (__UFI == '\0')) || (__UFI == '\f')) || (__UFI == '\v'))) {
+          __MGI=__F__;
         } else /* FALSE */ {
-          __CUT=(__TFI == '+');
-          if (__CUT) {
-            __0PY= 1;
+          __DUT=(__UFI == '+');
+          if (__DUT) {
+            __1PY= 1;
           };
-          __LGI=__CUT;
+          __MGI=__DUT;
         };
-        if (__LGI) {
-          __LGI=__F__;
+        if (__MGI) {
+          __MGI=__F__;
         } else /* FALSE */ {
-          __CUT=(__TFI == '-');
-          if (__CUT) {
-            __2EI=__F__;
-            __0PY= 1;
+          __DUT=(__UFI == '-');
+          if (__DUT) {
+            __3EI=__F__;
+            __1PY= 1;
           };
-          __LGI=__CUT;
+          __MGI=__DUT;
         };
-        if ((! __LGI)) {
-          __LGI=__J__;
-          if ((((____OZ )__TFI) >= ((____OZ )'0'))) {
-            __LGI=(((____OZ )__TFI) <= ((____OZ )'9'));
+        if ((! __MGI)) {
+          __MGI=__J__;
+          if ((((____OZ )__UFI) >= ((____OZ )'0'))) {
+            __MGI=(((____OZ )__UFI) <= ((____OZ )'9'));
           };
-          if (__LGI) {
-            __5PY=(____L)(((____L )((____OZ )__TFI)) -  48);
-            __0PY= 2;
+          if (__MGI) {
+            __AQY=(____L)(((____L )((____OZ )__UFI)) -  48);
+            __1PY= 2;
           } else /* FALSE */ {
-            __0PY= 4;
+            __1PY= 4;
           };
         };
-        __LGI=__F__;
+        __MGI=__F__;
       } else /* FALSE */ {
-        __LGI=__J__;
+        __MGI=__J__;
       };
-      if (__LGI) {
-        __LGI=__F__;
+      if (__MGI) {
+        __MGI=__F__;
       } else /* FALSE */ {
-        __CUT=(__0PY ==  1);
-        if (__CUT) {
-          __FQY=__J__;
-          if ((((____OZ )__TFI) >= ((____OZ )'0'))) {
-            __FQY=(((____OZ )__TFI) <= ((____OZ )'9'));
+        __DUT=(__1PY ==  1);
+        if (__DUT) {
+          __GQY=__J__;
+          if ((((____OZ )__UFI) >= ((____OZ )'0'))) {
+            __GQY=(((____OZ )__UFI) <= ((____OZ )'9'));
           };
-          if (__FQY) {
-            __1HI=(____L)(((____L )((____OZ )__TFI)) -  48);
-            __5PY=__1HI;
-            if (__2EI) {
-              __5PY=(____L)(- __1HI);
+          if (__GQY) {
+            __2HI=(____L)(((____L )((____OZ )__UFI)) -  48);
+            __AQY=__2HI;
+            if (__3EI) {
+              __AQY=(____L)(- __2HI);
             };
-            __0PY= 2;
+            __1PY= 2;
           } else /* FALSE */ {
-            __0PY= 4;
+            __1PY= 4;
           };
         };
-        __LGI=__CUT;
+        __MGI=__DUT;
       };
-      if (__LGI) {
-        __LGI=__F__;
+      if (__MGI) {
+        __MGI=__F__;
       } else /* FALSE */ {
-        __CUT=(__0PY ==  2);
-        if (__CUT) {
-          __FQY=__J__;
-          if ((((____OZ )__TFI) >= ((____OZ )'0'))) {
-            __FQY=(((____OZ )__TFI) <= ((____OZ )'9'));
+        __DUT=(__1PY ==  2);
+        if (__DUT) {
+          __GQY=__J__;
+          if ((((____OZ )__UFI) >= ((____OZ )'0'))) {
+            __GQY=(((____OZ )__UFI) <= ((____OZ )'9'));
           };
-          if (__FQY) {
-            if (__2EI) {
-              __5PY=(____L)((____L)( 10 * __5PY) - (____L)(((____L )((____OZ )__TFI)) -  48));
+          if (__GQY) {
+            if (__3EI) {
+              __AQY=(____L)((____L)( 10 * __AQY) - (____L)(((____L )((____OZ )__UFI)) -  48));
             } else /* FALSE */ {
-              __5PY=(____L)((____L)( 10 * __5PY) + (____L)(((____L )((____OZ )__TFI)) -  48));
+              __AQY=(____L)((____L)( 10 * __AQY) + (____L)(((____L )((____OZ )__UFI)) -  48));
             };
-            if (((__2EI && (__5PY >  0)) || ((! __2EI) && (__5PY <  0)))) {
-              __0PY= 4;
+            if (((__3EI && (__AQY >  0)) || ((! __3EI) && (__AQY <  0)))) {
+              __1PY= 4;
             };
-            __LKI=__F__;
+            __MKI=__F__;
           } else /* FALSE */ {
-            __LKI=__J__;
+            __MKI=__J__;
           };
-          if ((! __LKI)) {
-            if ((((((((__TFI == ' ') || (__TFI == '\t')) || (__TFI == '\n')) || (__TFI == '\r')) || (__TFI == '\0')) || (__TFI == '\f')) || (__TFI == '\v'))) {
-              __0PY= 3;
+          if ((! __MKI)) {
+            if ((((((((__UFI == ' ') || (__UFI == '\t')) || (__UFI == '\n')) || (__UFI == '\r')) || (__UFI == '\0')) || (__UFI == '\f')) || (__UFI == '\v'))) {
+              __1PY= 3;
             } else /* FALSE */ {
-              __0PY= 4;
+              __1PY= 4;
             };
           };
         };
-        __LGI=__CUT;
+        __MGI=__DUT;
       };
-      if ((! __LGI)) {
-        if ((__0PY ==  3)) {
-          if ((! (((((((__TFI == ' ') || (__TFI == '\t')) || (__TFI == '\n')) || (__TFI == '\r')) || (__TFI == '\0')) || (__TFI == '\f')) || (__TFI == '\v')))) {
-            __0PY= 4;
+      if ((! __MGI)) {
+        if ((__1PY ==  3)) {
+          if ((! (((((((__UFI == ' ') || (__UFI == '\t')) || (__UFI == '\n')) || (__UFI == '\r')) || (__UFI == '\0')) || (__UFI == '\f')) || (__UFI == '\v')))) {
+            __1PY= 4;
           };
         };
       };
-      __ZEI=(____L)(__ZEI +  1);
+      __0EI=(____L)(__0EI +  1);
     };
-    if (((__0PY !=  0) && (__0PY !=  4))) {
-      __3EI=__F__;
+    if (((__1PY !=  0) && (__1PY !=  4))) {
+      __4EI=__F__;
     };
-    if (__3EI) {
-      __3PY=((____VB *)__1N);
-      __1HI= 0;
-      __LGI=__J__;
-      __FIK= 0;
-      __BIK= 1;
-      __NQY=__3PY->__AC;
-      __4PY=__3PY->__0QE;
-      __PQY=__3PY->__AC;
-      while ((__BIK <= __NQY)) {
-        __ZIK=((____4 *)__4PY)[(____L)(__BIK -  1)];
-        if ((__1HI ==  0)) {
-          if ((((((((__ZIK == ' ') || (__ZIK == '\t')) || (__ZIK == '\n')) || (__ZIK == '\r')) || (__ZIK == '\0')) || (__ZIK == '\f')) || (__ZIK == '\v'))) {
-            __LKI=__F__;
+    if (__4EI) {
+      __4PY=((____VB *)__1N);
+      __2HI= 0;
+      __MGI=__J__;
+      __GIK= 0;
+      __CIK= 1;
+      __OQY=__4PY->__AC;
+      __5PY=__4PY->__1QE;
+      __QQY=__4PY->__AC;
+      while ((__CIK <= __OQY)) {
+        __0IK=((____4 *)__5PY)[(____L)(__CIK -  1)];
+        if ((__2HI ==  0)) {
+          if ((((((((__0IK == ' ') || (__0IK == '\t')) || (__0IK == '\n')) || (__0IK == '\r')) || (__0IK == '\0')) || (__0IK == '\f')) || (__0IK == '\v'))) {
+            __MKI=__F__;
           } else /* FALSE */ {
-            __TVT=(__ZIK == '+');
-            if (__TVT) {
-              __1HI= 1;
+            __UVT=(__0IK == '+');
+            if (__UVT) {
+              __2HI= 1;
             };
-            __LKI=__TVT;
+            __MKI=__UVT;
           };
-          if ((! __LKI)) {
-            if ((__ZIK == '-')) {
-              __LGI=__F__;
-              __1HI= 1;
+          if ((! __MKI)) {
+            if ((__0IK == '-')) {
+              __MGI=__F__;
+              __2HI= 1;
             } else /* FALSE */ {
-              __FIK=(____L)(((____L )((____OZ )__ZIK)) -  48);
-              __1HI= 2;
+              __GIK=(____L)(((____L )((____OZ )__0IK)) -  48);
+              __2HI= 2;
             };
           };
-          __FQY=__F__;
+          __GQY=__F__;
         } else /* FALSE */ {
-          __FQY=__J__;
+          __GQY=__J__;
         };
-        if (__FQY) {
-          __FQY=__F__;
+        if (__GQY) {
+          __GQY=__F__;
         } else /* FALSE */ {
-          __LKI=(__1HI ==  1);
-          if (__LKI) {
-            __PKK=(____L)(((____L )((____OZ )__ZIK)) -  48);
-            __FIK=__PKK;
-            if (__LGI) {
-              __FIK=(____L)(- __PKK);
+          __MKI=(__2HI ==  1);
+          if (__MKI) {
+            __QKK=(____L)(((____L )((____OZ )__0IK)) -  48);
+            __GIK=__QKK;
+            if (__MGI) {
+              __GIK=(____L)(- __QKK);
             };
-            __1HI= 2;
+            __2HI= 2;
           };
-          __FQY=__LKI;
+          __GQY=__MKI;
         };
-        if (__FQY) {
-          __FQY=__F__;
+        if (__GQY) {
+          __GQY=__F__;
         } else /* FALSE */ {
-          __LKI=(__1HI ==  2);
-          if (__LKI) {
-            __TVT=__J__;
-            if ((((____OZ )__ZIK) >= ((____OZ )'0'))) {
-              __TVT=(((____OZ )__ZIK) <= ((____OZ )'9'));
+          __MKI=(__2HI ==  2);
+          if (__MKI) {
+            __UVT=__J__;
+            if ((((____OZ )__0IK) >= ((____OZ )'0'))) {
+              __UVT=(((____OZ )__0IK) <= ((____OZ )'9'));
             };
-            if (__TVT) {
-              if (__LGI) {
-                __FIK=(____L)((____L)( 10 * __FIK) - (____L)(((____L )((____OZ )__ZIK)) -  48));
+            if (__UVT) {
+              if (__MGI) {
+                __GIK=(____L)((____L)( 10 * __GIK) - (____L)(((____L )((____OZ )__0IK)) -  48));
               } else /* FALSE */ {
-                __FIK=(____L)((____L)( 10 * __FIK) + (____L)(((____L )((____OZ )__ZIK)) -  48));
+                __GIK=(____L)((____L)( 10 * __GIK) + (____L)(((____L )((____OZ )__0IK)) -  48));
               };
             } else /* FALSE */ {
-              __1HI= 3;
+              __2HI= 3;
             };
           };
-          __FQY=__LKI;
+          __GQY=__MKI;
         };
-        if ((! __FQY)) {
-          if ((__1HI ==  3)) {
-            __BIK=__PQY;
+        if ((! __GQY)) {
+          if ((__2HI ==  3)) {
+            __CIK=__QQY;
           };
         };
-        __BIK=(____L)(__BIK +  1);
+        __CIK=(____L)(__CIK +  1);
       };
-      if ((( 0 <= __FIK) && (__SN >= __FIK))) {
-        __UN=__FIK;
+      if ((( 0 <= __GIK) && (__SN >= __GIK))) {
+        __UN=__GIK;
       } else /* FALSE */ {
-        __OZC((&__string_48));
+        __PZC((&__string_48));
         if ((__SN ==  0)) {
           fputc((int)('0'),stdout);
-          __CUT=__F__;
+          __DUT=__F__;
         } else /* FALSE */ {
-          __CUT=__J__;
+          __DUT=__J__;
         };
-        if ((! __CUT)) {
+        if ((! __DUT)) {
           if ((__SN <  0)) {
             fputc((int)('-'),stdout);
-            __YBP((____L)(- __SN));
+            __ZBP((____L)(- __SN));
           } else /* FALSE */ {
-            __YBP(__SN);
+            __ZBP(__SN);
           };
         };
-        __OZC((&__string_49));
+        __PZC((&__string_49));
       };
     } else /* FALSE */ {
-      __OZC((&__string_50));
+      __PZC((&__string_50));
     };
   } while ((__UN == (____L)(-  1)));
   __TN=__UN;
@@ -1777,14 +1780,14 @@ static ____L __ON(____V *__QN,____V *__RN,____L __SN)
 static void __DP()
 /* () Void No recursive, No inlinable. */
 {
-  ____L __LP,__GKY,__YQY,__0P,__ASY,__USY,__ITY;
-  ____V *__FKY;
-  ____VB *__VQY,*__CRY,*__WRY,*__3RY,*__KSY,*__4SY,*__FTY,*__STY;
-  ____DB __WQY,__2QY,__4RY,__ESY,__MTY;
-  ____4NE __XQY,__ZQY,__0QY,__5RY,__BSY,__CSY,__JTY,__KTY;
-  ____MZ __4QY,__GSY,__OTY;
-  ____4 *__TQY,*__1RY,*__PSY,*__DTY;
-  ____4 __DEC;
+  ____L __LP,__HKY,__ZQY,__0P,__BSY,__VSY,__JTY;
+  ____V *__GKY;
+  ____VB *__WQY,*__DRY,*__XRY,*__4RY,*__LSY,*__5SY,*__GTY,*__TTY;
+  ____DB __XQY,__3QY,__5RY,__FSY,__NTY;
+  ____5NE __YQY,__0QY,__1QY,__ASY,__CSY,__DSY,__KTY,__LTY;
+  ____MZ __5QY,__HSY,__PTY;
+  ____4 *__UQY,*__2RY,*__QSY,*__ETY;
+  ____4 __EEC;
   do {
     __LP=__ON((&__string_27),(&__string_51), 3);
     if ((__LP ==  1)) {
@@ -1792,291 +1795,291 @@ static void __DP()
       if (((void *)__MC != (void *)(&__string_4))) {
         __KE((&__string_52), 5);
         if (((void *)__MC == (void *)(&__string_22))) {
-          __JQB((&__string_53));
-          __TLB((&__string_54),(&__string_55),(&__string_56),__J__);
-          __OZC((&__string_57));
+          __KQB((&__string_53));
+          __ULB((&__string_54),(&__string_55),(&__string_56),__J__);
+          __PZC((&__string_57));
         } else /* FALSE */ {
-          __JQB((&__string_58));
-          __TLB((&__string_54),(&__string_55),(&__string_59),__J__);
+          __KQB((&__string_58));
+          __ULB((&__string_54),(&__string_55),(&__string_59),__J__);
         };
       };
       fputc((int)('\n'),stdout);
       __KE((&__string_60), 5);
       if (((void *)__MC == (void *)(&__string_4))) {
-        __OZC((&__string_61));
-        __OZC(((____VB *)__EC));
-        __OZC((&__string_62));
+        __PZC((&__string_61));
+        __PZC(((____VB *)__EC));
+        __PZC((&__string_62));
       } else /* FALSE */ {
-        __FKY=__2G;
-        __GKY=__FKY->__TB;
-        __VQY=NULL;
-        __WQY=((____DB )(NULL));
-        __XQY=((____4NE )sizeof(____VB));
-        if ((__XQY ==  0)) {
-          __VQY=__VB__;
+        __GKY=__2G;
+        __HKY=__GKY->__TB;
+        __WQY=NULL;
+        __XQY=((____DB )(NULL));
+        __YQY=((____5NE )sizeof(____VB));
+        if ((__YQY ==  0)) {
+          __WQY=__VB__;
         } else /* FALSE */ {
-          __YQY=-1;
-          __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __XQY));
-          if ((__YQY == (____L)(-  1))) {
-            __ZQY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-            __0QY=(____4NE)((____4NE)(__XQY - (____4NE)(((____4NE ) 0) - __ZQY)) & (____4NE)((____4NE)(((____4NE ) 0) - __ZQY) - ((____4NE ) 1)));
-            __ZQY=(____4NE)(__0QY / ((____4NE )((____L )(sizeof(void *)))));
-            __2QY=__D0F(__0QY,((____DB )(&(table_size[(__ZQY)-1]))),((____MZ )__0QY));
-            __WQY=__2QY;
+          __ZQY=-1;
+          __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __YQY));
+          if ((__ZQY == (____L)(-  1))) {
+            __0QY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+            __1QY=(____5NE)((____5NE)(__YQY - (____5NE)(((____5NE ) 0) - __0QY)) & (____5NE)((____5NE)(((____5NE ) 0) - __0QY) - ((____5NE ) 1)));
+            __0QY=(____5NE)(__1QY / ((____5NE )((____L )(sizeof(void *)))));
+            __3QY=__E0F(__1QY,((____DB )(&(table_size[(__0QY)-1]))),((____MZ )__1QY));
+            __XQY=__3QY;
           } else /* FALSE */ {
-            __4QY=((____MZ )__YQY);
-            __ZQY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-            __0QY=(____4NE)((____4NE)(__XQY - (____4NE)(((____4NE ) 0) - __ZQY)) & (____4NE)((____4NE)(((____4NE ) 0) - __ZQY) - ((____4NE ) 1)));
-            __2QY=__D0F(__0QY,((____DB )(&(table_type[(__4QY)]))),(____MZ)(__4QY |  1));
-            __WQY=__2QY;
+            __5QY=((____MZ )__ZQY);
+            __0QY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+            __1QY=(____5NE)((____5NE)(__YQY - (____5NE)(((____5NE ) 0) - __0QY)) & (____5NE)((____5NE)(((____5NE ) 0) - __0QY) - ((____5NE ) 1)));
+            __3QY=__E0F(__1QY,((____DB )(&(table_type[(__5QY)]))),(____MZ)(__5QY |  1));
+            __XQY=__3QY;
           };
-          __CRY=((____VB *)__WQY);
-          __VQY=__CRY;
-          *(__CRY) = *(__VB__);
+          __DRY=((____VB *)__XQY);
+          __WQY=__DRY;
+          *(__DRY) = *(__VB__);
         };
-        __CRY=((____VB *)__VQY);
-        if ((__GKY >  0)) {
-          if ((__CRY->__DRE < __GKY)) {
-            __TQY=__IIH(__GKY);
-            __CRY->__0QE=__TQY;
-            __CRY->__DRE=__GKY;
+        __DRY=((____VB *)__WQY);
+        if ((__HKY >  0)) {
+          if ((__DRY->__ERE < __HKY)) {
+            __UQY=__JIH(__HKY);
+            __DRY->__1QE=__UQY;
+            __DRY->__ERE=__HKY;
           };
         };
-        __CRY->__AC= 0;
-        __BBI(((____VB *)__VQY),__FKY);
-        __JDI(((____VB *)__VQY),__5G);
-        __JDI(((____VB *)__VQY),__EC);
-        __JDI(((____VB *)__VQY),__CH);
-        __TLB(__3F,__2G,__VQY,__F__);
+        __DRY->__AC= 0;
+        __CBI(((____VB *)__WQY),__GKY);
+        __KDI(((____VB *)__WQY),__5G);
+        __KDI(((____VB *)__WQY),__EC);
+        __KDI(((____VB *)__WQY),__CH);
+        __ULB(__3F,__2G,__WQY,__F__);
       };
       __KE((&__string_63), 5);
-      __VQY=__EC;
-      __GKY=__VQY->__AC;
-      __CRY=NULL;
-      __WQY=((____DB )(NULL));
-      __XQY=((____4NE )sizeof(____VB));
-      if ((__XQY ==  0)) {
-        __CRY=__VB__;
+      __WQY=__EC;
+      __HKY=__WQY->__AC;
+      __DRY=NULL;
+      __XQY=((____DB )(NULL));
+      __YQY=((____5NE )sizeof(____VB));
+      if ((__YQY ==  0)) {
+        __DRY=__VB__;
       } else /* FALSE */ {
-        __YQY=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __XQY));
-        if ((__YQY == (____L)(-  1))) {
-          __ZQY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __0QY=(____4NE)((____4NE)(__XQY - (____4NE)(((____4NE ) 0) - __ZQY)) & (____4NE)((____4NE)(((____4NE ) 0) - __ZQY) - ((____4NE ) 1)));
-          __ZQY=(____4NE)(__0QY / ((____4NE )((____L )(sizeof(void *)))));
-          __2QY=__D0F(__0QY,((____DB )(&(table_size[(__ZQY)-1]))),((____MZ )__0QY));
-          __WQY=__2QY;
+        __ZQY=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __YQY));
+        if ((__ZQY == (____L)(-  1))) {
+          __0QY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __1QY=(____5NE)((____5NE)(__YQY - (____5NE)(((____5NE ) 0) - __0QY)) & (____5NE)((____5NE)(((____5NE ) 0) - __0QY) - ((____5NE ) 1)));
+          __0QY=(____5NE)(__1QY / ((____5NE )((____L )(sizeof(void *)))));
+          __3QY=__E0F(__1QY,((____DB )(&(table_size[(__0QY)-1]))),((____MZ )__1QY));
+          __XQY=__3QY;
         } else /* FALSE */ {
-          __4QY=((____MZ )__YQY);
-          __ZQY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __0QY=(____4NE)((____4NE)(__XQY - (____4NE)(((____4NE ) 0) - __ZQY)) & (____4NE)((____4NE)(((____4NE ) 0) - __ZQY) - ((____4NE ) 1)));
-          __2QY=__D0F(__0QY,((____DB )(&(table_type[(__4QY)]))),(____MZ)(__4QY |  1));
-          __WQY=__2QY;
+          __5QY=((____MZ )__ZQY);
+          __0QY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __1QY=(____5NE)((____5NE)(__YQY - (____5NE)(((____5NE ) 0) - __0QY)) & (____5NE)((____5NE)(((____5NE ) 0) - __0QY) - ((____5NE ) 1)));
+          __3QY=__E0F(__1QY,((____DB )(&(table_type[(__5QY)]))),(____MZ)(__5QY |  1));
+          __XQY=__3QY;
         };
-        __WRY=((____VB *)__WQY);
-        __CRY=__WRY;
-        *(__WRY) = *(__VB__);
+        __XRY=((____VB *)__XQY);
+        __DRY=__XRY;
+        *(__XRY) = *(__VB__);
       };
-      __WRY=((____VB *)__CRY);
-      if ((__GKY >  0)) {
-        if ((__WRY->__DRE < __GKY)) {
-          __TQY=__IIH(__GKY);
-          __WRY->__0QE=__TQY;
-          __WRY->__DRE=__GKY;
+      __XRY=((____VB *)__DRY);
+      if ((__HKY >  0)) {
+        if ((__XRY->__ERE < __HKY)) {
+          __UQY=__JIH(__HKY);
+          __XRY->__1QE=__UQY;
+          __XRY->__ERE=__HKY;
         };
       };
-      __WRY->__AC= 0;
-      __BBI(((____VB *)__CRY),__VQY);
+      __XRY->__AC= 0;
+      __CBI(((____VB *)__DRY),__WQY);
       if (((void *)__MC == (void *)(&__string_22))) {
-        __FOI(((____VB *)__CRY));
+        __GOI(((____VB *)__DRY));
       };
-      __VQY=((____VB *)__CRY);
-      __GKY=__VQY->__AC;
-      __YJJ(__VQY,(____L)(__GKY +  26));
-      if ((__GKY >  0)) {
-        __ERL(((____4 *)__VQY->__0QE), 0,(____L)(__GKY -  1), 26);
+      __WQY=((____VB *)__DRY);
+      __HKY=__WQY->__AC;
+      __ZJJ(__WQY,(____L)(__HKY +  26));
+      if ((__HKY >  0)) {
+        __FRL(((____4 *)__WQY->__1QE), 0,(____L)(__HKY -  1), 26);
       };
-      __RMJ(((____4 *)__VQY->__0QE),(&__string_64)->__UB, 25);
-      __JDI(((____VB *)__CRY),(&__string_65));
-      __TLB((&__string_66),(&__string_67),__CRY,__J__);
+      __SMJ(((____4 *)__WQY->__1QE),(&__string_64)->__UB, 25);
+      __KDI(((____VB *)__DRY),(&__string_65));
+      __ULB((&__string_66),(&__string_67),__DRY,__J__);
       fputc((int)('\n'),stdout);
-      __TLB((&__string_68),(&__string_67),__CRY,__J__);
+      __ULB((&__string_68),(&__string_67),__DRY,__J__);
       fputc((int)('\n'),stdout);
       __KE((&__string_69), 5);
       __OHB();
       __KE((&__string_70), 5);
       __5HB();
-      __OZC((&__string_71));
-      __OZC((&__string_72));
+      __PZC((&__string_71));
+      __PZC((&__string_72));
     };
     if ((__LP ==  2)) {
       do {
         __0P=__ON((&__string_73),(&__string_74), 6);
         if ((__0P ==  1)) {
           __KE((&__string_75), 0);
-          __3RY=NULL;
-          __4RY=((____DB )(NULL));
-          __5RY=((____4NE )sizeof(____VB));
-          if ((__5RY ==  0)) {
-            __3RY=__VB__;
+          __4RY=NULL;
+          __5RY=((____DB )(NULL));
+          __ASY=((____5NE )sizeof(____VB));
+          if ((__ASY ==  0)) {
+            __4RY=__VB__;
           } else /* FALSE */ {
-            __ASY=-1;
-            __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __5RY));
-            if ((__ASY == (____L)(-  1))) {
-              __BSY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-              __CSY=(____4NE)((____4NE)(__5RY - (____4NE)(((____4NE ) 0) - __BSY)) & (____4NE)((____4NE)(((____4NE ) 0) - __BSY) - ((____4NE ) 1)));
-              __BSY=(____4NE)(__CSY / ((____4NE )((____L )(sizeof(void *)))));
-              __ESY=__D0F(__CSY,((____DB )(&(table_size[(__BSY)-1]))),((____MZ )__CSY));
-              __4RY=__ESY;
+            __BSY=-1;
+            __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __ASY));
+            if ((__BSY == (____L)(-  1))) {
+              __CSY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+              __DSY=(____5NE)((____5NE)(__ASY - (____5NE)(((____5NE ) 0) - __CSY)) & (____5NE)((____5NE)(((____5NE ) 0) - __CSY) - ((____5NE ) 1)));
+              __CSY=(____5NE)(__DSY / ((____5NE )((____L )(sizeof(void *)))));
+              __FSY=__E0F(__DSY,((____DB )(&(table_size[(__CSY)-1]))),((____MZ )__DSY));
+              __5RY=__FSY;
             } else /* FALSE */ {
-              __GSY=((____MZ )__ASY);
-              __BSY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-              __CSY=(____4NE)((____4NE)(__5RY - (____4NE)(((____4NE ) 0) - __BSY)) & (____4NE)((____4NE)(((____4NE ) 0) - __BSY) - ((____4NE ) 1)));
-              __ESY=__D0F(__CSY,((____DB )(&(table_type[(__GSY)]))),(____MZ)(__GSY |  1));
-              __4RY=__ESY;
+              __HSY=((____MZ )__BSY);
+              __CSY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+              __DSY=(____5NE)((____5NE)(__ASY - (____5NE)(((____5NE ) 0) - __CSY)) & (____5NE)((____5NE)(((____5NE ) 0) - __CSY) - ((____5NE ) 1)));
+              __FSY=__E0F(__DSY,((____DB )(&(table_type[(__HSY)]))),(____MZ)(__HSY |  1));
+              __5RY=__FSY;
             };
-            __KSY=((____VB *)__4RY);
-            __3RY=__KSY;
-            *(__KSY) = *(__VB__);
+            __LSY=((____VB *)__5RY);
+            __4RY=__LSY;
+            *(__LSY) = *(__VB__);
           };
-          __KSY=((____VB *)__3RY);
-          if ((__KSY->__DRE <  100)) {
-            __1RY=__IIH( 100);
-            __KSY->__0QE=__1RY;
-            __KSY->__DRE= 100;
+          __LSY=((____VB *)__4RY);
+          if ((__LSY->__ERE <  100)) {
+            __2RY=__JIH( 100);
+            __LSY->__1QE=__2RY;
+            __LSY->__ERE= 100;
           };
-          __KSY->__AC= 0;
+          __LSY->__AC= 0;
           if (((void *)__JC == (void *)NULL)) {
-            __BBI(((____VB *)__3RY),(&__string_76));
+            __CBI(((____VB *)__4RY),(&__string_76));
           } else /* FALSE */ {
-            __BBI(((____VB *)__3RY),__JC);
+            __CBI(((____VB *)__4RY),__JC);
           };
-          __JDI(((____VB *)__3RY),(&__string_77));
-          __ASY=(&__string_78)->__TB;
-          __KSY=NULL;
-          __4RY=((____DB )(NULL));
-          __5RY=((____4NE )sizeof(____VB));
-          if ((__5RY ==  0)) {
-            __KSY=__VB__;
+          __KDI(((____VB *)__4RY),(&__string_77));
+          __BSY=(&__string_78)->__TB;
+          __LSY=NULL;
+          __5RY=((____DB )(NULL));
+          __ASY=((____5NE )sizeof(____VB));
+          if ((__ASY ==  0)) {
+            __LSY=__VB__;
           } else /* FALSE */ {
-            __USY=-1;
-            __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __5RY));
-            if ((__USY == (____L)(-  1))) {
-              __BSY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-              __CSY=(____4NE)((____4NE)(__5RY - (____4NE)(((____4NE ) 0) - __BSY)) & (____4NE)((____4NE)(((____4NE ) 0) - __BSY) - ((____4NE ) 1)));
-              __BSY=(____4NE)(__CSY / ((____4NE )((____L )(sizeof(void *)))));
-              __ESY=__D0F(__CSY,((____DB )(&(table_size[(__BSY)-1]))),((____MZ )__CSY));
-              __4RY=__ESY;
+            __VSY=-1;
+            __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __ASY));
+            if ((__VSY == (____L)(-  1))) {
+              __CSY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+              __DSY=(____5NE)((____5NE)(__ASY - (____5NE)(((____5NE ) 0) - __CSY)) & (____5NE)((____5NE)(((____5NE ) 0) - __CSY) - ((____5NE ) 1)));
+              __CSY=(____5NE)(__DSY / ((____5NE )((____L )(sizeof(void *)))));
+              __FSY=__E0F(__DSY,((____DB )(&(table_size[(__CSY)-1]))),((____MZ )__DSY));
+              __5RY=__FSY;
             } else /* FALSE */ {
-              __GSY=((____MZ )__USY);
-              __BSY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-              __CSY=(____4NE)((____4NE)(__5RY - (____4NE)(((____4NE ) 0) - __BSY)) & (____4NE)((____4NE)(((____4NE ) 0) - __BSY) - ((____4NE ) 1)));
-              __ESY=__D0F(__CSY,((____DB )(&(table_type[(__GSY)]))),(____MZ)(__GSY |  1));
-              __4RY=__ESY;
+              __HSY=((____MZ )__VSY);
+              __CSY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+              __DSY=(____5NE)((____5NE)(__ASY - (____5NE)(((____5NE ) 0) - __CSY)) & (____5NE)((____5NE)(((____5NE ) 0) - __CSY) - ((____5NE ) 1)));
+              __FSY=__E0F(__DSY,((____DB )(&(table_type[(__HSY)]))),(____MZ)(__HSY |  1));
+              __5RY=__FSY;
             };
-            __4SY=((____VB *)__4RY);
-            __KSY=__4SY;
-            *(__4SY) = *(__VB__);
+            __5SY=((____VB *)__5RY);
+            __LSY=__5SY;
+            *(__5SY) = *(__VB__);
           };
-          __4SY=((____VB *)__KSY);
-          if ((__ASY >  0)) {
-            if ((__4SY->__DRE < __ASY)) {
-              __PSY=__IIH(__ASY);
-              __4SY->__0QE=__PSY;
-              __4SY->__DRE=__ASY;
+          __5SY=((____VB *)__LSY);
+          if ((__BSY >  0)) {
+            if ((__5SY->__ERE < __BSY)) {
+              __QSY=__JIH(__BSY);
+              __5SY->__1QE=__QSY;
+              __5SY->__ERE=__BSY;
             };
           };
-          __4SY->__AC= 0;
-          __BBI(((____VB *)__KSY),(&__string_78));
-          __JDI(((____VB *)__KSY),(&__string_79));
-          __JDI(((____VB *)__KSY),__EC);
+          __5SY->__AC= 0;
+          __CBI(((____VB *)__LSY),(&__string_78));
+          __KDI(((____VB *)__LSY),(&__string_79));
+          __KDI(((____VB *)__LSY),__EC);
           if (((void *)__MC == (void *)(&__string_22))) {
-            __FOI(((____VB *)__KSY));
+            __GOI(((____VB *)__LSY));
           };
-          __JDI(((____VB *)__KSY),(&__string_80));
-          __JDI(((____VB *)__KSY),(&__string_81));
-          __TLB(__3RY,(&__string_78),__KSY,__F__);
+          __KDI(((____VB *)__LSY),(&__string_80));
+          __KDI(((____VB *)__LSY),(&__string_81));
+          __ULB(__4RY,(&__string_78),__LSY,__F__);
         };
         if ((__0P ==  2)) {
           __KE((&__string_82), 0);
           if (((void *)__MC == (void *)(&__string_22))) {
-            __OZC((&__string_83));
+            __PZC((&__string_83));
           } else /* FALSE */ {
-            __JQB((&__string_84));
-            __JQB((&__string_85));
-            __JQB((&__string_86));
-            __JQB((&__string_87));
-            __BBI(((____VB *)__0B),(&__string_88));
-            __OZC((&__string_89));
-            __OZC(((____VB *)__0B));
-            __OZC((&__string_90));
-            __USY=__JQB(__0B);
-            if ((__USY !=  0)) {
-              __OZC((&__string_91));
+            __KQB((&__string_84));
+            __KQB((&__string_85));
+            __KQB((&__string_86));
+            __KQB((&__string_87));
+            __CBI(((____VB *)__0B),(&__string_88));
+            __PZC((&__string_89));
+            __PZC(((____VB *)__0B));
+            __PZC((&__string_90));
+            __VSY=__KQB(__0B);
+            if ((__VSY !=  0)) {
+              __PZC((&__string_91));
             } else /* FALSE */ {
-              __OZC((&__string_92));
+              __PZC((&__string_92));
             };
-            __BBI(((____VB *)__0B),(&__string_93));
-            __OZC((&__string_89));
-            __OZC(((____VB *)__0B));
-            __OZC((&__string_90));
-            __USY=__JQB(__0B);
-            if ((__USY !=  0)) {
-              __OZC((&__string_91));
+            __CBI(((____VB *)__0B),(&__string_93));
+            __PZC((&__string_89));
+            __PZC(((____VB *)__0B));
+            __PZC((&__string_90));
+            __VSY=__KQB(__0B);
+            if ((__VSY !=  0)) {
+              __PZC((&__string_91));
             } else /* FALSE */ {
-              __OZC((&__string_92));
+              __PZC((&__string_92));
             };
-            __DEC=__2TC((&__string_94));
-            if ((__DEC == 'n')) {
-              __FTY=NULL;
-              __ESY=((____DB )(NULL));
-              __BSY=((____4NE )sizeof(____VB));
-              if ((__BSY ==  0)) {
-                __FTY=__VB__;
+            __EEC=__3TC((&__string_94));
+            if ((__EEC == 'n')) {
+              __GTY=NULL;
+              __FSY=((____DB )(NULL));
+              __CSY=((____5NE )sizeof(____VB));
+              if ((__CSY ==  0)) {
+                __GTY=__VB__;
               } else /* FALSE */ {
-                __ITY=-1;
-                __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __BSY));
-                if ((__ITY == (____L)(-  1))) {
-                  __JTY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-                  __KTY=(____4NE)((____4NE)(__BSY - (____4NE)(((____4NE ) 0) - __JTY)) & (____4NE)((____4NE)(((____4NE ) 0) - __JTY) - ((____4NE ) 1)));
-                  __JTY=(____4NE)(__KTY / ((____4NE )((____L )(sizeof(void *)))));
-                  __MTY=__D0F(__KTY,((____DB )(&(table_size[(__JTY)-1]))),((____MZ )__KTY));
-                  __ESY=__MTY;
+                __JTY=-1;
+                __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __CSY));
+                if ((__JTY == (____L)(-  1))) {
+                  __KTY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+                  __LTY=(____5NE)((____5NE)(__CSY - (____5NE)(((____5NE ) 0) - __KTY)) & (____5NE)((____5NE)(((____5NE ) 0) - __KTY) - ((____5NE ) 1)));
+                  __KTY=(____5NE)(__LTY / ((____5NE )((____L )(sizeof(void *)))));
+                  __NTY=__E0F(__LTY,((____DB )(&(table_size[(__KTY)-1]))),((____MZ )__LTY));
+                  __FSY=__NTY;
                 } else /* FALSE */ {
-                  __OTY=((____MZ )__ITY);
-                  __JTY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-                  __KTY=(____4NE)((____4NE)(__BSY - (____4NE)(((____4NE ) 0) - __JTY)) & (____4NE)((____4NE)(((____4NE ) 0) - __JTY) - ((____4NE ) 1)));
-                  __MTY=__D0F(__KTY,((____DB )(&(table_type[(__OTY)]))),(____MZ)(__OTY |  1));
-                  __ESY=__MTY;
+                  __PTY=((____MZ )__JTY);
+                  __KTY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+                  __LTY=(____5NE)((____5NE)(__CSY - (____5NE)(((____5NE ) 0) - __KTY)) & (____5NE)((____5NE)(((____5NE ) 0) - __KTY) - ((____5NE ) 1)));
+                  __NTY=__E0F(__LTY,((____DB )(&(table_type[(__PTY)]))),(____MZ)(__PTY |  1));
+                  __FSY=__NTY;
                 };
-                __STY=((____VB *)__ESY);
-                __FTY=__STY;
-                *(__STY) = *(__VB__);
+                __TTY=((____VB *)__FSY);
+                __GTY=__TTY;
+                *(__TTY) = *(__VB__);
               };
-              __STY=((____VB *)__FTY);
-              if ((__STY->__DRE <  100)) {
-                __DTY=__IIH( 100);
-                __STY->__0QE=__DTY;
-                __STY->__DRE= 100;
+              __TTY=((____VB *)__GTY);
+              if ((__TTY->__ERE <  100)) {
+                __ETY=__JIH( 100);
+                __TTY->__1QE=__ETY;
+                __TTY->__ERE= 100;
               };
-              __STY->__AC= 0;
+              __TTY->__AC= 0;
               if (((void *)__JC == (void *)NULL)) {
-                __BBI(((____VB *)__FTY),(&__string_76));
+                __CBI(((____VB *)__GTY),(&__string_76));
               } else /* FALSE */ {
-                __BBI(((____VB *)__FTY),__JC);
+                __CBI(((____VB *)__GTY),__JC);
               };
-              __JDI(((____VB *)__FTY),(&__string_95));
-              __TLB(__FTY,(&__string_96),(&__string_96),__F__);
+              __KDI(((____VB *)__GTY),(&__string_95));
+              __ULB(__GTY,(&__string_96),(&__string_96),__F__);
             } else /* FALSE */ {
-              __BBI(((____VB *)__0B),(&__string_97));
-              __OZC((&__string_89));
-              __OZC(((____VB *)__0B));
-              __OZC((&__string_90));
-              __ITY=__JQB(__0B);
-              if ((__ITY !=  0)) {
-                __OZC((&__string_91));
+              __CBI(((____VB *)__0B),(&__string_97));
+              __PZC((&__string_89));
+              __PZC(((____VB *)__0B));
+              __PZC((&__string_90));
+              __JTY=__KQB(__0B);
+              if ((__JTY !=  0)) {
+                __PZC((&__string_91));
               } else /* FALSE */ {
-                __OZC((&__string_92));
+                __PZC((&__string_92));
               };
             };
           };
@@ -2084,45 +2087,45 @@ static void __DP()
         if ((__0P ==  3)) {
           __KE((&__string_98), 0);
           if (((void *)__MC == (void *)(&__string_22))) {
-            __OZC((&__string_99));
+            __PZC((&__string_99));
           } else /* FALSE */ {
-            __JQB((&__string_100));
-            __BBI(((____VB *)__0B),(&__string_101));
-            __OZC((&__string_89));
-            __OZC(((____VB *)__0B));
-            __OZC((&__string_90));
-            __USY=__JQB(__0B);
-            if ((__USY !=  0)) {
-              __OZC((&__string_102));
+            __KQB((&__string_100));
+            __CBI(((____VB *)__0B),(&__string_101));
+            __PZC((&__string_89));
+            __PZC(((____VB *)__0B));
+            __PZC((&__string_90));
+            __VSY=__KQB(__0B);
+            if ((__VSY !=  0)) {
+              __PZC((&__string_102));
             } else /* FALSE */ {
-              __OZC((&__string_103));
+              __PZC((&__string_103));
             };
           };
         };
         if ((__0P ==  4)) {
           __KE((&__string_104), 0);
           if (((void *)__MC == (void *)(&__string_22))) {
-            __BBI(((____VB *)__0B),(&__string_105));
-            __OZC((&__string_106));
-            __OZC(((____VB *)__0B));
-            __OZC((&__string_90));
-            __USY=__JQB(__0B);
-            if ((__USY !=  0)) {
-              __OZC((&__string_107));
+            __CBI(((____VB *)__0B),(&__string_105));
+            __PZC((&__string_106));
+            __PZC(((____VB *)__0B));
+            __PZC((&__string_90));
+            __VSY=__KQB(__0B);
+            if ((__VSY !=  0)) {
+              __PZC((&__string_107));
             } else /* FALSE */ {
-              __OZC((&__string_108));
+              __PZC((&__string_108));
             };
           } else /* FALSE */ {
-            __OZC((&__string_109));
+            __PZC((&__string_109));
           };
         };
         if ((__0P ==  5)) {
           __KE((&__string_110), 0);
-          __OZC((&__string_111));
+          __PZC((&__string_111));
         };
         if ((__0P ==  6)) {
           __KE((&__string_112), 0);
-          __OZC((&__string_113));
+          __PZC((&__string_113));
         };
       } while ((__0P !=  0));
     };
@@ -2137,18 +2140,18 @@ static void __OHB()
 /* () Void No recursive, No inlinable. */
 {
   ____L __XHB;
-  __BBI(((____VB *)__0B),(&__string_115));
-  __JDI(((____VB *)__0B),(&__string_116));
-  __JDI(((____VB *)__0B),(&__string_117));
-  __JDI(((____VB *)__0B),(&__string_116));
-  __OZC((&__string_118));
-  __OZC(((____VB *)__0B));
-  __OZC((&__string_119));
-  __XHB=__JQB(__0B);
+  __CBI(((____VB *)__0B),(&__string_115));
+  __KDI(((____VB *)__0B),(&__string_116));
+  __KDI(((____VB *)__0B),(&__string_117));
+  __KDI(((____VB *)__0B),(&__string_116));
+  __PZC((&__string_118));
+  __PZC(((____VB *)__0B));
+  __PZC((&__string_119));
+  __XHB=__KQB(__0B);
   if ((__XHB !=  0)) {
-    __OZC((&__string_120));
-    __OZC((&__string_116));
-    __OZC((&__string_121));
+    __PZC((&__string_120));
+    __PZC((&__string_116));
+    __PZC((&__string_121));
   };
   fputc((int)('\n'),stdout);
 }
@@ -2160,7 +2163,7 @@ static void __5HB()
   ____L __QIB;
   __BIB=NULL;
   __CIB=NULL;
-  __OZC((&__string_122));
+  __PZC((&__string_122));
   if (((void *)__MC == (void *)(&__string_22))) {
     __BIB=(&__string_123);
     __CIB=(&__string_124);
@@ -2168,12 +2171,12 @@ static void __5HB()
     __BIB=(&__string_125);
     __CIB=(&__string_126);
   };
-  __QIB=__JQB(__CIB);
+  __QIB=__KQB(__CIB);
   if ((__QIB ==  0)) {
-    __OZC((&__string_127));
-    __JQB(__BIB);
+    __PZC((&__string_127));
+    __KQB(__BIB);
   } else /* FALSE */ {
-    __OZC((&__string_128));
+    __PZC((&__string_128));
   };
   fputc((int)('\n'),stdout);
 }
@@ -2181,207 +2184,208 @@ static void __5HB()
 static void __JJB()
 /* () Void No recursive, No inlinable. */
 {
-  ____L __4JB;
+  ____L __5JB;
   ((____VB *)__0B)->__AC= 0;
-  __JQB((&__string_129));
   if (((void *)__MC == (void *)(&__string_22))) {
-    __BBI(((____VB *)__0B),(&__string_130));
+    __KQB((&__string_129));
+    __CBI(((____VB *)__0B),(&__string_130));
   } else /* FALSE */ {
-    __BBI(((____VB *)__0B),(&__string_131));
+    __KQB((&__string_131));
+    __CBI(((____VB *)__0B),(&__string_132));
   };
-  __OZC((&__string_106));
-  __OZC(((____VB *)__0B));
-  __OZC((&__string_90));
-  __4JB=__JQB(__0B);
-  if ((__4JB ==  0)) {
-    __OZC((&__string_132));
+  __PZC((&__string_106));
+  __PZC(((____VB *)__0B));
+  __PZC((&__string_90));
+  __5JB=__KQB(__0B);
+  if ((__5JB ==  0)) {
+    __PZC((&__string_133));
   } else /* FALSE */ {
-    __OZC((&__string_133));
+    __PZC((&__string_134));
   };
 }
 
-static ____L __JQB(void *__LQB)
+static ____L __KQB(void *__MQB)
 /* ({NULLx__Vx__VB}) With result No recursive, No inlinable. */
 {
-  ____VB *__3BY;
-  ____L __WTY,__MQB;
-  ____4 *__TQB,*__VTY;
-  if (((struct ___OBJ *)__LQB)->__id==____V__) {
-    __TQB=((____V *)__LQB)->__UB;
+  ____VB *__4BY;
+  ____L __XTY,__NQB;
+  ____4 *__UQB,*__WTY;
+  if (((struct ___OBJ *)__MQB)->__id==____V__) {
+    __UQB=((____V *)__MQB)->__UB;
   } else /* STRING */ {
-    __3BY=((____VB *)__LQB);
-    if ((__3BY->__DRE > __3BY->__AC)) {
-      ((____4 *)__3BY->__0QE)[__3BY->__AC]='\0';
+    __4BY=((____VB *)__MQB);
+    if ((__4BY->__ERE > __4BY->__AC)) {
+      ((____4 *)__4BY->__1QE)[__4BY->__AC]='\0';
     } else /* FALSE */ {
-      if ((__3BY->__DRE <= __3BY->__AC)) {
-        if ((__3BY->__DRE ==  0)) {
-          __3BY->__DRE= 32;
-          __VTY=__IIH( 32);
-          __3BY->__0QE=__VTY;
+      if ((__4BY->__ERE <= __4BY->__AC)) {
+        if ((__4BY->__ERE ==  0)) {
+          __4BY->__ERE= 32;
+          __WTY=__JIH( 32);
+          __4BY->__1QE=__WTY;
         } else /* FALSE */ {
-          __WTY=(____L)(__3BY->__DRE <<  1);
-          __VTY=__3IH(((____4 *)__3BY->__0QE),__3BY->__DRE,__WTY);
-          __3BY->__0QE=__VTY;
-          __3BY->__DRE=__WTY;
+          __XTY=(____L)(__4BY->__ERE <<  1);
+          __WTY=__4IH(((____4 *)__4BY->__1QE),__4BY->__ERE,__XTY);
+          __4BY->__1QE=__WTY;
+          __4BY->__ERE=__XTY;
         };
       };
-      ((____4 *)__3BY->__0QE)[__3BY->__AC]='\0';
-      __3BY->__AC=(____L)(__3BY->__AC +  1);
-      __3BY->__AC=(____L)(__3BY->__AC -  1);
+      ((____4 *)__4BY->__1QE)[__4BY->__AC]='\0';
+      __4BY->__AC=(____L)(__4BY->__AC +  1);
+      __4BY->__AC=(____L)(__4BY->__AC -  1);
     };
-    __TQB=__3BY->__0QE;
+    __UQB=__4BY->__1QE;
   };
-  __MQB=((____L )(system(((char*)((__TQB))))));
-  return(__MQB);
+  __NQB=((____L )(system(((char*)((__UQB))))));
+  return(__NQB);
 }
 
-static ____DB __1RG(____MZ __3RG)
+static ____DB __2RG(____MZ __4RG)
 /* ({__MZ}) With result No recursive, No inlinable. */
 {
-  ____4NE __5RG;
-  ____APE *__CSG,*__USG,*__FOY,*__GOY,*__HOY,*__TUG;
-  ____DB __GSG,__AUG,__4RG;
-  ____G __FTG;
-  __5RG=((____4NE ) 0);
-  __CSG=NULL;
-  __GSG=((____DB )(NULL));
-  __EZG:
+  ____5NE __ASG;
+  ____BPE *__DSG,*__VSG,*__GOY,*__HOY,*__IOY,*__UUG;
+  ____DB __HSG,__BUG,__5RG;
+  ____G __GTG;
+  __ASG=((____5NE ) 0);
+  __DSG=NULL;
+  __HSG=((____DB )(NULL));
+  __FZG:
   {
-    if ((__5RG < __MSG)) {
-      __USG=((____APE *)(last_block[(__5RG)]));
-      __CSG=__USG;
-      __FTG=(((____4NE)(__USG->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1))) < ((____4NE ) 4096)) || ((____4NE)(__USG->__DPE & ((____4NE ) 1)) == ((____4NE ) 1)));
+    if ((__ASG < __NSG)) {
+      __VSG=((____BPE *)(last_block[(__ASG)]));
+      __DSG=__VSG;
+      __GTG=(((____5NE)(__VSG->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1))) < ((____5NE ) 4096)) || ((____5NE)(__VSG->__EPE & ((____5NE ) 1)) == ((____5NE ) 1)));
     } else /* FALSE */ {
-      __FTG=__J__;
+      __GTG=__J__;
     };
-    if (__FTG) {
-      __5RG=(____4NE)(__5RG - (____4NE)(((____4NE ) 0) - ((____4NE ) 1)));
-      goto __EZG;
+    if (__GTG) {
+      __ASG=(____5NE)(__ASG - (____5NE)(((____5NE ) 0) - ((____5NE ) 1)));
+      goto __FZG;
     };
   };
-  if ((__5RG >= __MSG)) {
-    __USG=__KNN();
-    __CSG=__USG;
+  if ((__ASG >= __NSG)) {
+    __VSG=__LNN();
+    __DSG=__VSG;
   };
-  ((____APE *)__CSG)->__DPE=(____4NE)(__CSG->__DPE - ((____4NE ) 4096));
-  __USG=((____APE *)__CSG);
-  __AUG=((____DB )((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__USG) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__USG->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1))))))));
-  if (((____4NE)(((____APE *)__CSG)->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1))) < ((____4NE )(MINIMUM_SIZE)))) {
-    __FOY=((____APE *)__CSG);
-    __GOY=__FOY->__FPE;
-    __HOY=__FOY->__EPE;
-    if (((void *)__GOY == (void *)NULL)) {
-      __B0N=__HOY;
+  ((____BPE *)__DSG)->__EPE=(____5NE)(__DSG->__EPE - ((____5NE ) 4096));
+  __VSG=((____BPE *)__DSG);
+  __BUG=((____DB )((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__VSG) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__VSG->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1))))))));
+  if (((____5NE)(((____BPE *)__DSG)->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1))) < ((____5NE )(MINIMUM_SIZE)))) {
+    __GOY=((____BPE *)__DSG);
+    __HOY=__GOY->__GPE;
+    __IOY=__GOY->__FPE;
+    if (((void *)__HOY == (void *)NULL)) {
+      __C0N=__IOY;
     } else /* FALSE */ {
-      ((____APE *)__GOY)->__EPE=__HOY;
+      ((____BPE *)__HOY)->__FPE=__IOY;
     };
-    if (((void *)__HOY != (void *)NULL)) {
-      ((____APE *)__HOY)->__FPE=__GOY;
+    if (((void *)__IOY != (void *)NULL)) {
+      ((____BPE *)__IOY)->__GPE=__HOY;
     };
-    __GSG=__CSG->__CPE;
-    if ((__GSG != (void *)NULL)) {
-      __TUG=((____APE *)(void *)((unsigned long)__51F - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)__GSG)));
-      __TUG->__DPE=(____4NE)((____4NE)(__TUG->__DPE - (____4NE)(((____4NE ) 0) - __CSG->__DPE)) - (____4NE)(((____4NE ) 0) - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
-      last_block[(__5RG)] = (__TUG);
+    __HSG=__DSG->__DPE;
+    if ((__HSG != (void *)NULL)) {
+      __UUG=((____BPE *)(void *)((unsigned long)__A2F - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)__HSG)));
+      __UUG->__EPE=(____5NE)((____5NE)(__UUG->__EPE - (____5NE)(((____5NE ) 0) - __DSG->__EPE)) - (____5NE)(((____5NE ) 0) - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))));
+      last_block[(__ASG)] = (__UUG);
     };
   };
-  ((____MZ *)__AUG)[ 0]=__3RG;
-  __4RG=(void *)((unsigned long)__AUG - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE ) 4))));
-  return(__4RG);
+  ((____MZ *)__BUG)[ 0]=__4RG;
+  __5RG=(void *)((unsigned long)__BUG - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE ) 4))));
+  return(__5RG);
 }
 
-static ____APE* __4YN(____4NE __AZN)
-/* ({__4NE}) With result No recursive, No inlinable. */
+static ____BPE* __5YN(____5NE __BZN)
+/* ({__5NE}) With result No recursive, No inlinable. */
 {
-  ____APE *__CZN,*__40N,*__BZN;
-  ____4NE __D1N;
-  __CZN=__B0N;
-  while ((((void *)__CZN != (void *)NULL) && ((____4NE)(((____APE *)__CZN)->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1))) < __AZN))) {
-    __CZN=__CZN->__EPE;
+  ____BPE *__DZN,*__50N,*__CZN;
+  ____5NE __E1N;
+  __DZN=__C0N;
+  while ((((void *)__DZN != (void *)NULL) && ((____5NE)(((____BPE *)__DZN)->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1))) < __BZN))) {
+    __DZN=__DZN->__FPE;
   };
-  if (((void *)__CZN == (void *)NULL)) {
-    __40N=__KNN();
-    __CZN=__40N;
+  if (((void *)__DZN == (void *)NULL)) {
+    __50N=__LNN();
+    __DZN=__50N;
   };
-  __D1N=(____4NE)(((____4NE )(void *)((unsigned long)((____DB )((____APE *)__CZN)) - (unsigned long)__51F)) >>  26);
-  __A3Q(((____APE *)__CZN),((____DB )__AZN),__D1N);
-  __BZN=__CZN;
-  return(__BZN);
+  __E1N=(____5NE)(((____5NE )(void *)((unsigned long)((____DB )((____BPE *)__DZN)) - (unsigned long)__A2F)) >>  26);
+  __B3Q(((____BPE *)__DZN),((____DB )__BZN),__E1N);
+  __CZN=__DZN;
+  return(__CZN);
 }
 
-static void __BRN(____DB __DRN,____DB __ERN,____4NE __FRN)
-/* ({__DB},{__DB},{__4NE}) Void No recursive, No inlinable. */
+static void __CRN(____DB __ERN,____DB __FRN,____5NE __GRN)
+/* ({__DB},{__DB},{__5NE}) Void No recursive, No inlinable. */
 {
-  ____L __JRN,__YRN;
-  ____DB *__GRN,*__HRN;
-  __JRN=((____L )__FRN);
-  __YRN=(____L)(__JRN / ((____L )(sizeof(void *))));
-  __GRN=((____DB *)__DRN);
+  ____L __KRN,__ZRN;
+  ____DB *__HRN,*__IRN;
+  __KRN=((____L )__GRN);
+  __ZRN=(____L)(__KRN / ((____L )(sizeof(void *))));
   __HRN=((____DB *)__ERN);
-  __JRN=(____L)(__YRN -  1);
-  while ((__JRN >=  0)) {
-    __HRN[__JRN]=__GRN[__JRN];
-    __JRN=(____L)(__JRN -  1);
+  __IRN=((____DB *)__FRN);
+  __KRN=(____L)(__ZRN -  1);
+  while ((__KRN >=  0)) {
+    __IRN[__KRN]=__HRN[__KRN];
+    __KRN=(____L)(__KRN -  1);
   };
 }
 
-static void __A3Q(____APE *__B3Q,____DB __C3Q,____4NE __D3Q)
-/* ({__APE},{__DB},{__4NE}) Void No recursive, No inlinable. */
+static void __B3Q(____BPE *__C3Q,____DB __D3Q,____5NE __E3Q)
+/* ({__BPE},{__DB},{__5NE}) Void No recursive, No inlinable. */
 {
-  ____APE *__DGR,*__EGR,*__04Q;
-  ____4NE __E3Q,__D4Q;
-  __DGR=__B3Q->__FPE;
-  __EGR=__B3Q->__EPE;
-  if (((void *)__DGR == (void *)NULL)) {
-    __B0N=__EGR;
+  ____BPE *__EGR,*__FGR,*__14Q;
+  ____5NE __F3Q,__E4Q;
+  __EGR=__C3Q->__GPE;
+  __FGR=__C3Q->__FPE;
+  if (((void *)__EGR == (void *)NULL)) {
+    __C0N=__FGR;
   } else /* FALSE */ {
-    ((____APE *)__DGR)->__EPE=__EGR;
+    ((____BPE *)__EGR)->__FPE=__FGR;
   };
-  if (((void *)__EGR != (void *)NULL)) {
-    ((____APE *)__EGR)->__FPE=__DGR;
+  if (((void *)__FGR != (void *)NULL)) {
+    ((____BPE *)__FGR)->__GPE=__EGR;
   };
-  __E3Q=__B3Q->__DPE;
-  __D4Q=(____4NE)(__E3Q - ((____4NE )__C3Q));
-  if ((__D4Q > (____4NE)((____4NE)(((____4NE )(MINIMUM_SIZE)) - (____4NE)(((____4NE ) 0) - ((____4NE ) 2))) - (____4NE)(((____4NE ) 0) - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))))) {
-    __E3Q=((____4NE )__C3Q);
-    __04Q=((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__B3Q) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)__C3Q)));
-    __04Q->__CPE=(void *)((unsigned long)((____DB )__B3Q) - (unsigned long)__51F);
-    __04Q->__DPE=(____4NE)(__D4Q - ((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))));
-    __04Q->__EPE=__B0N;
-    __04Q->__FPE=NULL;
-    if (((void *)__B0N != (void *)NULL)) {
-      ((____APE *)__B0N)->__FPE=__04Q;
+  __F3Q=__C3Q->__EPE;
+  __E4Q=(____5NE)(__F3Q - ((____5NE )__D3Q));
+  if ((__E4Q > (____5NE)((____5NE)(((____5NE )(MINIMUM_SIZE)) - (____5NE)(((____5NE ) 0) - ((____5NE ) 2))) - (____5NE)(((____5NE ) 0) - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))))) {
+    __F3Q=((____5NE )__D3Q);
+    __14Q=((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__C3Q) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)__D3Q)));
+    __14Q->__DPE=(void *)((unsigned long)((____DB )__C3Q) - (unsigned long)__A2F);
+    __14Q->__EPE=(____5NE)(__E4Q - ((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))));
+    __14Q->__FPE=__C0N;
+    __14Q->__GPE=NULL;
+    if (((void *)__C0N != (void *)NULL)) {
+      ((____BPE *)__C0N)->__GPE=__14Q;
     };
-    __B0N=__04Q;
-    if (((____4NE)(__04Q->__DPE & ((____4NE ) 2)) !=  0)) {
-      last_block[(__D3Q)] = (__04Q);
+    __C0N=__14Q;
+    if (((____5NE)(__14Q->__EPE & ((____5NE ) 2)) !=  0)) {
+      last_block[(__E3Q)] = (__14Q);
     } else /* FALSE */ {
-      ((____APE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__04Q) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )((____4NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )(____4NE)(__04Q->__DPE & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 3)) - ((____4NE ) 1)))))))->__CPE=(void *)((unsigned long)((____DB )__04Q) - (unsigned long)__51F);
+      ((____BPE *)(void *)((unsigned long)(void *)((unsigned long)((____DB )__14Q) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )((____5NE )(____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long)))))))) - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )(____5NE)(__14Q->__EPE & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 3)) - ((____5NE ) 1)))))))->__DPE=(void *)((unsigned long)((____DB )__14Q) - (unsigned long)__A2F);
     };
   };
-  __B3Q->__DPE=(____4NE)((____4NE)(((____4NE ) 0) - (____4NE)((____4NE)((____4NE)(((____4NE ) 0) - __E3Q) - ((____4NE ) 1)) & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 1)) - ((____4NE ) 1)))) - ((____4NE ) 1));
+  __C3Q->__EPE=(____5NE)((____5NE)(((____5NE ) 0) - (____5NE)((____5NE)((____5NE)(((____5NE ) 0) - __F3Q) - ((____5NE ) 1)) & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 1)) - ((____5NE ) 1)))) - ((____5NE ) 1));
   ;
 }
 
-static void __OAJ(____4 *__PAJ,____L __QAJ,____L __RAJ)
+static void __PAJ(____4 *__QAJ,____L __RAJ,____L __SAJ)
 /* ({__HB},{__L},{__L}) Void No recursive, No inlinable. */
 {
-  ____L __QCK;
-  __QCK=__QAJ;
-  while ((__QCK <= __RAJ)) {
-    __PAJ[__QCK]='\0';
-    __QCK=(____L)(__QCK +  1);
+  ____L __RCK;
+  __RCK=__RAJ;
+  while ((__RCK <= __SAJ)) {
+    __QAJ[__RCK]='\0';
+    __RCK=(____L)(__RCK +  1);
   };
 }
 
-static void __RMJ(____4 *__SMJ,____4 *__TMJ,____L __UMJ)
+static void __SMJ(____4 *__TMJ,____4 *__UMJ,____L __VMJ)
 /* ({__HB},{NULLx__HB},{__L}) Void No recursive, No inlinable. */
 {
-  ____L __NRK;
-  __NRK=__UMJ;
-  while ((__NRK >=  0)) {
-    __SMJ[__NRK]=((____4 *)__TMJ)[__NRK];
-    __NRK=(____L)(__NRK -  1);
+  ____L __ORK;
+  __ORK=__VMJ;
+  while ((__ORK >=  0)) {
+    __TMJ[__ORK]=((____4 *)__UMJ)[__ORK];
+    __ORK=(____L)(__ORK -  1);
   };
 }
 
@@ -2389,805 +2393,805 @@ static void __2R(____L __3R,____VB *__4R)
 /* ({__L},{NULLx__VB}) Void No recursive, No inlinable. */
 {
   ____R __5R,__YY;
-  ____L __1Y,__2Y,__4TY,__DUY,__IUY;
-  ____VB *__2TY,*__BUY,*__GUY;
-  ____4 *__3TY,*__CUY,*__HUY;
-  ____OZ __JAC;
-  ____4 __KUY;
+  ____L __1Y,__2Y,__5TY,__EUY,__JUY;
+  ____VB *__3TY,*__CUY,*__HUY;
+  ____4 *__4TY,*__DUY,*__IUY;
+  ____OZ __KAC;
+  ____4 __LUY;
   __5R=((____R )__3R);
   __YY= 0;
   __1Y= 0;
   __2Y= 0;
   if ((__5R ==  0)) {
-    __2TY=((____VB *)__4R);
-    if ((__2TY->__DRE <= __2TY->__AC)) {
-      if ((__2TY->__DRE ==  0)) {
-        __2TY->__DRE= 32;
-        __3TY=__IIH( 32);
-        __2TY->__0QE=__3TY;
+    __3TY=((____VB *)__4R);
+    if ((__3TY->__ERE <= __3TY->__AC)) {
+      if ((__3TY->__ERE ==  0)) {
+        __3TY->__ERE= 32;
+        __4TY=__JIH( 32);
+        __3TY->__1QE=__4TY;
       } else /* FALSE */ {
-        __4TY=(____L)(__2TY->__DRE <<  1);
-        __3TY=__3IH(((____4 *)__2TY->__0QE),__2TY->__DRE,__4TY);
-        __2TY->__0QE=__3TY;
-        __2TY->__DRE=__4TY;
+        __5TY=(____L)(__3TY->__ERE <<  1);
+        __4TY=__4IH(((____4 *)__3TY->__1QE),__3TY->__ERE,__5TY);
+        __3TY->__1QE=__4TY;
+        __3TY->__ERE=__5TY;
       };
     };
-    ((____4 *)__2TY->__0QE)[__2TY->__AC]='0';
-    __2TY->__AC=(____L)(__2TY->__AC +  1);
+    ((____4 *)__3TY->__1QE)[__3TY->__AC]='0';
+    __3TY->__AC=(____L)(__3TY->__AC +  1);
   } else /* FALSE */ {
     if ((__5R >  0)) {
       __YY=__5R;
     } else /* FALSE */ {
       __YY=(____R)(- __5R);
-      __BUY=((____VB *)__4R);
-      if ((__BUY->__DRE <= __BUY->__AC)) {
-        if ((__BUY->__DRE ==  0)) {
-          __BUY->__DRE= 32;
-          __CUY=__IIH( 32);
-          __BUY->__0QE=__CUY;
+      __CUY=((____VB *)__4R);
+      if ((__CUY->__ERE <= __CUY->__AC)) {
+        if ((__CUY->__ERE ==  0)) {
+          __CUY->__ERE= 32;
+          __DUY=__JIH( 32);
+          __CUY->__1QE=__DUY;
         } else /* FALSE */ {
-          __DUY=(____L)(__BUY->__DRE <<  1);
-          __CUY=__3IH(((____4 *)__BUY->__0QE),__BUY->__DRE,__DUY);
-          __BUY->__0QE=__CUY;
-          __BUY->__DRE=__DUY;
+          __EUY=(____L)(__CUY->__ERE <<  1);
+          __DUY=__4IH(((____4 *)__CUY->__1QE),__CUY->__ERE,__EUY);
+          __CUY->__1QE=__DUY;
+          __CUY->__ERE=__EUY;
         };
       };
-      ((____4 *)__BUY->__0QE)[__BUY->__AC]='-';
-      __BUY->__AC=(____L)(__BUY->__AC +  1);
+      ((____4 *)__CUY->__1QE)[__CUY->__AC]='-';
+      __CUY->__AC=(____L)(__CUY->__AC +  1);
     };
     __1Y=(____L)(((____VB *)__4R)->__AC +  1);
     while ((__YY !=  0)) {
-      __JAC=((____OZ )(____R)(__YY %  10));
-      __GUY=((____VB *)__4R);
-      __KUY=((____4 )(((____OZ)(__JAC + ((____OZ )'0')))));
-      if ((__GUY->__DRE <= __GUY->__AC)) {
-        if ((__GUY->__DRE ==  0)) {
-          __GUY->__DRE= 32;
-          __HUY=__IIH( 32);
-          __GUY->__0QE=__HUY;
+      __KAC=((____OZ )(____R)(__YY %  10));
+      __HUY=((____VB *)__4R);
+      __LUY=((____4 )(((____OZ)(__KAC + ((____OZ )'0')))));
+      if ((__HUY->__ERE <= __HUY->__AC)) {
+        if ((__HUY->__ERE ==  0)) {
+          __HUY->__ERE= 32;
+          __IUY=__JIH( 32);
+          __HUY->__1QE=__IUY;
         } else /* FALSE */ {
-          __IUY=(____L)(__GUY->__DRE <<  1);
-          __HUY=__3IH(((____4 *)__GUY->__0QE),__GUY->__DRE,__IUY);
-          __GUY->__0QE=__HUY;
-          __GUY->__DRE=__IUY;
+          __JUY=(____L)(__HUY->__ERE <<  1);
+          __IUY=__4IH(((____4 *)__HUY->__1QE),__HUY->__ERE,__JUY);
+          __HUY->__1QE=__IUY;
+          __HUY->__ERE=__JUY;
         };
       };
-      ((____4 *)__GUY->__0QE)[__GUY->__AC]=__KUY;
-      __GUY->__AC=(____L)(__GUY->__AC +  1);
+      ((____4 *)__HUY->__1QE)[__HUY->__AC]=__LUY;
+      __HUY->__AC=(____L)(__HUY->__AC +  1);
       __YY=(____R)(__YY /  10);
     };
     __2Y=((____VB *)__4R)->__AC;
     while ((__1Y < __2Y)) {
-      __GUY=((____VB *)__4R);
-      __KUY=((____4 *)__GUY->__0QE)[(____L)(__1Y -  1)];
-      ((____4 *)__GUY->__0QE)[(____L)(__1Y -  1)]=((____4 *)__GUY->__0QE)[(____L)(__2Y -  1)];
-      ((____4 *)__GUY->__0QE)[(____L)(__2Y -  1)]=__KUY;
+      __HUY=((____VB *)__4R);
+      __LUY=((____4 *)__HUY->__1QE)[(____L)(__1Y -  1)];
+      ((____4 *)__HUY->__1QE)[(____L)(__1Y -  1)]=((____4 *)__HUY->__1QE)[(____L)(__2Y -  1)];
+      ((____4 *)__HUY->__1QE)[(____L)(__2Y -  1)]=__LUY;
       __2Y=(____L)(__2Y -  1);
       __1Y=(____L)(__1Y +  1);
     };
   };
 }
 
-static void __CHJ(____4 *__DHJ,____4 *__EHJ,____L __FHJ,____L __GHJ)
+static void __DHJ(____4 *__EHJ,____4 *__FHJ,____L __GHJ,____L __HHJ)
 /* ({__HB},{NULLx__HB},{__L},{__L}) Void No recursive, No inlinable. */
 {
-  ____L __WHJ,__VHJ;
-  __WHJ= 0;
-  __VHJ=__FHJ;
-  while ((__WHJ != __GHJ)) {
-    __DHJ[__VHJ]=((____4 *)__EHJ)[__WHJ];
+  ____L __XHJ,__WHJ;
+  __XHJ= 0;
+  __WHJ=__GHJ;
+  while ((__XHJ != __HHJ)) {
+    __EHJ[__WHJ]=((____4 *)__FHJ)[__XHJ];
+    __XHJ=(____L)(__XHJ +  1);
     __WHJ=(____L)(__WHJ +  1);
-    __VHJ=(____L)(__VHJ +  1);
   };
 }
 
-static void __YBP(____L __ZBP)
+static void __ZBP(____L __0BP)
 /* ({__L}) Void Recursive, No inlinable. */
 {
-  ____L __GCP;
-  ____4 __QYP;
-  __QYP=((____4 )(((____OZ)(((____OZ )(____L)(__ZBP %  10)) + ((____OZ )'0')))));
-  __GCP=(____L)(__ZBP /  10);
-  if ((__GCP !=  0)) {
-    __YBP(__GCP);
+  ____L __HCP;
+  ____4 __RYP;
+  __RYP=((____4 )(((____OZ)(((____OZ )(____L)(__0BP %  10)) + ((____OZ )'0')))));
+  __HCP=(____L)(__0BP /  10);
+  if ((__HCP !=  0)) {
+    __ZBP(__HCP);
   };
-  fputc((int)(__QYP),stdout);
+  fputc((int)(__RYP),stdout);
 }
 
-static void __TLB(void *__VLB,____V *__WLB,void *__XLB,____G __YLB)
+static void __ULB(void *__WLB,____V *__XLB,void *__YLB,____G __ZLB)
 /* ({NULLx__Vx__VB},{NULLx__V},{NULLx__Vx__VB},{__Fx__J}) Void No recursive, No inlinable. */
 {
-  ____L __ZLB,__NUY,__GMB,__SUY,__GVY,__SMB,__5VY,__H3M;
-  ____VB *__0LB,*__1LB,*__CCY,*__VUY,*__CVY,*__OVY,*__1VY,*__B5W,*__3VY;
-  ____VB *__BYY;
-  ____DB __5LB,__WUY,__2UY,__VVY;
-  ____4NE __XUY,__ZUY,__0UY,__SVY,__TVY;
-  ____MZ __4UY,__XVY;
-  ____V *__BLC;
-  void *__PRI;
-  ____4 *__MUY,*__FVY,*__4VY,*__FUL,*__T2M;
-  ____4 __BWY;
-  ____G __LTL,__YRI;
-  __ZLB= 0;
-  __0LB=NULL;
+  ____L __0LB,__OUY,__HMB,__TUY,__HVY,__TMB,__AWY,__I3M;
+  ____VB *__1LB,*__2LB,*__DCY,*__WUY,*__DVY,*__PVY,*__2VY,*__C5W,*__4VY;
+  ____VB *__CYY;
+  ____DB __AMB,__XUY,__3UY,__WVY;
+  ____5NE __YUY,__0UY,__1UY,__TVY,__UVY;
+  ____MZ __5UY,__YVY;
+  ____V *__CLC;
+  void *__QRI;
+  ____4 *__NUY,*__GVY,*__5VY,*__GUL,*__U2M;
+  ____4 __CWY;
+  ____G __MTL,__ZRI;
+  __0LB= 0;
   __1LB=NULL;
-  __OZC((&__string_134));
-  if (((struct ___OBJ *)__VLB)->__id==____V__) {
-    __OZC(((____V *)__VLB));
+  __2LB=NULL;
+  __PZC((&__string_135));
+  if (((struct ___OBJ *)__WLB)->__id==____V__) {
+    __PZC(((____V *)__WLB));
   } else /* STRING */ {
-    __OZC(((____VB *)__VLB));
+    __PZC(((____VB *)__WLB));
   };
-  __BBI(((____VB *)__0B),__VLB);
-  __CCY=((____VB *)__0B);
-  if ((__CCY->__DRE > __CCY->__AC)) {
-    ((____4 *)__CCY->__0QE)[__CCY->__AC]='\0';
+  __CBI(((____VB *)__0B),__WLB);
+  __DCY=((____VB *)__0B);
+  if ((__DCY->__ERE > __DCY->__AC)) {
+    ((____4 *)__DCY->__1QE)[__DCY->__AC]='\0';
   } else /* FALSE */ {
-    if ((__CCY->__DRE <= __CCY->__AC)) {
-      if ((__CCY->__DRE ==  0)) {
-        __CCY->__DRE= 32;
-        __MUY=__IIH( 32);
-        __CCY->__0QE=__MUY;
+    if ((__DCY->__ERE <= __DCY->__AC)) {
+      if ((__DCY->__ERE ==  0)) {
+        __DCY->__ERE= 32;
+        __NUY=__JIH( 32);
+        __DCY->__1QE=__NUY;
       } else /* FALSE */ {
-        __NUY=(____L)(__CCY->__DRE <<  1);
-        __MUY=__3IH(((____4 *)__CCY->__0QE),__CCY->__DRE,__NUY);
-        __CCY->__0QE=__MUY;
-        __CCY->__DRE=__NUY;
+        __OUY=(____L)(__DCY->__ERE <<  1);
+        __NUY=__4IH(((____4 *)__DCY->__1QE),__DCY->__ERE,__OUY);
+        __DCY->__1QE=__NUY;
+        __DCY->__ERE=__OUY;
       };
     };
-    ((____4 *)__CCY->__0QE)[__CCY->__AC]='\0';
-    __CCY->__AC=(____L)(__CCY->__AC +  1);
-    __CCY->__AC=(____L)(__CCY->__AC -  1);
+    ((____4 *)__DCY->__1QE)[__DCY->__AC]='\0';
+    __DCY->__AC=(____L)(__DCY->__AC +  1);
+    __DCY->__AC=(____L)(__DCY->__AC -  1);
   };
-  __5LB=((____DB )(fopen((char*)(__CCY->__0QE),"rb")));
-  if ((__5LB != (void *)NULL)) {
-    fseek((FILE*)((__5LB)),0,SEEK_END);
-    __NUY=((____L )(ftell((FILE *)(__5LB))));
-    fseek((FILE*)((__5LB)),0,SEEK_SET);
-    if (((struct ___OBJ *)__XLB)->__id==____V__) {
-      __GMB=((____V *)__XLB)->__TB;
+  __AMB=((____DB )(fopen((char*)(__DCY->__1QE),"rb")));
+  if ((__AMB != (void *)NULL)) {
+    fseek((FILE*)((__AMB)),0,SEEK_END);
+    __OUY=((____L )(ftell((FILE *)(__AMB))));
+    fseek((FILE*)((__AMB)),0,SEEK_SET);
+    if (((struct ___OBJ *)__YLB)->__id==____V__) {
+      __HMB=((____V *)__YLB)->__TB;
     } else /* STRING */ {
-      __GMB=((____VB *)__XLB)->__AC;
+      __HMB=((____VB *)__YLB)->__AC;
     };
-    __SUY=(____L)(__NUY + __GMB);
-    __VUY=NULL;
-    __WUY=((____DB )(NULL));
-    __XUY=((____4NE )sizeof(____VB));
-    if ((__XUY ==  0)) {
-      __VUY=__VB__;
+    __TUY=(____L)(__OUY + __HMB);
+    __WUY=NULL;
+    __XUY=((____DB )(NULL));
+    __YUY=((____5NE )sizeof(____VB));
+    if ((__YUY ==  0)) {
+      __WUY=__VB__;
     } else /* FALSE */ {
-      __GMB=-1;
-      __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __XUY));
-      if ((__GMB == (____L)(-  1))) {
-        __ZUY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __0UY=(____4NE)((____4NE)(__XUY - (____4NE)(((____4NE ) 0) - __ZUY)) & (____4NE)((____4NE)(((____4NE ) 0) - __ZUY) - ((____4NE ) 1)));
-        __ZUY=(____4NE)(__0UY / ((____4NE )((____L )(sizeof(void *)))));
-        __2UY=__D0F(__0UY,((____DB )(&(table_size[(__ZUY)-1]))),((____MZ )__0UY));
-        __WUY=__2UY;
+      __HMB=-1;
+      __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __YUY));
+      if ((__HMB == (____L)(-  1))) {
+        __0UY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __1UY=(____5NE)((____5NE)(__YUY - (____5NE)(((____5NE ) 0) - __0UY)) & (____5NE)((____5NE)(((____5NE ) 0) - __0UY) - ((____5NE ) 1)));
+        __0UY=(____5NE)(__1UY / ((____5NE )((____L )(sizeof(void *)))));
+        __3UY=__E0F(__1UY,((____DB )(&(table_size[(__0UY)-1]))),((____MZ )__1UY));
+        __XUY=__3UY;
       } else /* FALSE */ {
-        __4UY=((____MZ )__GMB);
-        __ZUY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-        __0UY=(____4NE)((____4NE)(__XUY - (____4NE)(((____4NE ) 0) - __ZUY)) & (____4NE)((____4NE)(((____4NE ) 0) - __ZUY) - ((____4NE ) 1)));
-        __2UY=__D0F(__0UY,((____DB )(&(table_type[(__4UY)]))),(____MZ)(__4UY |  1));
-        __WUY=__2UY;
+        __5UY=((____MZ )__HMB);
+        __0UY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+        __1UY=(____5NE)((____5NE)(__YUY - (____5NE)(((____5NE ) 0) - __0UY)) & (____5NE)((____5NE)(((____5NE ) 0) - __0UY) - ((____5NE ) 1)));
+        __3UY=__E0F(__1UY,((____DB )(&(table_type[(__5UY)]))),(____MZ)(__5UY |  1));
+        __XUY=__3UY;
       };
-      __CVY=((____VB *)__WUY);
-      __VUY=__CVY;
-      *(__CVY) = *(__VB__);
+      __DVY=((____VB *)__XUY);
+      __WUY=__DVY;
+      *(__DVY) = *(__VB__);
     };
-    __CVY=((____VB *)__VUY);
-    if ((__SUY >  0)) {
-      if ((__CVY->__DRE < __SUY)) {
-        __MUY=__IIH(__SUY);
-        __CVY->__0QE=__MUY;
-        __CVY->__DRE=__SUY;
+    __DVY=((____VB *)__WUY);
+    if ((__TUY >  0)) {
+      if ((__DVY->__ERE < __TUY)) {
+        __NUY=__JIH(__TUY);
+        __DVY->__1QE=__NUY;
+        __DVY->__ERE=__TUY;
       };
     };
-    __CVY->__AC= 0;
-    __1LB=__VUY;
-    __CVY=((____VB *)__VUY);
-    if ((__CVY->__DRE > __CVY->__AC)) {
-      ((____4 *)__CVY->__0QE)[__CVY->__AC]='\0';
+    __DVY->__AC= 0;
+    __2LB=__WUY;
+    __DVY=((____VB *)__WUY);
+    if ((__DVY->__ERE > __DVY->__AC)) {
+      ((____4 *)__DVY->__1QE)[__DVY->__AC]='\0';
     } else /* FALSE */ {
-      if ((__CVY->__DRE <= __CVY->__AC)) {
-        if ((__CVY->__DRE ==  0)) {
-          __CVY->__DRE= 32;
-          __FVY=__IIH( 32);
-          __CVY->__0QE=__FVY;
+      if ((__DVY->__ERE <= __DVY->__AC)) {
+        if ((__DVY->__ERE ==  0)) {
+          __DVY->__ERE= 32;
+          __GVY=__JIH( 32);
+          __DVY->__1QE=__GVY;
         } else /* FALSE */ {
-          __GVY=(____L)(__CVY->__DRE <<  1);
-          __FVY=__3IH(((____4 *)__CVY->__0QE),__CVY->__DRE,__GVY);
-          __CVY->__0QE=__FVY;
-          __CVY->__DRE=__GVY;
+          __HVY=(____L)(__DVY->__ERE <<  1);
+          __GVY=__4IH(((____4 *)__DVY->__1QE),__DVY->__ERE,__HVY);
+          __DVY->__1QE=__GVY;
+          __DVY->__ERE=__HVY;
         };
       };
-      ((____4 *)__CVY->__0QE)[__CVY->__AC]='\0';
-      __CVY->__AC=(____L)(__CVY->__AC +  1);
-      __CVY->__AC=(____L)(__CVY->__AC -  1);
+      ((____4 *)__DVY->__1QE)[__DVY->__AC]='\0';
+      __DVY->__AC=(____L)(__DVY->__AC +  1);
+      __DVY->__AC=(____L)(__DVY->__AC -  1);
     };
-    __MUY=__CVY->__0QE;
-    fread((void *)((__MUY)),(size_t)(1), (size_t)((__NUY)),(FILE*)((__5LB)));
-    __BQE(((____VB *)__VUY),__MUY);
-    fclose((FILE*)((__5LB)));
-    __NUY=__RGF(((____VB *)__VUY),__WLB);
-    __ZLB=__NUY;
-    if ((__NUY !=  0)) {
-      __OVY=NULL;
-      __2UY=((____DB )(NULL));
-      __ZUY=((____4NE )sizeof(____VB));
-      if ((__ZUY ==  0)) {
-        __OVY=__VB__;
+    __NUY=__DVY->__1QE;
+    fread((void *)((__NUY)),(size_t)(1), (size_t)((__OUY)),(FILE*)((__AMB)));
+    __CQE(((____VB *)__WUY),__NUY);
+    fclose((FILE*)((__AMB)));
+    __OUY=__SGF(((____VB *)__WUY),__XLB);
+    __0LB=__OUY;
+    if ((__OUY !=  0)) {
+      __PVY=NULL;
+      __3UY=((____DB )(NULL));
+      __0UY=((____5NE )sizeof(____VB));
+      if ((__0UY ==  0)) {
+        __PVY=__VB__;
       } else /* FALSE */ {
-        __GVY=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __ZUY));
-        if ((__GVY == (____L)(-  1))) {
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __SVY=(____4NE)(__TVY / ((____4NE )((____L )(sizeof(void *)))));
-          __VVY=__D0F(__TVY,((____DB )(&(table_size[(__SVY)-1]))),((____MZ )__TVY));
-          __2UY=__VVY;
+        __HVY=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __0UY));
+        if ((__HVY == (____L)(-  1))) {
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __TVY=(____5NE)(__UVY / ((____5NE )((____L )(sizeof(void *)))));
+          __WVY=__E0F(__UVY,((____DB )(&(table_size[(__TVY)-1]))),((____MZ )__UVY));
+          __3UY=__WVY;
         } else /* FALSE */ {
-          __XVY=((____MZ )__GVY);
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __VVY=__D0F(__TVY,((____DB )(&(table_type[(__XVY)]))),(____MZ)(__XVY |  1));
-          __2UY=__VVY;
+          __YVY=((____MZ )__HVY);
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __WVY=__E0F(__UVY,((____DB )(&(table_type[(__YVY)]))),(____MZ)(__YVY |  1));
+          __3UY=__WVY;
         };
-        __1VY=((____VB *)__2UY);
-        __OVY=__1VY;
-        *(__1VY) = *(__VB__);
+        __2VY=((____VB *)__3UY);
+        __PVY=__2VY;
+        *(__2VY) = *(__VB__);
       };
-      __1VY=((____VB *)__OVY);
-      if ((__1VY->__DRE <  200)) {
-        __FVY=__IIH( 200);
-        __1VY->__0QE=__FVY;
-        __1VY->__DRE= 200;
+      __2VY=((____VB *)__PVY);
+      if ((__2VY->__ERE <  200)) {
+        __GVY=__JIH( 200);
+        __2VY->__1QE=__GVY;
+        __2VY->__ERE= 200;
       };
-      __1VY->__AC= 0;
-      __0LB=__OVY;
-      if (((struct ___OBJ *)__XLB)->__id==____V__) {
-        __BLC=((____V *)__XLB);
-        __GVY=__SPC(((____4 *)__BLC->__UB),(____L)(__BLC->__TB -  1));
-        __SMB=__GVY;
+      __2VY->__AC= 0;
+      __1LB=__PVY;
+      if (((struct ___OBJ *)__YLB)->__id==____V__) {
+        __CLC=((____V *)__YLB);
+        __HVY=__TPC(((____4 *)__CLC->__UB),(____L)(__CLC->__TB -  1));
+        __TMB=__HVY;
       } else /* STRING */ {
-        __B5W=((____VB *)((____V *)__XLB));
-        __GVY=__SPC(((____4 *)__B5W->__0QE),(____L)(__B5W->__AC -  1));
-        __SMB=__GVY;
+        __C5W=((____VB *)((____V *)__YLB));
+        __HVY=__TPC(((____4 *)__C5W->__1QE),(____L)(__C5W->__AC -  1));
+        __TMB=__HVY;
       };
-      __GMB= 1;
-      __GVY=__SMB;
-      while ((__GMB <= __GVY)) {
-        while (((__ZLB < ((____VB *)__1LB)->__AC) && (((____4 *)((____VB *)__1LB)->__0QE)[(____L)(__ZLB -  1)] != '\n'))) {
-          __3VY=((____VB *)__0LB);
-          __BWY=((____4 *)((____VB *)__1LB)->__0QE)[(____L)(__ZLB -  1)];
-          if ((__3VY->__DRE <= __3VY->__AC)) {
-            if ((__3VY->__DRE ==  0)) {
-              __3VY->__DRE= 32;
-              __4VY=__IIH( 32);
-              __3VY->__0QE=__4VY;
+      __HMB= 1;
+      __HVY=__TMB;
+      while ((__HMB <= __HVY)) {
+        while (((__0LB < ((____VB *)__2LB)->__AC) && (((____4 *)((____VB *)__2LB)->__1QE)[(____L)(__0LB -  1)] != '\n'))) {
+          __4VY=((____VB *)__1LB);
+          __CWY=((____4 *)((____VB *)__2LB)->__1QE)[(____L)(__0LB -  1)];
+          if ((__4VY->__ERE <= __4VY->__AC)) {
+            if ((__4VY->__ERE ==  0)) {
+              __4VY->__ERE= 32;
+              __5VY=__JIH( 32);
+              __4VY->__1QE=__5VY;
             } else /* FALSE */ {
-              __5VY=(____L)(__3VY->__DRE <<  1);
-              __4VY=__3IH(((____4 *)__3VY->__0QE),__3VY->__DRE,__5VY);
-              __3VY->__0QE=__4VY;
-              __3VY->__DRE=__5VY;
+              __AWY=(____L)(__4VY->__ERE <<  1);
+              __5VY=__4IH(((____4 *)__4VY->__1QE),__4VY->__ERE,__AWY);
+              __4VY->__1QE=__5VY;
+              __4VY->__ERE=__AWY;
             };
           };
-          ((____4 *)__3VY->__0QE)[__3VY->__AC]=__BWY;
-          __3VY->__AC=(____L)(__3VY->__AC +  1);
-          __PVI(((____VB *)__1LB),__ZLB);
+          ((____4 *)__4VY->__1QE)[__4VY->__AC]=__CWY;
+          __4VY->__AC=(____L)(__4VY->__AC +  1);
+          __QVI(((____VB *)__2LB),__0LB);
         };
-        if ((__ZLB <= ((____VB *)__1LB)->__AC)) {
-          __3VY=((____VB *)__0LB);
-          __BWY=((____4 *)((____VB *)__1LB)->__0QE)[(____L)(__ZLB -  1)];
-          if ((__3VY->__DRE <= __3VY->__AC)) {
-            if ((__3VY->__DRE ==  0)) {
-              __3VY->__DRE= 32;
-              __4VY=__IIH( 32);
-              __3VY->__0QE=__4VY;
+        if ((__0LB <= ((____VB *)__2LB)->__AC)) {
+          __4VY=((____VB *)__1LB);
+          __CWY=((____4 *)((____VB *)__2LB)->__1QE)[(____L)(__0LB -  1)];
+          if ((__4VY->__ERE <= __4VY->__AC)) {
+            if ((__4VY->__ERE ==  0)) {
+              __4VY->__ERE= 32;
+              __5VY=__JIH( 32);
+              __4VY->__1QE=__5VY;
             } else /* FALSE */ {
-              __5VY=(____L)(__3VY->__DRE <<  1);
-              __4VY=__3IH(((____4 *)__3VY->__0QE),__3VY->__DRE,__5VY);
-              __3VY->__0QE=__4VY;
-              __3VY->__DRE=__5VY;
+              __AWY=(____L)(__4VY->__ERE <<  1);
+              __5VY=__4IH(((____4 *)__4VY->__1QE),__4VY->__ERE,__AWY);
+              __4VY->__1QE=__5VY;
+              __4VY->__ERE=__AWY;
             };
           };
-          ((____4 *)__3VY->__0QE)[__3VY->__AC]=__BWY;
-          __3VY->__AC=(____L)(__3VY->__AC +  1);
-          __PVI(((____VB *)__1LB),__ZLB);
+          ((____4 *)__4VY->__1QE)[__4VY->__AC]=__CWY;
+          __4VY->__AC=(____L)(__4VY->__AC +  1);
+          __QVI(((____VB *)__2LB),__0LB);
         };
-        __GMB=(____L)(__GMB +  1);
+        __HMB=(____L)(__HMB +  1);
       };
-      __1VY=((____VB *)__OVY);
-      if (__XLB==NULL) {
-        __PRI=NULL;
+      __2VY=((____VB *)__PVY);
+      if (__YLB==NULL) {
+        __QRI=NULL;
       } else {
-        if (((struct ___OBJ *)__XLB)->__id==____V__) {
-          __PRI=((____V *)__XLB);
+        if (((struct ___OBJ *)__YLB)->__id==____V__) {
+          __QRI=((____V *)__YLB);
         } else /* Other types */ {
-          __PRI=((void *)__XLB);
+          __QRI=((void *)__YLB);
         }
       };
-      if (((void *)__PRI != (void *)NULL)) {
-        __LTL=__J__;
-        __SMB=__1VY->__AC;
-        if (((struct ___OBJ *)__PRI)->__id==____V__) {
-          __5VY=((____V *)__PRI)->__TB;
+      if (((void *)__QRI != (void *)NULL)) {
+        __MTL=__J__;
+        __TMB=__2VY->__AC;
+        if (((struct ___OBJ *)__QRI)->__id==____V__) {
+          __AWY=((____V *)__QRI)->__TB;
         } else /* STRING */ {
-          __5VY=((____VB *)__PRI)->__AC;
+          __AWY=((____VB *)__QRI)->__AC;
         };
-        if ((__SMB == __5VY)) {
-          if ((__1VY->__AC ==  0)) {
-            __LTL=__F__;
+        if ((__TMB == __AWY)) {
+          if ((__2VY->__AC ==  0)) {
+            __MTL=__F__;
           } else /* FALSE */ {
-            __4VY=__1VY->__0QE;
-            if (((struct ___OBJ *)__PRI)->__id==____V__) {
-              __FUL=((____V *)__PRI)->__UB;
+            __5VY=__2VY->__1QE;
+            if (((struct ___OBJ *)__QRI)->__id==____V__) {
+              __GUL=((____V *)__QRI)->__UB;
             } else /* STRING */ {
-              __FUL=((____VB *)__PRI)->__0QE;
+              __GUL=((____VB *)__QRI)->__1QE;
             };
-            __T2M=((____4 *)__4VY);
-            __4VY=__FUL;
-            __H3M=(____L)(__1VY->__AC -  1);
-            while (((__H3M >=  0) && (__T2M[__H3M] == ((____4 *)__4VY)[__H3M]))) {
-              __H3M=(____L)(__H3M -  1);
+            __U2M=((____4 *)__5VY);
+            __5VY=__GUL;
+            __I3M=(____L)(__2VY->__AC -  1);
+            while (((__I3M >=  0) && (__U2M[__I3M] == ((____4 *)__5VY)[__I3M]))) {
+              __I3M=(____L)(__I3M -  1);
             };
-            __LTL=(__H3M <  0);
+            __MTL=(__I3M <  0);
           };
         };
-        __YRI=__LTL;
+        __ZRI=__MTL;
       } else /* FALSE */ {
-        __YRI=__J__;
+        __ZRI=__J__;
       };
-      if (__YRI) {
-        __OZC((&__string_135));
+      if (__ZRI) {
+        __PZC((&__string_136));
       } else /* FALSE */ {
-        __OZC((&__string_136));
-        __OZC(((____VB *)__OVY));
-        __OZC((&__string_137));
+        __PZC((&__string_137));
+        __PZC(((____VB *)__PVY));
+        __PZC((&__string_138));
       };
     } else /* FALSE */ {
-      __OZC((&__string_138));
-      __ZLB=(____L)(((____VB *)__VUY)->__AC +  1);
+      __PZC((&__string_139));
+      __0LB=(____L)(((____VB *)__WUY)->__AC +  1);
     };
-    if (((struct ___OBJ *)__XLB)->__id==____V__) {
-      __OZC(((____V *)__XLB));
+    if (((struct ___OBJ *)__YLB)->__id==____V__) {
+      __PZC(((____V *)__YLB));
     } else /* STRING */ {
-      __OZC(((____VB *)__XLB));
+      __PZC(((____VB *)__YLB));
     };
-    __CVY=((____VB *)__VUY);
-    __NUY=__CVY->__AC;
-    if (((struct ___OBJ *)__XLB)->__id==____V__) {
-      __GMB=((____V *)__XLB)->__TB;
+    __DVY=((____VB *)__WUY);
+    __OUY=__DVY->__AC;
+    if (((struct ___OBJ *)__YLB)->__id==____V__) {
+      __HMB=((____V *)__YLB)->__TB;
     } else /* STRING */ {
-      __GMB=((____VB *)__XLB)->__AC;
+      __HMB=((____VB *)__YLB)->__AC;
     };
-    __YJJ(__CVY,(____L)(__NUY + __GMB));
-    if ((__ZLB <= __NUY)) {
-      __ERL(((____4 *)__CVY->__0QE),(____L)(__ZLB -  1),(____L)(__NUY -  1),__GMB);
+    __ZJJ(__DVY,(____L)(__OUY + __HMB));
+    if ((__0LB <= __OUY)) {
+      __FRL(((____4 *)__DVY->__1QE),(____L)(__0LB -  1),(____L)(__OUY -  1),__HMB);
     };
-    __MUY=__CVY->__0QE;
-    if (((struct ___OBJ *)__XLB)->__id==____V__) {
-      __FVY=((____V *)__XLB)->__UB;
+    __NUY=__DVY->__1QE;
+    if (((struct ___OBJ *)__YLB)->__id==____V__) {
+      __GVY=((____V *)__YLB)->__UB;
     } else /* STRING */ {
-      __FVY=((____VB *)__XLB)->__0QE;
+      __GVY=((____VB *)__YLB)->__1QE;
     };
-    __CHJ(((____4 *)__MUY),__FVY,(____L)(__ZLB -  1),__GMB);
+    __DHJ(((____4 *)__NUY),__GVY,(____L)(__0LB -  1),__HMB);
   } else /* FALSE */ {
-    __OZC((&__string_139));
-    if (((struct ___OBJ *)__XLB)->__id==____V__) {
-      __OZC(((____V *)__XLB));
+    __PZC((&__string_140));
+    if (((struct ___OBJ *)__YLB)->__id==____V__) {
+      __PZC(((____V *)__YLB));
     } else /* STRING */ {
-      __OZC(((____VB *)__XLB));
+      __PZC(((____VB *)__YLB));
     };
-    if (((struct ___OBJ *)__XLB)->__id==____V__) {
-      __BLC=((____V *)__XLB);
-      __GMB=__BLC->__TB;
-      __OVY=NULL;
-      __2UY=((____DB )(NULL));
-      __ZUY=((____4NE )sizeof(____VB));
-      if ((__ZUY ==  0)) {
-        __OVY=__VB__;
+    if (((struct ___OBJ *)__YLB)->__id==____V__) {
+      __CLC=((____V *)__YLB);
+      __HMB=__CLC->__TB;
+      __PVY=NULL;
+      __3UY=((____DB )(NULL));
+      __0UY=((____5NE )sizeof(____VB));
+      if ((__0UY ==  0)) {
+        __PVY=__VB__;
       } else /* FALSE */ {
-        __SMB=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __ZUY));
-        if ((__SMB == (____L)(-  1))) {
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __SVY=(____4NE)(__TVY / ((____4NE )((____L )(sizeof(void *)))));
-          __VVY=__D0F(__TVY,((____DB )(&(table_size[(__SVY)-1]))),((____MZ )__TVY));
-          __2UY=__VVY;
+        __TMB=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __0UY));
+        if ((__TMB == (____L)(-  1))) {
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __TVY=(____5NE)(__UVY / ((____5NE )((____L )(sizeof(void *)))));
+          __WVY=__E0F(__UVY,((____DB )(&(table_size[(__TVY)-1]))),((____MZ )__UVY));
+          __3UY=__WVY;
         } else /* FALSE */ {
-          __XVY=((____MZ )__SMB);
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __VVY=__D0F(__TVY,((____DB )(&(table_type[(__XVY)]))),(____MZ)(__XVY |  1));
-          __2UY=__VVY;
+          __YVY=((____MZ )__TMB);
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __WVY=__E0F(__UVY,((____DB )(&(table_type[(__YVY)]))),(____MZ)(__YVY |  1));
+          __3UY=__WVY;
         };
-        __B5W=((____VB *)__2UY);
-        __OVY=__B5W;
-        *(__B5W) = *(__VB__);
+        __C5W=((____VB *)__3UY);
+        __PVY=__C5W;
+        *(__C5W) = *(__VB__);
       };
-      __1VY=((____VB *)__OVY);
-      if ((__GMB >  0)) {
-        if ((__1VY->__DRE < __GMB)) {
-          __4VY=__IIH(__GMB);
-          __1VY->__0QE=__4VY;
-          __1VY->__DRE=__GMB;
+      __2VY=((____VB *)__PVY);
+      if ((__HMB >  0)) {
+        if ((__2VY->__ERE < __HMB)) {
+          __5VY=__JIH(__HMB);
+          __2VY->__1QE=__5VY;
+          __2VY->__ERE=__HMB;
         };
       };
-      __1VY->__AC= 0;
-      __BBI(((____VB *)__OVY),__BLC);
-      __1VY=__OVY;
+      __2VY->__AC= 0;
+      __CBI(((____VB *)__PVY),__CLC);
+      __2VY=__PVY;
     } else /* STRING */ {
-      __OVY=((____VB *)__XLB);
-      __GMB=__OVY->__AC;
-      __B5W=NULL;
-      __2UY=((____DB )(NULL));
-      __ZUY=((____4NE )sizeof(____VB));
-      if ((__ZUY ==  0)) {
-        __B5W=__VB__;
+      __PVY=((____VB *)__YLB);
+      __HMB=__PVY->__AC;
+      __C5W=NULL;
+      __3UY=((____DB )(NULL));
+      __0UY=((____5NE )sizeof(____VB));
+      if ((__0UY ==  0)) {
+        __C5W=__VB__;
       } else /* FALSE */ {
-        __SMB=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __ZUY));
-        if ((__SMB == (____L)(-  1))) {
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __SVY=(____4NE)(__TVY / ((____4NE )((____L )(sizeof(void *)))));
-          __VVY=__D0F(__TVY,((____DB )(&(table_size[(__SVY)-1]))),((____MZ )__TVY));
-          __2UY=__VVY;
+        __TMB=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __0UY));
+        if ((__TMB == (____L)(-  1))) {
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __TVY=(____5NE)(__UVY / ((____5NE )((____L )(sizeof(void *)))));
+          __WVY=__E0F(__UVY,((____DB )(&(table_size[(__TVY)-1]))),((____MZ )__UVY));
+          __3UY=__WVY;
         } else /* FALSE */ {
-          __XVY=((____MZ )__SMB);
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __VVY=__D0F(__TVY,((____DB )(&(table_type[(__XVY)]))),(____MZ)(__XVY |  1));
-          __2UY=__VVY;
+          __YVY=((____MZ )__TMB);
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __WVY=__E0F(__UVY,((____DB )(&(table_type[(__YVY)]))),(____MZ)(__YVY |  1));
+          __3UY=__WVY;
         };
-        __3VY=((____VB *)__2UY);
-        __B5W=__3VY;
-        *(__3VY) = *(__VB__);
+        __4VY=((____VB *)__3UY);
+        __C5W=__4VY;
+        *(__4VY) = *(__VB__);
       };
-      __3VY=((____VB *)__B5W);
-      if ((__GMB >  0)) {
-        if ((__3VY->__DRE < __GMB)) {
-          __4VY=__IIH(__GMB);
-          __3VY->__0QE=__4VY;
-          __3VY->__DRE=__GMB;
+      __4VY=((____VB *)__C5W);
+      if ((__HMB >  0)) {
+        if ((__4VY->__ERE < __HMB)) {
+          __5VY=__JIH(__HMB);
+          __4VY->__1QE=__5VY;
+          __4VY->__ERE=__HMB;
         };
       };
-      __3VY->__AC= 0;
-      __BBI(((____VB *)__B5W),__OVY);
-      __1VY=__B5W;
+      __4VY->__AC= 0;
+      __CBI(((____VB *)__C5W),__PVY);
+      __2VY=__C5W;
     };
-    __1LB=__1VY;
-    if (((struct ___OBJ *)__VLB)->__id==____V__) {
-      __BLC=((____V *)__VLB);
-      __GMB=__BLC->__TB;
-      __OVY=NULL;
-      __2UY=((____DB )(NULL));
-      __ZUY=((____4NE )sizeof(____VB));
-      if ((__ZUY ==  0)) {
-        __OVY=__VB__;
+    __2LB=__2VY;
+    if (((struct ___OBJ *)__WLB)->__id==____V__) {
+      __CLC=((____V *)__WLB);
+      __HMB=__CLC->__TB;
+      __PVY=NULL;
+      __3UY=((____DB )(NULL));
+      __0UY=((____5NE )sizeof(____VB));
+      if ((__0UY ==  0)) {
+        __PVY=__VB__;
       } else /* FALSE */ {
-        __SMB=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __ZUY));
-        if ((__SMB == (____L)(-  1))) {
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __SVY=(____4NE)(__TVY / ((____4NE )((____L )(sizeof(void *)))));
-          __VVY=__D0F(__TVY,((____DB )(&(table_size[(__SVY)-1]))),((____MZ )__TVY));
-          __2UY=__VVY;
+        __TMB=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __0UY));
+        if ((__TMB == (____L)(-  1))) {
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __TVY=(____5NE)(__UVY / ((____5NE )((____L )(sizeof(void *)))));
+          __WVY=__E0F(__UVY,((____DB )(&(table_size[(__TVY)-1]))),((____MZ )__UVY));
+          __3UY=__WVY;
         } else /* FALSE */ {
-          __XVY=((____MZ )__SMB);
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __VVY=__D0F(__TVY,((____DB )(&(table_type[(__XVY)]))),(____MZ)(__XVY |  1));
-          __2UY=__VVY;
+          __YVY=((____MZ )__TMB);
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __WVY=__E0F(__UVY,((____DB )(&(table_type[(__YVY)]))),(____MZ)(__YVY |  1));
+          __3UY=__WVY;
         };
-        __BYY=((____VB *)__2UY);
-        __OVY=__BYY;
-        *(__BYY) = *(__VB__);
+        __CYY=((____VB *)__3UY);
+        __PVY=__CYY;
+        *(__CYY) = *(__VB__);
       };
-      __1VY=((____VB *)__OVY);
-      if ((__GMB >  0)) {
-        if ((__1VY->__DRE < __GMB)) {
-          __4VY=__IIH(__GMB);
-          __1VY->__0QE=__4VY;
-          __1VY->__DRE=__GMB;
+      __2VY=((____VB *)__PVY);
+      if ((__HMB >  0)) {
+        if ((__2VY->__ERE < __HMB)) {
+          __5VY=__JIH(__HMB);
+          __2VY->__1QE=__5VY;
+          __2VY->__ERE=__HMB;
         };
       };
-      __1VY->__AC= 0;
-      __BBI(((____VB *)__OVY),__BLC);
-      __1VY=__OVY;
+      __2VY->__AC= 0;
+      __CBI(((____VB *)__PVY),__CLC);
+      __2VY=__PVY;
     } else /* STRING */ {
-      __OVY=((____VB *)__VLB);
-      __GMB=__OVY->__AC;
-      __B5W=NULL;
-      __2UY=((____DB )(NULL));
-      __ZUY=((____4NE )sizeof(____VB));
-      if ((__ZUY ==  0)) {
-        __B5W=__VB__;
+      __PVY=((____VB *)__WLB);
+      __HMB=__PVY->__AC;
+      __C5W=NULL;
+      __3UY=((____DB )(NULL));
+      __0UY=((____5NE )sizeof(____VB));
+      if ((__0UY ==  0)) {
+        __C5W=__VB__;
       } else /* FALSE */ {
-        __SMB=-1;
-        __WOE=(____4NE)(__WOE - (____4NE)(((____4NE ) 0) - __ZUY));
-        if ((__SMB == (____L)(-  1))) {
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __SVY=(____4NE)(__TVY / ((____4NE )((____L )(sizeof(void *)))));
-          __VVY=__D0F(__TVY,((____DB )(&(table_size[(__SVY)-1]))),((____MZ )__TVY));
-          __2UY=__VVY;
+        __TMB=-1;
+        __XOE=(____5NE)(__XOE - (____5NE)(((____5NE ) 0) - __0UY));
+        if ((__TMB == (____L)(-  1))) {
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __TVY=(____5NE)(__UVY / ((____5NE )((____L )(sizeof(void *)))));
+          __WVY=__E0F(__UVY,((____DB )(&(table_size[(__TVY)-1]))),((____MZ )__UVY));
+          __3UY=__WVY;
         } else /* FALSE */ {
-          __XVY=((____MZ )__SMB);
-          __SVY=(____4NE)(((____4NE )((____L )(sizeof(void *)))) - ((____4NE ) 1));
-          __TVY=(____4NE)((____4NE)(__ZUY - (____4NE)(((____4NE ) 0) - __SVY)) & (____4NE)((____4NE)(((____4NE ) 0) - __SVY) - ((____4NE ) 1)));
-          __VVY=__D0F(__TVY,((____DB )(&(table_type[(__XVY)]))),(____MZ)(__XVY |  1));
-          __2UY=__VVY;
+          __YVY=((____MZ )__TMB);
+          __TVY=(____5NE)(((____5NE )((____L )(sizeof(void *)))) - ((____5NE ) 1));
+          __UVY=(____5NE)((____5NE)(__0UY - (____5NE)(((____5NE ) 0) - __TVY)) & (____5NE)((____5NE)(((____5NE ) 0) - __TVY) - ((____5NE ) 1)));
+          __WVY=__E0F(__UVY,((____DB )(&(table_type[(__YVY)]))),(____MZ)(__YVY |  1));
+          __3UY=__WVY;
         };
-        __BYY=((____VB *)__2UY);
-        __B5W=__BYY;
-        *(__BYY) = *(__VB__);
+        __CYY=((____VB *)__3UY);
+        __C5W=__CYY;
+        *(__CYY) = *(__VB__);
       };
-      __3VY=((____VB *)__B5W);
-      if ((__GMB >  0)) {
-        if ((__3VY->__DRE < __GMB)) {
-          __4VY=__IIH(__GMB);
-          __3VY->__0QE=__4VY;
-          __3VY->__DRE=__GMB;
+      __4VY=((____VB *)__C5W);
+      if ((__HMB >  0)) {
+        if ((__4VY->__ERE < __HMB)) {
+          __5VY=__JIH(__HMB);
+          __4VY->__1QE=__5VY;
+          __4VY->__ERE=__HMB;
         };
       };
-      __3VY->__AC= 0;
-      __BBI(((____VB *)__B5W),__OVY);
-      __1VY=__B5W;
+      __4VY->__AC= 0;
+      __CBI(((____VB *)__C5W),__PVY);
+      __2VY=__C5W;
     };
-    __VUY=((____VB *)__1VY);
-    if ((__VUY->__DRE > __VUY->__AC)) {
-      ((____4 *)__VUY->__0QE)[__VUY->__AC]='\0';
+    __WUY=((____VB *)__2VY);
+    if ((__WUY->__ERE > __WUY->__AC)) {
+      ((____4 *)__WUY->__1QE)[__WUY->__AC]='\0';
     } else /* FALSE */ {
-      if ((__VUY->__DRE <= __VUY->__AC)) {
-        if ((__VUY->__DRE ==  0)) {
-          __VUY->__DRE= 32;
-          __4VY=__IIH( 32);
-          __VUY->__0QE=__4VY;
+      if ((__WUY->__ERE <= __WUY->__AC)) {
+        if ((__WUY->__ERE ==  0)) {
+          __WUY->__ERE= 32;
+          __5VY=__JIH( 32);
+          __WUY->__1QE=__5VY;
         } else /* FALSE */ {
-          __5VY=(____L)(__VUY->__DRE <<  1);
-          __4VY=__3IH(((____4 *)__VUY->__0QE),__VUY->__DRE,__5VY);
-          __VUY->__0QE=__4VY;
-          __VUY->__DRE=__5VY;
+          __AWY=(____L)(__WUY->__ERE <<  1);
+          __5VY=__4IH(((____4 *)__WUY->__1QE),__WUY->__ERE,__AWY);
+          __WUY->__1QE=__5VY;
+          __WUY->__ERE=__AWY;
         };
       };
-      ((____4 *)__VUY->__0QE)[__VUY->__AC]='\0';
-      __VUY->__AC=(____L)(__VUY->__AC +  1);
-      __VUY->__AC=(____L)(__VUY->__AC -  1);
+      ((____4 *)__WUY->__1QE)[__WUY->__AC]='\0';
+      __WUY->__AC=(____L)(__WUY->__AC +  1);
+      __WUY->__AC=(____L)(__WUY->__AC -  1);
     };
-    __WUY=((____DB )(fopen((char*)(__VUY->__0QE),"w+b")));
-    __LTL=(__WUY != (void *)NULL);
-    if (__LTL) {
-      fclose((FILE*)((__WUY)));
+    __XUY=((____DB )(fopen((char*)(__WUY->__1QE),"w+b")));
+    __MTL=(__XUY != (void *)NULL);
+    if (__MTL) {
+      fclose((FILE*)((__XUY)));
     };
-    if ((! __LTL)) {
-      __OZC((&__string_140));
-      __OZC((&__string_141));
+    if ((! __MTL)) {
+      __PZC((&__string_141));
+      __PZC((&__string_142));
       exit(( 1));
     };
   };
-  if ((! __YLB)) {
-    __LTL=__F__;
+  if ((! __ZLB)) {
+    __MTL=__F__;
   } else /* FALSE */ {
-    __BWY=__2TC((&__string_142));
-    __LTL=(__BWY == 'y');
+    __CWY=__3TC((&__string_143));
+    __MTL=(__CWY == 'y');
   };
-  if (__LTL) {
-    if (__YLB) {
+  if (__MTL) {
+    if (__ZLB) {
       fputc((int)('\n'),stdout);
     };
-    __BBI(((____VB *)__0B),__VLB);
-    __VUY=((____VB *)__0B);
-    if ((__VUY->__DRE > __VUY->__AC)) {
-      ((____4 *)__VUY->__0QE)[__VUY->__AC]='\0';
+    __CBI(((____VB *)__0B),__WLB);
+    __WUY=((____VB *)__0B);
+    if ((__WUY->__ERE > __WUY->__AC)) {
+      ((____4 *)__WUY->__1QE)[__WUY->__AC]='\0';
     } else /* FALSE */ {
-      if ((__VUY->__DRE <= __VUY->__AC)) {
-        if ((__VUY->__DRE ==  0)) {
-          __VUY->__DRE= 32;
-          __4VY=__IIH( 32);
-          __VUY->__0QE=__4VY;
+      if ((__WUY->__ERE <= __WUY->__AC)) {
+        if ((__WUY->__ERE ==  0)) {
+          __WUY->__ERE= 32;
+          __5VY=__JIH( 32);
+          __WUY->__1QE=__5VY;
         } else /* FALSE */ {
-          __5VY=(____L)(__VUY->__DRE <<  1);
-          __4VY=__3IH(((____4 *)__VUY->__0QE),__VUY->__DRE,__5VY);
-          __VUY->__0QE=__4VY;
-          __VUY->__DRE=__5VY;
+          __AWY=(____L)(__WUY->__ERE <<  1);
+          __5VY=__4IH(((____4 *)__WUY->__1QE),__WUY->__ERE,__AWY);
+          __WUY->__1QE=__5VY;
+          __WUY->__ERE=__AWY;
         };
       };
-      ((____4 *)__VUY->__0QE)[__VUY->__AC]='\0';
-      __VUY->__AC=(____L)(__VUY->__AC +  1);
-      __VUY->__AC=(____L)(__VUY->__AC -  1);
+      ((____4 *)__WUY->__1QE)[__WUY->__AC]='\0';
+      __WUY->__AC=(____L)(__WUY->__AC +  1);
+      __WUY->__AC=(____L)(__WUY->__AC -  1);
     };
-    __WUY=((____DB )(fopen((char*)(__VUY->__0QE),"wb")));
-    if ((__WUY == (void *)NULL)) {
-      __OZC((&__string_140));
-      __OZC((&__string_143));
+    __XUY=((____DB )(fopen((char*)(__WUY->__1QE),"wb")));
+    if ((__XUY == (void *)NULL)) {
+      __PZC((&__string_141));
+      __PZC((&__string_144));
       exit(( 1));
     };
-    __NUY=__1LB->__AC;
-    __VUY=((____VB *)__1LB);
-    if ((__VUY->__DRE > __VUY->__AC)) {
-      ((____4 *)__VUY->__0QE)[__VUY->__AC]='\0';
+    __OUY=__2LB->__AC;
+    __WUY=((____VB *)__2LB);
+    if ((__WUY->__ERE > __WUY->__AC)) {
+      ((____4 *)__WUY->__1QE)[__WUY->__AC]='\0';
     } else /* FALSE */ {
-      if ((__VUY->__DRE <= __VUY->__AC)) {
-        if ((__VUY->__DRE ==  0)) {
-          __VUY->__DRE= 32;
-          __4VY=__IIH( 32);
-          __VUY->__0QE=__4VY;
+      if ((__WUY->__ERE <= __WUY->__AC)) {
+        if ((__WUY->__ERE ==  0)) {
+          __WUY->__ERE= 32;
+          __5VY=__JIH( 32);
+          __WUY->__1QE=__5VY;
         } else /* FALSE */ {
-          __5VY=(____L)(__VUY->__DRE <<  1);
-          __4VY=__3IH(((____4 *)__VUY->__0QE),__VUY->__DRE,__5VY);
-          __VUY->__0QE=__4VY;
-          __VUY->__DRE=__5VY;
+          __AWY=(____L)(__WUY->__ERE <<  1);
+          __5VY=__4IH(((____4 *)__WUY->__1QE),__WUY->__ERE,__AWY);
+          __WUY->__1QE=__5VY;
+          __WUY->__ERE=__AWY;
         };
       };
-      ((____4 *)__VUY->__0QE)[__VUY->__AC]='\0';
-      __VUY->__AC=(____L)(__VUY->__AC +  1);
-      __VUY->__AC=(____L)(__VUY->__AC -  1);
+      ((____4 *)__WUY->__1QE)[__WUY->__AC]='\0';
+      __WUY->__AC=(____L)(__WUY->__AC +  1);
+      __WUY->__AC=(____L)(__WUY->__AC -  1);
     };
-    fwrite((void *)((__VUY->__0QE)),(size_t)(1), (size_t)((__NUY)),(FILE*)((__WUY)));
-    fclose((FILE*)((__WUY)));
+    fwrite((void *)((__WUY->__1QE)),(size_t)(1), (size_t)((__OUY)),(FILE*)((__XUY)));
+    fclose((FILE*)((__XUY)));
   };
 }
 
-static void __FOI(____VB *__GOI)
+static void __GOI(____VB *__HOI)
 /* ({__VB}) Void No recursive, No inlinable. */
 {
-  ____L __LOI,__USK;
-  ____4 *__JOI,*__0NY;
-  __JOI=__GOI->__0QE;
-  __LOI=(____L)(__GOI->__AC -  1);
-  __0NY=((____4 *)__JOI);
-  __USK=__LOI;
-  while ((__USK >=  0)) {
-    if (('\\' == __0NY[__USK])) {
-      __0NY[__USK]='/';
+  ____L __MOI,__VSK;
+  ____4 *__KOI,*__1NY;
+  __KOI=__HOI->__1QE;
+  __MOI=(____L)(__HOI->__AC -  1);
+  __1NY=((____4 *)__KOI);
+  __VSK=__MOI;
+  while ((__VSK >=  0)) {
+    if (('\\' == __1NY[__VSK])) {
+      __1NY[__VSK]='/';
     };
-    __USK=(____L)(__USK -  1);
+    __VSK=(____L)(__VSK -  1);
   };
 }
 
-static void __YJJ(____VB *__ZJJ,____L __0JJ)
+static void __ZJJ(____VB *__0JJ,____L __1JJ)
 /* ({__VB},{__L}) Void No recursive, No inlinable. */
 {
-  ____4 *__3KJ;
-  if ((! (__0JJ <= __ZJJ->__AC))) {
-    if ((__ZJJ->__DRE < __0JJ)) {
-      if ((__ZJJ->__DRE ==  0)) {
-        __3KJ=__IIH(__0JJ);
-        __ZJJ->__0QE=__3KJ;
+  ____4 *__4KJ;
+  if ((! (__1JJ <= __0JJ->__AC))) {
+    if ((__0JJ->__ERE < __1JJ)) {
+      if ((__0JJ->__ERE ==  0)) {
+        __4KJ=__JIH(__1JJ);
+        __0JJ->__1QE=__4KJ;
       } else /* FALSE */ {
-        __3KJ=__3IH(((____4 *)__ZJJ->__0QE),__ZJJ->__DRE,__0JJ);
-        __ZJJ->__0QE=__3KJ;
+        __4KJ=__4IH(((____4 *)__0JJ->__1QE),__0JJ->__ERE,__1JJ);
+        __0JJ->__1QE=__4KJ;
       };
-      __ZJJ->__DRE=__0JJ;
+      __0JJ->__ERE=__1JJ;
     } else /* FALSE */ {
-      __OAJ(((____4 *)__ZJJ->__0QE),__ZJJ->__AC,(____L)(__0JJ -  1));
+      __PAJ(((____4 *)__0JJ->__1QE),__0JJ->__AC,(____L)(__1JJ -  1));
     };
   };
-  __ZJJ->__AC=__0JJ;
+  __0JJ->__AC=__1JJ;
 }
 
-static void __ERL(____4 *__FRL,____L __GRL,____L __HRL,____L __IRL)
+static void __FRL(____4 *__GRL,____L __HRL,____L __IRL,____L __JRL)
 /* ({__HB},{__L},{__L},{__L}) Void No recursive, No inlinable. */
 {
-  ____L __W1M;
-  if ((__IRL !=  0)) {
-    if ((__IRL <  0)) {
-      __W1M=__GRL;
-      while ((__W1M <= __HRL)) {
-        __FRL[(____L)(__W1M + __IRL)]=__FRL[__W1M];
-        __W1M=(____L)(__W1M +  1);
+  ____L __X1M;
+  if ((__JRL !=  0)) {
+    if ((__JRL <  0)) {
+      __X1M=__HRL;
+      while ((__X1M <= __IRL)) {
+        __GRL[(____L)(__X1M + __JRL)]=__GRL[__X1M];
+        __X1M=(____L)(__X1M +  1);
       };
     } else /* FALSE */ {
-      __W1M=__HRL;
-      while ((__W1M >= __GRL)) {
-        __FRL[(____L)(__W1M + __IRL)]=__FRL[__W1M];
-        __W1M=(____L)(__W1M -  1);
+      __X1M=__IRL;
+      while ((__X1M >= __HRL)) {
+        __GRL[(____L)(__X1M + __JRL)]=__GRL[__X1M];
+        __X1M=(____L)(__X1M -  1);
       };
     };
   };
 }
 
-static ____4 __2TC(____V *__4TC)
+static ____4 __3TC(____V *__5TC)
 /* ({__V}) With result No recursive, No inlinable. */
 {
-  ____4 __AUC,__5TC;
-  __AUC='\0';
-  __OZC(__4TC);
-  __OZC((&__string_144));
-  while (((__AUC != 'y') && (__AUC != 'n'))) {
-    if (__PWC) {
-      __PWC=__J__;
+  ____4 __BUC,__AUC;
+  __BUC='\0';
+  __PZC(__5TC);
+  __PZC((&__string_145));
+  while (((__BUC != 'y') && (__BUC != 'n'))) {
+    if (__QWC) {
+      __QWC=__J__;
     } else /* FALSE */ {
-      __1WC=((____4 )(fgetc(stdin)));
+      __2WC=((____4 )(fgetc(stdin)));
     };
-    __AUC=__1WC;
+    __BUC=__2WC;
   };
-  if (__PWC) {
-    __PWC=__J__;
+  if (__QWC) {
+    __QWC=__J__;
   } else /* FALSE */ {
-    __1WC=((____4 )(fgetc(stdin)));
+    __2WC=((____4 )(fgetc(stdin)));
   };
-  __5TC=__AUC;
-  return(__5TC);
+  __AUC=__BUC;
+  return(__AUC);
 }
 
-static ____APE* __KNN()
+static ____BPE* __LNN()
 /* () With result No recursive, No inlinable. */
 {
-  ____DB __DDQ,__FDQ;
-  ____4NE __ADQ,__ODQ;
-  ____APE *__WON,*__MNN;
-  if ((__UNN ==  0)) {
-    __DDQ=((____DB )(NULL));
-    __FDQ=((____DB )(NULL));
-    __ADQ=((____4NE ) 33554432);
+  ____DB __EDQ,__GDQ;
+  ____5NE __BDQ,__PDQ;
+  ____BPE *__XON,*__NNN;
+  if ((__VNN ==  0)) {
+    __EDQ=((____DB )(NULL));
+    __GDQ=((____DB )(NULL));
+    __BDQ=((____5NE ) 33554432);
     do {
-      __ODQ=(____4NE)(__ADQ * ((____4NE ) 2));
-      __ADQ=__ODQ;
-      __DDQ=__FDQ;
-      __FDQ=((____DB )(realloc((__FDQ),(__ODQ))));
-    } while ((! ((__FDQ == (void *)NULL) || ((____4NE)(__ODQ >>  20) ==  2048))));
-    if ((__FDQ == (void *)NULL)) {
-      __ADQ=(____4NE)(__ADQ / ((____4NE ) 2));
+      __PDQ=(____5NE)(__BDQ * ((____5NE ) 2));
+      __BDQ=__PDQ;
+      __EDQ=__GDQ;
+      __GDQ=((____DB )(realloc((__GDQ),(__PDQ))));
+    } while ((! ((__GDQ == (void *)NULL) || ((____5NE)(__PDQ >>  20) ==  2048))));
+    if ((__GDQ == (void *)NULL)) {
+      __BDQ=(____5NE)(__BDQ / ((____5NE ) 2));
     } else /* FALSE */ {
-      __DDQ=__FDQ;
+      __EDQ=__GDQ;
     };
-    __UNN=__ADQ;
-    __51F=__DDQ;
+    __VNN=__BDQ;
+    __A2F=__EDQ;
     ;
   };
-  __ADQ=(____4NE)(__MSG <<  26);
-  __MSG=(____4NE)(__MSG - (____4NE)(((____4NE ) 0) - ((____4NE ) 1)));
-  if (((____4NE)(__ADQ - (____4NE)(((____4NE ) 0) - ((____4NE ) 67108864))) > __UNN)) {
-    __OZC((&__string_145));
+  __BDQ=(____5NE)(__NSG <<  26);
+  __NSG=(____5NE)(__NSG - (____5NE)(((____5NE ) 0) - ((____5NE ) 1)));
+  if (((____5NE)(__BDQ - (____5NE)(((____5NE ) 0) - ((____5NE ) 67108864))) > __VNN)) {
+    __PZC((&__string_146));
     exit(( 1));
   };
-  __WON=((____APE *)(void *)((unsigned long)__51F - (unsigned long)(void *)((unsigned long)((____DB )((____4NE ) 0)) - (unsigned long)((____DB )__ADQ))));
-  __WON->__CPE=NULL;
-  __WON->__DPE=(____4NE)((____4NE)(((____4NE ) 0) - (____4NE)((____4NE)((____4NE)(((____4NE ) 0) - (____4NE)((____4NE)(((____4NE ) 0) - (____4NE)((____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 0)) - ((____4NE ) 1)) & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE ) 2)) - ((____4NE ) 1)))) - ((____4NE ) 1))) - ((____4NE ) 1)) & (____4NE)((____4NE)(((____4NE ) 0) - ((____4NE )(____L)( 67108864 - (____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))) - ((____4NE ) 1)))) - ((____4NE ) 1));
-  __WON->__EPE=__B0N;
-  __WON->__FPE=NULL;
-  if (((void *)__B0N != (void *)NULL)) {
-    ((____APE *)__B0N)->__FPE=__WON;
+  __XON=((____BPE *)(void *)((unsigned long)__A2F - (unsigned long)(void *)((unsigned long)((____DB )((____5NE ) 0)) - (unsigned long)((____DB )__BDQ))));
+  __XON->__DPE=NULL;
+  __XON->__EPE=(____5NE)((____5NE)(((____5NE ) 0) - (____5NE)((____5NE)((____5NE)(((____5NE ) 0) - (____5NE)((____5NE)(((____5NE ) 0) - (____5NE)((____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 0)) - ((____5NE ) 1)) & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE ) 2)) - ((____5NE ) 1)))) - ((____5NE ) 1))) - ((____5NE ) 1)) & (____5NE)((____5NE)(((____5NE ) 0) - ((____5NE )(____L)( 67108864 - (____L)(((____L )(sizeof(void *))) + ((____L )(sizeof(unsigned long))))))) - ((____5NE ) 1)))) - ((____5NE ) 1));
+  __XON->__FPE=__C0N;
+  __XON->__GPE=NULL;
+  if (((void *)__C0N != (void *)NULL)) {
+    ((____BPE *)__C0N)->__GPE=__XON;
   };
-  __B0N=__WON;
-  last_block[((____4NE)(__MSG - ((____4NE ) 1)))] = (__WON);
-  __MNN=__WON;
-  return(__MNN);
+  __C0N=__XON;
+  last_block[((____5NE)(__NSG - ((____5NE ) 1)))] = (__XON);
+  __NNN=__XON;
+  return(__NNN);
 }
 
-static ____L __SPC(____4 *__TPC,____L __VPC)
+static ____L __TPC(____4 *__UPC,____L __WPC)
 /* ({__HB},{__L}) With result No recursive, No inlinable. */
 {
-  ____L __5PC,__USC,__WPC;
-  __5PC= 0;
-  __USC=__VPC;
-  while ((__USC >=  0)) {
-    if (('\n' == __TPC[__USC])) {
-      __5PC=(____L)(__5PC +  1);
+  ____L __AQC,__VSC,__XPC;
+  __AQC= 0;
+  __VSC=__WPC;
+  while ((__VSC >=  0)) {
+    if (('\n' == __UPC[__VSC])) {
+      __AQC=(____L)(__AQC +  1);
     };
-    __USC=(____L)(__USC -  1);
+    __VSC=(____L)(__VSC -  1);
   };
-  __WPC=__5PC;
-  return(__WPC);
+  __XPC=__AQC;
+  return(__XPC);
 }
 
-static void __PVI(____VB *__QVI,____L __RVI)
+static void __QVI(____VB *__RVI,____L __SVI)
 /* ({__VB},{__L}) Void No recursive, No inlinable. */
 {
-  ____L __BYJ,__DYJ,__PMM;
-  ____4 *__IOY,*__JOY;
-  __BYJ=(____L)(__RVI +  1);
-  __DYJ=__QVI->__AC;
-  __PMM=__BYJ;
-  __IOY=__QVI->__0QE;
-  __JOY=__QVI->__0QE;
-  while ((__PMM <= __DYJ)) {
-    ((____4 *)__JOY)[(____L)((____L)(__PMM -  1) -  1)]=((____4 *)__IOY)[(____L)(__PMM -  1)];
-    __PMM=(____L)(__PMM +  1);
+  ____L __CYJ,__EYJ,__QMM;
+  ____4 *__JOY,*__KOY;
+  __CYJ=(____L)(__SVI +  1);
+  __EYJ=__RVI->__AC;
+  __QMM=__CYJ;
+  __JOY=__RVI->__1QE;
+  __KOY=__RVI->__1QE;
+  while ((__QMM <= __EYJ)) {
+    ((____4 *)__KOY)[(____L)((____L)(__QMM -  1) -  1)]=((____4 *)__JOY)[(____L)(__QMM -  1)];
+    __QMM=(____L)(__QMM +  1);
   };
-  __QVI->__AC=(____L)(__QVI->__AC -  1);
+  __RVI->__AC=(____L)(__RVI->__AC -  1);
 }

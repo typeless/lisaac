@@ -103,14 +103,12 @@ Section Private
   (
     path_li (lib_os + "unix/system/");
     path_li (lib_os + "windows/file_system/");
-    path_li (lib_os + "unix/file_system/");  // BSBS: ??
     path_li (lib_os + "windows/video/");
   );
 
   - dos_target <-
   (
     path_li (lib_os + "unix/system/");
-    path_li (lib_os + "unix/file_system/"); // BSBS: ??    
     path_li (lib_os + "dos/file_system/");
     path_li (lib_os + "dos/video/");
   );

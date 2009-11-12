@@ -182,18 +182,18 @@ Section Public
     `DeleteObject((HPEN)@pen)`;
   );
     
-  - line_h_hard (x,y:INTEGER) until x1:INTEGER 
+  - line_h_hard (x0,y0:INTEGER) until x1:INTEGER 
   image line:ABSTRACT_BMP_LINE offset ofs:INTEGER <-
   ( + len:INTEGER;
     + data:NATIVE_ARRAY(UINTEGER_8);
     + sz_pix:INTEGER;
-    len := x1 - x;
+    len := x1 - x0;
     VIDEO.line_tmp.put line offset ofs from 0 to len;
     
     sz_pix := VIDEO.size_pixel;
     data := VIDEO.line_tmp.get_storage;
     `SetBitmapBits(Bmp,(@len+1)*@sz_pix,@data)`;    
-    `BitBlt(hdc_glob, @x, @y,@len+1,1, hdcbmp, 0, 0, SRCCOPY)`;
+    `BitBlt(hdc_glob, @x0, @y0,@len+1,1, hdcbmp, 0, 0, SRCCOPY)`;
   );
   
   - get_pixel_hard (x,y:INTEGER) :PIXEL <-

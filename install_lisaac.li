@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private  
   
-  - is_release:BOOLEAN := FALSE;
+  - is_release:BOOLEAN := TRUE;
   
   //
   // Independance File System 
@@ -633,8 +633,9 @@ Section Private
   (             
     string_tmp.clear;    
     (system = system_windows).if {
-      ENVIRONMENT.execute_command "mkdir doc/html";		
+      ENVIRONMENT.execute_command "mkdir doc\\html";		
       string_tmp.copy "bin\\shorter -d -f belinda lib\\standard -o doc\\html";
+      // BSBS: A ajouter internal mais sur le meme run shorter
     } else {
       ENVIRONMENT.execute_command "mkdir -p doc/html";		
       string_tmp.copy "bin/shorter -d -f belinda lib/standard -o doc/html";
@@ -676,12 +677,13 @@ Section Private
         "Welcome to the Lisaac World !                           \n\
         \=============================                           \n\
         \  Installation successfull.                             \n\
-        \  Run `lisaac' to compile.                              ".print;
-        "\n\
-        \  Note: You'll have to reboot or reloaded environnement   \n\
-        \        to acknowledge the changes.                       \n\
-        \     OR for bash users, doing a `source ~/.bashrc' should \n\
-        \        do the job.                                       \n".print;
+        \  Run `lisaac' to compile.                              \n".print;
+        "*---------------------------------------------------------*\n\
+        \| Note: You'll have to reboot or reloaded environnement   |\n\
+        \|       to acknowledge the changes.                       |\n\
+        \|    OR for bash users, doing a `source ~/.bashrc' should |\n\
+        \|       do the job.                                       |\n\
+        \*---------------------------------------------------------*\n".print;
 
       }
       .when 2 then {
