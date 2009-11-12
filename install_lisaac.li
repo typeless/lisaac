@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private  
   
-  - is_release:BOOLEAN := FALSE;
+  - is_release:BOOLEAN := TRUE;
   
   //
   // Independance File System 
