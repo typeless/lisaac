@@ -296,6 +296,12 @@ Section Public
   //
   // Other.
   //
+
+  - add_path str:STRING <-
+  // Add the `str' path in the current list of path.
+  (
+    path str;
+  );
   
   - q <-
   // Quiet operation.

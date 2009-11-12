@@ -268,14 +268,14 @@ Section Private
           string_tmp.copy (COMMAND_LINE.item j);
           string_tmp2.copy string_tmp;
           string_tmp.replace_all '\\' with '/';
-          i := last_index (string_tmp,'/');
+          i := last_index_str (string_tmp,'/');
           (i < string_tmp.lower).if {
             string_tmp.copy "./";
           } else {
             string_tmp.remove_last (string_tmp.upper-i);
             string_tmp2.remove_first i;
           };
-          i := last_index (string_tmp2,'.');
+          i := last_index_str (string_tmp2,'.');
           (i > string_tmp2.lower).if {
             string_tmp2.remove_last (string_tmp2.upper-i+1);
           };
@@ -341,17 +341,7 @@ Section Private
       LIP_CODE.put_string output_name to (ALIAS_STR.slot_output_file);    
     };
   );
-  
-  - last_index (n:STRING,c:CHARACTER) :INTEGER <-
-  // BSBS: A Mettre dans STRING.
-  ( + result:INTEGER;
-    result := n.upper;
-    {(result < n.lower) || {n.item result = c}}.until_do {
-      result := result-1;
-    };
-    result
-  );
-  
+    
   - load_lip file_lip:ABSTRACT_STRING <-
   ( + path_lip:STRING_CONSTANT;
     + is_good:BOOLEAN;

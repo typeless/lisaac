@@ -631,11 +631,12 @@ Section Private
   
   - build_lib <-
   (             
-    string_tmp.clear;
-    ENVIRONMENT.execute_command "mkdir -p doc/html";		
+    string_tmp.clear;    
     (system = system_windows).if {
+      ENVIRONMENT.execute_command "mkdir doc/html";		
       string_tmp.copy "bin\\shorter -d -f belinda lib\\standard -o doc\\html";
     } else {
+      ENVIRONMENT.execute_command "mkdir -p doc/html";		
       string_tmp.copy "bin/shorter -d -f belinda lib/standard -o doc/html";
     };      
     "  Execute: `".print;
