@@ -118,6 +118,18 @@ Section Public
     argument_list := p;
   );
   
+  - get_argument_type i:INTEGER :ITM_TYPE_MONO <-
+  ( + idx,j:INTEGER;
+    + arg:ITM_ARGUMENT;
+    
+    {
+      arg := argument_list.item j;
+      idx := idx + arg.count;
+      j := j + 1;
+    }.do_while {idx <= i};
+    arg.item (i-(idx - arg.count))    
+  );  
+  
   - is_equal_profil other:ITM_SLOT <-
   (         
     (Self != other).if {            

@@ -43,13 +43,13 @@ Section Public
   //
   // Running.
   //
-/*  
+  
   - item idx:INTEGER :ITM_TYPE_MONO <- 
   (
     deferred;
     NULL
   );
-*/  
+  
   - to_run_in arg_lst:FAST_ARRAY(LOCAL) for p:PARAMETER_TO_TYPE <-
   (
     deferred;
@@ -94,6 +94,11 @@ Section Public
   //
   // Display.
   //
+  
+  - append_in buffer:STRING <-
+  (
+    deferred;
+  );
   
   - shorter_in buf:STRING <-
   (

@@ -57,9 +57,8 @@ Section Public
   
 Section Private
 
-  - output_name:STRING_CONSTANT;
-
-  - output_basename:STRING_CONSTANT;
+  - output_name     :STRING_CONSTANT;
+  - output_extension:STRING_CONSTANT;
   
   - input_name:STRING_CONSTANT;
   
@@ -96,6 +95,7 @@ Section Private
     + t:STRING_CONSTANT;
     + arg:LIP_CONSTANT;
     + is_path_list:BOOLEAN;
+    + dir:STRING_CONSTANT;
 
     // Default value.
     is_ansi := TRUE;
@@ -197,19 +197,20 @@ Section Private
           string_tmp.copy (COMMAND_LINE.item j);
           string_tmp2.copy string_tmp;
           string_tmp.replace_all '\\' with '/';
-          i := last_index (string_tmp,'/');
+          i := last_index_str (string_tmp,'/');
           (i < string_tmp.lower).if {
             string_tmp.copy "./";
           } else {
             string_tmp.remove_last (string_tmp.upper-i);
             string_tmp2.remove_first i;
           };
-          i := last_index (string_tmp2,'.');
+          i := last_index_str (string_tmp2,'.');
           (i > string_tmp2.lower).if {
             string_tmp2.remove_last (string_tmp2.upper-i+1);
           };
+          dir := ALIAS_STR.get string_tmp;
           (lip_ok).if_false {
-            load_lip "make.lip" in (ALIAS_STR.get string_tmp);
+            load_lip "make.lip" in dir;
             lip_ok := TRUE;
           };
           //LIP_CALL.load_directory (ALIAS_STR.get string_tmp) base_path NULL is_recursive FALSE;
@@ -250,13 +251,13 @@ Section Private
     
     // Loading variable.
     input_name         := LIP_CODE.get_string  (ALIAS_STR.slot_input_file);
-    output_basename    := LIP_CODE.get_string  (ALIAS_STR.slot_output_file);
+    output_name        := LIP_CODE.get_string  (ALIAS_STR.slot_output_file);
+    output_extension   := LIP_CODE.get_string  (ALIAS_STR.slot_output_extension);
     debug_level_option := LIP_CODE.get_integer (ALIAS_STR.slot_debug_level);
     debug_with_code    := LIP_CODE.get_boolean (ALIAS_STR.slot_debug_with_code);
     is_all_warning     := LIP_CODE.get_boolean (ALIAS_STR.slot_is_all_warning);
     is_optimization    := LIP_CODE.get_boolean (ALIAS_STR.slot_is_optimization);
     inline_level       := LIP_CODE.get_integer (ALIAS_STR.slot_inline_level);
-    is_java            := LIP_CODE.get_boolean (ALIAS_STR.slot_is_java);
     is_statistic       := LIP_CODE.get_boolean (ALIAS_STR.slot_is_statistic);
     is_quiet           := LIP_CODE.get_boolean (ALIAS_STR.slot_is_quiet);
     //
@@ -264,27 +265,24 @@ Section Private
       "ERROR: `input_file' is empty.\n".print;
       display_usage;
     };
-    ((output_basename = NULL) || {output_basename.is_empty}).if {
-      output_basename := input_name;
-      LIP_CODE.put_string output_basename to (ALIAS_STR.slot_output_file);
+    ((output_name = NULL) || {output_name.is_empty}).if {
+      (dir = NULL).if {
+        string_tmp.clear;
+      } else {
+        string_tmp.copy dir;
+      };
+      string_tmp.append input_name;
+      output_name := ALIAS_STR.get string_tmp;
+      LIP_CODE.put_string output_name to (ALIAS_STR.slot_output_file);
     };
-    string_tmp.copy output_basename;
-    (is_java).if {
-      string_tmp.append ".java";
-    } else {
-      string_tmp.append ".c";
-    };    
-    output_name := ALIAS_STR.get string_tmp;    
-  );
-  
-  - last_index (n:STRING,c:CHARACTER) :INTEGER <-
-  // BSBS: A Mettre dans STRING.
-  ( + result:INTEGER;
-    result := n.upper;
-    {(result < n.lower) || {n.item result = c}}.until_do {
-      result := result-1;
+    ((output_extension = NULL) || {output_extension.is_empty}).if {
+      (is_java).if {
+        output_extension := ALIAS_STR.extension_java;
+      } else {
+        output_extension := ALIAS_STR.extension_c;
+      };
+      LIP_CODE.put_string output_extension to (ALIAS_STR.slot_output_extension);
     };
-    result
   );
   
   - load_lip file_lip:ABSTRACT_STRING in lip_dir:STRING_CONSTANT <-
@@ -301,7 +299,7 @@ Section Private
       string_tmp.append file_lip;
       path_lip := ALIAS_STR.get string_tmp;
       (is_good := PARSER.read_lip path_lip).if_false {
-        LIP_CALL.load_directory lip_dir base_path NULL is_recursive FALSE;
+        LIP_CALL.load_directory lip_dir is_recursive FALSE;
         string_tmp.remove_last (file_lip.count);
       } else {
         "Load lip file: ".print; path_lip.println;
@@ -657,6 +655,7 @@ Section Public
       string_tmp.append input_name;      
       string_tmp.append ".li\noutput file: ";
       string_tmp.append output_name;
+      string_tmp.append output_extension;
       string_tmp.append "\npath directory :\n";
       path_file.lower.to (path_file.upper) do { j:INTEGER;
 	string_tmp.append "  ";
@@ -786,14 +785,16 @@ Section Public
     //
     // Saving File Output.
     //    
-    (! FS_MIN.make_file output_name).if {
+    string_tmp.copy output_name;
+    string_tmp.append output_extension;
+    (! FS_MIN.make_file string_tmp).if {
       STD_ERROR.put_string "Error: File ";
-      STD_ERROR.put_string output_name;
+      STD_ERROR.put_string string_tmp;
       STD_ERROR.put_string " is not created !\n";
       die_with_code exit_failure_code;
     };
 
-    file_output := FS_MIN.open_write output_name;    
+    file_output := FS_MIN.open_write string_tmp;
     FS_MIN.write file_output with output_decl size (output_decl.count);    
     FS_MIN.write file_output with output_glob size (output_glob.count);
     (STRING_CST.output_count != 0).if {

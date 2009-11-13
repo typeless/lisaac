@@ -192,7 +192,7 @@ Section Public
     -? {! prototype_dico.fast_has f};
     -? {n != NULL};
   ]
-  ( //+ file:STD_FILE;
+  ( //+ file:FILE;
     //+ entry:ENTRY;
     + file:POINTER;
     + sz,idx:INTEGER;
@@ -251,6 +251,7 @@ Section Public
     + pass_recur:BOOLEAN;
     + i:INSTR;
     + cmd:STRING_CONSTANT;
+    + exec:{};
     
     + buf:STRING;
 
@@ -335,18 +336,8 @@ Section Public
       STD_ERROR.put_string "Executing pass: ";
     };
     pass_count_depend := pass_count;
-    
-    // First pass (recursive)    
-    is_executing_pass := TRUE;            
-    {
-      (is_quiet).if_false {
-        STD_ERROR.put_string "*";
-      };
-      pass_count := pass_count + 1;
-      PROFIL_LIST.execute_pass_recursive;
-      pass_recur := FALSE;
-      // End first pass.    
-      {
+    exec := {
+      {        
         modify_count := 0;
         null_counter := 0;
         (is_quiet).if_false {
@@ -360,11 +351,26 @@ Section Public
       
         (SWITCH.switch_new_pass).if {
           new_execute_pass;	
-        };        
+        };                
         (modify_count != 0).if {
           pass_recur := TRUE;
         };
-      }.do_while {modify_count != 0};
+      }.do_while {modify_count != 0};      
+    };
+    // First pass (recursive)    
+    is_executing_pass := TRUE;            
+    {
+      (is_quiet).if_false {
+        STD_ERROR.put_string "*";
+      };
+      pass_count := pass_count + 1;
+      PROFIL_LIST.execute_pass_recursive;
+      pass_recur := FALSE;
+      // End first pass.          
+      exec.value;
+      (pass_recur).if_false {      
+        exec.value;
+      };
     }.do_while {pass_recur};
     (is_quiet).if_false {
       STD_ERROR.put_string " (";

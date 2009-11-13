@@ -70,7 +70,7 @@ Section Public
       result := bucket.reference_at tmp;
       (result = NULL).if {
         result := FAST_ARRAY(E).create_with_capacity (tmp.count);
-        result.copy tmp;
+        result.copy_collection tmp;
         bucket.fast_add result;
       };
     };
@@ -82,7 +82,7 @@ Section Public
   ( + result:FAST_ARRAY(E);
         
     result := FAST_ARRAY(E).create_with_capacity (tmp.count);
-    result.copy tmp;    
+    result.copy_collection tmp;    
     free tmp;
     result
   ); 

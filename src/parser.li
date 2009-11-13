@@ -102,8 +102,6 @@ Section Private
   //
     
   - object   : PROTOTYPE;
-
-  - lip_dir  :STRING_CONSTANT; // Compute from lip project
   
   - source   : STRING;
   
@@ -2309,7 +2307,8 @@ Section Private
 	  // Read `name' slot.
 	  //
 	  
-	  (style = '-').if {	    
+          (style = '-').if {	    
+            semantic_error (current_position,"COP not yet implemented.");
             is_cop := TRUE;            
             (is_java).if {
               semantic_error (current_position,"COP not yet implemented.");
@@ -2784,7 +2783,7 @@ Section Private
       (exp = NULL).if {
         syntax_error (current_position,"Expression needed.");
       };      
-      slot_code := LIP_SLOT_CODE.create pos dir lip_dir section sec 
+      slot_code := LIP_SLOT_CODE.create pos section sec 
       name n argument data code exp;
       (sec = ALIAS_STR.section_public).if {
         (last_comment_slot = NULL).if {
@@ -3220,16 +3219,6 @@ Section Public
       pos_cur := source.lower;
       pos_line:=1;
       pos_col :=0;
-
-      string_tmp.copy path_lip;
-      {
-        (!string_tmp.is_empty)    &&
-        {string_tmp.last != '/'}  &&
-        {string_tmp.last != '\\'}
-      }.while_do {
-        string_tmp.remove_last 1;
-      };
-      lip_dir := ALIAS_STR.get (string_tmp);
 
       // Parse.
       readlip_program;

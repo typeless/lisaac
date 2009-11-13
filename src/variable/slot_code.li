@@ -109,6 +109,18 @@ Section Public
       };
     } else {	    
       // Select classic Profil (no block).
+     /* 
+      (name == "__infix_equal_equal").if {
+        "SELF : ".print;
+        type_self.raw.print; 
+        ' '.print;
+        args.second.static_type.raw.print;
+        (type_self.raw.name == "STRING_CONSTANT").if {
+          crash;
+        };
+        '\n'.print;
+      };
+      */
       j := profil.lower;      
       {(j <= profil.upper) && {result = NULL}}.while_do {
 	pro := profil.item j;					

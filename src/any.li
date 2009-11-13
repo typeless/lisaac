@@ -34,6 +34,16 @@ Section Inherit
   
 Section Public
   
+  - last_index_str (n:STRING,c:CHARACTER) :INTEGER <-
+  // BSBS: A Mettre dans STRING.
+  ( + result:INTEGER;
+    result := n.upper;
+    {(result < n.lower) || {n.item result = c}}.until_do {
+      result := result-1;
+    };
+    result
+  );
+    
   //
   // Invariant loop system.
   //

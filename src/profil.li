@@ -366,7 +366,7 @@ Section Public
 	list_current   := old_list_current;
 	? {code != NULL};      
 	(count_intern_call = 1).if {	  
-	  stat := 0;
+          stat := 0;
 	} else {
           stat := recursivity_bit;          
         };	              
@@ -395,10 +395,16 @@ Section Public
     seq_call_and_loop := seq_call_and_loop + 1;
         
     (
-      (CALL_SLOT.count_context_sensitive = 0) && 
-      {! mode_recursive} &&
-      {stat = 0} &&
-      {is_context_sensitive || {(seq_inline - old_seq_inline) < inline_lev}}
+      (
+        (
+          (CALL_SLOT.count_context_sensitive = 0) && 
+          {! mode_recursive} &&
+          {stat = 0} &&
+          {is_context_sensitive || {(seq_inline - old_seq_inline) < inline_lev}} 
+        ) || {link_count = 1}
+      ) &&
+      {! is_interrupt} && {! is_external} // &&
+      //{(cop_argument = NULL) || {! result_list.is_empty}}
     ).if {
       stat := stat | inlining_bit;      
     };

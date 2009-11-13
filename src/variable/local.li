@@ -311,7 +311,7 @@ Section Public
     name        := n;
     is_result   := r;
     intern_name := ALIAS_STR.get_intern n; 
-           
+            
     ((t.is_expanded) && {! t.is_expanded_c}).if {
       type := t + TYPE_FULL.expanded_ref_bit;
     } else {
@@ -320,7 +320,7 @@ Section Public
     style := c;
     
     (is_static).if {      
-      tmp := TYPES_TMP.new;      
+      tmp := TYPES_TMP.new;            
       tmp.add (t.raw);      
       type_list := tmp.to_types;                  
     } else {

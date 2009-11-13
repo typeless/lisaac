@@ -147,8 +147,15 @@ Section Public
     + count_empty:INTEGER;
     
     // Update.
-    lst_typ := TYPES_TMP.new;        
-    expr.get_type lst_typ;       
+    lst_typ := TYPES_TMP.new;            
+    // BSBS: optim a voir si necessaire ...
+    /* 
+    (expr.static_type.is_strict).if {
+      lst_typ.add (expr.static_type.raw);            
+    } else {      
+      */
+      expr.get_type lst_typ;                   
+    //};
     ? {lst_typ.count <= list.count};        
         
     (lst_typ.count > list.count).if {      
@@ -172,16 +179,16 @@ Section Public
       typ := lst_typ.item j;      
       {typ = list.item j.id}.until_do {
 	list.item j.remove;
-	list.remove j;
+        list.remove j;        
       };
       (list.item j.code.is_empty).if {
         count_empty := count_empty + 1;
       };
     };    
-    {lst_typ.count = list.count}.until_do {
+    {lst_typ.count = list.count}.until_do {            
       list.last.remove;
-      list.remove_last;
-    };
+      list.remove_last;        
+    };        
     lst_typ.free;
             
     // Execute.
@@ -285,6 +292,7 @@ Section Public
       buffer.append "if (";
       //                        
       ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {        
+        buffer.append "/* ICI */";
         expr.genere buffer;
         is_genered := TRUE;
         buffer.append ".__id==0";
@@ -307,7 +315,7 @@ Section Public
         lst := list.second.code;                    
         (! list.second.code.is_empty).if {
           buffer.append " else ";          
-          buffer.append "/* ";
+          buffer.append "/* ";          
           buffer.append (list.second.id.name);
           buffer.append " */ ";          
           list.second.genere buffer;          
@@ -612,7 +620,7 @@ Section Private
       j := result.lower;      
       {(j <= result.upper) && {lst = NULL}}.while_do {
         c2 := result.item j.first;
-        (c1 == c2).if {
+        (c1 ~= c2).if {
           lst := result.item j;
           c1.code.remove;
         };

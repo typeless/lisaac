@@ -1,3 +1,0 @@
-${initializer expression:0}.to (${loop test expression}) do { ${iterator:i}:INTEGER;
-  ${cursor}
-};

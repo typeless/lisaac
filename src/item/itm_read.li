@@ -271,6 +271,10 @@ Section Private
   in args:FAST_ARRAY(EXPR) for slot:SLOT block is_block_value:BOOLEAN <-
   ( + em:EXPR_MULTIPLE;
     + count:INTEGER;
+    + itm_arg:ITM_ARGUMENT;
+    + ts:ITM_TYPE_SIMPLE;
+    + t:TYPE_FULL;
+    + ex:EXPR;
     
     em ?= e;
     (em != NULL).if {
@@ -280,23 +284,43 @@ Section Private
       count := 1;
       args.add_last e;
     };
-    (verify).if {
+    (verify).if {      
       (! is_block_value).if {	
-        (slot.argument_list.item idx.count != count).if {
+        itm_arg := slot.argument_list.item idx;
+        (itm_arg.count != count).if {
           string_tmp.copy "Incorrect vector size for #";
           idx.append_in string_tmp;
           string_tmp.append " argument of `";
           string_tmp.append name;
           string_tmp.append "' slot. (slot #";
-          slot.argument_list.item idx.count.append_in string_tmp;
+          itm_arg.count.append_in string_tmp;
           string_tmp.append ", call #";
           count.append_in string_tmp;
           string_tmp.add_last ')';
 	  POSITION.put_error semantic text string_tmp; 
-	  slot.argument_list.item idx.position.put_position;
+	  itm_arg.position.put_position;
           e.position.put_position;          
 	  POSITION.send_error;
-	};
+        };
+        (args.count > 1).if {
+          (itm_arg.lower).to (itm_arg.upper) do { i:INTEGER;
+            ts ?= itm_arg.item i;          
+            ((ts != NULL) && {ts = ITM_TYPE_SIMPLE.type_self}).if {
+              ex := args.item (args.upper - itm_arg.upper + i);            
+              t := ex.static_type;
+              ((! t.is_expanded) && {! t.is_strict}).if {
+                string_tmp.copy "Type expression (";
+                t.append_name_in string_tmp;
+                string_tmp.append ") is not Expanded or Strict for SELF argument type.";
+                POSITION.put_error semantic text string_tmp;
+                itm_arg.position.put_position;
+                ex.position.put_position;
+                position.put_position;
+                POSITION.send_error;
+              };
+            };
+          };
+        };
       }.elseif {(idx = 0) && {count != 1}} then {
 	semantic_error (e.position,"Incorrect vector size for `value' message.");
       };

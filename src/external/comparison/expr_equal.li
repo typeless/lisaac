@@ -81,6 +81,34 @@ Section Public
     result
   );
   
+  //
+  // Genere
+  //
+    
+  - genere buffer:STRING <-
+  (
+    (
+      (left.static_type.is_expanded)  && 
+      {right.static_type.is_expanded} && 
+      {right.static_type.raw.type_c = NULL}
+    ).if {
+      buffer.append "(memcmp(";
+      (left.static_type.is_expanded_ref).if_false {
+        buffer.add_last '&';
+      };
+      left.genere buffer;
+      buffer.add_last ',';
+      (right.static_type.is_expanded_ref).if_false {
+        buffer.add_last '&';
+      };
+      right.genere buffer;
+      buffer.append ",sizeof(";
+      left.static_type.raw.put_expanded_declaration buffer;      
+      buffer.append ")) == 0)";
+    } else {
+      parent_expr_binary_cmp.genere buffer;
+    };    
+  );
 
 
 

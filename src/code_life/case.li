@@ -86,7 +86,7 @@ Section Public
   // Comparaison.
   //
   
-  - Self:SELF '==' other:SELF :BOOLEAN <-
+  - Self:SELF '~=' other:CASE :BOOLEAN <-
   // BSBS : Naive implantation...
   ( + result:BOOLEAN;
     + wrt1,wrt2:WRITE_LOCAL;

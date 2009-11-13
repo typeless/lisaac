@@ -62,12 +62,11 @@ Section Public
   //
   // Running.
   //
-/*  
+  
   - item idx:INTEGER :ITM_TYPE_MONO <- 
   ( ? {idx = 0};
     type
-  );
-  */
+  );  
 
   - to_run_in arg_lst:FAST_ARRAY(LOCAL) for p:PARAMETER_TO_TYPE <-
   ( + t:ITM_TYPE_MONO;
@@ -106,7 +105,7 @@ Section Public
   (
     buffer.append name;
     buffer.add_last ':';
-    type.display buffer;    
+    type.append_in buffer;    
   );
 
   - shorter_in buf:STRING <-

@@ -322,7 +322,7 @@ Section Public
   
   - genere_struct <-
   (
-    // Nothing.
+    to_type_block.genere_struct;
   );
          
   //

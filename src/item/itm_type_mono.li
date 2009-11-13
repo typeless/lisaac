@@ -68,6 +68,15 @@ Section Public
   );  
   
   //
+  // Display.
+  //
+  
+  - append_in buffer:STRING <-
+  (
+    deferred;
+  );
+  
+  //
   // Cast.
   //
   

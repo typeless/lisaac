@@ -215,7 +215,7 @@ Section Private
   );
   
   - save_file n:STRING_CONSTANT with buf:STRING <-
-  ( + file:STD_FILE;
+  ( + file:FILE;
     + entry:ENTRY;
     
     (is_short_recursive).if {

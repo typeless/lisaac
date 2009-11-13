@@ -332,6 +332,7 @@ Section Public
   //
   
   - genere_list:FAST_ARRAY(TYPE) := FAST_ARRAY(TYPE).create_with_capacity 128;
+  - genere_list_global:FAST_ARRAY(SLOT_DATA) := FAST_ARRAY(SLOT_DATA).create_with_capacity 256;
   
   - add_genere_list <-
   ( 
@@ -342,8 +343,15 @@ Section Public
     };
   );
   
+  - add_genere_global s:SLOT_DATA <-
+  ( 
+    (genere_list_global.fast_first_index_of s > genere_list_global.upper).if { // BSBS: a revoir !!
+      genere_list_global.add_last s;
+    };
+  );    
+  
   - genere_all_struct <-
-  (
+  ( 
     TYPE_NULL.genere_typedef;    
     (genere_list.lower).to (genere_list.upper) do { j:INTEGER;            
       genere_list.item j.genere_typedef_struct;      
@@ -356,6 +364,10 @@ Section Public
       TYPE_CONTEXT.genere_typedef;
       TYPE_CONTEXT.genere_struct;
     };
+    (genere_list_global.lower).to (genere_list_global.upper) do { j:INTEGER;
+      // In global.
+      genere_list_global.item j.genere output_glob;
+    };    
   );
   
   - id_counter_with_type:INTEGER    := 4;
@@ -457,7 +469,7 @@ Section Public
         slot := slot_run.item j;
         
 	((slot.style = '+') && {slot.lower_style = 0}).if {
-          action := { s:SLOT_DATA;
+          action := { s:SLOT_DATA;            
 	    (
 	      (
 		(s.ensure_count > 0) || 
@@ -504,25 +516,6 @@ Section Public
 	  slot_data := slot.slot_id;
 	  ((slot_data != NULL) && {slot_data.ensure_count > 0}).if {
 	    add_slot_struct slot_data;
-	  };
-	} else {	    
-	  // In global.
-	  (slot.lower_style = 0).if {
-	    action := { s:SLOT_DATA;
-	      (s.ensure_count > 0).if {
-		s.genere output_glob;
-	      };
-	    };
-	    (slot.slot_data_list != NULL).if {
-	      (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
-		action.value (slot.slot_data_list.item k);
-	      };
-	    };
-	    action.value (slot.slot_data);
-	  };
-	  slot_data := slot.slot_id;
-	  ((slot_data != NULL) && {slot_data.ensure_count > 0}).if {
-	    slot_data.slot_id.genere output_glob;
 	  };
 	};
       };

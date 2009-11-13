@@ -169,9 +169,9 @@ Section Public
       }
       .when 20 then { // compiler_built_on -> STRING_CONSTANT.
         string_tmp.clear;
-        CLOCK.date.append_in string_tmp;
+        SYSTEM.get_current_date.append_in string_tmp;
         string_tmp.add_last ' ';
-        CLOCK.time.append_in string_tmp;
+        SYSTEM.get_current_time.append_in string_tmp;
         result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
       }
       .when 21 then { // debug_with_code -> BOOLEAN.
@@ -182,10 +182,10 @@ Section Public
         };
       }
       .when 22 then { // compile_time -> INTEGER.
-        result := INTEGER_CST.create position value (CLOCK.time.to_csecond) type (type_integer.default);
+        result := INTEGER_CST.create position value (SYSTEM.get_current_time.to_csecond) type (type_integer.default);
       }
       .when 23 then { // compile_date -> UINTEGER_32.
-        result := INTEGER_CST.create position value (CLOCK.date.encode) type (type_uinteger_32.default);
+        result := INTEGER_CST.create position value (SYSTEM.get_current_date.encode) type (type_uinteger_32.default);
       }
       .when 24 then { // forall_data action:{ E; } 
         //result := forall_data_product;

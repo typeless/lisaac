@@ -193,17 +193,14 @@ Section Private
       position.put_position;
       POSITION.send_error;
     };
-        
-    (
-      (! is_interrupt) && {! is_external} && 
-      {(cop_argument = NULL) || {! profil.result_list.is_empty}}
-    ).if {
-      (profil.link_count = 1).if {      
-	// 
-	// Inlining simple.
-	//	  	  	  	  
-	(list_current.old_seq_or_and = seq_or_and).if {
-	  argument_to_assignment source index 1 alias FALSE style '+';	  
+    
+    (profil.is_inlinable).if {    
+      (profil.link_count = 1).if {
+        // 
+        // Inlining simple.
+        //	  	  	  	  
+        (list_current.old_seq_or_and = seq_or_and).if {
+          argument_to_assignment source index 1 alias FALSE style '+';	  
           (result_list.lower).to (result_list.upper) do { j:INTEGER;                        
             source.add_last (result_list.item j.write);
           };
@@ -211,19 +208,19 @@ Section Private
 	  profil.remove_inline;	  	  
           new_execute_pass;
           is_good := TRUE;
-	};
-      }.elseif {profil.is_inlinable/* && {FALSE}*/} then {
+        };
+      } else {
 	//
 	// Inline by copy:	  
 	//
-	(list_current.old_seq_or_and = seq_or_and).if {	    	    	    
+        (list_current.old_seq_or_and = seq_or_and).if {	    	    	    
           profil.unlink Self;	  	  	    	    
           
           prof_block ?= profil;
-	  (prof_block != NULL).if {	    
-	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
-	      loc := profil.argument_list.item j;
-	      (loc != NULL).if {
+          (prof_block != NULL).if {	    
+            (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
+              loc := profil.argument_list.item j;
+              (loc != NULL).if {
 		loc.set_my_alias (loc.my_copy);
 	      };
 	    };
@@ -257,7 +254,7 @@ Section Private
 	  result := new_src.execute;
           is_good := TRUE;
 	  new_execute_pass;	  	  
-	};
+        };
       };
     };
     is_good,
@@ -320,29 +317,19 @@ Section Public
   - execute:INSTR <-
   ( + result:INSTR;        
     + is_good:BOOLEAN;    
-    /*
-    (profil.search_tail_recursive).if {
-      //
-      // Inline Tail recursive:
-      //	  
-      profil.remove_inline;		      
-      result := to_tail_recursive;
-      result.execute;
-      new_execute_pass;
-    } else { */      
-      (is_good,result) := execute_inline;
-      (! is_good).if {      
-	execute_normal;
-	(source.is_empty).if {
-	  // Suppression.	
-	  profil.unlink Self;	
-	  new_execute_pass;
-	} else {
-	  result := Self;
-	  profil.set_life;
-	};
+
+    (is_good,result) := execute_inline;
+    (! is_good).if {      
+      execute_normal;
+      (source.is_empty).if {
+        // Suppression.	
+        profil.unlink Self;	
+        new_execute_pass;
+      } else {
+        result := Self;
+        profil.set_life;
       };
-    //};
+    };
     
     result
   );
@@ -469,7 +456,9 @@ Section Public
     } else {    
       (result_list.is_empty).if_false {
         wrt ?= result_list.first.write;
-        wrt.genere_first_result buffer;      
+        (wrt.local.ensure_count != 0).if {
+          wrt.genere_first_result buffer;      
+        };        
       };
       buffer.append (profil.name);
       

@@ -33,6 +33,8 @@ Section Inherit
   
 Section Private  
   
+  - is_release:BOOLEAN := FALSE;
+  
   //
   // Independance File System 
   //
@@ -235,6 +237,18 @@ Section Private
     };
   );
   
+  - execute str:ABSTRACT_STRING :BOOLEAN <-  
+  ( + result:BOOLEAN;
+    (ENVIRONMENT.execute_command str != 0).if {
+      "Error: execute `".print;
+      str.print;
+      "'\n".print;
+    } else {
+      result := TRUE;
+    };
+    result
+  );    
+  
   //
   // Global variable.
   //
@@ -347,14 +361,33 @@ Section Private
     (system != system_unknown).if {
       title "Fix target variable in `make.lip'." count 5;
       (system = system_windows).if {
+        ENVIRONMENT.execute_command "copy make.lip.sample make.lip";            
         update "make.lip" idf "  + target" with 
-        "  + target:STRING := \"windows\";\n" confirmation FALSE;
+        "  + target:STRING := \"windows\";\n" confirmation FALSE;        
         //
         "\n  Note: Use `mingw' for Windows.\n".print; 
       } else {
+        ENVIRONMENT.execute_command "cp make.lip.sample make.lip";            
         update "make.lip" idf "  + target" with 
-        "  + target:STRING := \"unix\";\n" confirmation FALSE;
+        "  + target:STRING := \"unix\";\n" confirmation FALSE;        
       };      
+      (is_release).if_false {
+        "\n  Directory for library repository: ".print;
+        IO.read_line;                 
+        '\n'.print;
+        string_tmp2.copy "  + lib_extra:STRING := \"";
+        string_tmp2.append (IO.last_string);
+        (string_tmp2.last = '/').if {
+          string_tmp2.add_last '*';
+        } else {
+          string_tmp2.append "/*";
+        };
+        string_tmp2.append "\";\n";
+        update "make.lip" idf "  + lib_extra" with 
+        string_tmp2 confirmation TRUE;
+        update "make.lip" idf "  + lib_unstable" with 
+        "  + lib_unstable:STRING := \"\";\n" confirmation FALSE;
+      };
     };
     '\n'.print;    
         
@@ -577,10 +610,10 @@ Section Private
     
     "  Compile `shorter' tools for your system (please wait ...)\n".print;
     (system = system_windows).if {
-      rm := "del shorter.c";
+      rm := "del bin\\shorter.c";
       compile := "bin\\lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
     } else {
-      rm := "rm shorter.c";
+      rm := "rm bin/shorter.c";
       compile := "bin/lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
     };
     (ENVIRONMENT.execute_command compile = 0).if {    
@@ -598,44 +631,28 @@ Section Private
   
   - build_lib <-
   (             
-    string_tmp.clear;
-    ENVIRONMENT.execute_command "mkdir lib_html";		
+    string_tmp.clear;    
     (system = system_windows).if {
-      string_tmp.copy "bin\\shorter -d -f belinda lib -o lib_html";
+      ENVIRONMENT.execute_command "mkdir doc\\html";		
+      string_tmp.copy "bin\\shorter -d -f belinda lib\\standard -o doc\\html";
+      // BSBS: A ajouter internal mais sur le meme run shorter
     } else {
-      string_tmp.copy "bin/shorter -d -f belinda lib -o lib_html";
+      ENVIRONMENT.execute_command "mkdir -p doc/html";		
+      string_tmp.copy "bin/shorter -d -f belinda lib/standard -o doc/html";
     };      
     "  Execute: `".print;
     string_tmp.print;
     "'\t".print;
     (ENVIRONMENT.execute_command string_tmp = 0).if {
       "  OK\n\n\
-      \  Note: you'll find this documentation in `lib_html/index.html'".print;  
+      \  Note: you'll find this documentation in `doc/html/index.html'".print;  
     } else {
       "  Fail!".print;
     };
   );
-    
-Section Public
   
-  - main <-
-  ( + cwd:NATIVE_ARRAY(CHARACTER);
-    + choice,choice2:INTEGER;    
-    "\t\t================================\n\
-    \\t\t= Auto-Install Lisaac Compiler =\n\ 
-    \\t\t================================\n\n".print;
-    string_tmp.clear;
-    cwd := string_tmp.to_external;
-    `getcwd(@cwd,255)`;
-    string_tmp.from_external cwd;
-    
-    path_current := STRING.create (string_tmp.count);
-    path_current.copy string_tmp; 
-    path_home    := ENVIRONMENT.get_environment_variable "HOME";
-    shell        := ENVIRONMENT.get_environment_variable "SHELL";
-    
-    title "Detection system." count 0;
-    detect_system;
+  - user_install <-
+  ( + choice,choice2:INTEGER;
     
     {
       choice := menu "Menu." text 
@@ -660,12 +677,13 @@ Section Public
         "Welcome to the Lisaac World !                           \n\
         \=============================                           \n\
         \  Installation successfull.                             \n\
-        \  Run `lisaac' to compile.                              ".print;
-        "\n\
-        \  Note: You'll have to reboot or reloaded environnement   \n\
-        \        to acknowledge the changes.                       \n\
-        \     OR for bash users, doing a `source ~/.bashrc' should \n\
-        \        do the job.                                       \n".print;
+        \  Run `lisaac' to compile.                              \n".print;
+        "*---------------------------------------------------------*\n\
+        \| Note: You'll have to reboot or reloaded environnement   |\n\
+        \|       to acknowledge the changes.                       |\n\
+        \|    OR for bash users, doing a `source ~/.bashrc' should |\n\
+        \|       do the job.                                       |\n\
+        \*---------------------------------------------------------*\n".print;
 
       }
       .when 2 then {
@@ -711,5 +729,87 @@ Section Public
         build_lib;
       };
     }.do_while {choice != 0};
+  );
+  
+  - path_bin:ABSTRACT_STRING := "/usr/bin";
+  - path_doc:ABSTRACT_STRING := "/usr/share/lisaac";
+  - path_man:ABSTRACT_STRING := "/usr/share/man/man1";
+  
+  - ask_path msg:ABSTRACT_STRING default val:ABSTRACT_STRING :ABSTRACT_STRING <-
+  ( + result:ABSTRACT_STRING;
+    msg.print;
+    " [".print;
+    val.print;
+    "] ? ".print;
+    IO.read_word;
+    (IO.last_string.is_empty).if {
+      result := val;
+    } else {
+      result := IO.last_string;
+    };
+    result
+  );    
+    
+  - system_install <-
+  ( + path:ABSTRACT_STRING;
+    + create:{ (ABSTRACT_STRING,ABSTRACT_STRING,ABSTRACT_STRING,BOOLEAN); };
+    compile_file "lisaac";
+    compile_shorter;
+    build_lib;
+    create := { (msg,cpy,dft:ABSTRACT_STRING,ask:BOOLEAN); 
+      (ask).if {
+        path := ask_path msg default dft;
+      } else {
+        path := dft;
+      };
+      string_tmp.copy "mkdir -p ";
+      string_tmp.append path;
+      execute string_tmp;
+      string_tmp.copy cpy;
+      string_tmp.append path;    
+      execute string_tmp;            
+    };
+    create.value (" binary path","cp bin/lisaac ",path_bin,TRUE);
+    create.value (NULL,"cp bin/shorter ",path_bin,FALSE);
+    create.value ("Documentation path","cp -rf doc/html/* ",path_doc,TRUE);
+    create.value ("Man path","cp -rf doc/man/* ",path_man,TRUE);
+  );
+    
+Section Public
+  
+  - main <-
+  ( + cwd:NATIVE_ARRAY(CHARACTER);
+    + choice:INTEGER;    
+    "\t\t================================\n\
+    \\t\t= Auto-Install Lisaac Compiler =\n\ 
+    \\t\t================================\n\n".print;
+    string_tmp.clear;
+    cwd := string_tmp.to_external;
+    `getcwd(@cwd,255)`;
+    string_tmp.from_external cwd;
+    
+    path_current := STRING.create (string_tmp.count);
+    path_current.copy string_tmp; 
+    path_home    := ENVIRONMENT.get_environment_variable "HOME";
+    shell        := ENVIRONMENT.get_environment_variable "SHELL";
+    
+    title "Detection system." count 0;
+    detect_system;
+    
+    (system != system_windows).if {
+      choice := menu "Menu." text 
+      "1- User installation.\n\
+      \2- System installation.\n\
+      \0- Exit." count 2;
+      choice
+      .when 1 then { 
+        user_install;
+      }
+      .when 2 then {
+        system_install;
+      };
+    } else {
+      user_install;
+    };    
     "\nBye.\n\n".print;
   );

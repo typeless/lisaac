@@ -164,6 +164,7 @@ Section Public
   - slot_back_end     :STRING_CONSTANT := "back_end";
   - slot_input_file   :STRING_CONSTANT := "input_file";
   - slot_output_file  :STRING_CONSTANT := "output_file";
+  - slot_output_extension:STRING_CONSTANT := "output_extension";
   - slot_debug_level  :STRING_CONSTANT := "debug_level";
   - slot_debug_with_code:STRING_CONSTANT := "debug_with_code";
   - slot_is_all_warning:STRING_CONSTANT := "is_all_warning";
@@ -241,6 +242,9 @@ Section Public
   - short_file_list_begin     :STRING_CONSTANT := "file_list_begin";
   - short_file_list_item      :STRING_CONSTANT := "file_list_item";
   - short_file_list_end       :STRING_CONSTANT := "file_list_end";
+  
+  - extension_c       :STRING_CONSTANT := ".c";
+  - extension_java    :STRING_CONSTANT := ".java";
   
   - is_integer n:STRING_CONSTANT :BOOLEAN <-
   (
@@ -462,6 +466,7 @@ Section Public
     list.add slot_front_end;
     list.add slot_back_end;
     list.add slot_output_file;
+    list.add slot_output_extension;
     list.add slot_input_file;
     list.add slot_debug_level;
     list.add slot_debug_with_code;
@@ -512,7 +517,7 @@ Section Public
     list.add short_warning;
     list.add short_identifier;
     list.add short_identifier_slot;
-    
+
     list.add short_prototype_comment_light;
     list.add short_prototype_comment;
     
@@ -534,7 +539,10 @@ Section Public
     list.add short_directory_list_end;
     list.add short_file_list_begin;
     list.add short_file_list_item;
-    list.add short_file_list_end; 
+    list.add short_file_list_end;
+
+    list.add extension_c;
+    list.add extension_java;
 
     // Operator '=' and '!=' :
     operator_equal     := operator slot_infix name symbol_equal;

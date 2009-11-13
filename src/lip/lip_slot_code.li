@@ -40,9 +40,7 @@ Section Public
   + argument:LIP_SLOT_DATA;
     
   + code:LIP_CODE;
-  
-  + base_directory:STRING_CONSTANT;
-  
+    
   + comment:STRING_CONSTANT;
   
   // + comment_chapter:STRING_CONSTANT;
@@ -64,7 +62,6 @@ Section Public
   //
 
   - create p:POSITION
-  dir d:STRING_CONSTANT
   section sec:STRING_CONSTANT
   name n:STRING_CONSTANT 
   argument arg:LIP_SLOT_DATA
@@ -79,7 +76,6 @@ Section Public
     } else {    
       result := clone;
       result.make     p
-             dir      d
              section  sec
              name     n
              argument arg
@@ -89,7 +85,6 @@ Section Public
   );
 
   - make p:POSITION
-  dir d:STRING_CONSTANT
   section sec:STRING_CONSTANT
   name n:STRING_CONSTANT 
   argument arg:LIP_SLOT_DATA 
@@ -100,7 +95,6 @@ Section Public
     name           := n;
     argument       := arg;
     code           := c;
-    base_directory := d;
     list_method.add_last Self;
   );
   
@@ -121,9 +115,7 @@ Section Public
         stack.add_last NULL;
       };
       (result).if {        
-        stack_base_directory.add_last base_directory;
         code.run;
-        stack_base_directory.remove_last;
       };
       stack.remove_last;
     };
