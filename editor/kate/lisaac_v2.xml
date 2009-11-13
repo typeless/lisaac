@@ -46,6 +46,7 @@
 		<!ENTITY op_char 		"[&op_char_list;]">
 		<!ENTITY escape_char	"([\\][tbnfrva0?\\ ]|&numeric_escape;|\\|)">
 		<!ENTITY identifier 	"(&lower_case;(&lower_case;|&decimal_digit;|_)*)">
+		<!ENTITY not_identifier	"([^a-z0-9_])">
 		<!ENTITY ws				"([\s])">
 		<!ENTITY ws_opt			"&ws;*">
 		<!--oom = one or more-->
@@ -54,7 +55,8 @@
 						  il faudra mettre la regle d'affectation avant -->
 		<!ENTITY operator 		"&op_char;+">
 		<!ENTITY affect 		"(:=|&lt;-|[?]=)">
-		<!ENTITY cap_identifier	"&upper_case;(&upper_case;|&decimal_digit;|_)*">
+		<!ENTITY cap_idf_item	"&upper_case;(&upper_case;|&decimal_digit;|_)*">
+		<!ENTITY cap_identifier	"&cap_idf_item;(\.&cap_idf_item;)*(\.(\.&cap_idf_item;)+)?">
 		<!ENTITY external		"\`(&normal_char;|&escape_char;)*\`">
 		<!ENTITY external_start	"\`">
 		<!ENTITY priority		"(Left|Right)">
