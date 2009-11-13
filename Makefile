@@ -58,29 +58,30 @@ help:
 	@echo "--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --"
 	@echo "--                   http://www.lisaac.org/                   --"
 	@echo "----------------------------------------------------------------"
-	@echo "  make help      - display this help message"
+	@echo "  make help         - display this help message"
 	@echo ""
 	@echo ""
 	@echo "Quick installation:"
 	@echo ""
-	@echo "  make user      - compile the installer and run it"
+	@echo "  make user         - compile the installer and run it"
 	@echo ""
 	@echo "For packagers:"
 	@echo ""
-	@echo "  make install   - install everything"
-	@echo "  make uninstall - uninstall everything"
-	@echo "  make dist      - create a package with the sources only"
-	@echo "  make distclean - clean the source directory"
+	@echo "  make install      - install everything"
+	@echo "  make uninstall    - uninstall everything"
+	@echo "  make dist         - create a package with the sources only"
+	@echo "  make distclean    - clean the source directory"
 	@echo ""
 	@echo "For developpers:"
 	@echo ""
-	@echo "  make all       - compile the compiler, the shorter and the"
-	@echo "                   documentation"
-	@echo "  make doc       - create documentation for the library"
-	@echo "  make clean     - clean the source directory"
+	@echo "  make all          - compile the compiler, the shorter and the"
+	@echo "                      documentation"
+	@echo "  make doc          - create documentation for the library"
+	@echo "  make clean        - clean the source directory"
+	@echo "  make clean-spaces - clean whitespaces at end of files"
 	@echo ""
 
-.PHONY: default all doc clean help user install uninstall dist distclean
+.PHONY: default all doc clean clean-spaces help user install uninstall dist distclean
 
 all: bin/lisaac bin/shorter doc
 
@@ -160,7 +161,7 @@ dist: clean
 		mkdir $(DIST_NAME) ; \
 	fi
 	cp -rf $(DIST_SRC) $(DIST_NAME)
-	find $(DIST_NAME) \( -name .svn -o -name .git -o -name CVS -o -name .cvsignore -o -name *.jar \) -print0 | xargs -0 $(RM) -rf
+	find $(DIST_NAME) \( -name .svn -o -name .git -o -name CVS -o -name .cvsignore -o -name "*.jar" \) -print0 | xargs -0 $(RM) -rf
 	tar cjf $(DIST_NAME).tar.bz2 $(DIST_NAME)
 	-$(RM) -rf $(DIST_NAME)
 
@@ -178,7 +179,8 @@ clean:
 	-$(RM) -f src/path.h src/shorter.c src/shorter src/lisaac src/lisaac.c
 	-$(RM) -f path.h shorter shorter.c lisaac lisaac.c
 	-$(RM) -rf doc/html
-	-find . -name "*.orig" -o -name "*.BACKUP.*" -o -name "*.BASE.*" -o -name "*.LOCAL.*" -o -name "*.REMOTE.*" -print0 | xargs -0 $(RM) -rf
+	-find . \( -name "*.orig" -o -name "*.BACKUP.*" -o -name "*.BASE.*" -o -name "*.LOCAL.*" -o -name "*.REMOTE.*" \) -print0 | xargs -0 $(RM) -rf
 	-git clean -fdx
 
-
+clean-spaces:
+	-find . \( -name "*.li" -o -name "*.lip" \) -print0 | xargs -0 sed -i 's/\s*$//'
