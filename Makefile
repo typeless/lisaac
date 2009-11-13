@@ -94,7 +94,7 @@ user: install_lisaac
 install_lisaac: install_lisaac.c
 
 #
-# path.h
+# path.h, make.lip
 #
 
 bin/path.h:
@@ -103,6 +103,9 @@ bin/path.h:
 path.h src/path.h:
 	@echo "#define LISAAC_DIRECTORY \"`pwd`\"" > $@
 
+make.lip: make.lip.sample
+	ln -s $< $@
+
 #
 # Compiler and Shorter
 #
@@ -110,7 +113,7 @@ path.h src/path.h:
 bin/lisaac: bin/lisaac.c bin/path.h
 	$(CC) $(CFLAGS) $< -o $@ -lm -fomit-frame-pointer
 
-bin/shorter: bin/lisaac bin/path.h
+bin/shorter: bin/lisaac make.lip bin/path.h
 	cd bin && ./lisaac ../src/make.lip -shorter -boost
 
 #
@@ -118,7 +121,7 @@ bin/shorter: bin/lisaac bin/path.h
 #
 
 doc: doc/html
-doc/html: bin/shorter lib
+doc/html: bin/shorter make.lip lib
 	mkdir -p doc/html
 	cd doc && ../bin/shorter -d -f belinda ../lib -o html 
 
@@ -133,7 +136,7 @@ install: bin/lisaac bin/shorter
 	mkdir -p $(DESTDIR)$(DOC)$(HTML)
 	cp bin/lisaac  $(DESTDIR)$(BIN) 
 	cp bin/shorter  $(DESTDIR)$(BIN)
-	cp make.lip  $(DESTDIR)$(LIB)
+	cp make.lip.sample  $(DESTDIR)$(LIB)/make.lip
 	cp -rf lib/  $(DESTDIR)$(LIB)
 	cp -rf lib_os/  $(DESTDIR)$(LIB)
 	cp -rf doc/html/ $(DESTDIR)$(DOC)$(HTML)
@@ -169,6 +172,7 @@ distclean: clean
 
 clean:
 	-$(RM) -rf bootstrap
+	-$(RM) -f make.lip
 	-$(RM) -f install_lisaac
 	-$(RM) -f bin/path.h bin/shorter.c bin/shorter bin/lisaac
 	-$(RM) -f src/path.h src/shorter.c src/shorter src/lisaac src/lisaac.c
