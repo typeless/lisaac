@@ -131,6 +131,7 @@ Section Public
 	//	
 	result := node.result_expr;
       }.elseif {t.is_import_to static_type} then {
+        // Auto-import.
 	local := static_type.get_temporary position;
 	instr := local.write position value Self;		
 	list_current.add_last instr;
@@ -156,8 +157,8 @@ Section Public
 	(slot_msg.argument_count != 2).if {
 	  semantic_error (slot_msg.position,"Incorrect argument for this slot.");
 	};
-	ts ?= slot_msg.result_type;
-	((ts = NULL) || {ts.to_run_for NULL != t}).if {	  	  
+        ts ?= slot_msg.result_type;        
+	((ts = NULL) || {ts != ITM_TYPE_PARAMETER.type_self}).if {	  	  
 	  string_tmp.copy "Type result `";	  
           slot_msg.result_type.append_in string_tmp;
 	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
