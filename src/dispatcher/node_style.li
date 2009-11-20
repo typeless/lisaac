@@ -142,6 +142,7 @@ Section Private
     + data_rd:DTA_RD;
     + cop_arg:EXPR;
     + new_val:EXPR;
+    + val:EXPR;
     
     result := LIST.create position;
     
@@ -318,10 +319,14 @@ Section Private
         } then {
           rd ?= result_expr;
           result_var := rd.variable;	    
-          (call.is_interrupt).if_false {
-            rd  := call.profil.result_list.first.read position;
+          (call.is_interrupt).if {
+            //val := PROTOTYPE_CST.create position type (TYPE_NULL.default);
+            val := EXTERNAL_C.create position text "/* NODE_STYLE */" 
+            access NULL persistant FALSE type (type_pointer.default);
+          } else {
+            val := call.profil.result_list.first.read position;
           };
-          wrt := result_var.write position value rd;
+          wrt := result_var.write position value val;
           call.result_list.add_last (RESULT.create wrt); 
 	};	
       };      

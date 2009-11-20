@@ -641,6 +641,11 @@ Section Private
     } else {
       buffer.append "Inlinable.";
     };
+    (is_context_sensitive).if {
+      buffer.append " CONTEXT!";
+    } else {
+      buffer.append " NO CONTEXT!";
+    };
     buffer.append " */\n";
   );
   

@@ -174,7 +174,7 @@ Section Public
   
   - remove <-
   ( 
-    parent_profil.remove;
+    parent_profil.remove;    
     slot_code.remove_profil Self;            
   );
   

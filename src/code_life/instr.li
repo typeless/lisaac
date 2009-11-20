@@ -33,7 +33,7 @@ Section Inherit
   + parent_itm_object:Expanded ITM_OBJECT;
   
 Section Public
-  
+    
   - is_invariant:BOOLEAN <- FALSE;
   
   //

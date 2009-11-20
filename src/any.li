@@ -67,15 +67,15 @@ Section Public
   // Display debug tools.
   //
     
-  + object_id:INTEGER <- 
+  + object_id:INTEGER <-  
   ( + result:INTEGER;
     - object_counter:INTEGER; 
     
-    result := object_counter;
+    result := object_counter;      
     object_counter := object_counter + 1;
     object_id := result
   );
-
+  
   //
   // Compiler Options.
   //

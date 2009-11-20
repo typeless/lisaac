@@ -251,8 +251,4 @@ Section Public
       buffer.add_last '>';
     };
   );
-  
-
-
-
 

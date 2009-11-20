@@ -292,14 +292,10 @@ Section Public
     result := new_read position with r;   
     ensure_count := ensure_count + 1;    
     /*
-    (intern_name == "k__ELZH").if {
+    (intern_name == "__tmp__35").if {
       "Create : ".print;
       result.object_id.print;
-      '\n'.print;      
-      //(result.object_id = 1).if {
-        crash;
-      //};
-      IO.read_character;      
+      '\n'.print;         
     };
     */
     result
@@ -309,13 +305,12 @@ Section Public
   - unread e:READ <-
   (    
     /*
-    (intern_name == "k__ELZH").if {
+    (intern_name == "__tmp__35").if {
       "Delete : ".print;
       e.object_id.print;
-      '\n'.print;
-      IO.read_character;
+      '\n'.print;                  
     };
-    */    
+    */
     ensure_count := ensure_count - 1;
     (ensure_count < 0).if {
       "C'est : ".print;
@@ -323,7 +318,7 @@ Section Public
       "\n dans :\n".print;
       //list_current.debug_display;
       '\n'.print;
-      //crash;
+      crash;
     };
   /*  
     (intern_name == "Result__ID").if {
@@ -389,9 +384,68 @@ Section Public
     buffer.add_last '}';
   );
   
+Section VARIABLE, PROTOTYPE
   
+  - list_variable_block:FAST_ARRAY(VARIABLE) := FAST_ARRAY(VARIABLE).create_with_capacity 64;
   
-
+  - check_variable_block <-
+  (
+    {list_variable_block.is_empty}.until_do {     
+      list_variable_block.last.check_rec;
+      list_variable_block.remove_last;
+    };
+  );
+  
+  + is_check:BOOLEAN; // BSBS: Warning Memory!
+  
+  - check_rec <-
+  ( + val:EXPR;
+    + rd_g:READ_GLOBAL;
+    + rd_s:READ_SLOT;
+    + rd_l:READ_LOCAL;
+    + block:PROFIL_BLOCK;
+    + check_action:{WRITE; };
+    
+    (is_check).if_false {
+    
+      is_check := TRUE;
+      
+      check_action := { wrt:WRITE;
+        val := wrt.value;            
+        (
+          (rd_g ?= val; rd_g = NULL) && 
+          {rd_s ?= val; rd_s = NULL}
+        ).if {
+          block ?= val.static_type.raw;
+          ((block != NULL) && {block.is_context_sensitive}).if {
+            block.context_extern.type.print;
+            warning_error (block.context_extern.position,"ICI");
+            string_tmp.copy "This block is extern context sensitive (with `";
+            string_tmp.append (block.context_extern.name);
+            string_tmp.append "' local variable).";
+            POSITION.put_error warning text string_tmp;
+            block.code.position.put_position;
+            list_variable_block.last.position.put_position;
+            block.context_extern.position.put_position;
+            POSITION.send_error;
+          } else {
+            rd_l ?= val;
+            (rd_l != NULL).if {            
+              rd_l.variable.check_rec;
+            };    
+          };
+        };
+      };    
+      (require_first != NULL).if {        
+        check_action.value require_first;
+        (require_list != NULL).if {
+          (require_list.lower).to (require_list.upper) do { j:INTEGER;
+            check_action.value (require_list.item j);
+          };
+        };      
+      };
+    };
+  );
 
 
 

@@ -315,6 +315,9 @@ Section Public
     } else {
       type_list := TYPES_TMP.types_empty;
     };
+    ((type.raw.is_block) && {name != ALIAS_STR.slot_id} && {name != ALIAS_STR.slot_self}).if {      
+      list_variable_block.add_last Self;
+    };
     ? {type != NULL};            
   );
     

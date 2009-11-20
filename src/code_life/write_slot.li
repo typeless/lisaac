@@ -106,32 +106,52 @@ Section Public
     
     t := slot.receiver_type;
     t.add_genere_list;            
-    ((! quiet_generation) && {t.alias_slot != variable}).if {
-      // Receiver.            
-      (is_java).if {
-        receiver.genere buffer;
-        buffer.add_last '.';          
-      } else {
+    (! quiet_generation).if {
+      (t.alias_slot = variable).if {
         tf := receiver.static_type;    
         ((tf.is_strict) || {tf.is_expanded_ref}).if {
-          receiver.genere buffer;
-          buffer.append "->";
+          buffer.append "(*";
+          receiver.genere buffer;          
+          buffer.add_last ')';
         }.elseif {tf.is_expanded} then {      
-          receiver.genere buffer;
-          buffer.add_last '.';          
+          receiver.genere buffer;          
         } else {
-          buffer.append "((";
+          buffer.append "*((";
           t := slot.receiver_type;
           t.put_reference_declaration buffer;	
           buffer.add_last ' ';
           t.put_reference_star_declaration buffer;	
           buffer.add_last ')';
           receiver.genere buffer;
-          buffer.append ")->";          
+          buffer.add_last ')';          
+        };        
+      } else {
+        // Receiver.            
+        (is_java).if {
+          receiver.genere buffer;
+          buffer.add_last '.';          
+        } else {        
+          tf := receiver.static_type;    
+          ((tf.is_strict) || {tf.is_expanded_ref}).if {
+            receiver.genere buffer;
+            buffer.append "->";
+          }.elseif {tf.is_expanded} then {      
+            receiver.genere buffer;
+            buffer.add_last '.';          
+          } else {
+            buffer.append "((";
+            t := slot.receiver_type;
+            t.put_reference_declaration buffer;	
+            buffer.add_last ' ';
+            t.put_reference_star_declaration buffer;	
+            buffer.add_last ')';
+            receiver.genere buffer;
+            buffer.append ")->";          
+          };
         };
+        //
+        buffer.append (variable.intern_name);
       };
-      //
-      buffer.append (variable.intern_name);
       //
       ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
         buffer.append ".__id=0";

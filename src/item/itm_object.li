@@ -40,25 +40,34 @@ Section Public
   
   - bottom_index:INTEGER;
   
-  - clean_bottom_index <-
+  - push_context:(INTEGER,INTEGER,LOCAL) <-
   (
     bottom_index := stack_local.upper + 1;
     context_extern := NULL;
+    bottom_index,Old bottom_index,Old context_extern
   );      
+  
+  - pop_context (stack_top:INTEGER,old_bottom_index:INTEGER,old_context:LOCAL) <-
+  (
+    stack_local.remove_since stack_top;
+    (bottom_index >= old_bottom_index).if {
+      bottom_index   := old_bottom_index;
+      context_extern := old_context;
+    };
+  );
   
   - lookup n:STRING_CONSTANT :LOCAL <-
   ( + result:LOCAL;
     + j:INTEGER;
     ? {n = ALIAS_STR.get n};
-        
+    
     j := stack_local.upper;
     {(j < stack_local.lower) || {stack_local.item j.name = n}}.until_do {	
       j := j - 1;
     };
-    (j >= stack_local.lower).if {
-      result := stack_local.item j;
-      
-      ((j < bottom_index) && {result.style != '-'}).if {
+    (j >= stack_local.lower).if {            
+      result := stack_local.item j;           
+      ((j < bottom_index) && {result.style != '-'} && {result.name != ALIAS_STR.variable_self}).if {
         bottom_index := j;
         context_extern := result;
       };

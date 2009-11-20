@@ -291,7 +291,7 @@ Section Public
       tmp_name.copy str;    
       tmp_name.append "__";    
     } else {
-      tmp_name.copy "__";
+      tmp_name.copy "li__";
     };
     count_variable := count_variable + 1;
     v:=count_variable;

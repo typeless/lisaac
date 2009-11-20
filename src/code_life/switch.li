@@ -73,6 +73,7 @@ Section Public
   
   - make n:NODE with e:EXPR size s:INTEGER <-
   ( + first:CASE;
+    
     position := n.position;
     expr     := e;
     list     := FAST_ARRAY(CASE).create_with_capacity s;
@@ -116,7 +117,7 @@ Section Public
       expr.remove;
     };
     (list.lower).to (list.upper) do { j:INTEGER;
-      list.item j.code.remove;
+      list.item j.remove;
     };    
   );
   
@@ -216,6 +217,9 @@ Section Public
       is_end := TRUE;
     }.elseif {count_empty = list.count} then { 
       result := expr.execute_unlink;
+      (list.lower).to (list.upper) do { j:INTEGER;
+        list.item j.remove;
+      };
       is_end := TRUE;
     };
     //
@@ -292,7 +296,6 @@ Section Public
       buffer.append "if (";
       //                        
       ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {        
-        buffer.append "/* ICI */";
         expr.genere buffer;
         is_genered := TRUE;
         buffer.append ".__id==0";

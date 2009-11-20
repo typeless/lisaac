@@ -149,6 +149,9 @@ Section Public
     new_depend_pass;
     position  := p;
     expr_list := FAST_ARRAY(INSTR).create_with_capacity 2;
+    
+//    `/* ICI */`;
+//    object_id2.print; '\n'.print;    
   );
 
   - my_copy:SELF <-
@@ -167,7 +170,7 @@ Section Public
 
   - remove <-
   (     
-    (lower).to (upper) do { j:INTEGER;
+    (lower).to (upper) do { j:INTEGER;      
       item j.remove;
     };    
   );
@@ -315,9 +318,9 @@ Section Public
   );
   
 Section Private  
-  
+    
   - genere_body buffer:STRING <-
-  ( + old_count,j:INTEGER;
+  ( + old_count,j:INTEGER;    
     j := lower;
     {j <= upper}.while_do {
       buffer.append indent;

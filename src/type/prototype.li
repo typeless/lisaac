@@ -317,6 +317,7 @@ Section Public
     //
     // Evaluation.
     //
+    VARIABLE.check_variable_block;    
     (is_quiet).if_false {
       STD_ERROR.put_string "Executing pass: ";
     };
@@ -337,8 +338,8 @@ Section Public
         (SWITCH.switch_new_pass).if {
           new_execute_pass;	
         };                
-        (modify_count != 0).if {
-          pass_recur := TRUE;
+        (modify_count != 0).if {                    
+          pass_recur := TRUE;          
         };
       }.do_while {modify_count != 0};      
     };
@@ -347,15 +348,15 @@ Section Public
     {
       (is_quiet).if_false {
         STD_ERROR.put_string "*";
-      };
+      };      
       pass_count := pass_count + 1;
-      PROFIL_LIST.execute_pass_recursive;
+      PROFIL_LIST.execute_pass_recursive;      
       pass_recur := FALSE;
       // End first pass.          
-      exec.value;
+      exec.value;      
       (pass_recur).if_false {      
         exec.value;
-      };
+      };      
     }.do_while {pass_recur};
     (is_quiet).if_false {
       STD_ERROR.put_string " (";

@@ -106,6 +106,7 @@ Section DIRECTORY
     + result:ENTRY;
         
     pe := new_path.to_external;
+    // #ifdef __USE_LARGEFILE64 A voir PA
     `#ifdef __MINGW_H
     `;
     `{ struct stat t`; 

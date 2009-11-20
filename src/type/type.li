@@ -408,41 +408,40 @@ Section Public
     + i,nb:INTEGER;
     + action:{SLOT_DATA; };    
     
-    ((alias_slot = NULL) && {slot_run != NULL}).if {
-      
-      action := { s:SLOT_DATA;       
-        ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
-          (nb = 0).if {
-            ((s.type.is_expanded) && {s.type.raw.type_c = NULL}).if {
-              alias_slot := s;
+    (! is_late_binding).if {
+      ((alias_slot = NULL) && {slot_run != NULL}).if {
+        
+        action := { s:SLOT_DATA;       
+          ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
+            (nb = 0).if {
+              ((s.type.is_expanded) && {s.type.raw.type_c = NULL}).if {
+                alias_slot := s;
+              };
+            } else {
+              alias_slot := NULL;
             };
-          } else {
-            alias_slot := NULL;
+            nb := nb + 1;          
           };
-          nb := nb + 1;          
         };
+        
+        i := slot_run.lower;
+        {(i <= slot_run.upper) && {nb < 2}}.while_do {    
+          slot := slot_run.item i;
+          ((slot.style = '+') && {slot.lower_style = 0}).if {
+            (slot.slot_data_list != NULL).if {
+              (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
+                action.value (slot.slot_data_list.item k);
+              };
+            };
+            action.value (slot.slot_data);      
+          };
+          i := i + 1;
+        };   
       };
-      
-      i := slot_run.lower;
-      {(i <= slot_run.upper) && {nb < 2}}.while_do {    
-        slot := slot_run.item i;
-        ((slot.style = '+') && {slot.lower_style = 0}).if {
-          (slot.slot_data_list != NULL).if {
-            (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
-              action.value (slot.slot_data_list.item k);
-            };
-          };
-          action.value (slot.slot_data);      
-        };
-        i := i + 1;
-      };   
+      ((alias_slot != NULL) && {alias_slot.ensure_count = 0}).if {      
+        alias_slot := NULL;
+      };         
     };
-    (
-      (alias_slot != NULL) &&       
-      {! (is_late_binding -> alias_slot.type.raw.is_late_binding)}  
-    ).if {      
-      alias_slot := NULL;
-    };         
   );
   
   - genere_struct <-
@@ -756,14 +755,14 @@ Section Public
       t := Self;        
       {t.alias_slot = NULL}.until_do {
         t := t.alias_type;
-      };        
+      };              
       output_decl.append "struct ";
       output_decl.append (t.intern_name);
       output_decl.append "_struct";        
       output_decl.append " __";
       output_decl.append intern_name;	  
       output_decl.add_last ';';      
-      (alias_slot != NULL).if {
+      (alias_slot != NULL).if {        
         output_decl.append " /* ALIAS with ";
         output_decl.append (alias_type.intern_name);
         output_decl.append " */";
