@@ -173,7 +173,7 @@ Section Public
   - Self:SELF '!<' other:ABSTRACT_STRING :BOOLEAN <-
   // Is Current less than `other' ?
   ( + i: INTEGER;
-    + result: BOOLEAN;
+    + result:BOOLEAN;
     
     i := 1;
     {(count < i) || {other.count < i} || {item i != other.item i}}.until_do {
