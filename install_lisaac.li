@@ -302,6 +302,10 @@ Section Private
     // Detect system
     //    
     (shell != NULL).if {
+      "============> PA :".print;
+      shell.print;
+      '\n'.print;
+      
       file := STRING.create_from_string path_home;
       (shell.is_empty).if {
         "  Error : SHELL environment variable is empty !\n".print;
