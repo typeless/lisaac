@@ -317,7 +317,31 @@ Section Public
   
   - path_file:FAST_ARRAY(STRING_CONSTANT) := 
   FAST_ARRAY(STRING_CONSTANT).create_with_capacity 3000;
-
+  
+  - path_lisaac:STRING_CONSTANT <-
+  ( + path:NATIVE_ARRAY(CHARACTER);
+    + path_str :STRING;
+    + j:INTEGER;
+    //COMMAND_LINE.executable_name.print; '\n'.print;
+    // Load LISAAC_DIRECTORY.
+    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
+    (path_str != NULL).if {
+      string_tmp.copy path_str;
+    } else {
+      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
+      string_tmp.clear;
+      j := 0;
+      {path.item j != '\0'}.while_do {
+	string_tmp.add_last (path.item j);
+	j := j + 1;
+      };
+    };
+    ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
+      string_tmp.add_last '/';
+    };
+    path_lisaac := ALIAS_STR.get string_tmp
+  );
+  
   //
   // Alias type.
   //

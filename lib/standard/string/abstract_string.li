@@ -164,28 +164,32 @@ Section Public
     } else {
       (other.count < i).if {
         result := FALSE;
+      } else {
+        result := item i < other.item i;
       };
-      result := item i < other.item i;
     };
     result
   );
   
   - Self:SELF '!<' other:ABSTRACT_STRING :BOOLEAN <-
-  // Is Current less than `other' ?
-  ( + i: INTEGER;
+  // Is Current less than `other' ? But, the `upper' to `lower' comparaison
+  ( + i1,i2: INTEGER;
     + result:BOOLEAN;
     
-    i := 1;
-    {(count < i) || {other.count < i} || {item i != other.item i}}.until_do {
-      i := i + 1;
+    i1 := upper;
+    i2 := other.upper;
+    {(i1 < lower) || {i2 < other.lower} || {item i1 != other.item i2}}.until_do {
+      i1 := i1 - 1;
+      i2 := i2 - 1;
     };
-    (count < i).if {
-      result := other.count >= i;
+    (i1 < lower).if {
+      result := i2 >= other.lower;
     } else {
-      (other.count < i).if {
+      (i2 < other.lower).if {
         result := FALSE;
+      } else {
+        result := item i1 < other.item i2;
       };
-      result := item i < other.item i;
     };
     result
   );
@@ -339,6 +343,27 @@ Section Public
   // Index of last occurrence of `c' at index upper or before index upper.
   (
     fast_last_index_of c
+  );
+  
+  - first_difference_index other:ABSTRACT_STRING :INTEGER <-
+  // First difference index with `other'.
+  // if `other' is equal `Self', return `upper' + 1
+  [ -? {other != NULL}; ]
+  ( + result:INTEGER;
+    
+    (Self = other).if {
+      result := upper + 1;
+    } else {
+      result := lower;
+      {
+        (result <= upper) && 
+        {result <= other.upper} && 
+        {item result = other.item result}
+      }.while_do {
+        result := result + 1;
+      };    
+    };
+    result
   );
   
   - has ch:CHARACTER :BOOLEAN <- storage.fast_has ch until (count - 1);

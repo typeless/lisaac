@@ -115,8 +115,8 @@ Section Public
     + proto:PROTOTYPE;
     
     + r:TYPE;
-            
-    proto := load_prototype (itm_typ.name) generic_count 0;            
+        
+    proto := load_prototype (itm_typ.name) generic_count 0;
     base := dico_type.fast_reference_at (proto.filename);
     (base = NULL).if {          
       base := TYPE.clone;
@@ -943,12 +943,19 @@ Section TYPE
   ( + j,idx_path,idx_name,idx_name_old,idx_path_old:INTEGER;
     + entry:POINTER; 
     + result:PROTOTYPE;
-    + path,found:STRING_CONSTANT;
+    + path,found,cur_found,call_path:STRING_CONSTANT;
     + cn,cp:CHARACTER;
     + read_char:{};
+    + stat,found_index,cur_index:INTEGER;
+    + is_only:BOOLEAN;
     
     result := dico_name_to_prototype.fast_reference_at n;        
     (result = NULL).if {
+      (list_current = NULL).if {
+        call_path := path_lisaac;
+      } else {
+        call_path := list_current.position.prototype.filename; 
+      };    
       read_char := {
         cn := n.item idx_name;
         (cn = '.').if {
@@ -967,8 +974,10 @@ Section TYPE
         };
       };
       j := path_file.lower;      
-      {(j > path_file.upper) || {result != NULL}}.until_do {      
-        path := path_file.item j;                            
+      is_only := TRUE;
+      {(j > path_file.upper) || {stat = 2}}.until_do {      
+        path := path_file.item j;                                    
+        cur_found := NULL;
         idx_name := n.upper;
         idx_path := path.upper-3; // ".li"
         {
@@ -977,15 +986,15 @@ Section TYPE
           idx_name := idx_name - 1;
           idx_path := idx_path - 1;
         }.do_while {
-          (idx_name >= n.lower) && 
+          (idx_name >= n.lower)    && 
           {idx_path >= path.lower} && 
           {cn = cp}
-        };
+        };        
         ((idx_name < n.lower) && {cn = cp}).if {
           ((idx_path < path.lower) || {path.item idx_path = '/'}).if {
-            found := path;            
+            cur_found := path;            
           };
-        }.elseif {(cn = '*') && {cp = '/'}} then {        
+        }.elseif {(cn = '*') && {cp = '/'}} then {                  
           idx_name_old := idx_name+1;
           idx_path_old := idx_path+1;
           {(idx_name >= n.lower) && {idx_path >= path.lower}}.while_do {          
@@ -1008,32 +1017,29 @@ Section TYPE
             idx_path := idx_path - 1;                
           };
           (idx_name < n.lower).if {
-            found := path;
+            cur_found := path;
           };
-        };        
-        //"FOUND : ".print;
-        //found.print; '\n'.print;
-        (found != NULL).if {          
-          result := PROTOTYPE.prototype_dico.fast_reference_at found;
-          (result = NULL).if {
-            entry := FS_MIN.open_read found;            
-            ((entry != NULL) /*&& {entry.is_file}*/).if {
-              // Load prototype.
-              FS_MIN.close entry;
-              result := PROTOTYPE.create found name n generic_count gen_count;
-              PARSER.go_on result;              
-            } else {
-              string_tmp.copy "Cannot open `";
-              string_tmp.append found;
-              string_tmp.append "'.";
-              semantic_error (last_position,string_tmp);
+        }.elseif {stat = 1} then {
+          stat := 2;
+        };
+        (cur_found != NULL).if {
+          cur_index := cur_found.first_difference_index call_path;
+          (stat = 0).if {
+            stat := 1;
+            found := cur_found;
+            found_index := cur_index;            
+          } else {
+            is_only := FALSE;
+            (cur_index > found_index).if {
+              found := cur_found;
+              found_index := cur_index;            
             };
           };
-          dico_name_to_prototype.add result to n;      
-        };
+        };        
         j := j + 1;
       };
-      (result = NULL).if {
+      
+      (stat = 0).if {
         string_tmp.copy n;
         string_tmp.append " is not found.\n";
         POSITION.put_error semantic text string_tmp;
@@ -1041,7 +1047,26 @@ Section TYPE
           list_current.position.put_position;
         };
         POSITION.send_error;
-      };	
+      } else {      
+        result := PROTOTYPE.prototype_dico.fast_reference_at found;
+        (result = NULL).if {
+          entry := FS_MIN.open_read found;
+          (entry != NULL).if {
+            // Load prototype.
+            FS_MIN.close entry;
+            result := PROTOTYPE.create found name n generic_count gen_count;
+            PARSER.go_on result;
+          } else {
+            string_tmp.copy "Cannot open `";
+            string_tmp.append found;
+            string_tmp.append "'.";
+            semantic_error (last_position,string_tmp);
+          };
+        };
+        (is_only).if {
+          dico_name_to_prototype.add result to n;
+        };
+      };      
     };
     (result.generic_count != gen_count).if {        
       //crash;      

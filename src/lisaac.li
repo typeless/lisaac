@@ -91,31 +91,7 @@ Section Private
   - output_name:STRING_CONSTANT;
   
   - input_name:STRING_CONSTANT;
-  
-  - path_lisaac:STRING_CONSTANT <-
-  ( + path:NATIVE_ARRAY(CHARACTER);
-    + path_str :STRING;
-    + j:INTEGER;
-    //COMMAND_LINE.executable_name.print; '\n'.print;
-    // Load LISAAC_DIRECTORY.
-    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
-    (path_str != NULL).if {
-      string_tmp.copy path_str;
-    } else {
-      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
-      string_tmp.clear;
-      j := 0;
-      {path.item j != '\0'}.while_do {
-	string_tmp.add_last (path.item j);
-	j := j + 1;
-      };
-    };
-    ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
-      string_tmp.add_last '/';
-    };
-    path_lisaac := ALIAS_STR.get string_tmp
-  );
-  
+    
   //
   // Command.
   //
@@ -155,7 +131,7 @@ Section Private
   
   - read_options <-
   ( + cmd:STRING;
-    + j,i:INTEGER;  
+    + j,i,k:INTEGER;  
     + f:POINTER;
     + lip_ok:BOOLEAN;
     + s:LIP_SLOT_CODE;
@@ -297,9 +273,17 @@ Section Private
       "Slot `front_end' not found in *.lip file.\n".print;
       die_with_code exit_failure_code;
     };
-    s.run_with NULL;
-    path_file.quick_sort_with { (a,b:STRING_CONSTANT); 
-      a > b
+    s.run_with NULL;        
+    path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
+      b !< a
+    };        
+    k := path_file.upper;
+    {k <= path_file.lower}.until_do {
+      (path_file.item k = path_file.item (k-1)).if {
+        path_file.remove k;
+      } else {
+        k := k - 1;
+      };
     };
     
     (is_path_list).if {
