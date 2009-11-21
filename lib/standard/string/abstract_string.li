@@ -170,6 +170,26 @@ Section Public
     result
   );
   
+  - Self:SELF '!<' other:ABSTRACT_STRING :BOOLEAN <-
+  // Is Current less than `other' ?
+  ( + i: INTEGER;
+    + result: BOOLEAN;
+    
+    i := 1;
+    {(count < i) || {other.count < i} || {item i != other.item i}}.until_do {
+      i := i + 1;
+    };
+    (count < i).if {
+      result := other.count >= i;
+    } else {
+      (other.count < i).if {
+        result := FALSE;
+      };
+      result := item i < other.item i;
+    };
+    result
+  );
+  
   - compare other:ABSTRACT_STRING :INTEGER <-
   // Compare alphabetically `Self' to `other'
   ( + i: INTEGER;
@@ -1320,6 +1340,5 @@ Section Public
     deferred;
     NULL
   );
-
 
 

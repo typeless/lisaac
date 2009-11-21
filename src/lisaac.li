@@ -82,7 +82,7 @@ Section Public
   
 Section Private
   
-  - version:STRING_CONSTANT := "0.39 beta";
+  - version:STRING_CONSTANT := "0.39";
   
   //
   //
@@ -298,6 +298,9 @@ Section Private
       die_with_code exit_failure_code;
     };
     s.run_with NULL;
+    path_file.quick_sort_with { (a,b:STRING_CONSTANT); 
+      a > b
+    };
     
     (is_path_list).if {
       string_tmp.clear;

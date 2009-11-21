@@ -340,39 +340,17 @@ Section Public
   ) ; 
     
   //
-  // Sort    
+  // Sort (BSBS: to put in ARRAYED_COLLECTION)
   //
   
   - bubble_sort <-
-  // Bubble sort :-( => BSBS: Optmize with Quick sort...
-  ( + low,up,idx,max:INTEGER;
-    + sw:BOOLEAN;
-    
-    max := upper-1;
-    
-    low := 0;
-    up  := max;
-    {
-      sw:=FALSE;
-      low.to up do { i:INTEGER;	
-	(item i > item (i+1)).if {
-	  swap i with (i+1);
-	  sw := TRUE;
-	};
-	
-        idx := max - i;
-	(item idx > item (idx+1)).if {
-	  swap idx with (idx+1);
-	  sw := TRUE;
-	};		
-      };
-      up  := up - 1;
-      low := low + 1;
-    }.do_while {sw};
+  // Bubble sort 
+  ( 
+    bubble_sort_with { (a,b:V); a > b};
   );
   
   - bubble_sort_with cmp:{ (V,V); BOOLEAN} <-
-  // Bubble sort :-( => BSBS: Optmize with Quick sort...
+  // Bubble sort 
   ( + low,up,idx,max:INTEGER;
     + sw:BOOLEAN;
     
@@ -398,6 +376,34 @@ Section Public
       low := low + 1;
     }.do_while {sw};
   );
+  
+  - quick_sort_from low:INTEGER to up:INTEGER <- 
+  quick_sort_from low to up with { (a,b:V); a > b};
+  
+  - quick_sort_from low:INTEGER to up:INTEGER with cmp:{ (V,V); BOOLEAN} <-
+  // Quick sort algorithm (naive implementation)
+  ( + i, p:INTEGER;
+    + pivot, tmp:INTEGER;
+
+    (up > low).if {        
+      pivot := (low + up) >> 1;
+      swap pivot with low;
+      p := low;
+      (low+1).to up do { i:INTEGER;
+        (cmp.value (item low,item i)).if {
+          p := p + 1;
+          swap i with p;
+        };
+      };
+      swap p with low;
+      quick_sort_from low to (p - 1);
+      quick_sort_from (p + 1) to up;
+    };
+  );
+    
+  - quick_sort <- quick_sort_from lower to upper;
+  
+  - quick_sort_with cmp:{ (V,V); BOOLEAN} <- quick_sort_from lower to upper with cmp;
   
   //
   // Other.
