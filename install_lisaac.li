@@ -310,7 +310,7 @@ Section Private
       (shell.is_empty).if {
         "  Error : SHELL environment variable is empty !\n".print;
         system := system_unknown;
-      }.elseif {shell.has_substring "bash"} then {
+      }.elseif {(shell.has_substring "bash") || {shell.has_suffix "/sh"}} then {
         // Unix - bash
         file.append file_bashrc;
         system    := system_unix_bash;
