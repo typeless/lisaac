@@ -118,7 +118,7 @@ Section Public
   - new_depend_pass <-
   (    
     modify_count := modify_count + 1;
-    //(pass_count > 50).if {
+    //(pass_count > 60).if {
     //  crash;
     //};
   );

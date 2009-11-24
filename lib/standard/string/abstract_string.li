@@ -248,7 +248,7 @@ Section Public
     result
   );
   
-  - Self:SELF '==' Left 40 other:OBJECT :BOOLEAN <-
+  - Self:SELF '==' Left 40 other:E :BOOLEAN <-
   // Has Current the same text as `other' ?
   ( + same:ABSTRACT_STRING;
     same ?= other;

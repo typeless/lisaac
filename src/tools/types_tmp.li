@@ -117,9 +117,14 @@ Section Public
     result
   );
   
-  - free <-
+  - clear <-
   (
     upper := -1;
+  );
+  
+  - free <-
+  (
+    clear;
     free_list.add_last Self;
   );
   

@@ -42,6 +42,7 @@ Section PROFIL_LIST
   );
   
 Section Public
+  
   - propagation_external <-
   (
     (external_present).if_false {
@@ -355,15 +356,19 @@ Section Public
   
   - execute_recursive <-
   ( + old_list_current:LIST;    
+    + old_profil_current:PROFIL;
     
     (stat = -1).if {
       count_intern_call := count_intern_call + 1;            
       (count_intern_call = 1).if {	  	  
-	old_list_current   := list_current;
-	//
+        old_list_current   := list_current;
+        old_profil_current := profil_current;
+        //
+        profil_current := Self;
 	execute 3;
 	//	
-	list_current   := old_list_current;
+        list_current   := old_list_current;
+        profil_current := old_profil_current;
 	? {code != NULL};      
 	(count_intern_call = 1).if {	  
           stat := 0;
@@ -656,6 +661,7 @@ Section Private
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
+        v.type.display buffer;
 	v.display_type buffer;
 	buffer.add_last ',';
       };

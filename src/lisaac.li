@@ -281,9 +281,8 @@ Section Private
     {k <= path_file.lower}.until_do {
       (path_file.item k = path_file.item (k-1)).if {
         path_file.remove k;
-      } else {
-        k := k - 1;
       };
+      k := k - 1;
     };
     
     (is_path_list).if {

@@ -53,6 +53,7 @@ Section Public
   //
   
   - create p:POSITION assign n:ITM_CODE with v:ITM_CODE :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     result := clone;
     result.make p assign n with v;

@@ -44,6 +44,7 @@ Section Public
     
   - create e:EXPR with d:DTA :SELF <-
   // Create with back-link.
+  [ -? {d.position != 0}; ]
   ( + result:SELF;
     
     result := clone;

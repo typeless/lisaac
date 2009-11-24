@@ -43,6 +43,7 @@ Section Public
   //
   
   - create p:POSITION slot sl:SLOT self arg:EXPR code v:ITM_CODE :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;

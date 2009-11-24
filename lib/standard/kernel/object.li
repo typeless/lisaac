@@ -109,7 +109,7 @@ Section Public
   // Common Function.
   //
   
-  - Self:SELF '=='  Right 60 other:OBJECT :BOOLEAN <- ( deferred; FALSE);
+  //- Self:SELF '=='  Right 60 other:OBJECT :BOOLEAN <- ( deferred; FALSE);
   
   //- Self:SELF '=='  Right 60 other:E :BOOLEAN <- ( deferred; FALSE);
   

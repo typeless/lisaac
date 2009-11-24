@@ -64,10 +64,6 @@ Section Private
   - front_end <-
   (    
     general_front_end;        
-    
-    
-    src_path; // BSB: A virer !!!
-    
     ((input_file = "") | (input_file = "lisaac")).if {    
       compiler_path;
       (is_valid).if {

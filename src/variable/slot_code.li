@@ -62,8 +62,9 @@ Section Public
     + typ:TYPE_FULL;
     + typ_block:PROFIL_BLOCK;
     + typ_list:TYPES_TMP;
-    + pro_list:FAST_ARRAY(PROFIL_SLOT);    
+    + pro_list:FAST_ARRAY(PROFIL_SLOT);
     + is_new:BOOLEAN;
+    + lst_typ:TYPES_TMP;
         
     // Block Detect.
     j := args.lower;
@@ -109,36 +110,27 @@ Section Public
       };
     } else {	    
       // Select classic Profil (no block).
-     /* 
-      (name == "__infix_equal_equal").if {
-        "SELF : ".print;
-        type_self.raw.print; 
-        ' '.print;
-        args.second.static_type.raw.print;
-        (type_self.raw.name == "STRING_CONSTANT").if {
-          crash;
-        };
-        '\n'.print;
-      };
-      */
       j := profil.lower;      
       {(j <= profil.upper) && {result = NULL}}.while_do {
 	pro := profil.item j;					
 	((pro.type_self = NULL) || {pro.type_self == type_self}).if {
-	  result := pro;
-	  i := args.lower + 1;
-	  {(i <= args.upper) && {result != NULL}}.while_do {
-	    typ := args.item i.static_type;
+          result := pro;
+          lst_typ := TYPES_TMP.new;            
+          i := args.lower + 1;          
+          {(i <= args.upper) && {result != NULL}}.while_do {
+            lst_typ.clear;
+            args.item i.get_type lst_typ;
 	    loc := pro.argument_list.item i;	    	    
 	    (
-	      (loc != NULL) && 
-	      {(typ.is_expanded) || {loc.type.is_expanded       }} && 
-	      {typ !== loc.type} && {loc.type.raw != type_boolean}
-	    ).if {
+	      (loc != NULL) && 	     
+	      {! (lst_typ ~= loc.type_list)} && 
+              {loc.type.raw != type_boolean}
+            ).if {                            
 	      result := NULL;	      	      	      
 	    };
 	    i := i + 1;    
-	  };
+          };
+          lst_typ.free;
 	};
 	j := j + 1;
       };
@@ -149,6 +141,20 @@ Section Public
 	  semantic_error (position,"Polymorphic External slot is not possible.");
 	};
 	is_new := TRUE;
+      } else {
+        /*
+        (name == "__infix_equal_equal").if {          
+          (type_self.raw.name == "STRING_CONSTANT").if {
+            string_tmp.clear;
+            typ := args.item 1.static_type;
+            typ.display string_tmp;
+            string_tmp.add_last '=';
+            typ := pro.argument_list.item 1.type;
+            typ.display string_tmp;
+            string_tmp.add_last '\n';
+            string_tmp.print;
+          };
+        };*/
       };
     };
     (is_new).if {            
