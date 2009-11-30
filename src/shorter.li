@@ -72,9 +72,9 @@ Section Private
   - usage:STRING_CONSTANT :=
   "----------------------------------------------------------------\n\
   \--                   Lisaac source Shorter                    --\n\
-  \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
-  \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
-  \--                   http://www.IsaacOS.com                   --\n\
+  \--            LORIA - LSIIT - UDS - CNRS - FRANCE             --\n\
+  \--         Benoit SONNTAG - benoit.sonntag@lisaac.org         --\n\
+  \--                   http://www.lisaac.org                    --\n\
   \----------------------------------------------------------------\n\
   \Usage:                                                      \n\
   \  shorter <input_file[.li]> [Options]                       \n\
@@ -91,17 +91,21 @@ Section Private
   \                                                            \n\
   \Examples:                                                   \n\
   \  * Output format file:                                     \n\
-  \    shorter -c -p -f latex hello_world.li                   \n\ 
+  \      shorter -c -p -f latex hello_world.li                 \n\ 
   \                                                            \n\
   \  * Build html documentation:                               \n\
-  \    shorter -r -f html ~/lisaac/lib                         \n\
+  \      shorter -r -f html ~/lisaac/lib                       \n\
   \                                                            \n\
   \  * Build html documentation style JavaDoc:                 \n\
-  \    shorter -d -f belinda ~/lisaac/lib                      \n\
+  \   - With directory:                                        \n\
+  \      shorter -d -f belinda ~/lisaac/lib                    \n\
+  \   - With current `make.lip'                                \n\
+  \      shorter -d -f belinda                                 \n\ 
+  \   - With specific `make.lip'                               \n\
+  \      shorter -d -f belinda ../make.lip                     \n\
   \                                                            \n\
   \Bug report:                                                 \n\
-  \            post in : https://gna.org/bugs/?group=isaac     \n\
-  \            mail to : sonntag@icps.u-strasbg.fr             \n";
+  \    post in: https://alioth.debian.org/projects/lisaac/     \n";
 
   - display_usage <-
   (
@@ -400,6 +404,7 @@ Section Public
 	die_with_code exit_failure_code;
       };
       dir ?= ent;
+      path_begin := dir.path.count + 2;
       check_in dir begin (dir.path.count + 1);
       // index file.
       (PARSER.short_dico.fast_has (ALIAS_STR.short_index)).if {

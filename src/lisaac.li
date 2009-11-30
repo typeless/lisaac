@@ -102,8 +102,8 @@ Section Private
 
   - begin_usage2: STRING_CONSTANT :=
   "--\n\
-  \--            LORIA - LSIIT - ULP - CNRS - FRANCE             --\n\
-  \--         Benoit SONNTAG - sonntag@icps.u-strasbg.fr         --\n\
+  \--            LORIA - LSIIT - UDS - CNRS - FRANCE             --\n\
+  \--         Benoit SONNTAG - benoit.sonntag@lisaac.org         --\n\
   \--                   http://www.lisaac.org                    --\n\
   \----------------------------------------------------------------\n\
   \Usage:                                                          \n\
