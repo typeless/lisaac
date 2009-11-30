@@ -107,3 +107,20 @@ Section Public
     '\n'.print;
   );
   
+  - simplify_type v:VARIABLE <-
+  ( + tmp_type:TYPES_TMP;
+    
+    ((! v.is_static) && {! v.type.is_strict}).if {
+      tmp_type := TYPES_TMP.new;
+      v.get_type tmp_type;
+      (tmp_type.count != 0).if {
+        (tmp_type.first = TYPE_NULL).if {
+          tmp_type.remove_first;
+          (tmp_type.count = 1).if {        
+            v.set_type (tmp_type.first.default.to_strict);        
+          };
+        };              
+      };
+      tmp_type.free;
+    };
+  );

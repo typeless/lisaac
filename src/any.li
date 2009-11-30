@@ -33,7 +33,7 @@ Section Inherit
   - parent_any_option:ANY_OPTION := ANY_OPTION;
   
 Section Public
-  
+    
   - last_index_str (n:STRING,c:CHARACTER) :INTEGER <-
   // BSBS: A Mettre dans STRING.
   ( + result:INTEGER;

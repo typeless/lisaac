@@ -681,6 +681,7 @@ Section Private
   ( + ts:TYPE_FULL;
     
     ts := v.type;
+    
     ts.genere_declaration buffer;
     buffer.add_last ' ';
     ts.genere_star_declaration buffer;	
