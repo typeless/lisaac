@@ -64,7 +64,6 @@ Section Public
     + typ_list:TYPES_TMP;
     + pro_list:FAST_ARRAY(PROFIL_SLOT);
     + is_new:BOOLEAN;
-    + lst_typ:TYPES_TMP;
         
     // Block Detect.
     j := args.lower;
@@ -114,23 +113,19 @@ Section Public
       {(j <= profil.upper) && {result = NULL}}.while_do {
 	pro := profil.item j;					
 	((pro.type_self = NULL) || {pro.type_self == type_self}).if {
-          result := pro;
-          lst_typ := TYPES_TMP.new;            
+          result := pro;          
           i := args.lower + 1;          
           {(i <= args.upper) && {result != NULL}}.while_do {
-            lst_typ.clear;
-            args.item i.get_type lst_typ;
 	    loc := pro.argument_list.item i;	    	    
 	    (
-	      (loc != NULL) && 	     
-	      {! (lst_typ ~= loc.type_list)} && 
+              (loc != NULL) && {loc.require_first != NULL} &&	     
+              {args.item i.static_type != loc.require_first.value.static_type} &&
               {loc.type.raw != type_boolean}
             ).if {                            
 	      result := NULL;	      	      	      
 	    };
 	    i := i + 1;    
           };
-          lst_typ.free;
 	};
 	j := j + 1;
       };

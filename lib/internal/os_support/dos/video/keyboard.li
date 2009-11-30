@@ -20,17 +20,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
 
-  - name    := KEYBOARD;
+  + name    := KEYBOARD;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
-  - category:= MICRO;
   
   - bibliography:="http://IsaacOS.com";
   - author      :="Boutet Jerome (boutet@loria.fr),Sonntag Benoit (bsonntag@loria.fr)";
   - comment     :="Keyboard for DOS - AZERTY";
 
-  - version :="1.0";  
+  - version := 1;  
   - date    :="2003/04";
   
 Section Inherit

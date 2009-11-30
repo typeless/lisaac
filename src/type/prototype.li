@@ -157,6 +157,16 @@ Section Public
   
   + idf_generic_list:FAST_ARRAY(ITM_TYPE_PARAMETER);
   
+  - append_filename buffer:STRING <-
+  (
+    (path_begin != 1).if {
+      buffer.append ".../";
+    };
+    path_begin.to (filename.upper) do { j:INTEGER;
+      buffer.add_last (filename.item j);
+    };    
+  );
+  
   //
   // Default value.
   //
@@ -599,7 +609,8 @@ Section PROTOTYPE
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
         put string_tmp2 to buf like (ALIAS_STR.short_slot_title);
-        string_tmp.copy (s.position.prototype.filename);
+        string_tmp.clear;
+        s.position.prototype.append_filename string_tmp;        
         string_tmp.append " line #";
         s.position.line.append_in string_tmp;
         put string_tmp to buf like (ALIAS_STR.short_prototype_path);                

@@ -43,7 +43,7 @@ Section Inherit
 Section Public
   
   - print_help <-
-  (
+  ( 
     begin_usage1.print;
     version.print;
     (15- version.count).times { 
@@ -82,7 +82,7 @@ Section Public
   
 Section Private
   
-  - version:STRING_CONSTANT := "0.39";
+  - version:STRING_CONSTANT := "0.39 beta rc1";
   
   //
   //
@@ -131,7 +131,7 @@ Section Private
   
   - read_options <-
   ( + cmd:STRING;
-    + j,i,k:INTEGER;  
+    + j,i:INTEGER;  
     + f:POINTER;
     + lip_ok:BOOLEAN;
     + s:LIP_SLOT_CODE;
@@ -267,23 +267,7 @@ Section Private
       load_lip "make.lip";
     };
     
-    // Executing `front_end':
-    s := LIP_CODE.get_method (ALIAS_STR.slot_front_end);
-    (s = NULL).if {
-      "Slot `front_end' not found in *.lip file.\n".print;
-      die_with_code exit_failure_code;
-    };
-    s.run_with NULL;        
-    path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
-      b !< a
-    };        
-    k := path_file.upper;
-    {k <= path_file.lower}.until_do {
-      (path_file.item k = path_file.item (k-1)).if {
-        path_file.remove k;
-      };
-      k := k - 1;
-    };
+    LIP_CODE.call_front_end;
     
     (is_path_list).if {
       string_tmp.clear;
@@ -410,15 +394,15 @@ Section Private
 	proto := PROTOTYPE.prototype_list.item j;
 	buf.append "  \"";
 	buf.append (proto.name);
-	buf.append " (";
-	buf.append (proto.filename);
+        buf.append " (";
+        proto.append_filename buf;
 	buf.append ")\",\n";
       };
       proto := PROTOTYPE.prototype_list.last;
       buf.append "  \"";
       buf.append (proto.name);
       buf.append " (";
-      buf.append (proto.filename);
+      proto.append_filename buf;
       buf.append ")\"\n};\n\n";
 
       //

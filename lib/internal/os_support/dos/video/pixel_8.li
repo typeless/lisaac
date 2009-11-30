@@ -26,8 +26,6 @@ Section Header
   
   - comment     := "Pixel 8 bits (RR-VVV-BBB)";
   
-  - category    := MICRO;
-  
   - bibliography:= "http://IsaacOS.com";
   
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";

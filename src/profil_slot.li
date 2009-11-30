@@ -73,7 +73,7 @@ Section Public
         // For Type parametric.        
         idx := slot_code.get_index_argument_type p;
         (idx != - 1).if {
-          result := arg_type_tmp.item idx.static_type;
+          result := arg_type_tmp.item idx.static_type + TYPE_FULL.generic_bit;
         };
       };
     };

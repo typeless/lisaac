@@ -26,8 +26,6 @@ Section Header
   
   - comment     := "Bitmap line for text mode";
   
-  - category    := MICRO;
-  
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
 
@@ -37,29 +35,29 @@ Section Inherit
   
 Section Public
   
-  + storage:MAP_NATIVE_ARRAY[PIXEL_ASCII];
+  + storage:MAP_NATIVE_ARRAY(PIXEL_ASCII);
   
-  - get_storage:NATIVE_ARRAY[UINTEGER_8] <- NATIVE_ARRAY[UINTEGER_8].force_conversion storage;
+  - get_storage:NATIVE_ARRAY(UINTEGER_8) <- NATIVE_ARRAY(UINTEGER_8).force_conversion storage;
   
   - make n:INTEGER <-
   ( 
     capacity := n;
     upper    := n - 1;    
-    storage  := MAP_NATIVE_ARRAY[PIXEL_ASCII].calloc n;    
+    storage  := MAP_NATIVE_ARRAY(PIXEL_ASCII).calloc n;    
   );
   
   - make_with_capacity n:INTEGER <-
   (
     capacity := n;
     upper    := -1;
-    storage  := MAP_NATIVE_ARRAY[PIXEL_ASCII].calloc n;    
+    storage  := MAP_NATIVE_ARRAY(PIXEL_ASCII).calloc n;    
   );
   
   - make n:INTEGER at offset:UINTEGER_32 <-
   ( 
     capacity := n;
     upper    := n - 1;    
-    storage  := MAP_NATIVE_ARRAY[PIXEL_ASCII].force_conversion offset;    
+    storage  := MAP_NATIVE_ARRAY(PIXEL_ASCII).force_conversion offset;    
   );
 
 Section Public

@@ -26,8 +26,6 @@ Section Header
   
   - comment     := "Bitmap for text mode";
   
-  - category    := MICRO;
-  
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
   
@@ -46,7 +44,7 @@ Section Public
   //
   
   // Mapping memory bitmap.
-  + image:FAST_ARRAY[BMP_LINE_ASCII];
+  + image:FAST_ARRAY(BMP_LINE_ASCII);
   
   - get_line y:INTEGER :BMP_LINE <-
   ( //? {y < height};
@@ -62,7 +60,7 @@ Section Public
     width  := w;
     height := h;
     //bytes_per_line:=(w * PIXEL_ASCII.size + 7)>>3;
-    image := FAST_ARRAY[BMP_LINE_ASCII].create h;
+    image := FAST_ARRAY(BMP_LINE_ASCII).create h;
     0.to (image.upper) do { y:INTEGER;
       image.put (BMP_LINE_ASCII.create w) to y;
     };
@@ -74,7 +72,7 @@ Section Public
     
     width  := w;
     height := h;    
-    image := FAST_ARRAY[BMP_LINE_ASCII].create h;
+    image := FAST_ARRAY(BMP_LINE_ASCII).create h;
     offset:=offset_begin;
     0.to (image.upper) do { y:INTEGER;
       image.put (BMP_LINE_ASCII.create w at offset) to y;

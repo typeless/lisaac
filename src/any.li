@@ -317,6 +317,7 @@ Section Public
   
   - path_file:FAST_ARRAY(STRING_CONSTANT) := 
   FAST_ARRAY(STRING_CONSTANT).create_with_capacity 3000;
+  - path_begin:INTEGER := 1;
   
   - path_lisaac:STRING_CONSTANT <-
   ( + path:NATIVE_ARRAY(CHARACTER);
