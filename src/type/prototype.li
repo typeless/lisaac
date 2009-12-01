@@ -88,6 +88,8 @@ Section Public
   
   - init_slot_for typ:TYPE <-
   ( + cur:ITM_SLOT;
+    + slot:SLOT;
+    + slot_code:SLOT_CODE;
             
     // Parent.
     cur := first_slot;
@@ -98,12 +100,18 @@ Section Public
       cur := cur.next;
     };
     // Mapping.
-    (is_mapping).if {
+    ((is_mapping) || {is_external}).if {
       {cur != NULL}.while_do {
-	(cur.id_section.is_mapping).if {
-          ? {cur.style = '+'};
+	((cur.id_section.is_mapping) || {cur.id_section.is_external}).if {         
           typ.verify_itm_slot_parent cur;
-	  typ.slot_run.add_last (SLOT.create cur type typ);
+          slot := SLOT.create cur type typ;
+          typ.slot_run.add_last slot;
+          (cur.id_section.is_external).if {
+            slot_code ?= slot;
+            (slot_code != NULL).if {
+              slot_code.get_profil NULL self (typ.default);
+            };
+          };
 	};
 	cur := cur.next;
       };
@@ -117,10 +125,17 @@ Section Public
   + type_style:STRING_CONSTANT; // Reference / Expanded / Strict.
   
   + is_mapping:BOOLEAN;
-
+  
+  + is_external:BOOLEAN;
+  
   - set_mapping <-
   (
     is_mapping := TRUE;
+  );
+
+  - set_external <-
+  (
+    is_external := TRUE;
   );
   
   - set_type_style s:STRING_CONSTANT <- 

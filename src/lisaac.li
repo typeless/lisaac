@@ -511,11 +511,7 @@ Section Private
     TYPE_NULL.make_null;    
     TYPE_VOID.make_void;
     TYPE_CONTEXT.make_context;    
-    TYPE_ID.make_type_id; // Pas utile !    
-    // Input.
-    string_tmp.copy input_name;
-    string_tmp.to_upper;
-    type_input   := ITM_TYPE_SIMPLE.get (ALIAS_STR.get string_tmp).to_run_for NULL.raw;
+    TYPE_ID.make_type_id; // Pas utile !        
     // Other prototype.
     type_true    := ITM_TYPE_STYLE.get (ALIAS_STR.prototype_true)      
     style (ALIAS_STR.keyword_expanded).to_run_for NULL.raw;
@@ -550,6 +546,10 @@ Section Private
     type_gen  := ALIAS_ARRAY(ITM_TYPE_MONO).alias type_gen;
     type_n_a_n_a_character := ITM_TYPE_GENERIC.get (ALIAS_STR.prototype_native_array)
     style NULL with type_gen.to_run_for NULL.raw;
+    // Input.
+    string_tmp.copy input_name;
+    string_tmp.to_upper;
+    type_input   := ITM_TYPE_SIMPLE.get (ALIAS_STR.get string_tmp).to_run_for NULL.raw;
     //    
     (debug_level_option != 0).if {
       // Load for `print_char' and `die_with_code'

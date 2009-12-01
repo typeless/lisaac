@@ -413,6 +413,13 @@ Section Public
     ).if {
       stat := stat | inlining_bit;      
     };
+    (
+      (is_external) && 
+      {argument_list.first != NULL} && 
+      {argument_list.first.ensure_count = 0}
+    ).if {
+      argument_list.put NULL to 0;
+    };
   );
   
   //

@@ -953,7 +953,9 @@ Section Private
 	};	
 	last_section := SECTION_.get_name last_string;	
 	(last_section.is_mapping).if {
-	  object.set_mapping;
+          object.set_mapping;
+        }.elseif {last_section.is_external} then {
+          object.set_external;
 	}.elseif {
 	  (last_section.is_inherit_or_insert) && 
 	  {object.last_slot != NULL} && 

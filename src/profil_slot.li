@@ -91,9 +91,8 @@ Section Public
     + item_lst:FAST_ARRAY(ITM_ARGUMENT);         
     + result:FAST_ARRAY(WRITE);
     + tm:ITM_TYPE_MULTI;
-    + ts:ITM_TYPE_MONO;
+    + ts:ITM_TYPE_MONO;    
     
-    PROFIL_LIST.add Self;
     (is_graph).if {
       set_call := HASHED_DICTIONARY(INTEGER,PROFIL).create;
       set_back := HASHED_SET(PROFIL).create;
@@ -103,8 +102,10 @@ Section Public
     } else {
       name := ALIAS_STR.get_intern (s.name);    
     };
+       
     slot_code := s;
     type_self := typ_self;
+    PROFIL_LIST.add Self;
     //
     list_current := LIST.create (s.position);
     profil_current := profil_slot := Self;    
@@ -150,11 +151,16 @@ Section Public
       ts ?= s.result_type;      
       (ts != ITM_TYPE_SIMPLE.type_void).if {
         typ := ts.to_run_for Self;	                
-        result_list.add_last (typ.get (s.position) result 0);         
+        result_list.add_last (typ.get (s.position) result 0);
+        (is_external).if {
+          result_list.last.set_ensure_count 1;
+        };
       };
     };           
     //
-    result := write_argument call_lst;
+    (call_lst != NULL).if {
+      result := write_argument call_lst;
+    };
     //        
     slot_code.create_code is_first;       
     //

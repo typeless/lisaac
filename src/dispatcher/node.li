@@ -271,7 +271,13 @@ Section Public
     };
     result
   );
-    
+  
+  - genere buffer:STRING <-
+  (
+    "Genere NODE!\n".print;
+    crash;
+  );
+  
   
 Section NODE, DTA  
 
