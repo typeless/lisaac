@@ -179,7 +179,10 @@ Section Public
 	//	
 	result := node.result_expr;	
       } else {
-	// Type Error				
+        // Type Error				
+        t.prototype.filename.print; '='.print;        
+        static_type.prototype.filename.print; '\n'.print;        
+        
 	string_tmp.copy "Type `";
 	t.append_name_in string_tmp;	
 	string_tmp.append "' is invalid with `";

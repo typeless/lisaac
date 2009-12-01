@@ -273,20 +273,33 @@ Section Public
   );  
     
   - get_path_slot n:STRING_CONSTANT :SLOT <-
-  ( + result:SLOT;
+  ( + result,r:SLOT;
     + j:INTEGER;
     + it:ITM_TYPE_MONO;
+    + t:TYPE_FULL;
     
     j := slot_run.lower;
-    {result = NULL}.while_do {
-      ? {j <= slot_run.upper}; 
-      ? {slot_run.item j.id_section.is_inherit_or_insert};
+    {
+      (result = NULL) && 
+      {j <= slot_run.upper} && // BSBS NE doit jamais arriv
+      {slot_run.item j.id_section.is_inherit_or_insert} // BSBS NE doit jamais arriv
+    }.while_do {      
       it ?= slot_run.item j.result_type;
-      result := it.to_run_for Self.get_slot n;
+      t := it.to_run_for Self;    
+      result := t.get_slot n;
       j := j + 1;
     };
-    ? {result != NULL};
-    slot_run.item (j-1)
+    (result != NULL).if {
+      r := slot_run.item (j-1);
+    } else {
+      "TYPE : ".print;
+      print; 
+      ':'.print;
+      n.print; 
+      '\n'.print;
+      crash;
+    };
+    r
   );
   
   //
@@ -951,11 +964,16 @@ Section TYPE
     
     result := dico_name_to_prototype.fast_reference_at n;        
     (result = NULL).if {
-      (list_current = NULL).if {
-        call_path := path_lisaac;
-      } else {
+      // BSBS: Super foureux!!!!
+      (list_main != NULL).if {                  
+        call_path := list_main.position.prototype.filename;         
+      }.elseif {! PROTOTYPE.prototype_list.is_empty} then {          
+        call_path := PROTOTYPE.prototype_list.last.filename;
+      }.elseif {list_current != NULL} then {          
         call_path := list_current.position.prototype.filename; 
-      };    
+      } else {
+        call_path := path_lisaac;
+      };
       read_char := {
         cn := n.item idx_name;
         (cn = '.').if {

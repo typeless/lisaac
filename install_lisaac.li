@@ -668,6 +668,9 @@ Section Private
         install_variable;      
         
         title "Compilation of Lisaac compiler." count 5; 
+        "*---------------------------------------------------------*\n\
+        \| Note: You need at least 768MB of memory.                |\n\
+        \*---------------------------------------------------------*\n".print;
         compile_file "lisaac";
         
         title "Compilation of Shorter tool." count 5; 

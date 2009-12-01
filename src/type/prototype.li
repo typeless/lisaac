@@ -92,6 +92,7 @@ Section Public
     + slot_code:SLOT_CODE;
             
     // Parent.
+    //last_position := position;
     cur := first_slot;
     {(cur != NULL) && {cur.id_section.is_inherit_or_insert}}.while_do {            
       typ.slot_run.add_last (SLOT.create cur type typ);
@@ -267,8 +268,8 @@ Section Public
 
     //
     // Creation list execution.
-    //    
-    list_current := LIST.create position;
+    //        
+    list_main := list_current := LIST.create position;
     (debug_level_option != 0).if {
       // Debug mode : Add context local.
       context_main := TYPE_CONTEXT.default.new_local position 
@@ -308,8 +309,7 @@ Section Public
     list_current.add_last base;
         
     // Result.    
-    list_current.add_last (INTEGER_CST.create position value 0 type (type_integer.default)); 
-    list_main := list_current;
+    list_current.add_last (INTEGER_CST.create position value 0 type (type_integer.default));     
             
     //
     // Detect life code.
