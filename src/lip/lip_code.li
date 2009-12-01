@@ -185,7 +185,7 @@ Section Public
     NULL
   );
   
-  - call_front_end <-
+  - call_front_end order:BOOLEAN <-
   ( + s:LIP_SLOT_CODE;
     + k,i:INTEGER;
     + p1,p2:STRING_CONSTANT;
@@ -196,9 +196,15 @@ Section Public
       die_with_code exit_failure_code;
     };
     s.run_with NULL;        
-    path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
-      b !< a
-    };        
+    (order).if {
+      path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
+        b < a
+      };        
+    } else {
+      path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
+        b !< a
+      };        
+    };
     k := path_file.upper;
     path_begin := path_file.first.upper;
     {k <= path_file.lower}.until_do {
@@ -216,5 +222,5 @@ Section Public
       };
       k := k - 1;
     };
-    
+    path_begin := (path_begin - 1).max 1;
   );

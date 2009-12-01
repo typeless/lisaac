@@ -160,7 +160,7 @@ Section Public
   - append_filename buffer:STRING <-
   (
     (path_begin != 1).if {
-      buffer.append ".../";
+      buffer.append "...";
     };
     path_begin.to (filename.upper) do { j:INTEGER;
       buffer.add_last (filename.item j);

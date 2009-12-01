@@ -2457,7 +2457,7 @@ Section Private
 	    };
             
 	    ((! is_shorter) && {! is_shorter2}).if {	      
-	      (object.generic_count = 0).if {
+              (object.generic_count = 0).if {                
 		syntax_error (current_position,"Object can't be generic.");
 	      };
             };
@@ -3209,10 +3209,13 @@ Section Public
       pos_cur := source.lower;
       pos_line:=1;
       pos_col :=0;
-    
+      is_shorter := is_shorter2 := FALSE;
+      
       // Parse.
       readlip_program;
       //
+      is_shorter  := Old is_shorter;
+      is_shorter2 := Old is_shorter2;
       object := NULL; // Parser is Free (see require test...)
     }     
   );

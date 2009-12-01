@@ -34,7 +34,7 @@ Section Inherit
   
 Section Public
     
-  - last_index_str (n:STRING,c:CHARACTER) :INTEGER <-
+  - last_index_str (n:ABSTRACT_STRING,c:CHARACTER) :INTEGER <-
   // BSBS: A Mettre dans STRING.
   ( + result:INTEGER;
     result := n.upper;
@@ -367,4 +367,49 @@ Section Public
   
   - last_position:POSITION;
 
+  - load_lip file_lip:ABSTRACT_STRING <-
+  ( + path_lip:STRING_CONSTANT;
+    + is_good:BOOLEAN;
+    + count:INTEGER;
+
+    string_tmp.clear;
+    {      
+      string_tmp.append file_lip;
+      path_lip := ALIAS_STR.get string_tmp;      
+      (is_good := PARSER.read_lip path_lip).if_false {      
+        string_tmp.copy path_lip;
+        string_tmp.remove_last (file_lip.count);
+        string_tmp.append "../";
+        count := count + 1;
+      };
+    }.do_while {(count < 5) && {! is_good}};
+    (is_good).if_false {
+      string_tmp.copy path_lisaac;
+      string_tmp.append "make.lip";
+      path_lip := ALIAS_STR.get string_tmp;
+      (is_good := PARSER.read_lip path_lip).if_false {      
+        "File `".print;
+        path_lip.print;
+        "' not found !\nIncorrect installation.\n".print;
+        die_with_code exit_failure_code;
+      };      
+    };            
+    {LIP_CODE.list_parent.is_empty}.until_do {
+      path_lip := LIP_CODE.list_parent.first;
+      LIP_CODE.list_parent.remove_first;      
+      (path_lip.is_empty).if {
+        string_tmp.copy path_lisaac;
+        string_tmp.append "make.lip";
+        path_lip := ALIAS_STR.get string_tmp;
+      };
+      (PARSER.read_lip path_lip).if_false {      
+        "File `".print;
+        path_lip.print;
+        "' not found ! (see `*.lip')\n".print;          
+        die_with_code exit_failure_code;
+      };
+    };
+    // Auto-load 'lisaac' variable.
+    LIP_CODE.put_string path_lisaac to (ALIAS_STR.variable_lisaac);    
+  );
 
