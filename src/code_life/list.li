@@ -341,36 +341,16 @@ Section Private
     
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
-	loc := tab.item j;	
+        loc := tab.item j;	
         loc.is_result.if_false {
           (loc.type.raw = TYPE_CONTEXT).if {
             context_counter := context_counter + 1;
           } else {
             local_counter := local_counter + 1;
-          };
-          /*
-          (
-            (loc.ensure_count != 0) && 
-            {profil_current != NULL} && 
-            {loc.type.raw != TYPE_CONTEXT}
-          ).if {            
-            i := profil_current.result_list.lower;
-            {
-              (i <= profil_current.result_list.upper) && 
-              {profil_current.result_list.item i != loc}
-            }.while_do {
-              i := i + 1;
-            };
-            (i > profil_current.result_list.upper).if {
-              
-              loc.intern_name.print;
-              ' '.print;
-              loc.ensure_count.print; 
-              '\n'.print;
-              
-            };
-          };
-          */
+          };          
+          //
+          simplify_type loc; // BSBS: Pas utile (c est un pb de result non utiliser)
+          //
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {

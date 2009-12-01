@@ -67,6 +67,12 @@ Section Public
     create wrt
   );
   
+  - execute:INSTR <-
+  (
+    write ?= write.execute;
+    Self
+  );
+  
   //
   // Remove
   //

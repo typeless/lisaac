@@ -293,7 +293,12 @@ Section Private
 	  };
 	};
       };
-    };            	          
+    };            	              
+    /* BSBS: A revoir avec pb `list' l.352 et `profil' pour result
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;
+      result_list.item j.execute;
+    };
+    */
     (cop_argument != NULL).if {
       cop_argument := cop_argument.execute_link;
       (

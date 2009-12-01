@@ -392,9 +392,16 @@ Section Public
     search_and_convert_tail_recursive;    
     
     code ?= code.execute; 
-    
-    // BSBS: Netoyer les result pas utile
-    
+    /* BSBS: Nettoyer les result ...
+    (result_list.lower).to (result_list.upper) do { i:INTEGER;
+      (result_list.item i.intern_name == "Result_2__5MPI").if {
+        result_list.item i.ensure_count.print; '\n'.print;
+      };
+      (result_list.item i.ensure_count = 0).if {       
+        result_list.put NULL to i;
+      };
+    };
+    */
     LOCAL_SEQ.clear;
     
     seq_call_and_loop := seq_call_and_loop + 1;
