@@ -22,7 +22,7 @@ Section Header
   
   + name    := FILE;
 
-  - copyright   := "2003-2007 Benoit Sonntag, Jerome Hilbert";
+  - copyright   := "2003-2007 Benoit Sonntag, Jerome Hilbert, 2009 Nicolas Boulay";
   
   - comment := "Abstract File Management";
   
@@ -32,7 +32,7 @@ Section Inherit
   
 Section Public
   
-  - cursor:UINTEGER_32 <-
+  - cursor:INTEGER_64 <-
   [
     -? {is_open};
   ]
@@ -41,13 +41,13 @@ Section Public
     0
   );
   
-  - size:UINTEGER_32 <-
+  - size:INTEGER_64 <-
   ( 
     deferred;
     0
   );
   
-  - set_cursor n:UINTEGER_32 <-
+  - set_cursor n:INTEGER_64 <-
   [
     -? {is_open};
     -? {n <= size};
@@ -67,7 +67,7 @@ Section Public
   // Read.
   //
   
-  - read dest:OBJECT :INTEGER <- 
+  - read dest:OBJECT :INTEGER_64 <- 
   // WARNING: It's good for Mapping objects, else serializable is necessary.
   [
     -? {is_open};
@@ -77,14 +77,14 @@ Section Public
     physical_read buf size (dest.object_size)
   ); 
   
-  - read dest:ARRAYED size nb_elt:INTEGER :INTEGER <-
+  - read dest:ARRAYED size nb_elt:INTEGER_64 :INTEGER_64 <-
   [
     -? {is_open};
   ]
   ( + buf:NATIVE_ARRAY(UINTEGER_8);
-    + index,s:INTEGER;
-    + result:INTEGER;
-    + new_count:INTEGER;
+    + index,s:INTEGER_64;
+    + result:INTEGER_64;
+    + new_count:INTEGER_64;
     
     new_count := dest.count + nb_elt;
     dest.set_capacity new_count;
@@ -101,13 +101,13 @@ Section Public
   // Write.
   //
   
-  - write src:ARRAYED from start:INTEGER size nb_elt:INTEGER :INTEGER <-
+  - write src:ARRAYED from start:INTEGER_64 size nb_elt:INTEGER_64 :INTEGER_64 <-
   [
     -? {is_open};
   ]
   ( + buf:NATIVE_ARRAY(UINTEGER_8);
-    + index,s:INTEGER;
-    + result:INTEGER;
+    + index,s:INTEGER_64;
+    + result:INTEGER_64;
        
     buf := src.to_native_array_uinteger_8;
     index := (start-src.lower) * src.element_sizeof;
@@ -117,12 +117,12 @@ Section Public
     result / src.element_sizeof
   );
   
-  - write src:ARRAYED size nb_elt:INTEGER :INTEGER <-
+  - write src:ARRAYED size nb_elt:INTEGER_64 :INTEGER_64 <-
   (
     write src from (src.lower) size nb_elt
   );
   
-  - write src:ARRAYED :INTEGER <-
+  - write src:ARRAYED :INTEGER_64 <-
   (
     write src size (src.count)
   );
@@ -146,7 +146,7 @@ Section Public
     
 Section FILE
   
-  - physical_read buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
+  - physical_read buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER_64 :INTEGER_64 <-
   [
     -? {is_open};
   ]
@@ -158,7 +158,7 @@ Section FILE
     +? { (cursor = Old cursor + s ) || {cursor = size} };
   ];
     
-  - physical_write buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
+  - physical_write buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER_64 :INTEGER_64 <-
   [
     -? {is_open};
   ]
