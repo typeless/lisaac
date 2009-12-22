@@ -681,6 +681,7 @@ Section Public
       output_decl.append
       "#define _LARGE_FILE_API\n\
       \#define _LARGEFILE_SOURCE\n\
+      \#define _FILE_OFFSET_BITS 64\n\
       \#define _LARGEFILE64_SOURCE\n";
 
       // ANSI argument command.
