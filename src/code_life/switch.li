@@ -296,7 +296,7 @@ Section Public
   // Genere.
   //
   
-  - bug_count:INTEGER;
+  - count_bug:INTEGER;
   
   - genere buffer:STRING <-
   ( + lst:LIST;
@@ -308,7 +308,13 @@ Section Public
     + c1,c2:CASE;
     + lst_case:FAST_ARRAY(CASE);
     + cases:FAST_ARRAY(FAST_ARRAY(CASE));
-        
+    
+    buffer.append "/* ";
+    (list.lower).to (list.upper) do { i:INTEGER;      
+      list.item i.id.put_id buffer;
+      buffer.add_last ' ';
+    };
+    buffer.append "*/\n";
     (
       (list.first.id = TYPE_NULL) && 
       {debug_level_option = 0} && 
@@ -400,8 +406,30 @@ Section Public
             buffer.remove_last 1;              
             lst_case.first.genere buffer;                    
             buffer.append " break;\n";
-          };
+          } 
+          
+          // Debug...
+          else {
+            (lst_case.lower).to (lst_case.upper) do { i:INTEGER;              
+              buffer.append indent; 
+              buffer.append "case ";
+              lst_case.item i.id.put_id buffer;
+              buffer.append ": \n";          
+            };
+            buffer.remove_last 1;                          
+            buffer.append " break;\n";
+          };          
         };	      
+        // Debug...
+        (debug_level_option != 0).if {
+          buffer.append indent;
+          buffer.append "default:\n";
+          buffer.append indent;
+          buffer.append "lisaac_stack_print(top_context); \
+          \print_string(\"Call on twilight zone!!!\\n\"); \
+          \die_with_code(1);\n";
+        };
+        
         buffer.append indent;
         buffer.add_last '}';
       };

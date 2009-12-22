@@ -121,20 +121,20 @@ Section Public
     NULL
   );
   
-  - get itm_typ:ITM_TYPE_SIMPLE with gen:FAST_ARRAY(TYPE_FULL) :TYPE_FULL <-
+  - get (path:STRING_CONSTANT,itm_typ:ITM_TYPE_SIMPLE) with gen:FAST_ARRAY(TYPE_FULL) :TYPE_FULL <-
   ( + base:TYPE_GENERIC;    
     + result,t:TYPE_FULL;
     + styl,k:STRING_CONSTANT;
     + proto:PROTOTYPE;
     
-    proto := load_prototype (itm_typ.name) generic_count (gen.count);    
+    proto := load_prototype (path,itm_typ.name) generic_count (gen.count);    
     string_tmp.copy (proto.filename);    
     (gen.lower).to (gen.upper) do { j:INTEGER;
       string_tmp.add_last ' ';
       t := gen.item j;
       (t.flag & 1111b).append_in string_tmp;
       string_tmp.append (t.raw.key);  // BSBS: transformer la key par un numero de fichier...
-      // BSBS: parce que la, tu as des key immense !
+      // BSBS: parce que la, tu as des key immense ! (prends l'index de file_list)
     };
     k := ALIAS_STR.get string_tmp;
     //

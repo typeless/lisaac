@@ -29,7 +29,7 @@ Section Header
   
   - external :=
 `
-#define MINIMUM_SIZE 256  
+#define MINIMUM_SIZE 256
 void *table_size[MINIMUM_SIZE/sizeof(void *)];
 void *last_block[64];
 `;
@@ -44,7 +44,7 @@ Section Inherit
     
 Section Mapping
   
-  + previous_linear:POINTER;  
+  + previous_linear:MEMORY;  
   + size_and_id:UINTEGER_CPU;
     
   //---------------> Limit for Busy 
@@ -79,6 +79,8 @@ Section Public
   
 Section MEMORY  
   
+  - is_debug_memory:BOOLEAN := FALSE;
+  
   - this:POINTER                      <- CONVERT(MEMORY,POINTER).on Self;
   
   - begin:POINTER                     <- this + object_size;
@@ -93,7 +95,7 @@ Section MEMORY
   
   - is_end:BOOLEAN                    <- (size_and_id & id_end).to_boolean;
   
-  - set_previous_linear p:POINTER     <- ( previous_linear := p; );
+  - set_previous_linear p:MEMORY      <- ( previous_linear := p; );
   
   - set_size_and_id s:UINTEGER_CPU    <- ( size_and_id     := s; );
   
@@ -132,7 +134,6 @@ Section MEMORY
     (capacity_max = 0).if {
       search_capacity;
     };
-    
     old_size := nb_page << 26;
     nb_page  := nb_page + 1;
     new_size := old_size + 64.mb;
@@ -143,7 +144,7 @@ Section MEMORY
     /*
     "Begin_memory + old_size : ".print;  
     (begin_memory + old_size).print_hex; '\n'.print;
-    "object_size : ".print; object_size.print; '\n'.print;
+    "object_size  ".print; object_size.print; '\n'.print;
     */
     block := CONVERT(POINTER,MEMORY).on (begin_memory + old_size);        
     block.set_previous_linear NULL; 
@@ -199,35 +200,34 @@ Section MEMORY
   
   - to_free idx:UINTEGER_CPU <-
   ( + new_free,next:MEMORY;
-    + prev:POINTER;
     + new_size:UINTEGER_CPU;
     {id = id_busy} ? "Memory: Macro block not busy.";
     {idx.in_range 0 to 63} ? "Memory: Bound index.";    
         
-    prev := previous_linear;
     next := next_linear;
-    new_free := CONVERT(POINTER,MEMORY).on (begin_memory + prev);
+    new_free := previous_linear;
     new_size := size_and_id & ~ 1.to_uinteger_cpu;
-    ((prev = NULL) || {new_free.id != id_free}).if {
+    ((new_free = NULL) || {new_free.id != id_free}).if {
       // `Self' => Free
       new_free := Self;      
-      add_link_free;
+      add_link_free;            
     } else {
       // `previous_linear' => Free
-      new_size := new_size + new_free.size_and_id + object_size;
+      new_size := new_size + new_free.size_and_id + object_size;            
     };
         
     ((! is_end) && {next.id = id_free}).if {
       // Delete and concat `next_linear'
       new_size := new_size + next.size_and_id + object_size;
-      next.delete_link_free;	
+      next.delete_link_free;	            
     };    
     new_free.set_size_and_id new_size;
+        
     (new_free.is_end).if {
-      put_last new_free to idx;
+      put_last new_free to idx;          
     } else {
-      next := next_linear;
-      next.set_previous_linear (new_free.this - begin_memory);
+      next := new_free.next_linear;
+      next.set_previous_linear new_free;
     };    
   );
   
@@ -240,20 +240,20 @@ Section MEMORY
     delete_link_free;
     //    
     siz      := size_and_id;
-    new_size := siz - sz;
-    (new_size > (minimum_size+2+object_size)).if {
+    new_size := siz - sz;    
+    (new_size > (minimum_size+object_size+object_size)).if {
       siz := sz;
       new := CONVERT(POINTER,MEMORY).on (begin+sz);
-      new.set_previous_linear (this - begin_memory);
+      new.set_previous_linear Self; 
       new.set_size_and_id (new_size - object_size);
       new.add_link_free;
       (new.is_end).if {
 	put_last new to idx;
       } else {
 	next := new.next_linear;
-	next.set_previous_linear (new.this - begin_memory);
+	next.set_previous_linear new;
       };
-    };
+    };   
     size_and_id := siz | id_busy;
     {id = id_busy} ? "Memory: Macro Block not busy.";
   );
@@ -277,16 +277,16 @@ Section MEMORY
 	    put_last Self to idx;
 	  } else {
 	    nxt := next_linear;
-	    nxt.set_previous_linear (this - begin_memory);
+	    nxt.set_previous_linear Self;
 	  };
-	  result := Self;
-	};
+          result := Self;
+        };                
       };
       (result = NULL).if { 
 	// new allocation.	
-	result := search new_size;		
-	copy begin to (result.begin) size old_size;
-	to_free idx;
+        result := search new_size;		              
+        copy begin to (result.begin) size old_size;                
+        to_free idx;                
       };
     } else {
       result := Self;
@@ -302,6 +302,7 @@ Section MEMORY
   ( + result:MEMORY;
     + idx:UINTEGER_CPU;
     
+    
     {new_size > minimum_size-POINTER.object_size} ? "Memory: Big block.";
     {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     
@@ -315,7 +316,7 @@ Section MEMORY
     idx := get_index (result.this);
     {idx.in_range 0 to 63} ? "Memory: Bound index.";
     result.to_busy new_size index idx;
-            
+    
     result
   );
   
@@ -323,8 +324,7 @@ Section MEMORY
   ( + idx:UINTEGER_CPU;
     + blc,prev:MEMORY;
     + result:POINTER;
-    + pv:POINTER;
-    
+        
     {
       (idx < nb_page) && 
       {
@@ -343,9 +343,8 @@ Section MEMORY
  
     (blc.size < minimum_size).if {
       blc.delete_link_free;
-      pv := blc.previous_linear;
-      (pv != NULL).if {
-	prev := CONVERT(POINTER,MEMORY).on (begin_memory + pv);
+      prev := blc.previous_linear;
+      (prev != NULL).if {	
 	prev.set_size_and_id (prev.size_and_id + blc.size_and_id + object_size);
 	put_last prev to idx;
       };
@@ -435,9 +434,6 @@ Section Private
   ( + next,last:POINTER;
     {p != NULL} ? "Memory: Pointer NULL.";
     
-    //"Free : ".print;
-    //ptr_table.print_hex; '\n'.print;
-    
     last := read_ptr ptr_table;
     {last != NULL} ? "Memory: Table NULL.";
     next := read_ptr last;
@@ -465,13 +461,13 @@ Section Private
   - fill_memory src:POINTER size sz:UINTEGER_CPU <-
   // Just for debug.
   ( + na_src:NATIVE_ARRAY(POINTER);
-    + siz:INTEGER;
+    + siz:UINTEGER_CPU;
     
     {(sz & (POINTER.object_size -1)) = 0} ? "Memory: Copy alignment.";
     
-    siz := sz / POINTER.object_size;    
+    siz := sz.align_power (POINTER.object_size) / POINTER.object_size;    
     na_src := CONVERT(POINTER,NATIVE_ARRAY(POINTER)).on src;    
-    (siz-1).downto 0 do { j:INTEGER;
+    ((siz-1).to_integer).downto 0 do { j:INTEGER;
       na_src.put NULL to j;
     };    
   );  
@@ -528,16 +524,17 @@ Section Public
   ( + ptr_table,result:POINTER;    
     + new_size:UINTEGER_CPU;
     
+    verify_memory "Begin alloc_type size";
+    
     {sz <= minimum_size} ? "Memory: Size bound.";
 
     new_size  := sz.align_power (POINTER.object_size); 
-    
-    //"alloc_type : ".print; new_size.print; '\n'.print;
-    
-    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";        
-        
+    {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";                
     ptr_table := table_type t;
     result := micro_alloc new_size table ptr_table lab (t | 1b);        
+    
+    verify_memory "End alloc_type size";
+    
     result
   );
   
@@ -545,8 +542,12 @@ Section Public
   ( + ptr_table:POINTER;
     {p != NULL} ? "Memory: Pointer NULL.";
     
+    verify_memory "Begin free type";
+    
     ptr_table := table_type t;
     micro_free p table ptr_table;
+    
+    verify_memory "End free type";
   );
   
   - alloc_size sz:UINTEGER_CPU :POINTER <-
@@ -554,19 +555,18 @@ Section Public
   ( + ptr_table,result:POINTER;
     + new_size:UINTEGER_CPU;
     
+    verify_memory "Begin alloc_size";
+    
     {sz <= minimum_size} ? "Memory: Size bound.";
         
     new_size  := sz.align_power (POINTER.object_size); 
-    
-    //"alloc_size : ".print; new_size.print; '\n'.print;
-    
+        
     {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     
     ptr_table := table_size (new_size / POINTER.object_size);    
     result := micro_alloc new_size table ptr_table lab (new_size.to_uinteger_32);
-        
-    //fill_memory result size new_size;
     
+    verify_memory "End alloc_size";
     result
   );
   
@@ -574,13 +574,17 @@ Section Public
   ( + ptr_table:POINTER;
     + new_size:UINTEGER_CPU;
     {p != NULL} ? "Memory: Pointer NULL.";
-
+    
+    verify_memory "Begin free size";
+    
     new_size  := sz.align_power (POINTER.object_size); 
     
     {(new_size & (POINTER.object_size - 1)) = 0} ? "Memory: Alignment.";
     
     ptr_table := table_size (new_size / POINTER.object_size);
     micro_free p table ptr_table;
+    
+    verify_memory "End free size";
   );
     
   - alloc_dynamic sz:UINTEGER_CPU :POINTER <-
@@ -588,40 +592,46 @@ Section Public
   ( + new_size,new_size2:UINTEGER_CPU;
     + result:POINTER;
     {sz != 0} ? "Memory: Size = 0";
-        
+    
+    verify_memory "Begin alloc_dynamic";
+    
     new_size  := sz.align_power (POINTER.object_size); 
-    new_size2 := new_size + UINTEGER_32.object_size;
+    new_size2 := new_size; // + UINTEGER_CPU.object_size;
     (new_size2 <= minimum_size).if {
       result := alloc_size new_size2;      
-      put_32 3 to result; // 3 : 2=NATIVE_ARRAY
-      result := result + UINTEGER_32.object_size;
+      //put_32 3 to result; // 3 : 2=NATIVE_ARRAY
+      result := result; // + UINTEGER_CPU.object_size;
     } else {      
       result := search new_size .begin;      
     };
-    
-    //fill_memory result size new_size;
+        
+    verify_memory "End alloc_dynamic";
     
     result    
   );
-    
+  
   - realloc_dynamic p:POINTER old_size old_sz:UINTEGER_CPU new_size new_sz:UINTEGER_CPU :POINTER <-
   ( + old_size,old_size2,new_size:UINTEGER_CPU;
     + mem:MEMORY;
     + result:POINTER;    
     {old_size < new_sz} ? "Memory: New size < Old size.";
-      
-    old_size  := old_sz.align_power (POINTER.object_size); 
-    old_size2 := old_size + UINTEGER_32.object_size;    
-    new_size  := new_sz.align_power (POINTER.object_size); 
-    (old_size2 <= minimum_size).if {
-      result := alloc_dynamic new_size;
-      copy p to result size old_size;
-      free (p - UINTEGER_32.object_size) size old_size2;
-    } else {
-      mem := CONVERT(POINTER, MEMORY).on (p - object_size);
-      result := mem.resize new_size index (get_index p).begin;      
-    };
+    
+    verify_memory "Begin realloc_dynamic";
         
+    old_size  := old_sz.align_power (POINTER.object_size); 
+    old_size2 := old_size; // + UINTEGER_CPU.object_size;    
+    new_size  := new_sz.align_power (POINTER.object_size); 
+    (old_size2 <= minimum_size).if {          
+      result := alloc_dynamic new_size;            
+      copy p to result size old_size;
+      free (p /*- UINTEGER_CPU.object_size*/) size old_size2;            
+    } else {      
+      mem := CONVERT(POINTER, MEMORY).on (p - object_size);
+      result := mem.resize new_size index (get_index p).begin;                  
+    };
+    
+    verify_memory "End realloc_dynamic";
+    
     result
   );
   
@@ -630,15 +640,15 @@ Section Public
     + mem:MEMORY;
     
     new_size  := sz.align_power (POINTER.object_size); // BSBS: Optim, alignment by compilo.
-    new_size2 := new_size + UINTEGER_32.object_size;
+    new_size2 := new_size; // + UINTEGER_CPU.object_size;
     (new_size2 <= minimum_size).if {
-      free (p - UINTEGER_32.object_size) size new_size2;
+      free (p /*- UINTEGER_CPU.object_size*/) size new_size2;
     } else {
       mem := CONVERT(POINTER, MEMORY).on (p - object_size);
       mem.to_free (get_index p);
     };
   );
-  
+    
   //
   // GARBAGE COLLECTOR
   //
@@ -760,9 +770,57 @@ Section Private
   
 Section Private
   
+  - verify_memory msg:STRING_CONSTANT<-
+  ( + m,next,prev:MEMORY;
+    + msg_intern:STRING_CONSTANT;
+    
+    (is_debug_memory).if {
+      (begin_memory != NULL).if {
+        next := CONVERT(POINTER, MEMORY).on begin_memory;
+        {
+          m := next;
+          next := m.next_linear;
+          prev := m.previous_linear;
+          
+          (prev = NULL).if {
+            (m != begin_memory).if {
+              msg_intern := "Begin list fail!\n";
+            };
+          } else {        
+            (prev.next_linear != m).if {
+              msg_intern := "Previous fail!\n";
+            };
+          };      
+          (m.id = id_busy).if {
+            // Busy
+          } else {
+            // Free
+            ((! m.is_end) && {next.id != id_busy}).if {
+              msg_intern := "Double free fail!\n";
+            };
+          };
+          (m.is_end).if {
+            
+          } else {
+            (next.previous_linear != m).if {
+              msg_intern := "Next fail!\n";
+            };
+          };      
+        }.do_until {(m.is_end) || {msg_intern != NULL}};
+        (msg_intern != NULL).if {
+          "************* Crash memory *************\n".print;
+          msg_intern.print;
+          msg.print;
+          '\n'.print;
+          crash;
+        };
+      };
+    };
+  );
+  
   - print_memory <-
   ( + m,next:MEMORY;
-    
+        
     "------------------------------------\n".print;
     "first free : ".print;
     first_free.this.print_hex; 
@@ -777,7 +835,7 @@ Section Private
       (m.previous_linear = NULL).if {
 	"NULL".print;
       } else {
-	(begin_memory + m.previous_linear).print_hex;
+        (m.previous_linear.this).print_hex;        
       };
       "<-".print;
       m.this.print_hex;      

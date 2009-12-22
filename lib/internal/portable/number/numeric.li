@@ -196,14 +196,14 @@ Section Public
     };
   );
 
-  - to limit_up:SELF until test: {BOOLEAN} do blc:{SELF;} <-
+  - to limit_up:SELF until test:{BOOLEAN} do blc:{SELF;} <-
   // Classical loop from `Self' to `limit_up' until `test' is TRUE
   (
     ((Self <= limit_up) && {!test.value}).if {
-    blc.value Self;
-    (Self + 1).to limit_up until test do blc;
-  };
-);
+      blc.value Self;
+      (Self + 1).to limit_up until test do blc;
+    };
+  );
 
 
 

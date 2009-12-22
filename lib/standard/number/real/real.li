@@ -32,6 +32,11 @@ Section Header
   
   - type    := `float`;
   - default := 0.0;
+  
+  - lip     <-
+  (
+    add_lib "-lm";
+  );
 
 Section Insert
   

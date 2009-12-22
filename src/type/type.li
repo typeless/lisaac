@@ -108,7 +108,7 @@ Section Public
   // Get.
   //
     
-  - get itm_typ:ITM_TYPE_SIMPLE :TYPE_FULL <-  
+  - get (path:STRING_CONSTANT,itm_typ:ITM_TYPE_SIMPLE) :TYPE_FULL <-  
   ( + result:TYPE_FULL;    
     + base:TYPE;
     + styl:STRING_CONSTANT;    
@@ -116,7 +116,7 @@ Section Public
     
     + r:TYPE;
         
-    proto := load_prototype (itm_typ.name) generic_count 0;
+    proto := load_prototype (path,itm_typ.name) generic_count 0;
     base := dico_type.fast_reference_at (proto.filename);
     (base = NULL).if {          
       base := TYPE.clone;
@@ -262,6 +262,13 @@ Section Public
     (j <= slot_run.upper).if {
       result := slot_run.item j;
     } else {
+      /*
+      (n == "__init_page").if {
+        "TYPE: get_slot_local : ".print;
+        prototype.filename.print; ' '.print; prototype.print;
+        '\n'.print;
+      };
+      */
       itm_slot := prototype.slot_list.fast_reference_at n;
       (itm_slot != NULL).if {	        
         verify_itm_slot_parent itm_slot;
@@ -952,28 +959,22 @@ Section Public
   
 Section TYPE
 
-  - load_prototype n:STRING_CONSTANT generic_count gen_count:INTEGER :PROTOTYPE <-
+  - load_prototype (call_path:STRING_CONSTANT,n:STRING_CONSTANT) 
+  generic_count gen_count:INTEGER :PROTOTYPE <-
   ( + j,idx_path,idx_name,idx_name_old,idx_path_old:INTEGER;
     + entry:POINTER; 
     + result:PROTOTYPE;
-    + path,found,cur_found,call_path:STRING_CONSTANT;
+    + path,found,cur_found:STRING_CONSTANT;
     + cn,cp:CHARACTER;
     + read_char:{};
     + stat,found_index,cur_index:INTEGER;
     + is_only:BOOLEAN;
     
+    
+    //call_path.print; ' '.print; n.print; '\n'.print;
+    
     result := dico_name_to_prototype.fast_reference_at n;        
     (result = NULL).if {
-      // BSBS: Super foureux!!!!
-      (list_main != NULL).if {                  
-        call_path := list_main.position.prototype.filename;         
-      }.elseif {! PROTOTYPE.prototype_list.is_empty} then {          
-        call_path := PROTOTYPE.prototype_list.last.filename;
-      }.elseif {list_current != NULL} then {          
-        call_path := list_current.position.prototype.filename; 
-      } else {
-        call_path := path_lisaac;
-      };
       read_char := {
         cn := n.item idx_name;
         (cn = '.').if {
@@ -1097,6 +1098,9 @@ Section TYPE
       };
       POSITION.send_error;
     };
+    
+    //result.filename.print; '\n'.print; '\n'.print;
+    
     result
   );
   

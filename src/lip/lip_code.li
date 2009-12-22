@@ -185,10 +185,8 @@ Section Public
     NULL
   );
   
-  - call_front_end order:BOOLEAN <-
-  ( + s:LIP_SLOT_CODE;
-    + k,i:INTEGER;
-    + p1,p2:STRING_CONSTANT;
+  - call_front_end <-
+  ( + s:LIP_SLOT_CODE;    
     // Executing `front_end':
     s := LIP_CODE.get_method (ALIAS_STR.slot_front_end);
     (s = NULL).if {
@@ -196,6 +194,12 @@ Section Public
       die_with_code exit_failure_code;
     };
     s.run_with NULL;        
+  );
+  
+  - init_path_file order:BOOLEAN <-
+  ( + k,i:INTEGER;
+    + p1,p2:STRING_CONSTANT;
+    
     (order).if {
       path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
         b < a

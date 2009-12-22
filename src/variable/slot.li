@@ -173,7 +173,7 @@ Section Public
 	  SLOT_DATA.create common_slot type_full typ
 	);
       };      
-      typ := tm.last.to_run_for NULL;
+      typ := tm.last.to_run_for receiver_type;
     } else {
       ts ?= result_type;
       typ := ts.to_run_for receiver_type;

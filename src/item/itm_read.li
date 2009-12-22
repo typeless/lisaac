@@ -168,8 +168,8 @@ Section ITM_READ, SLOT_DATA
       is_block_value := TRUE;
     } else {
       slot_msg := rec_type.get_slot name;     
-      (slot_msg = NULL).if {            
-	string_tmp.copy "Slot `";
+      (slot_msg = NULL).if {                    
+        string_tmp.copy "Slot `";
 	string_tmp.append name;
 	string_tmp.append "' not found in `";
 	rec_type.append_name_in string_tmp; 
@@ -188,8 +188,9 @@ Section ITM_READ, SLOT_DATA
 	  POSITION.send_error;
 	};
 	last_position := slot_msg.position;	
-	( !
-	  slot_msg.id_section.access rec_type with (profil_slot.type_self.raw)
+        (
+          (profil_slot != NULL) &&  
+          {! slot_msg.id_section.access rec_type with (profil_slot.type_self.raw)}
 	).if {
 	  string_tmp.copy "Type ";
 	  profil_slot.type_self.append_name_in string_tmp;

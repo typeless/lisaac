@@ -90,6 +90,7 @@ Section Public
   ( + cur:ITM_SLOT;
     + slot:SLOT;
     + slot_code:SLOT_CODE;
+    + old_profil_current:PROFIL;
             
     // Parent.
     //last_position := position;
@@ -110,7 +111,9 @@ Section Public
           (cur.id_section.is_external).if {
             slot_code ?= slot;
             (slot_code != NULL).if {
+              old_profil_current := profil_current;
               slot_code.get_profil NULL self (typ.default);
+              profil_current := old_profil_current;
             };
           };
 	};

@@ -39,10 +39,11 @@ Section Private
     
   // Optimization.
   + is_optimization:BOOLEAN;
-  + inline_level:INTEGER := 15;
+  + inline_level:INTEGER := 5;
   
   // Generate code.
-  + is_cop:BOOLEAN; // Correct value after compilation.
+  + is_cop:BOOLEAN;     // Correct value after compilation.
+  + is_library:BOOLEAN; // For build a lisaac library C 
   
   // Other.
   + is_statistic:BOOLEAN;
@@ -54,6 +55,7 @@ Section Private
   
   + option_gcc:STRING;  
   + lib_gcc:STRING;
+  + execute_file:STRING;
   
   + target:STRING := "unix";
     
@@ -179,23 +181,19 @@ Section Private
   
   - general_back_end <-
   (
-    (target = "dos").if {
-      (is_cop).if {
-        "Warning: COP not yet implemented\n".print;
-      };
-      execute ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc); 
+    (is_cop).if {
+      lib_gcc := lib_gcc + " -lpthread";
     };
-    (target = "windows").if {
-      (is_cop).if {
-        "Warning: COP not yet implemented\n".print;
-      };
-      execute ("gcc " + output_file + ".c -o " + output_file + ".exe " + option_gcc + lib_gcc);
+    ((target = "dos") | (target = "windows")).if {
+      execute_file := output_file + ".exe";
+    } else {
+      execute_file := output_file;
     };
-    (target = "unix").if {      
-      (is_cop).if {
-        lib_gcc := lib_gcc + " -lpthread";
-      };
-      execute ("gcc " + output_file + ".c -o " + output_file + " -lm " + option_gcc + lib_gcc);
+    option_gcc := option_gcc + " -U_FORTIFY_SOURCE ";
+    (is_library).if {
+      execute ("gcc " + output_file + ".c -c " + option_gcc);
+    } else {
+      execute ("gcc " + output_file + ".c -o " + output_file + option_gcc + lib_gcc);
     };
   );
   
@@ -256,7 +254,7 @@ Section Public
   (
     no_debug;
     is_optimization := TRUE;
-    option_gcc := option_gcc + " -O3 -fomit-frame-pointer";
+    option_gcc := option_gcc + " -O2 -fomit-frame-pointer";
   );
   
   - i level:INTEGER <-
@@ -306,6 +304,16 @@ Section Public
   (
     is_quiet := TRUE;
   );
+  
+  - build_library <-
+  // For to build library (`main' => `init') 
+  (
+    is_library := TRUE;
+  );
+  
+  //
+  // Information.
+  //
   
   - s <-
   // Statistic information.
