@@ -25,11 +25,14 @@ Section Header
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag, 2009 Nicolas Boulay";
   
   - comment := "File management";
+  
+ // 
+ // "getconf LFS_CFLAGS" for 64 bits off_t file offset is needed in the compiler command line to have:
+ // -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+ // 
+ 
   - external := `
  /*FILE_UNIX*/ 
- /*from "getconf LFS_CFLAGS" for 64 bits off_t file offset*/
-#define _LARGEFILE_SOURCE 
-#define _FILE_OFFSET_BITS 64 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
