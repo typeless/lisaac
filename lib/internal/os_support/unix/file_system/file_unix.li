@@ -28,11 +28,11 @@ Section Header
   - external := `
  /*FILE_UNIX*/ 
  /*from "getconf LFS_CFLAGS" for 64 bits off_t file offset*/
+#define _LARGEFILE_SOURCE 
+#define _FILE_OFFSET_BITS 64 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#define _LARGEFILE_SOURCE 
-#define _FILE_OFFSET_BITS 64 
   `;
     
 Section Inherit
@@ -82,7 +82,7 @@ Section Public
   ]
   ( + str:INTEGER;    
     str := stream;    
-    `fseek((@str),@n,SEEK_SET)`;
+    `lseek((@str),@n,SEEK_SET)`;
   );    
   
   - open:BOOLEAN <-
