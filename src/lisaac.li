@@ -860,10 +860,12 @@ Section Public
       };
     };
     
+    /*
     PROFIL.list_cpa.lower.to (PROFIL.list_cpa.upper) do { i:INTEGER;
       PROFIL.list_cpa.item i.print;
       '\n'.print;
     };
+    */
     
     //
     // Execute finality command (front end).

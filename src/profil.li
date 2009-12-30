@@ -642,7 +642,7 @@ Section Public
   - nb_func_arg:FAST_ARRAY2(INTEGER)     := FAST_ARRAY2(INTEGER).create (8,8);
   - nb_arg_size_type:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 64;
 
-  - list_cpa:HASHED_SET(ABSTRACT_STRING) := HASHED_SET(ABSTRACT_STRING).create;
+//  - list_cpa:HASHED_SET(ABSTRACT_STRING) := HASHED_SET(ABSTRACT_STRING).create;
 
 Section Private
 
@@ -676,7 +676,8 @@ Section Private
     };
     buffer.append " */\n";
   );
-
+  
+  /*
   - recur_cpa buf:STRING arg n:INTEGER <-
   ( + var:LOCAL;
     + tmp:ABSTRACT_STRING;
@@ -700,19 +701,20 @@ Section Private
       };
     };
   );
-
+  */
+  
   - append_type buffer:STRING <-
   ( + v:VARIABLE;
     + nb_arg,nb_arg_poly,tmp:INTEGER;
-    + s:SLOT;
-        
+    //+ s:SLOT;
+
     buffer.add_last '(';
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
         nb_arg := nb_arg + 1; // BSBS à mettre ds le if
         (is_statistic).if {
-          
+
           (v.type_list.count > 1).if {
             nb_arg_poly := nb_arg_poly + 1;
           };
@@ -736,16 +738,16 @@ Section Private
         {nb_arg_poly > nb_func_arg.upper2}
       ).if {
         warning_error (position,"Too much arguments for a statistic.");
-      } else {        
+      } else {
         tmp := nb_func_arg.item (nb_arg,nb_arg_poly) + 1;
         nb_func_arg.put tmp to (nb_arg,nb_arg_poly);
-      };            
+      };
     };
-    
-    string_tmp.clear;    
+    /*
+    string_tmp.clear;
     nb_arg.append_in string_tmp;
     string_tmp.add_last ' ';
-    s := slot;    
+    s := slot;
     (s != NULL).if {
       string_tmp.append (type_self.raw.name);
       string_tmp.add_last ' ';
@@ -754,7 +756,7 @@ Section Private
       string_tmp.append name;
     };
     recur_cpa string_tmp arg (argument_list.lower);
-    
+    */
     (buffer.last = ',').if {
       buffer.remove_last 1;
     };
