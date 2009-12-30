@@ -828,7 +828,7 @@ Section Public
           "  For a type set of ".print;
           i.print;
           " types, the number's argument is ".print;
-          tmp.print; 
+          tmp.print;
           tmp2 := tmp2 + tmp;
           '\n'.print;
         };
@@ -837,21 +837,21 @@ Section Public
       tmp2.print;
       '\n'.print;
       //
-      "Number's function vs polymorphic argument's number:\n".print;      
+      "Number's function vs polymorphic argument's number:\n".print;
       (PROFIL.nb_func_arg.lower1).to (PROFIL.nb_func_arg.upper1) do { nb_arg:INTEGER;
         " For a function with ".print;
         nb_arg.print;
         " arguments:\n".print;
         tmp2 := 0;
         (PROFIL.nb_func_arg.lower2).to (PROFIL.nb_func_arg.upper2) do { nb_arg_poly:INTEGER;
-          tmp := PROFIL.nb_func_arg.item (nb_arg,nb_arg_poly);          
+          tmp := PROFIL.nb_func_arg.item (nb_arg,nb_arg_poly);
           (tmp != 0).if {
             "    ".print;
             tmp.print;
             " functions with ".print;
             nb_arg_poly.print;
             " arguments polymorphics.\n".print;
-            tmp2 := tmp2 + tmp; 
+            tmp2 := tmp2 + tmp;
           };
         };
         "    Total: ".print;
@@ -859,7 +859,12 @@ Section Public
         '\n'.print;
       };
     };
-
+    
+    PROFIL.list_cpa.lower.to (PROFIL.list_cpa.upper) do { i:INTEGER;
+      PROFIL.list_cpa.item i.print;
+      '\n'.print;
+    };
+    
     //
     // Execute finality command (front end).
     //

@@ -634,13 +634,15 @@ Section Public
     code.display buffer;
     buffer.append "\n---------------------\n";
   );
-  
+
   //
   // Statistic
   //
-  
+
   - nb_func_arg:FAST_ARRAY2(INTEGER)     := FAST_ARRAY2(INTEGER).create (8,8);
   - nb_arg_size_type:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 64;
+
+  - list_cpa:HASHED_SET(ABSTRACT_STRING) := HASHED_SET(ABSTRACT_STRING).create;
 
 Section Private
 
@@ -674,17 +676,43 @@ Section Private
     };
     buffer.append " */\n";
   );
-    
+
+  - recur_cpa buf:STRING arg n:INTEGER <-
+  ( + var:LOCAL;
+    + tmp:ABSTRACT_STRING;
+
+    (n > argument_list.upper).if {
+      tmp := list_cpa.reference_at buf;
+      (tmp = NULL).if {
+        list_cpa.add (ALIAS_STR.get buf);
+      };
+    } else {
+      var := argument_list.item n;
+      (var != NULL).if {
+        var.type_list.lower.to (var.type_list.upper) do { i:INTEGER;
+          buf.add_last ' ';
+          buf.append (var.type_list.item i.name);
+          recur_cpa buf arg (n+1);
+          buf.keep_head (Old buf.count);
+        };
+      } else {
+        recur_cpa buf arg (n+1);
+      };
+    };
+  );
+
   - append_type buffer:STRING <-
   ( + v:VARIABLE;
     + nb_arg,nb_arg_poly,tmp:INTEGER;
+    + s:SLOT;
         
     buffer.add_last '(';
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
+        nb_arg := nb_arg + 1; // BSBS à mettre ds le if
         (is_statistic).if {
-          nb_arg := nb_arg + 1;
+          
           (v.type_list.count > 1).if {
             nb_arg_poly := nb_arg_poly + 1;
           };
@@ -704,15 +732,28 @@ Section Private
     };
     (is_statistic).if {
       (
-        (nb_arg      > nb_func_arg.upper1) || 
+        (nb_arg      > nb_func_arg.upper1) ||
         {nb_arg_poly > nb_func_arg.upper2}
-      ).if {        
+      ).if {
         warning_error (position,"Too much arguments for a statistic.");
-      } else {
+      } else {        
         tmp := nb_func_arg.item (nb_arg,nb_arg_poly) + 1;
         nb_func_arg.put tmp to (nb_arg,nb_arg_poly);
-      };      
+      };            
     };
+    
+    string_tmp.clear;    
+    nb_arg.append_in string_tmp;
+    string_tmp.add_last ' ';
+    s := slot;    
+    (s != NULL).if {
+      string_tmp.append (type_self.raw.name);
+      string_tmp.add_last ' ';
+      string_tmp.append (s.name);
+    } else {
+      string_tmp.append name;
+    };
+    recur_cpa string_tmp arg (argument_list.lower);
     
     (buffer.last = ',').if {
       buffer.remove_last 1;
