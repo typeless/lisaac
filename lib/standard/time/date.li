@@ -19,61 +19,61 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := Expanded  DATE;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment     := "Date";
-  
+
   - type        := `unsigned long`;
-  
+
   - default     := `0`:DATE;
-  
+
 Section Insert
-  
-  - parent_object:OBJECT := OBJECT; 
-  
+
+  - parent_object:OBJECT := OBJECT;
+
 Section Private
-  
+
   - to_raw:UINTEGER_32 <-
   (
     CONVERT(SELF,UINTEGER_32).on Self
   );
-  
+
 Section Public
-  
+
   - Self:SELF '>' Right 60 other:SELF :BOOLEAN <- to_raw > other.to_raw;
-  
+
   - Self:SELF '<' Right 60 other:SELF :BOOLEAN <- to_raw < other.to_raw;
-  
+
   - Self:SELF '>=' Right 60 other:SELF :BOOLEAN <- to_raw >= other.to_raw;
-  
+
   - Self:SELF '<=' Right 60 other:SELF :BOOLEAN <- to_raw <= other.to_raw;
-  
+
   - year :UINTEGER_16 <-
-  ( 
+  (
     (to_raw >> 16).to_uinteger_16
   );
-  
+
   - month:UINTEGER_8 <-
   (
-    ((to_raw & 0FF00h)>>8).to_uinteger_8 
+    ((to_raw & 0FF00h)>>8).to_uinteger_8
   );
-  
+
   - day  :UINTEGER_8 <-
   (
-    (to_raw & 01Fh).to_uinteger_8 
+    (to_raw & 01Fh).to_uinteger_8
   );
-  
+
   - week_day :UINTEGER_8 <-
   (
     ((to_raw >> 5) & 0111b).to_uinteger_8
   );
-  
-  
+
+
 Section Public
-  
+
   - create (y:UINTEGER_16,m,d,wd:UINTEGER_8) :DATE <-
   ( + date:UINTEGER_32;
     ? { m.in_range 1 to 12};
@@ -85,14 +85,14 @@ Section Public
     date := date | (wd << 5);
     CONVERT(UINTEGER_32,SELF).on date
   );
-  
+
   - to_string:STRING <-
   ( + result:STRING;
     result := STRING.create 13;
     append_in result;
     result
   );
-  
+
   - append_in str:STRING <-
   (
     week_day
@@ -124,7 +124,7 @@ Section Public
     str.add_last '/';
     month.append_in str format 2 with '0';
     str.add_last '/';
-    year.append_in str format 4;           
+    year.append_in str format 4;
   );
 
   - append_short_in str:STRING <-
@@ -133,7 +133,7 @@ Section Public
     str.add_last '/';
     month.append_in str format 2 with '0';
     str.add_last '/';
-    (year % 100).append_in str format 2 with '0';           
+    (year % 100).append_in str format 2 with '0';
   );
 
   - append_short2_in str:STRING <-
@@ -142,9 +142,9 @@ Section Public
     str.add_last '/';
     month.append_in str format 2 with '0';
     str.add_last '/';
-    year.append_in str format 4 with '0';           
+    year.append_in str format 4 with '0';
   );
-    
+
   - print <-
   (
     to_string.print;

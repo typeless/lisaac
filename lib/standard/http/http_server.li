@@ -1,0 +1,217 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Library                                //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+  
+  + name      := HTTP_SERVER;
+
+  - copyright := "2003-2010 Sonntag Benoit";
+
+  - author    := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
+  - comment   := "The main prototype";
+  
+  - external  :=
+`  
+#include <sys/types.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
+
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/socket.h>  
+
+struct sockaddr_in address;
+`;
+  
+Section Inherit
+
+  - parent_object:OBJECT := OBJECT;
+  
+Section Private
+   
+  //
+  // Parameters
+  //
+  
+  + h_socket:INTEGER;
+  
+  - queue_size:INTEGER := 5;
+  
+  - buffer:STRING := STRING.create 1024;
+  
+  //
+  // Error.
+  //
+  
+  - socket_error:INTEGER := -1;
+   
+  - error msg:ABSTRACT_STRING <-
+  (
+    msg.print; '\n'.print;
+    die_with_code 1;
+  );
+    
+Section Public
+  
+  - log:STRING := STRING.create 1024;
+    
+  - listen port:INTEGER action act:{} <-
+  ( + h_server_socket,error,tmp:INTEGER;
+    + n_address_size:INTEGER;
+    + storage:NATIVE_ARRAY(CHARACTER);
+    
+    n_address_size := `sizeof(address)`:INTEGER;    
+    h_server_socket := `socket(AF_INET,SOCK_STREAM,0)`:INTEGER;
+    (h_server_socket = socket_error).if {
+      error "Error : create socket!";
+    };
+    `
+    address.sin_addr.s_addr=INADDR_ANY;
+    address.sin_port=htons(@port);
+    address.sin_family=AF_INET;
+    `;
+    
+    error := `bind(@h_server_socket,(struct sockaddr*)&address,sizeof(address))`:INTEGER;
+    (error = socket_error).if {
+      error "Error : Bind()";
+    };
+    `getsockname(@h_server_socket, (struct sockaddr *) &address,(socklen_t *)&@n_address_size)`;  
+    
+    log.append "Opened socket as fd (";
+    h_server_socket.append_in log;
+    log.append ") on port (";
+    `ntohs(address.sin_port)`:INTEGER.append_in log;
+    log.append ") for stream i/o\n";
+    
+    /*
+    "Server\
+    \\nsin_family        = ".print;
+    `address.sin_family`:INTEGER.print;
+    "\nsin_addr.s_addr   = ".print;
+    `address.sin_addr.s_addr`:INTEGER.print; 
+    "\nsin_port          = ".print;
+    `ntohs(address.sin_port)`:INTEGER.print;
+    '\n'.print;    
+    "\nMaking a listen queue of ".print;
+    queue_size.print;
+    " elements".print;
+    */
+        
+    // establish listen queue 
+    tmp := queue_size;
+    (`listen(@h_server_socket,@tmp)`:INTEGER = socket_error).if {
+      error "Could not listen";
+    };
+    {
+      log.append "Waiting for a connection\n";
+      // get the connected socket 
+      h_socket := `accept(@h_server_socket,(struct sockaddr*)&address,(socklen_t *)&@n_address_size)`:INTEGER;
+      log.append "Got a connection\n";      
+      act.value;            
+    }.endless_loop;
+  );
+  
+  - send buf:ABSTRACT_STRING <-
+  ( + storage:NATIVE_ARRAY(CHARACTER);
+    + loc_h_socket,count:INTEGER;
+    
+    log.append "send buffer\n";
+    storage := buf.to_external;
+    count   := buf.count + 1;
+    loc_h_socket := h_socket;
+    `write(@loc_h_socket,@storage,@count)`;
+  );
+  
+  - receive buf:STRING <-
+  // BSBS: Plutot  faire un append que un copy
+  ( + loc_h_socket,capacity:INTEGER;
+    + storage:NATIVE_ARRAY(CHARACTER);
+    
+    log.append "receive buffer\n";
+    storage  := buf.to_external;
+    capacity := buf.capacity;
+    loc_h_socket := h_socket;
+    `read(@loc_h_socket,@storage,@capacity)`;
+    buf.from_external storage;
+  );      
+  
+  - close <-
+  // close socket 
+  ( + loc_h_socket:INTEGER;
+    log.append "Closing the socket\n";      
+    loc_h_socket := h_socket;
+    (`close(@loc_h_socket)`:INTEGER = socket_error).if {
+      error "Could not close socket";
+    };    
+  );  
+  
+  - convert buf:STRING to_dictionary dico:HASHED_DICTIONARY(STRING,STRING) <-
+  ( + idx_start,idx_end,idx:INTEGER;
+    + key,value:STRING;
+    + sep:CHARACTER;
+    
+    sep := ' ';
+    idx_start := buf.lower;
+    {
+      idx_end := buf.index_of '\n' since idx_start;      
+      idx := buf.index_of sep since idx_start;
+      (idx < idx_end).if {
+        sep := ':';        
+        key   := buf.substring idx_start to (idx-1);
+        {buf.item (idx + 1) = ' '}.while_do { 
+          idx := idx + 1; 
+        };
+        {buf.item (idx_end - 1) <= ' '}.while_do { 
+          idx_end := idx_end - 1; 
+        };        
+        value := buf.substring (idx+1) to (idx_end-1);
+        dico.put value to key;
+      };
+      idx_start := idx_end + 1;
+    }.do_while {idx_end <= buf.count};
+  );
+  
+  //
+  // High level.
+  //
+  
+  - send buf:ABSTRACT_STRING type_mime type:ABSTRACT_STRING <-
+  (
+    buffer.copy 
+    "HTTP/1.1 200 OK\n\
+    \Date: ";
+    SYSTEM.get_current_date.append_in buffer;
+    buffer.add_last ' ';
+    SYSTEM.get_current_time.append_in buffer;
+    buffer.append "\n\
+    \Server: Lisaac httpd\n\
+    \Content-Length: ";
+    buf.count.append_in buffer;
+    buffer.append "\n\
+    \Connection: close\n\        
+    \Content-type: ";
+    buffer.append type;
+    buffer.append "\n\n";
+    //
+    buffer.append buf;
+    buffer.append "\n\n";
+    send buffer;
+  );

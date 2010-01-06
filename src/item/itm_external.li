@@ -19,32 +19,32 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_EXTERNAL;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "External C without type result";
-  
+
 Section Inherit
-  
+
   + parent_itm_extern:Expanded ITM_EXTERN;
-  
+
 Section Public
 
   //
   // Constructor
   //
-  
+
   - create p:POSITION text n:STRING_CONSTANT :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p text n;
     result
   );
-  
+
   - make p:POSITION text n:STRING_CONSTANT <-
   (
     position := p;
@@ -54,15 +54,15 @@ Section Public
   //
   // Runnable
   //
-  
-  - to_run_expr:EXPR <- 
+
+  - to_run_expr:EXPR <-
   ( + result:EXPR;
     + lst_acc:FAST_ARRAY(EXPR);
     + num:INTEGER;
     + exp1,exp2,exp3:EXPR;
     + left,right:EXPR;
     + type:TYPE_FULL;
-        
+
     extern.is_integer.if {
       num := extern.to_integer;
       (num > 31).if {
@@ -114,24 +114,24 @@ Section Public
       }
       .when 9 then { // put OBJECT to INTEGER.
 	exp1 := profil_slot.argument_list.first .read position;
-	exp2 := profil_slot.argument_list.item 1.read position; 
-	exp3 := profil_slot.argument_list.item 2.read position; 
+	exp2 := profil_slot.argument_list.item 1.read position;
+	exp3 := profil_slot.argument_list.item 2.read position;
 	result := PUT_TO.create position base exp1 index exp3 value exp2;
       }
       .when 10 then { // item INTEGER -> OBJECT.
 	exp1 := profil_slot.argument_list.first .read position;
-	exp2 := profil_slot.argument_list.item 1.read position; 
+	exp2 := profil_slot.argument_list.item 1.read position;
 	result := ITEM.create position base exp1 index exp2;
-      }      
+      }
       .when 11 then { // debug_level -> INTEGER.
 	result := INTEGER_CST.create position value debug_level_option type (type_integer.default);
       }
       .when 12 then { // object_size -> INTEGER.	
-        result := SIZE_OF.create position receiver 
+        result := SIZE_OF.create position receiver
         (profil_slot.argument_list.first.type);
       }
       .when 13 then { // CONVERT SRC TO DST.on src:SRC :DST.
-        type := profil_slot.result_list.first.type;        
+        type := profil_slot.result_list.first.type;
 	exp2 := profil_slot.argument_list.second.read position;
 	result := CAST.create type value exp2;
       }
@@ -144,13 +144,13 @@ Section Public
 	};
       }
       .when 15 then { // is_cop_type:BOOLEAN
-        type := profil_slot.argument_list.first.type;        
-        (type.prototype.style = '-').if {          
+        type := profil_slot.argument_list.first.type;
+        (type.prototype.style = '-').if {
           result := PROTOTYPE_CST.create position type (type_true.default);	
         } else {
           result := PROTOTYPE_CST.create position type (type_false.default);	
         };
-      }     
+      }
       .when 16 then { // LIST.upper:INTEGER
         not_yet_implemented;
       }
@@ -161,20 +161,20 @@ Section Public
 	result := INTEGER_CST.create position value inline_level type (type_integer.default);
       }
       .when 19 then { // compiler_optimization -> BOOLEAN.
-        (is_optimization).if {          
+        (is_optimization).if {
           result := PROTOTYPE_CST.create position type (type_true.default);	
         } else {
           result := PROTOTYPE_CST.create position type (type_false.default);	
         };	
       }
-      .when 20 then { // compiler_built_on -> STRING_CONSTANT.        
+      .when 20 then { // compiler_built_on -> STRING_CONSTANT.
         string_tmp.clear;
         SYSTEM.get_current_date.append_in string_tmp;
         string_tmp.add_last ' ';
         SYSTEM.get_current_time.append_in string_tmp;
 	result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
       }
-      .when 21 then { // forall_data action:{ E; } 
+      .when 21 then { // forall_data action:{ E; }
         //result := forall_data_product;
       }
       .when 22 to 31 then { // FREE
@@ -182,20 +182,20 @@ Section Public
       };
     } else {
       lst_acc := get_access;
-      result  := EXTERNAL_C.create position text last_code 
+      result  := EXTERNAL_C.create position text last_code
       access lst_acc persistant TRUE type (TYPE_VOID.default);
     };
     result
   );
-  
+
 Section Private
-  
+
   //
   // Reflexivity
   //
-  
+
   - forall_data_product:EXPR <-
   ( + type:TYPE_FULL;
     type := profil_slot.argument_list.first.type;
-    
+
   );
