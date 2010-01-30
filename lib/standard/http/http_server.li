@@ -56,6 +56,8 @@ Section Private
   - queue_size:INTEGER := 5;
   
   - buffer:STRING := STRING.create 1024;
+
+  - tmp_header : HTTP_HEADER := HTTP_HEADER.create;
   
   //
   // Error.
@@ -72,6 +74,12 @@ Section Private
 Section Public
   
   - log:STRING := STRING.create 1024;
+  - debug_flag : BOOLEAN;
+
+  - set_debug_flag b : BOOLEAN <-
+  (
+    debug_flag := b;
+  );
     
   - listen port:INTEGER action act:{} <-
   ( + h_server_socket,error,tmp:INTEGER;
@@ -94,12 +102,13 @@ Section Public
       error "Error : Bind()";
     };
     `getsockname(@h_server_socket, (struct sockaddr *) &address,(socklen_t *)&@n_address_size)`;  
-    
-    log.append "Opened socket as fd (";
-    h_server_socket.append_in log;
-    log.append ") on port (";
-    `ntohs(address.sin_port)`:INTEGER.append_in log;
-    log.append ") for stream i/o\n";
+    debug_flag.if {
+      log.append "Opened socket as fd (";
+      h_server_socket.append_in log;
+      log.append ") on port (";
+      `ntohs(address.sin_port)`:INTEGER.append_in log;
+      log.append ") for stream i/o\n";
+    };
     
     /*
     "Server\
@@ -121,10 +130,16 @@ Section Public
       error "Could not listen";
     };
     {
-      log.append "Waiting for a connection\n";
+      debug_flag.if {
+       log.append "Waiting for a connection\n";
+      };
       // get the connected socket 
       h_socket := `accept(@h_server_socket,(struct sockaddr*)&address,(socklen_t *)&@n_address_size)`:INTEGER;
-      log.append "Got a connection\n";      
+      debug_flag.if { 
+        log.append "Got a connection\n";
+      }; 
+
+      // We have a connection, so act is valued
       act.value;            
     }.endless_loop;
   );
@@ -132,8 +147,9 @@ Section Public
   - send buf:ABSTRACT_STRING <-
   ( + storage:NATIVE_ARRAY(CHARACTER);
     + loc_h_socket,count:INTEGER;
-    
-    log.append "send buffer\n";
+    debug_flag.if {
+     log.append "send buffer\n";
+    }; 
     storage := buf.to_external;
     count   := buf.count + 1;
     loc_h_socket := h_socket;
@@ -145,7 +161,9 @@ Section Public
   ( + loc_h_socket,capacity:INTEGER;
     + storage:NATIVE_ARRAY(CHARACTER);
     
-    log.append "receive buffer\n";
+    debug_flag.if {
+     log.append "receive buffer\n";
+    };
     storage  := buf.to_external;
     capacity := buf.capacity;
     loc_h_socket := h_socket;
@@ -156,7 +174,9 @@ Section Public
   - close <-
   // close socket 
   ( + loc_h_socket:INTEGER;
-    log.append "Closing the socket\n";      
+    debug_flag.if {
+     log.append "Closing the socket\n";
+    };
     loc_h_socket := h_socket;
     (`close(@loc_h_socket)`:INTEGER = socket_error).if {
       error "Could not close socket";
@@ -188,7 +208,57 @@ Section Public
       idx_start := idx_end + 1;
     }.do_while {idx_end <= buf.count};
   );
+
+   - convert buf : STRING to_http_header header : HTTP_HEADER <-
+  ( + idx_start,idx_end,idx:INTEGER;
+    + key,value:STRING;
+    + sep:CHARACTER;
+    
+    sep := ' ';
+    idx_start := buf.lower;
+    {
+      idx_end := buf.index_of '\n' since idx_start;      
+      idx := buf.index_of sep since idx_start;
+      (idx < idx_end).if {
+        sep := ':';        
+        key   := buf.substring idx_start to (idx-1);
+        {buf.item (idx + 1) = ' '}.while_do { 
+          idx := idx + 1; 
+        };
+        {buf.item (idx_end - 1) <= ' '}.while_do { 
+          idx_end := idx_end - 1; 
+        };        
+        value := buf.substring (idx+1) to (idx_end-1);
+        //dico.put value to key;
+
+        key.when "GET" then             { header.set_verb "GET"; header.set_uri value;} 
+           .when "POST" then            { header.set_verb "POST"; header.set_uri value;}
+           .when "PUT" then             { header.set_verb "PUT";  header.set_uri value;}
+           .when "DELETE" then          { header.set_verb "DELETE"; header.set_uri value;}
+           .when "Host" then            { header.set_host value;}
+           .when "User-Agent" then      { header.set_user_agent value;}
+           .when "Accept" then          { header.set_accept_mime value;}
+           .when "Accept-Encoding" then { header.set_accept_encoding value;} 
+           .when "Accept-Charset" then  { header.set_accept_charset value;} 
+           .when "Keep-Alive" then      { header.set_keep_alive value;} 
+           .when "Connection" then      { header.set_connection value;}
+           .when "Cookie"     then      { header.set_cookie value;}
+           .case_else                   { //("Unknown key :"+key).println;
+             };
+        
+         debug_flag.if {
+          //"clé".count.println;
+          //key.count.println;
+          //("clé"+key).count.println;
+          //("Key="+key + " Value=".to_string+value).println; 
+        };
+      };
+      idx_start := idx_end + 1;
+    }.do_while {idx_end <= buf.count};
+  );
   
+
+
   //
   // High level.
   //
@@ -215,3 +285,23 @@ Section Public
     buffer.append "\n\n";
     send buffer;
   );
+
+
+  - receive_get_do blc : {HTTP_HEADER;} <-
+    ( + my_buf : STRING;
+      my_buf := STRING.create 512;
+      receive my_buf;
+      convert my_buf to_http_header tmp_header;
+      (tmp_header.verb ~= "GET").if {blc.value tmp_header;};
+    );
+
+  - receive_do_get get : {HTTP_HEADER;} post post : {HTTP_HEADER;} put put :  {HTTP_HEADER;} delete del :  {HTTP_HEADER;} <-
+    ( + my_buf : STRING;
+      my_buf := STRING.create 512;
+      receive my_buf;
+      convert my_buf to_http_header tmp_header;
+      tmp_header.verb.when "GET"    then {get.value tmp_header;}
+                     .when "POST"   then {post.value tmp_header;}
+                     .when "PUT"    then {put.value tmp_header;}
+                     .when "DELETE" then {del.value tmp_header;};
+    );
