@@ -329,6 +329,13 @@ Section Public
     };
     buffer.add_last (name.last);
   );
+
+  - shorter_result_type_in buf :STRING <-
+  ( 
+    (result_type != ITM_TYPE_SIMPLE.type_void).if {      
+      result_type.shorter_in buf;
+    };
+  );
   
   - shorter_profile_in buf:STRING <-
   ( 

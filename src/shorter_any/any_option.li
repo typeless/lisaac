@@ -53,6 +53,7 @@ Section Public
           } else {
             buf.append (lst.item j);
           };
+          //("key ="+key+" buf="+buf+"\n").printline;
         };
       };
     };

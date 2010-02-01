@@ -592,11 +592,27 @@ Section PROTOTYPE
         ).if {
           put " No developed." to string_tmp like (ALIAS_STR.short_warning);
         };
+        
+        string_tmp2.clear;
+        string_tmp3.clear;
+        s.shorter_result_type_in string_tmp2;
+        //put string_tmp3 to string_tmp2 like (ALIAS_STR.short_prototype);
+        //("\n\n\nLkigne 600 " + "tmp="+string_tmp + " tmp2="+string_tmp2+ " tmp3="+string_tmp3).printline;
+
+        string_tmp3.clear;
+        put string_tmp2 to string_tmp like (ALIAS_STR.short_local);// C le seul qui veut bien marcher :-(
+        //("Ligne 604 " + "tmp="+string_tmp + " tmp2="+string_tmp2+ " tmp3="+string_tmp3).printline;
+
+
+        
         string_tmp2.clear;        
         get_all_comment_slot (s.name) in string_tmp2;
         string_tmp3.clear;
-        shorter_comment string_tmp2 in string_tmp3 light TRUE;        
+        shorter_comment string_tmp2 in string_tmp3 light TRUE;
+        //("Ligne 611 " + "tmp="+string_tmp + " tmp2="+string_tmp2+ " tmp3="+string_tmp3).printline;
+
         put string_tmp3 to string_tmp like (ALIAS_STR.short_table_slot_comment);
+        
         put string_tmp to buf like (ALIAS_STR.short_table_item);
       };     
     };    
@@ -734,7 +750,7 @@ Section PROTOTYPE
             (lst = NULL).if {                          
               code_balise := NULL;
             } else {
-              str_tmp.replace_all '_' with ' ';
+              str_tmp.replace_all_char '_' with ' ';
               str_tmp.add_last ':';
               str_tmp.put (str_tmp.first.to_upper) to 1;
               put str_tmp to buf like (ALIAS_STR.short_subsub_title);

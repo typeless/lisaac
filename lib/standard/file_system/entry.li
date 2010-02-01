@@ -115,7 +115,7 @@ Section ENTRY
     + stat:INTEGER;
     + car:CHARACTER;
     
-    st.replace_all '\\' with '/';
+    st.replace_all_char '\\' with '/';
     i := st.lower;
 
     {i > st.upper}.until_do {

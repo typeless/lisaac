@@ -202,6 +202,7 @@ Section Public
   - short_operator    :STRING_CONSTANT := "operator";
   - short_prototype   :STRING_CONSTANT := "prototype";
   - short_keyprototype:STRING_CONSTANT := "keyprototype";
+  - short_return_type    :STRING_CONSTANT := "return_type";
   - short_comment_line       :STRING_CONSTANT := "comment_line";
   - short_comment_slot_line  :STRING_CONSTANT := "comment_slot_line";
   - short_comment_header_line:STRING_CONSTANT := "comment_header_line";
@@ -225,6 +226,7 @@ Section Public
   - short_table_begin :STRING_CONSTANT := "table_begin";
   - short_table_item  :STRING_CONSTANT := "table_item";
   - short_table_slot_name    :STRING_CONSTANT := "table_slot_name";
+ 
   - short_table_slot_comment :STRING_CONSTANT := "table_slot_comment";
   - short_table_end   :STRING_CONSTANT := "table_end";
   - short_sub_title   :STRING_CONSTANT := "sub_title";

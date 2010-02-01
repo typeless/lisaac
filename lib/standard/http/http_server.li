@@ -58,6 +58,13 @@ Section Private
   - buffer:STRING := STRING.create 1024;
 
   - tmp_header : HTTP_HEADER := HTTP_HEADER.create;
+
+  - post_block_list : HASHED_DICTIONARY(STRING,{HASHED_DICTIONARY(STRING,STRING);STRING}) :=  HASHED_DICTIONARY(STRING,{HASHED_DICTIONARY(STRING,STRING);STRING}).create;
+    // HASHED_DICTIONARY(
+    // STRING : post method name ,
+    //{HASHED_DICTIONARY(STRING,STRING);STRING} : Block with post method parameters arguments, and result
+    // )
+    //TODO : gestion des cookies !
   
   //
   // Error.
@@ -231,6 +238,8 @@ Section Public
         value := buf.substring (idx+1) to (idx_end-1);
         //dico.put value to key;
 
+        //TODO : Virer le http/1.1 à la fin de l'uri !
+
         key.when "GET" then             { header.set_verb "GET"; header.set_uri value;} 
            .when "POST" then            { header.set_verb "POST"; header.set_uri value;}
            .when "PUT" then             { header.set_verb "PUT";  header.set_uri value;}
@@ -287,6 +296,10 @@ Section Public
   );
 
 
+  //
+  // Receiver manager
+  //
+
   - receive_get_do blc : {HTTP_HEADER;} <-
     ( + my_buf : STRING;
       my_buf := STRING.create 512;
@@ -307,8 +320,79 @@ Section Public
     );
 
 
+
+
+     - receive_do_get get : {HTTP_HEADER;} post post : {HTTP_HEADER;} <-
+    ( + my_buf : STRING;
+      my_buf := STRING.create 512;
+      receive my_buf;
+      convert my_buf to_http_header tmp_header;
+      tmp_header.verb.when "GET"    then {get.value tmp_header;}
+                     .when "POST"   then {post.value tmp_header;};
+    );
+
+
+    //
+    // Tools
+    //
+
+
+
     - get_file uri : ABSTRACT_STRING : STRING <-
     ( + filename : ABSTRACT_STRING;
       filename := uri.substring 2 to (uri.count -1);
       FS_MIN.open_as_string filename
+    );
+
+    // Pour le post : on reçoit une hash de clé/valeur ainsi qu'un nom de post : on regarde si on a un {HASH(STR,STR);STR} dans le HASH(STR, {HASH(STR,STR);STR}) et on l'exécute
+
+
+    - decode_parameters : HASHED_DICTIONARY(STRING,STRING) <-
+    ( + res : HASHED_DICTIONARY(STRING,STRING);
+      res :=  HASHED_DICTIONARY(STRING,STRING).create;
+      // On cherche le premier ?
+      // Ensuite on split avec le &
+      // Chaque morceaux est splité avec le =
+
+    );
+
+
+    //
+    // POST manager
+    //
+
+    
+    - add_post name : ABSTRACT_STRING action blc : {HASHED_DICTIONARY(STRING,STRING); STRING} <-
+    ( 
+      post_block_list.put blc to name;
+    );
+
+
+
+
+    //
+    // Web Server
+    //
+
+
+    - start_server_on_port port : INTEGER <-
+    (
+      listen port action {
+        receive_get_do { h : HTTP_HEADER;
+          //TODO : Virer ce hack !!
+          s := h.uri;
+          s.replace_all "HTTP/1.1" with "";
+          ("Request with URI : " +s).printline;
+          my_buf :=  get_file s;
+          send my_buf type_mime "text/html";
+        } post { h : HTTP_HEADER;
+           //TODO : Virer ce hack !!
+          s := h.uri;
+          s.replace_all "HTTP/1.1" with "";
+          ("POST with URI : " +s).printline
+          // Decoupage des paramètres
+
+        };
+        close;
+      };
     );

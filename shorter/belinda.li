@@ -33,8 +33,8 @@
   "&nbsp;<font color=\"#008000\">"+token+"</font>";
 
   - prototype :=
-  "&nbsp;<a href=\"" + token + ".html\">\
-  \<font color=\"#008000\">"+token+"</font></a>";
+  "\n<!--Proto-->&nbsp;<a href=\"" + token + ".html\">\
+  \<font color=\"#008000\">"+token+"</font></a><!--Proto Fin-->\n";
     
   - comment_line :=
   "<br><font FACE=\"Helvetica\" color=\"#000000\"><B>" + token + "</B></font>";
@@ -66,12 +66,17 @@
    
   - title := "<td align=\"right\"><em><b>Lisaac<sup><font size=\"-2\">TM</font></sup>&nbsp;Platform</b></em></td><hr><h2>" + token + "</h2><hr>";
   
-  - table_begin := "<table summary=\"\" width=\"100%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\"><tbody><tr class=\"TableHeadingColor\" bgcolor=\"#ccccff\"><td colspan=\"2\"><font size=\"+2\"><b>" + token + "</b></font></td></tr>";
+  - table_begin := "<table summary=\"\" width=\"100%\" border=\"1\" cellpadding=\"3\" cellspacing=\"0\"><tbody><tr class=\"TableHeadingColor\" bgcolor=\"#ccccff\"><td colspan=\"2\"><font size=\"+2\"><b>" + token + "</b></font></td></tr>\n";
   
-  - table_item := "<tr class=\"TableRowColor\" bgcolor=\"white\"><td>" + token + "</td></tr>";
+  - table_item := "\n<!-- Debut d'un table item --><tr class=\"TableRowColor\" bgcolor=\"white\"><td>" + token + "</td></tr><!-- FIN d'un table item -->\n";
+ 
+
+  - parle_a_mon_cul := "Parle à mon cul ma tête est malade !"+token;
+
+  - return_type :=  "<!--table_slot_return_type--> &nbsp;:&nbsp;"+token +" ";
   
-  - table_slot_name := "<code><dt><b><a href=\"#"+token+"\">" + token + "</a></b></code>";
-  - table_slot_comment := "<dd>" + token;
+  - table_slot_name := "\n<!-- Nom du slot  --><code><dt><b><a href=\"#"+token+"\">" + token + "</a></b></code><!-- Nom du slot FIN -->\n";
+  - table_slot_comment := "\n<!-- Debut d'un table_slot_comment --><dd>" + token+"<!-- fin d'un table_slot_comment -->\n";
   
   - table_end := "</tbody></table>&nbsp;";
   

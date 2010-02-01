@@ -205,7 +205,7 @@ Section Private
   ( + i:INTEGER;
     
     string_tmp.copy st;
-    string_tmp.replace_all '\\' with '/';
+    string_tmp.replace_all_char '\\' with '/';
     i := last_index_str (string_tmp,'/');
     (i >= string_tmp.lower).if {            
       string_tmp.remove_first i;
@@ -327,7 +327,7 @@ Section Private
           string_tmp.remove_last (string_tmp.upper-idx+1);
           string_tmp.remove_first path_begin;
           string_tmp.is_empty.if_false {
-            string_tmp.replace_all '/' with '-';                  
+            string_tmp.replace_all_char '/' with '-';                  
             tok := ALIAS_STR.get string_tmp;            
 	  
             (PARSER.short_dico.fast_has (ALIAS_STR.short_directory_list_item)).if {
