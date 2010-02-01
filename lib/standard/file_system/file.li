@@ -29,7 +29,11 @@ Section Header
 Section Inherit
   
   - parent_entry:ENTRY := ENTRY;   
-  
+
+Section Private
+
+  + string_tmp : STRING := STRING.create 128;
+
 Section Public
   
   - cursor:UINTEGER_32 <-
@@ -143,9 +147,62 @@ Section Public
   (
     deferred;
   );
+
+
+  //
+  // Services
+  //
     
+
+  - open_ro  file_name:ABSTRACT_STRING  : FILE <-
+  [ 
+    ? { file_name != NULL };
+    ? { file_name.count > 0};
+  ]
+  ( 
+
+    + e:ENTRY;
+    + file : FILE;
+
+    e := FILE_SYSTEM.get_entry file_name;    
+    (e != NULL).if {
+      file_name.println;
+      (("File "+file_name)+" doesn't exist !").println;
+    } else {
+
+      file ?= e;
+    };    
+     file.is_directory.if {
+        (file_name+" is a directory, not a file !").println;
+      };
+    ((file = NULL) || {! file.open}).if {
+      ("File "+file_name+" not open!\n").println;
+      die_with_code exit_failure_code;  
+    };
+    file
+  )
+  [ ? {Result != NULL }; ];
+
+
+
+  - in_string str : STRING <-
+  [ ? {str != NULL}; ]
+  (
+    str.clear;
+    str.set_capacity (Self.size.to_integer);          
+    Self.read str size (Self.size);
+    //Self.close; // On le met ?
+  );
+
+  - as_string : STRING <-
+  (+ res : STRING;
+    res := STRING.create 4096;
+    in_string res;
+    res
+  );
+
 Section FILE
-  
+
   - physical_read buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
   [
     -? {is_open};

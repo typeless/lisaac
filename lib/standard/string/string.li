@@ -198,7 +198,7 @@ Section Public
     ? {occurrences c = count};
   );
 
-  - replace_all old_char:CHARACTER with new_char:CHARACTER <-
+  - replace_all_char old_char:CHARACTER with new_char:CHARACTER <-
   // Replace all occurrences of the element `old_char' by `new_character'
   (
     storage.fast_replace_all old_char with new_char until (count - 1);

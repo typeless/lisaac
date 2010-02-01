@@ -1000,7 +1000,8 @@ Section Public
     result
   )
   [
-    +? {Result.count = count + other.count};
+    //+? {Result.count = count + other.count};
+    // Ensure invalid in case of multiple + 
   ];
 
   - as_lower:STRING <-
@@ -1109,6 +1110,48 @@ Section Public
     };
 
     result
+  );
+
+
+
+  - replace_substring s:ABSTRACT_STRING from start:INTEGER to end:INTEGER  <-
+  // Replace the substring from start to end, inclusive, with s
+  (
+    + remove_len,insert_len, difference, old_count: INTEGER;
+
+    ? {s != NULL};
+    ? { end <= count};
+    ? {start.in_range 1 to (end + 1)};
+
+    old_count := count;
+    remove_len := end - start + 1;
+    insert_len := s.count;
+    difference := insert_len - remove_len;
+
+    (difference > 0).if {
+      resize (old_count + difference);
+      (end < old_count).if { // something to move ?
+	storage.move (end + 1 - 1) to (old_count - 1) by difference;
+      };
+    }.elseif {difference < 0} then {
+      (end < count).if { // something to move?
+	storage.move(end + 1 - 1) to (old_count - 1) by difference;
+      };
+      resize (old_count + difference)
+    };
+    storage.copy (s.storage) to (start - 1) until (s.count);
+  );
+
+  - replace_all motif:ABSTRACT_STRING with txt:ABSTRACT_STRING  <-
+  ( + idx:INTEGER;
+
+    idx := lower;
+    {
+      idx := substring_index (motif,idx);
+      (idx != 0).if {
+        replace_substring txt from idx to (idx+motif.count-1);
+      };
+    }.do_while {idx != 0};
   );
 
   - first_substring_index other:ABSTRACT_STRING :INTEGER <-
