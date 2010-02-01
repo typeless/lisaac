@@ -99,3 +99,17 @@ Section Public
     result
   );
   
+  - open_as_string fname : ABSTRACT_STRING : STRING <-
+  ( + file:POINTER;
+    + sz:INTEGER;
+    + source : STRING;
+
+    source := STRING.create 4096;
+
+    file := open_read fname;
+    sz := file_size file;
+    source := STRING.create (sz+1);
+    read file in source size sz;
+    close file;
+    source
+  );

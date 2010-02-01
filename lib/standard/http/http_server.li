@@ -305,3 +305,10 @@ Section Public
                      .when "PUT"    then {put.value tmp_header;}
                      .when "DELETE" then {del.value tmp_header;};
     );
+
+
+    - get_file uri : ABSTRACT_STRING : STRING <-
+    ( + filename : ABSTRACT_STRING;
+      filename := uri.substring 2 to (uri.count -1);
+      FS_MIN.open_as_string filename
+    );
