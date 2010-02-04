@@ -347,13 +347,20 @@ Section Public
     // Pour le post : on reçoit une hash de clé/valeur ainsi qu'un nom de post : on regarde si on a un {HASH(STR,STR);STR} dans le HASH(STR, {HASH(STR,STR);STR}) et on l'exécute
 
 
-    - decode_parameters : HASHED_DICTIONARY(STRING,STRING) <-
+    - decode_parameters param : STRING : HASHED_DICTIONARY(STRING,STRING) <-
     ( + res : HASHED_DICTIONARY(STRING,STRING);
+      + params : ARRAY(STRING);
       res :=  HASHED_DICTIONARY(STRING,STRING).create;
       // On cherche le premier ?
       // Ensuite on split avec le &
       // Chaque morceaux est splité avec le =
 
+      // Algo pas très perf...
+      params := (param.substring  (param.substring_index ("?",1)) to (param.count - 1)).split_str "&";
+      params.foreach { e : STRING;
+        res.put (e.substring  (e.substring_index ("=",0) - 1) to (e.count-1)) to (e.substring 0 to (e.substring_index ("=",0) - 1)); 
+      };
+      res
     );
 
 
@@ -362,6 +369,8 @@ Section Public
     //
 
     
+    // Un pattern d'optim : à l'usage, le serveur recevra des requetes post et ira switcher sur le block correspondant.
+    // Au lieu d'utiliser l'infra de HASHED_DICTIONARY , peut être qu'il y aurait moyen de fire un bête switch sur le nom ?
     - add_post name : ABSTRACT_STRING action blc : {HASHED_DICTIONARY(STRING,STRING); STRING} <-
     ( 
       post_block_list.put blc to name;
