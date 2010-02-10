@@ -6,6 +6,7 @@ op_runcwd=false
 op_testname="`pwd`"
 op_importance=0
 op_importance_max=-1
+op_report=
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -22,6 +23,10 @@ while [ $# -gt 0 ]; do
       ;;
     -I)
       op_importance_max="$2"
+      shift 2
+      ;;
+    -r)
+      op_report="$2"
       shift 2
       ;;
     -h|-help|--help)
@@ -42,6 +47,9 @@ while [ $# -gt 0 ]; do
       echo
       echo "  -I IMPORTANCE"
       echo "      Run only tests that have an importance less than IMPORTANCE"
+      echo
+      echo "  -r REPORT"
+      echo "      write report REPORT"
       echo
       echo "  -d DIR"
       echo "      Run test in DIR"
@@ -94,15 +102,23 @@ test-patterns(){
 run_test(){
   local oldcwd="`pwd`"
   local res
-  if [ -n "$1" ]; then
-    cd "$1"
+  local testpath="$1"
+  if [ -n "$testpath" ]; then
+    cd "$testpath"
   fi
-  imp="`lisaac -test-importance`"
+  local imp
+  if [ -f make.lip ]; then
+    imp="`lisaac -test-importance 2>&1`"
+  elif [ -f importance ]; then
+    imp="`cat importance`"
+  else
+    imp=0
+  fi
   if [ "0$imp" -lt "0$op_importance" ] || ( \
      [ 0 -le "$op_importance_max" ] && [ "0$imp" -ge "0$op_importance_max" ] )
   then
     cd "$oldcwd"
-    return 0
+    return 255
   fi
   res=1
   echo
@@ -174,7 +190,7 @@ run_test(){
       fi
     fi
   else
-    echo "Unknown test: $op_testname"
+    echo "Unknown test: $testpath"
   fi
   if [ $res != 0 ]; then
     header 80 ' ' "error: $res"
@@ -199,26 +215,66 @@ if $op_default; then
     export PATH="`pwd`:$PATH"
   fi
   n=0
+  ignored=()
+  success=()
   failed=()
+  expected_failed=()
   for f in tests/*; do
     if [ -d "$f" ]; then
       run_test "$f"
       res=$?
-      if [ $res != 0 ]; then
+      if [ $res = 255 ]; then
+        ignored=("${ignored[@]}" $f)
+      elif [ $res = 0 ]; then
+        success=("${success[@]}" $f)
+      elif [ -f "$f/fail" ]; then
+        expected_failed=("${expected_failed[@]}" $f)
+      else
         failed=("${failed[@]}" $f)
+        n=$(($n+$res))
       fi
-      n=$(($n+$res))
     fi
   done
   echo
+  echo "Summary:"
+  echo
+  for f in "${success[@]}"; do
+    echo " - SUCCESS: $f"
+  done
+  [ "${#success}" -gt 0 ] && echo
+  for f in "${expected_failed[@]}"; do
+    echo " - FAILURE EXPECTED: $f"
+  done
+  [ "${#expected_failed}" -gt 0 ] && echo
+  for f in "${ignored[@]}"; do
+    echo " - IGNORED: $f"
+  done
+  [ "${#ignored}" -gt 0 ] && echo
+  for f in "${failed[@]}"; do
+    echo " - FAILURE: $f"
+  done
+  [ "${#failed}" -gt 0 ] && echo
   if [ $n = 0 ]; then
     echo "*** SUCCESS ***"
   else
     echo "*** FAILURE ***"
-    for f in "${failed[@]}"; do
-      echo " - $f"
+  fi
+  echo
+  if [ -n "$op_report" ]; then
+    (
+    for f in "${success[@]}"; do
+      echo "SUCCESS:$f"
     done
-    echo
+    for f in "${expected_failed[@]}"; do
+      echo "FAILURE_EXPECTED:$f"
+    done
+    for f in "${ignored[@]}"; do
+      echo "IGNORED:$f"
+    done
+    for f in "${failed[@]}"; do
+      echo "FAILURE:$f"
+    done
+    ) > "$op_report"
   fi
   exit $n
 fi
