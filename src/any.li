@@ -392,6 +392,7 @@ Section Public
   - type_false            :TYPE;
   - type_boolean          :TYPE;
   - type_integer_32       :TYPE;
+  - type_uinteger_32      :TYPE;
   - type_pointer          :TYPE;
   - type_string_constant  :TYPE;
   - type_n_a_character    :TYPE;

@@ -47,6 +47,9 @@ Section Public
   - compiler_inlining_level:INTEGER   <- `18`;
   - compiler_optimization:BOOLEAN     <- `19`;
   - compiler_built_on:STRING_CONSTANT <- `20`;
+  - compiler_debug_with_code:BOOLEAN  <- `21`;
+  - compile_time:TIME                 <- TIME.create_csecond `22`;
+  - compile_date:DATE                 <- DATE.decode `23`;
 
   - is_ansi:BOOLEAN := SYSTEM.is_ansi;
 
@@ -200,7 +203,7 @@ Section Public
   // Reflexivity.
   //
 
-  - type_name:STRING_CONSTANT <- `21`;
+  - type_name:STRING_CONSTANT <- `24`;
 
   - foreach_data action:{ (STRING_CONSTANT,INTEGER,INTEGER); } <-
   (
@@ -244,8 +247,8 @@ Section Public
   // BSBS: a simplifier qd les types parameters ds les blocks seront good.
 
 //  - foreach_intern_data_action (sec,nam:STRING_CONSTANT,typ:T,val:V)
-//  with action:{ (STRING_CONSTANT,STRING_CONSTANT,T,E); } <- `22`;
+//  with action:{ (STRING_CONSTANT,STRING_CONSTANT,T,E); } <- `25`;
 
-  - foreach_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,INTEGER,INTEGER); } <- `22`;
+  - foreach_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,INTEGER,INTEGER); } <- `25`;
 
-  - foreach_set_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,T); T} <- `23`;
+  - foreach_set_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,T); T} <- `26`;

@@ -172,21 +172,33 @@ Section Public
         SYSTEM.get_current_date.append_in string_tmp;
         string_tmp.add_last ' ';
         SYSTEM.get_current_time.append_in string_tmp;
-	result := STRING_CST.create position text (ALIAS_STR.get string_tmp)
-        length (string_tmp.count);
+        result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
       }
-      .when 21 then { // OBJECT.type_name -> STRING_CONSTANT
+      .when 21 then { // debug_with_code -> BOOLEAN.
+        (debug_with_code).if {
+          result := PROTOTYPE_CST.create position type (type_true.default);
+        } else {
+          result := PROTOTYPE_CST.create position type (type_false.default);
+        };
+      }
+      .when 22 then { // compile_time -> INTEGER.
+        result := INTEGER_CST.create position value (SYSTEM.get_current_time.to_csecond) type (type_integer.default);
+      }
+      .when 23 then { // compile_date -> UINTEGER_32.
+        result := INTEGER_CST.create position value (SYSTEM.get_current_date.encode) type (type_uinteger_32.default);
+      }
+      .when 24 then { // OBJECT.type_name -> STRING_CONSTANT
         type := profil_slot.argument_list.first.type;
         string_tmp.clear;
         type.raw.append_name_in string_tmp;
-	result := STRING_CST.create position text (ALIAS_STR.get string_tmp)
+        result := STRING_CST.create position text (ALIAS_STR.get string_tmp)
         length (string_tmp.count);
       }
-      .when 22 then { // OBJECT.foreach_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,T,E); }
+      .when 25 then { // OBJECT.foreach_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,T,E); }
         forall_data_product;
         result := PROTOTYPE_CST.create position type (TYPE_VOID.default);
       }
-      .when 23 to 31 then { // FREE
+      .when 26 to 31 then { // FREE
         syntax_error (position,"Free external lisaac code.");
       };
     } else {
