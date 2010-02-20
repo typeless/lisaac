@@ -248,12 +248,18 @@ Section Public
   //
   // Optimization.
   //
-  
-  - boost <-
-  // Full optimization.
+
+  - optim <-
+  // Full Lisaac optimization.
   (
     no_debug;
     is_optimization := TRUE;
+  );
+
+  - boost <-
+  // Full optimization (lisaac and gcc).
+  (
+    optim;
     option_gcc := option_gcc + " -O2 -fomit-frame-pointer";
   );
   
