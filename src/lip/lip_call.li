@@ -99,12 +99,12 @@ Section Public
       (val != NULL).if {
         warning_error (position,"No argument for `help_command' method.");
       };
-      LISAAC.print_help;
+      LISAAC.show_help;
     }.elseif {name = ALIAS_STR.slot_compiler_version} then {
       (val != NULL).if {
-        warning_error (position,"No argument for `version' method.");
+        warning_error (position,"No argument for `compiler_version' method.");
       };
-      LISAAC.print_version;
+      LISAAC.show_version;
     }.elseif {name = ALIAS_STR.slot_path} then {
       str ?= val;
       (str = NULL).if {

@@ -26,9 +26,7 @@ Section Header
 
   - author   := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
   - comment  := "The main prototype";
-
-  - external := `#include "path.h"`;
-
+  
   // Top 5 memory record :
   // 1 - LOCAL         (>20MB) (il fo Aliaser les tmp !)
   // 2 - READ_LOCAL    (15MB)
@@ -42,86 +40,45 @@ Section Inherit
 
 Section Public
 
-  - print_help <-
+  - show_help <-
   (
-    begin_usage1.print;
-    version.print;
-    (15- version.count).times {
-      ' '.print;
-    };
-    begin_usage2.print;
+    COMMON.command_line_header "Compiler".print;
+    begin_usage.print;
     LIP_CODE.print_usage;
-    end_usage.print;
+    COMMON.command_line_footer.print;
   );
-
-  - print_version <-
+  
+  - show_version <-
   (
-    "Compiler version: ".print;
-    version.print; '\n'.print;
-    //
-    "Built on:         ".print;
-    compiler_built_on.print;
-    '\n'.print;
-    //
-    "Debug level:      ".print;
-    (debug_level = 0).if {
-      "No debug.".print;
-    } else {
-      debug_level.print;
-    };
-    '\n'.print;
-    //
-    "Inlining level:   ".print;
-    compiler_inlining_level.print;
-    '\n'.print;
-    //
-    "Optimization:     ".print;
-    compiler_optimization.print;
-    '\n'.print;
+    COMMON.command_line_header "Compiler".print;
+    COMMON.print_info;
+    COMMON.command_line_footer.print;
   );
 
 Section Private
 
-  - version:STRING_CONSTANT := "0.39 rc2";
-
-  //
-  //
-  //
-
-  - output_name:STRING_CONSTANT;
-
+  - output_name     :STRING_CONSTANT;
+  - output_extension:STRING_CONSTANT;
+  
   - input_name:STRING_CONSTANT;
-
+  
   //
   // Command.
   //
 
-  - begin_usage1: STRING_CONSTANT :=
-  "----------------------------------------------------------------\n\
-  \--            Lisaac IS An Advanced Compiler V.";
-
-  - begin_usage2: STRING_CONSTANT :=
-  "--\n\
-  \--            LORIA - LSIIT - UDS - CNRS - FRANCE             --\n\
-  \--         Benoit SONNTAG - benoit.sonntag@lisaac.org         --\n\
-  \--                   http://www.lisaac.org                    --\n\
-  \----------------------------------------------------------------\n\
-  \Usage:                                                          \n\
+  - begin_usage: STRING_CONSTANT :=
+  "Usage:                                                          \n\
   \  lisaac [<lip_file.lip>] [<input_file[.li]>] {<Options>}       \n\
   \                                                                \n\
-  \  Note: without <lip_file> or <input_file>,                     \n\
-  \        the nearest `make.lip' file is interpreted.             \n\
+  \  Note: without <lip_file> the nearest `make.lip' file is       \n\
+  \        interpreted.                                            \n\
   \                                                                \n\
   \Options:                                                        \n";
-
-  - end_usage:STRING_CONSTANT :=
-  "                                                                \n\
-  \Bug report:                                                     \n\
-  \\t post in: https://alioth.debian.org/projects/lisaac/         \n";
+  
 
   - display_usage <-
   (
-    print_help;
+    show_help;
     die_with_code exit_failure_code;
   );
 

@@ -29,8 +29,6 @@ Section Header
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Shorter source code.";
   
-  - external := `#include "path.h"`;
-    
 Section Inherit
   
   - parent_any:ANY := ANY;
@@ -62,13 +60,7 @@ Section Private
   //
 
   - usage:STRING_CONSTANT :=
-  "----------------------------------------------------------------\n\
-  \--                   Lisaac source Shorter                    --\n\
-  \--            LORIA - LSIIT - UDS - CNRS - FRANCE             --\n\
-  \--         Benoit SONNTAG - benoit.sonntag@lisaac.org         --\n\
-  \--                   http://www.lisaac.org                    --\n\
-  \----------------------------------------------------------------\n\
-  \Usage:                                                      \n\
+  "Usage:                                                      \n\
   \  shorter <input_file[.li]> [Options]                       \n\
   \                                                            \n\
   \Options:                                                    \n\
@@ -94,14 +86,21 @@ Section Private
   \   - With current `make.lip'                                \n\
   \      shorter -d -f belinda                                 \n\ 
   \   - With specific `make.lip'                               \n\
-  \      shorter -d -f belinda ../make.lip                     \n\
-  \                                                            \n\
-  \Bug report:                                                 \n\
-  \    post in: https://alioth.debian.org/projects/lisaac/     \n";
+  \      shorter -d -f belinda ../make.lip                     \n";
 
   - display_usage <-
   (
+    COMMON.command_line_header "Shorter".print;
     usage.print;
+    COMMON.command_line_footer.print;
+    die_with_code exit_failure_code;
+  );
+
+  - display_version <-
+  (
+    COMMON.command_line_header "Shorter".print;
+    COMMON.print_info;
+    COMMON.command_line_footer.print;
     die_with_code exit_failure_code;
   );
   
@@ -113,7 +112,6 @@ Section Private
   ( + cmd:STRING;
     + j:INTEGER;
     + var_lisaac:STRING_CONSTANT;
-    + path:NATIVE_ARRAY(CHARACTER);
     
     // Read argument.
     is_shorter := TRUE;
@@ -176,19 +174,7 @@ Section Private
     };
     
     (format_name != NULL).if {
-      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
-      var_lisaac := STRING_CONSTANT.new_intern path
-      count (path.fast_first_index_of '\0' until 1024);
-      //var_lisaac := ENVIRONMENT.get_environment_variable "LISAAC";
-      //(var_lisaac = NULL).if {
-	//STD_ERROR.put_string "Unable to find `LISAAC' environment variable.\n";
-	//STD_ERROR.put_string "Please, set the environment variable `LISAAC'\n";
-	//STD_ERROR.put_string "with the appropriate absolute path to lisaac \
-	//\root directory.\n";
-	//STD_ERROR.put_string "Example: 'set LISAAC=/lisaac/'\n";
-	//die_with_code exit_failure_code;
-      //};
-      //
+      var_lisaac := COMMON.path_lisaac;
       string_tmp.copy var_lisaac;
       ((var_lisaac.last != '/') &&
       {var_lisaac.last != '\\'}).if {
