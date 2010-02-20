@@ -63,11 +63,6 @@ Section Private
   // Service
   //
   
-  - path_li p:STRING <-
-  (
-    path (lisaac + p);
-  );
-  
   + exit_success_code:INTEGER := 0;
   
   + exit_failure_code:INTEGER := 1;
@@ -84,10 +79,10 @@ Section Private
   - standard_path <-
   // Standard library.
   (    
-    path_li "lib/standard/*";    
-    path_li "lib/internal/portable/*";    
-    path_li lib_extra;
-    path_li lib_unstable;
+    path "lib/standard/*";
+    path "lib/internal/portable/*";
+    path lib_extra;
+    path lib_unstable;
   );
   
   //
@@ -96,23 +91,23 @@ Section Private
   
   - unix_target <-
   (
-    path_li (lib_os + "unix/system/");
-    path_li (lib_os + "unix/file_system/");
-    path_li (lib_os + "unix/video/");
+    path (lib_os + "unix/system/");
+    path (lib_os + "unix/file_system/");
+    path (lib_os + "unix/video/");
   );
   
   - windows_target <-
   (
-    path_li (lib_os + "unix/system/");
-    path_li (lib_os + "windows/file_system/");
-    path_li (lib_os + "windows/video/");
+    path (lib_os + "unix/system/");
+    path (lib_os + "windows/file_system/");
+    path (lib_os + "windows/video/");
   );
 
   - dos_target <-
   (
-    path_li (lib_os + "unix/system/");
-    path_li (lib_os + "dos/file_system/");
-    path_li (lib_os + "dos/video/");
+    path (lib_os + "unix/system/");
+    path (lib_os + "dos/file_system/");
+    path (lib_os + "dos/video/");
   );
   
   - get_target <-
