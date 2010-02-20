@@ -71,7 +71,7 @@ Section Private
 
 Section Public
 
-  - read_character <-
+  - read_character :CHARACTER <-
   // Return last character from stream
   ( + result   :INTEGER;
 
@@ -87,6 +87,7 @@ Section Public
         last_character := tmp.first;
       };
     };
+    last_character
   );
 
   - unread_character <- 
