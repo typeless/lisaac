@@ -45,6 +45,7 @@ Section Private
   + is_cop:BOOLEAN;     // Correct value after compilation.
   + is_library:BOOLEAN; // For build a lisaac library C 
   + execute_back_end:BOOLEAN := TRUE;
+  + execute_status_code:INTEGER := 0;
 
   // Other.
   + is_statistic:BOOLEAN;
@@ -160,11 +161,31 @@ Section Private
       cmd.print;
       "'\n".print;
     };
-    (run cmd != 0).if {
-      "FAILURE!\n".print;
+    execute_status_code := run cmd;
+    (execute_status_code != 0).if {
+      (is_quiet).if {
+        "FAILURE run `".print;
+        cmd.print;
+        "' (".print;
+      } else {
+        "FAILURE (".print;
+      };
+      execute_status_code.print;
+      ")\n".print;
     };
   );
-  
+
+  - execute_fail cmd:STRING <-
+  (
+    execute cmd;
+    (execute_status_code > 255).if {
+      die_with_code exit_failure_code;
+    };
+    (execute_status_code != 0).if {
+      die_with_code execute_status_code;
+    };
+  );
+
   //
   // Execute function.
   //
@@ -172,7 +193,7 @@ Section Private
   - general_front_end <-
   (
     standard_path;
-    get_target;    
+    get_target;
   );
   
   - general_back_end <-
@@ -188,9 +209,9 @@ Section Private
       };
       option_gcc := option_gcc + " -U_FORTIFY_SOURCE ";
       (is_library).if {
-        execute ("gcc " + output_file + ".c -c " + option_gcc);
+        execute_fail ("gcc " + output_file + ".c -c " + option_gcc);
       } else {
-        execute ("gcc " + output_file + ".c -o " + output_file + option_gcc + lib_gcc);
+        execute_fail ("gcc " + output_file + ".c -o " + output_file + option_gcc + lib_gcc);
       };
     };
   );
