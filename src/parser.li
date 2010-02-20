@@ -682,6 +682,11 @@ Section Private
     result
   );
 
+  //-- escape         -> '\\' separator {separator} '\\'
+  //--                 | '\\' escape_seq
+  //--                 | '\\' integer '\\'
+  //-- escape_seq     -> 'a' | 'b'  | 'f' | 'n'  | 'r'  | 't'
+  //--                 | 'v' | '\\' | '?' | '\'' | '\"' | '0'
   - read_escape_character <-
   ( + nothing:BOOLEAN;
     + val:INTEGER;
@@ -787,8 +792,10 @@ Section Private
     };
     result
   );
-
-  //-- string         -> '\"' ascii_string '\"'
+  
+  //-- string         -> '\"' string_char '\"'
+  //-- string_char    -> escape
+  //--                 | ascii
   - read_string:BOOLEAN <-
   ( + result:BOOLEAN;
     + old_pos:INTEGER;
