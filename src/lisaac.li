@@ -198,10 +198,26 @@ Section Private
           (input_name != NULL).if {
             display_usage;
           };
-          input_name := ALIAS_STR.get (COMMAND_LINE.item j);
+          // Remove extension and replace '\'
+          string_tmp.copy (COMMAND_LINE.item j);
+          string_tmp.replace_all '\\' with '/';
+          i := last_index_str (string_tmp,'.');
+          (i > string_tmp.lower).if {
+            string_tmp.remove_last (string_tmp.upper-i+1);
+          };
+          input_name := ALIAS_STR.get (string_tmp);
           hook_after_load_lip := {
             LIP_CODE.put_string input_name to (ALIAS_STR.slot_input_file);
+            LIP_CODE.put_string input_name to (ALIAS_STR.slot_output_file);
           };
+          // get dirname
+          i := last_index_str (string_tmp,'/');
+          (i < string_tmp.lower).if {
+            string_tmp.copy "./";
+          } else {
+            string_tmp.remove_last (string_tmp.upper-i);
+          };
+          input_path := ALIAS_STR.get (string_tmp);
         };
       };
       j := j+1;
@@ -232,6 +248,7 @@ Section Private
     // Loading variable.
     input_name         := LIP_CODE.get_string  (ALIAS_STR.slot_input_file);
     output_name        := LIP_CODE.get_string  (ALIAS_STR.slot_output_file);
+    output_extension   := LIP_CODE.get_string  (ALIAS_STR.slot_output_extension);
     debug_level_option := LIP_CODE.get_integer (ALIAS_STR.slot_debug_level);
     debug_with_code    := LIP_CODE.get_boolean (ALIAS_STR.slot_debug_with_code);
     is_all_warning     := LIP_CODE.get_boolean (ALIAS_STR.slot_is_all_warning);
@@ -245,19 +262,15 @@ Section Private
       "ERROR: `input_file' is empty.\n".print;
       display_usage;
     };
+    // Separate path (string_tmp) and file (string_tmp2)
     string_tmp.copy input_name;
     string_tmp2.copy string_tmp;
-    string_tmp.replace_all '\\' with '/';
     i := last_index_str (string_tmp,'/');
     (i < string_tmp.lower).if {
       string_tmp.copy "./";
     } else {
       string_tmp.remove_last (string_tmp.upper-i);
       string_tmp2.remove_first i;
-    };
-    i := last_index_str (string_tmp2,'.');
-    (i > string_tmp2.lower).if {
-      string_tmp2.remove_last (string_tmp2.upper-i+1);
     };
     LIP_CALL.load_directory (ALIAS_STR.get string_tmp) is_recursive FALSE;
     //
@@ -276,6 +289,14 @@ Section Private
       string_tmp.append input_name;
       output_name := ALIAS_STR.get string_tmp;
       LIP_CODE.put_string output_name to (ALIAS_STR.slot_output_file);
+    };
+    ((output_extension = NULL) || {output_extension.is_empty}).if {
+      (is_java).if {
+        output_extension := ALIAS_STR.extension_java;
+      } else {
+        output_extension := ALIAS_STR.extension_c;
+      };
+      LIP_CODE.put_string output_extension to (ALIAS_STR.slot_output_extension);
     };
     LIP_CODE.init_path_file FALSE;
   );
@@ -577,7 +598,8 @@ Section Public
       string_tmp.append input_name;
       string_tmp.append ".li\noutput file: ";
       string_tmp.append output_name;
-      string_tmp.append ".c\npath directory :\n";
+      string_tmp.append output_extension;
+      string_tmp.append "\npath directory :\n";
       path_file.lower.to (path_file.upper) do { j:INTEGER;
 	string_tmp.append "  ";
 	string_tmp.append (path_file.item j);
@@ -711,7 +733,7 @@ Section Public
     // Saving File Output.
     //
     string_tmp.copy output_name;
-    string_tmp.append ".c";
+    string_tmp.append output_extension;
     (! FS_MIN.make_file string_tmp).if {
       STD_ERROR.put_string "Error: File ";
       STD_ERROR.put_string string_tmp;

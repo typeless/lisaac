@@ -27,10 +27,11 @@ Section Private
   // Compiler variables.
   //
   
-  // File information.
-  + lisaac:STRING;      // is environment variable value (auto-loading).
-  + input_file:STRING;  // is input file name value without extension (auto-loading, if possible).
-  + output_file:STRING; // is output file name value without extension (auto-loading, if possible).
+  // File information (auto-loading variables).
+  + lisaac          :STRING; // is environment variable value (auto-loading).
+  + input_file      :STRING; // is input file name value without extension.
+  + output_file     :STRING; // is output file name value without extension.
+  + output_extension:STRING; // is extension of `output_file'
   
   // Debug information.
   + debug_level:INTEGER := 15;
@@ -209,10 +210,12 @@ Section Private
       };
       option_gcc := option_gcc + " -U_FORTIFY_SOURCE ";
       (is_library).if {
-        execute_fail ("gcc " + output_file + ".c -c " + option_gcc);
+        execute_fail ("gcc " + output_file + output_extension + " -c " + option_gcc);
       } else {
-        execute_fail ("gcc " + output_file + ".c -o " + output_file + option_gcc + lib_gcc);
+        execute_fail ("gcc " + output_file + output_extension + " -o " + output_file + option_gcc + lib_gcc);
       };
+    } else {
+      ("Written: " + output_file + output_extension + "\n").print;
     };
   );
   
