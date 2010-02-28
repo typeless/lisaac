@@ -19,34 +19,34 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := ITM_OBJECT;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Parent item object";
-  
+
 Section Inherit
-  
+
   + parent_any:Expanded ANY;
-  
+
   - parent_hashable:HASHABLE := HASHABLE;
-  
+
 Section Public
-  
+
   - context_extern:LOCAL;
-  
+
   - bottom_index:INTEGER;
-  
+
   - push_context:(INTEGER,INTEGER,LOCAL) <-
   (
     bottom_index := stack_local.upper + 1;
-    context_extern := NULL;
+    context_extern := NULL; 
     bottom_index,Old bottom_index,Old context_extern
-  );      
-  
+  );
+
   - pop_context (stack_top:INTEGER,old_bottom_index:INTEGER,old_context:LOCAL) <-
   (
     stack_local.remove_since stack_top;
@@ -55,25 +55,25 @@ Section Public
       context_extern := old_context;
     };
   );
-  
+
   - lookup n:STRING_CONSTANT :LOCAL <-
   ( + result:LOCAL;
     + j:INTEGER;
     ? {n = ALIAS_STR.get n};
-    
+
     j := stack_local.upper;
     {(j < stack_local.lower) || {stack_local.item j.name = n}}.until_do {	
       j := j - 1;
     };
-    (j >= stack_local.lower).if {            
-      result := stack_local.item j;           
+    (j >= stack_local.lower).if {
+      result := stack_local.item j;
       ((j < bottom_index) && {result.style != '-'} && {result.name != ALIAS_STR.variable_self}).if {
         bottom_index := j;
         context_extern := result;
       };
 
     }.elseif {profil_slot != NULL} then {
-      result := profil_slot.lookup n;            
+      result := profil_slot.lookup n;
       ((result != NULL) && {result.name != ALIAS_STR.variable_self}).if {
         bottom_index := -1;
 	context_extern := result;
@@ -81,7 +81,7 @@ Section Public
     };
     result
   );
-  
+
   //
   // Source position.
   //
@@ -92,24 +92,24 @@ Section Public
   (
     position := new_pos;
   );
-  
+
   //
   //
   //
-   
+
   - verify:BOOLEAN;
-  
+
   - set_verify v:BOOLEAN <-
   (
     verify := v;
   );
-  
+
   - pop_stack_until stack_top:INTEGER <-
   ( + var,var2:LOCAL;
     + n:STRING_CONSTANT;
-    
+
     (verify).if {
-      // Verify local.      
+      // Verify local.
       {stack_local.upper >= stack_top}.while_do {
 	var := stack_local.last;
 	stack_local.remove_last;

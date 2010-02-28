@@ -34,6 +34,7 @@ Section Inherit
 
 Section Public
 
+
   - last_index_str (n:ABSTRACT_STRING,c:CHARACTER) :INTEGER <-
   // BSBS: A Mettre dans STRING.
   ( + result:INTEGER;
@@ -43,6 +44,36 @@ Section Public
     };
     result
   );
+
+  //
+  // Statistic information.
+  //
+
+  - count_equal_const:INTEGER;
+  - count_equal_ident:INTEGER;
+  - count_equal_null :INTEGER;
+  - count_equal_inter:INTEGER;
+  - count_equal_gener:INTEGER;
+
+  - count_equal_parse:INTEGER;
+  - count_equal_live :INTEGER;
+  - count_equal_creat:INTEGER;
+  - count_equal_remov:INTEGER;
+
+  - count_na_expanded:INTEGER;
+  - count_na_null:INTEGER;
+  - count_na_not_null:INTEGER;
+  - count_na_mono:INTEGER;
+  - count_na_always_null:INTEGER;
+
+  - count_local_expanded:INTEGER;
+  - count_local_null:INTEGER;
+  - count_local_not_null:INTEGER;
+  - count_local_mono:INTEGER;
+  - count_local_always_null:INTEGER;
+
+  - count_switch:INTEGER;
+  - count_switch_merging:INTEGER;
 
   //
   // Invariant loop system.
@@ -86,6 +117,7 @@ Section Public
   - is_all_warning:BOOLEAN;
 
   - is_optimization:BOOLEAN;
+  - is_optimization_type_set:BOOLEAN;
   - inline_level:INTEGER := 17;
 
   - is_java:BOOLEAN; // Fuck the Java!

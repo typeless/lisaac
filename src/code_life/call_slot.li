@@ -19,24 +19,24 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := CALL_SLOT;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Call slot method.";
-  
+
 Section Inherit
-  
+
   + parent_instr:Expanded INSTR;
-  
+
 Section Public
-  
+
   - count_no_recursive:INTEGER;
   - count_context_sensitive:INTEGER;
-  
+
   - reset_count_no_recursive <-
   (
     count_no_recursive := 0;
@@ -46,59 +46,59 @@ Section Public
   (
     count_context_sensitive := 0;
   );
-    
+
   + profil:PROFIL;
-  
+
   - set_profil p:PROFIL <-
   (
     profil := p;
   );
-  
+
   - source:LIST <- profil.code;
-  
+
   - is_interrupt:BOOLEAN <- profil.is_interrupt;
-  
+
   - is_external:BOOLEAN  <- profil.is_external;
-  
+
   //
   // Argument.
   //
-  
+
   + argument_list:FAST_ARRAY(WRITE);
-  
+
   + result_list:Expanded SLIM_ARRAY(RESULT); // BSBS: utiliter de RESULT ? => WRITE_LOCAL
-  
+
   + cop_argument:EXPR;
-  
+
   + is_cop_return:BOOLEAN;
-  
+
   - set_args args:FAST_ARRAY(WRITE) <-
   (
     argument_list := args;
   );
-  
+
   - set_cop_argument arg:EXPR <-
   (
     cop_argument := arg;
   );
-    
+
   //
   // Creation.
   //
-  
+
   - create p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY(WRITE) cop arg:EXPR :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p profil prof with l_arg cop arg;
     result
   );
-  
+
   - make p:POSITION profil prof:PROFIL with l_arg:FAST_ARRAY(WRITE) cop arg:EXPR <-
-  ( + n:INTEGER;  
-    position := p;    
+  ( + n:INTEGER;
+    position := p;
     cop_argument := arg;
     // Choice profil.
-    profil := prof;    
+    profil := prof;
     argument_list := l_arg;
     profil.link Self;
     //
@@ -107,24 +107,24 @@ Section Public
     } else {
       n := profil.result_list.count;
     };
-    result_list.make_with_capacity n;        
+    result_list.make_with_capacity n;
   );
-  
+
   - my_copy:SELF <-
   ( + result:SELF;
     + wrt:WRITE;
     + new_arg:FAST_ARRAY(WRITE);
     + res:RESULT;
     result := clone;
-        
+
     new_arg := FAST_ARRAY(WRITE).create_with_capacity (argument_list.count);
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       (argument_list.item j = NULL).if {
 	wrt := NULL;
       } else {
         // No Alias := Alias.
-        wrt := argument_list.item j;            
-	wrt := wrt.variable.write_direct (wrt.position) with NULL value (wrt.value.my_copy); 
+        wrt := argument_list.item j;
+	wrt := wrt.variable.write_direct (wrt.position) with NULL value (wrt.value.my_copy);
 	//wrt := argument_list.item j.my_copy;
       };
       new_arg.add_last wrt;
@@ -135,7 +135,7 @@ Section Public
     };
     //
     result.result_list.make_with_capacity (result_list.count);
-    (result_list.lower).to (result_list.upper) do { j:INTEGER;      
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;
       (result_list.item j = NULL).if {
         res := NULL;
       } else {
@@ -154,19 +154,19 @@ Section Public
 
   - remove <-
   ( + e:WRITE;
-    
+
     ((profil.link_count = 0) && {profil.cop_link_count = 0}).if { // BSBS: Debug...
       "CALL_SLOT : ".print;
       debug_display;
     };
-    
+
     profil.unlink Self;
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       e := argument_list.item j;
       (e != NULL).if {
 	e.remove;
       };
-    };    
+    };
     (cop_argument != NULL).if {
       cop_argument.remove;
     };
@@ -174,63 +174,49 @@ Section Public
       result_list.item j.remove;
     };
   );
-  
-Section Private  
-  
-  - execute_inline:(BOOLEAN,INSTR) <- 
+
+Section Private
+
+  - execute_inline:(BOOLEAN,INSTR) <-
   // Simple inlining
   ( + result:INSTR;
     + is_good:BOOLEAN;
     + new_src:LIST;
     + wrt:WRITE;
-    + old_val:EXPR;    
+    + old_val:EXPR;
     + loc:LOCAL;
     + prof_block:PROFIL_BLOCK;
-        
-    (source = list_current).if {      
+
+    (source = list_current).if {
       POSITION.put_error semantic text "Recursivity without end (call_slot).";
       source.position.put_position;
       position.put_position;
       POSITION.send_error;
     };
-    /*
-    (profil.name == "to__do__AAJH").if {
-      "HERE!\n".print;
-      (profil.is_inlinable).if {    
-        "YES!\n".print;
-      } else {
-        "NO\n".print;
-      };
-      profil.stat.print; ' '.print;
-      profil.link_count.print;
-      '\n'.print;
-      '\n'.print;
-    };
-    */
-    (profil.is_inlinable).if {    
+    (profil.is_inlinable).if {
       (profil.link_count = 1).if {
-        // 
+        //
         // Inlining simple.
-        //	  	  	  	  
+        //	  	  	  	
         (list_current.old_seq_or_and = seq_or_and).if {
-          argument_to_assignment source index 1 alias FALSE style '+';	  
-          (result_list.lower).to (result_list.upper) do { j:INTEGER;                        
+          argument_to_assignment source index 0 alias FALSE style '+';	
+          (result_list.lower).to (result_list.upper) do { j:INTEGER;
             source.add_last (result_list.item j.write);
           };
-          result := source.execute;          
-	  profil.remove_inline;	  	  
+          result := source.execute;
+	  profil.remove_inline;	  	
           new_execute_pass;
           is_good := TRUE;
         };
       } else {
 	//
-	// Inline by copy:	  
+	// Inline by copy:	
 	//
-        (list_current.old_seq_or_and = seq_or_and).if {	    	    	    
-          profil.unlink Self;	  	  	    	    
+        (list_current.old_seq_or_and = seq_or_and).if {	    	    	
+          profil.unlink Self;	  	  	    	
           
           prof_block ?= profil;
-          (prof_block != NULL).if {	    
+          ((prof_block != NULL) && {prof_block.is_context_sensitive}).if {	
             (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
               loc := profil.argument_list.item j;
               (loc != NULL).if {
@@ -239,20 +225,21 @@ Section Private
 	    };
 	  } else {
 	    LOCAL.alias_on;
-	  };
+          };
+          
           //LOCAL.alias_on;
-          
-          new_src := source.my_copy;	                     
-          argument_to_assignment new_src index 1 alias TRUE style '+';
+
+          new_src := source.my_copy;	
+          argument_to_assignment new_src index 0 alias TRUE style '+';
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
-            wrt := result_list.item j.write;                        
-            old_val := wrt.value;            
-            wrt.set_value (old_val.my_copy);	      	      
-            old_val.remove;            
+            wrt := result_list.item j.write;
+            old_val := wrt.value;
+            wrt.set_value (old_val.my_copy);	      	
+            old_val.remove;
             new_src.add_last wrt;
-          };		  	                      
+          };		  	
           
-          (prof_block != NULL).if {
+          ((prof_block != NULL) && {prof_block.is_context_sensitive}).if {
 	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
 	      loc := profil.argument_list.item j;
 	      (loc != NULL).if {
@@ -261,39 +248,40 @@ Section Private
 	    };
 	  } else {
 	    LOCAL.alias_off;
-	  };	  
-          //LOCAL.alias_off;          
-                    
+          };	
+          
+          //LOCAL.alias_off;
+
 	  result := new_src.execute;
           is_good := TRUE;
-	  new_execute_pass;	  	  
+	  new_execute_pass;	  	
         };
       };
     };
     is_good,
     result
-  );  
-  
+  );
+
   - execute_normal <-
   ( + wrt:WRITE_LOCAL;
-        
+
     // Pour l'instant ne change pas le profil
     // il faut faire une copie de l'ancien !!
-    
+
     //profil := profil.update self link FALSE;
-          
-    (argument_list.lower).to (argument_list.upper) do { j:INTEGER;      
-      wrt ?= argument_list.item j;	            
+
+    (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
+      wrt ?= argument_list.item j;	
       (wrt != NULL).if {			
 	(wrt.execute_argument).if {
 	  new_execute_pass;
-          argument_list.put NULL to j;                    
+          argument_list.put NULL to j;
 	  (wrt.ensure_count = 0).if {
 	    profil.argument_list.put NULL to j;
 	  };
 	};
       };
-    };            	              
+    };            	
     /* BSBS: A revoir avec pb `list' l.352 et `profil' pour result
     (result_list.lower).to (result_list.upper) do { j:INTEGER;
       result_list.item j.execute;
@@ -302,26 +290,26 @@ Section Private
     (cop_argument != NULL).if {
       cop_argument := cop_argument.execute_link;
       (
-        (! is_cop_return) && 
-        {profil_current != NULL} && 
-        {profil_current.cop_link_count != 0} && 
+        (! is_cop_return) &&
+        {profil_current != NULL} &&
+        {profil_current.cop_link_count != 0} &&
         {profil_current.link_count = 0} &&
         {profil_current.result_list.is_empty}
       ).if {
         // BSBS: Il faut produire reellement 2 versions (une COP et une non COP)
         // Ainsi tu pourras generaliser l'optim et l'appliquer que sur la version COP.
-        is_cop_return := profil_current.i_am_the_last Self;                
+        is_cop_return := profil_current.i_am_the_last Self;
       };
-    };    
+    };
     (profil.is_context_sensitive).if {
       seq_call_local_and_loop := seq_call_local_and_loop + 1;
     };
     seq_call_and_loop   := seq_call_and_loop + 1;
     seq_inline := seq_inline + 1;
-        
+
     //
     // Counter.
-    //    
+    //
     (! profil.is_recursive).if {
       count_no_recursive := count_no_recursive + 1;
     };
@@ -329,15 +317,15 @@ Section Private
       count_context_sensitive := count_context_sensitive + 1;
     };
   );
-      
+
 Section Public
-  
+
   - execute:INSTR <-
-  ( + result:INSTR;        
-    + is_good:BOOLEAN;    
+  ( + result:INSTR;
+    + is_good:BOOLEAN;
 
     (is_good,result) := execute_inline;
-    (! is_good).if {      
+    (! is_good).if {
       execute_normal;
       (source.is_empty).if {
         // Suppression.	
@@ -348,7 +336,7 @@ Section Public
         profil.set_life;
       };
     };
-    
+
     result
   );
 
@@ -360,7 +348,7 @@ Section Public
   ( + t:HASHED_SET(TYPE);
     buffer.append (profil.name);
     buffer.add_last '(';
-      
+
     type_list.lower.to (type_list.upper) do {	 j:INTEGER;
       t := type_list.item j;
       t.lower.to (t.upper - 1) do { k:INTEGER;
@@ -392,7 +380,7 @@ Section Public
 	  arg.value.display buffer;
 	};
 	buffer.add_last ',';
-      };		        
+      };		
       buffer.put ')' to (buffer.upper);	
     };
   );
@@ -416,7 +404,7 @@ Section Public
   //
   // Generation.
   //
-  
+
   - genere buffer:STRING <-
   ( + val:WRITE;
     + arg:LOCAL;
@@ -424,40 +412,40 @@ Section Public
     + np:INTEGER;
     + low:INTEGER;
     + back:INTEGER;
-    
+
     (cop_argument != NULL).if {
       (
-        (argument_list.count >=1) && 
-        {argument_list.first != NULL} && 
+        (argument_list.count >=1) &&
+        {argument_list.first != NULL} &&
         {argument_list.first.variable.name = ALIAS_STR.variable_self}
       ).if {
         low := 1;
       };
-      (argument_list.count-low > 0).if {        
+      (argument_list.count-low > 0).if {
         back := buffer.count;
         buffer.append "pthread_mutex_lock (&(";
-        cop_argument.genere buffer;        
-        buffer.append "->thread.mutex));\n";                
-        (low).to (argument_list.upper) do { j:INTEGER; 
-          val := argument_list.item j;        
-          (val != NULL).if {	           
+        cop_argument.genere buffer;
+        buffer.append "->thread.mutex));\n";
+        (low).to (argument_list.upper) do { j:INTEGER;
+          val := argument_list.item j;
+          (val != NULL).if {	
             buffer.append indent;
             cop_argument.genere buffer;
             buffer.append "->param_";
             np.append_in buffer;
             buffer.append "=(int)";
-            val.genere_value buffer;	  
-            buffer.append ";\n";          
+            val.genere_value buffer;	
+            buffer.append ";\n";
             np := np + 1;
           } else {
             "arg null\n".print;
           };
-        };        
+        };
         buffer.append indent;
         (np = 0).if {
           buffer.keep_head back;
         };
-      };            
+      };
       cop_argument.genere buffer;
       buffer.append "->thread.procedure = COP_";
       buffer.append (profil.name);
@@ -471,23 +459,23 @@ Section Public
       buffer.append "((lith_object *)";
       cop_argument.genere buffer;
       buffer.add_last ')';
-    } else {    
+    } else {
       (result_list.is_empty).if_false {
         wrt ?= result_list.first.write;
         (wrt.local.ensure_count != 0).if {
-          wrt.genere_first_result buffer;      
-        };        
+          wrt.genere_first_result buffer;
+        };
       };
       buffer.append (profil.name);
-      
+
       (is_graph).if {
         (profil_current = NULL).if {
-          profil_main.add_call profil; 
+          profil_main.add_call profil;
         } else {
-          profil_current.add_call profil; 
-        };                
+          profil_current.add_call profil;
+        };
       };
-            
+
       (is_interrupt || {is_external}).if {
         (argument_list.first != NULL).if {
           semantic_error (argument_list.first.position,
@@ -496,14 +484,14 @@ Section Public
       };
       (! is_interrupt).if {
         buffer.add_last '(';	
-        (argument_list.lower).to (argument_list.upper) do { j:INTEGER; 
+        (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
           val := argument_list.item j;
           arg := profil.argument_list.item j;
-          (val != NULL).if {	 
+          (val != NULL).if {	
             (buffer.last != '(').if {
               buffer.add_last ',';
             };
-            val.genere_value buffer;	  
+            val.genere_value buffer;	
           };
         };
         (result_list.count > 1).if {
@@ -512,44 +500,44 @@ Section Public
               buffer.add_last ',';
             };
             wrt ?= result_list.item j.write;
-            wrt.genere_argument_result buffer;	  
+            wrt.genere_argument_result buffer;	
           };
         };
         buffer.add_last ')';
       };
     };
   );
-    
+
   //
   // Intern routine.
   //
-  
+
 Section PROFIL
-/*      
+/*
   - to_tail_recursive:LOOP <-
   ( + switch:SWITCH;
-    + msg_slot:CALL_SLOT;    
-    + body:LIST;     
+    + msg_slot:CALL_SLOT;
+    + body:LIST;
     + wrt:WRITE;
     + new_val:EXPR;
     + new_wrt:INSTR;
     + result:LOOP;
     + push:PUSH;
-    
+
     result := LOOP.create position name (profil.name) body source;
-    
+
     //
     // Main List.
     //
-            
-    // Argument -> Affectation.              
+
+    // Argument -> Affectation.
     wrt := argument_list.first;
     (wrt != NULL).if {
       argument_list.put NULL to 0;	
       (! wrt.value.static_type.is_expanded).if {	
 	new_val := CAST.create (wrt.static_type) value (wrt.value);
 	wrt.set_value new_val;
-      };      
+      };
       wrt.variable.set_style '+';
       new_wrt := wrt.execute;
       (new_wrt != NULL).if {	
@@ -562,25 +550,25 @@ Section PROFIL
 	argument_list.put NULL to k;	
 	wrt.variable.set_style '+';
 	new_wrt := wrt.execute;
-	(new_wrt != NULL).if {	  
+	(new_wrt != NULL).if {	
 	  list_current.insert new_wrt to (list_current.index);
 	};
       };
     };
-        
-    (debug_level_option != 0).if {      
+
+    (debug_level_option != 0).if {
       push ?= source.first;
-      list_current.insert (push.my_copy) to (list_current.index);      
+      list_current.insert (push.my_copy) to (list_current.index);
       push.set_first FALSE;
     };
-    
+
     // Extract Switch/body:
     switch ?= source.last;
     (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
       body := switch.list.item k.code;
       (body.is_empty).if_false {	
 	msg_slot ?= body.last;
-	((msg_slot != NULL) && {msg_slot.profil = profil}).if {	  
+	((msg_slot != NULL) && {msg_slot.profil = profil}).if {	
 	  // DEBUG
 	  (msg_slot = Self).if {
 	    semantic_error (position,"CALL_SLOT : BUG!!!!");
@@ -594,27 +582,27 @@ Section PROFIL
     result
   );
   */
-  - argument_to_assignment lst:LIST 
-  index idx:INTEGER 
-  alias is_alias:BOOLEAN 
+  - argument_to_assignment lst:LIST
+  index idx:INTEGER
+  alias is_alias:BOOLEAN
   style styl:CHARACTER <-
-  ( + val,new_wrt:WRITE;        
+  ( + val,new_wrt:WRITE;
     + loc:LOCAL;
-    
+
     // Argument -> Affectation.
     (argument_list.upper).downto (argument_list.lower) do { k:INTEGER;
       val   := argument_list.item k;
       (val != NULL).if {	
 	argument_list.put NULL to k;
 	(is_alias).if {
-	  loc ?= val.variable;	  
-	  new_wrt := loc.write (val.position) value (val.value);	  	  
-	  loc.unwrite val;	  
+	  loc ?= val.variable;	
+	  new_wrt := loc.write (val.position) value (val.value);	  	
+	  loc.unwrite val;	
 	} else {
-	  new_wrt := val;	  
+	  new_wrt := val;	
 	};
-        lst.insert new_wrt to idx;        
+        lst.insert new_wrt to idx;
         new_wrt.variable.set_style styl;
       };
-    };    
+    };
   );

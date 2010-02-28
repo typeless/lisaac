@@ -19,53 +19,53 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := HASHED_SET(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment := "Definition of a mathematical set of hashable objects.";
-  
+
   // All common operations on mathematical sets are available.
-    
+
 Section Inherit
-  
+
   + parent_set:Expanded SET(V);
-  
+
 Section Public
-  
+
   - default_size:INTEGER := 53;
   // Minimum size for storage in number of items.
-  
+
 Section SET
-  
+
   + buckets:NATIVE_ARRAY(HASHED_SET_NODE(V));
   // The `buckets' storage area is the primary hash table of `capacity'
   // elements. To search some element, the first access is done in
   // `buckets' using the remainder of the division of the key `hash_code' by
   // `capacity'. In order to try to avoid clashes, `capacity' is always a
   // prime number (selected using HASH_TABLE_SIZE).
-  
+
   //
   // Internal cache handling:
   //
-  
+
   + cache_user:INTEGER;
   // The last user's external index in range [1 .. `count'] (see `item'
   // and `valid_index' for example) may be saved in `cache_user' otherwise
   // -1 to indicate that the cache is not active. When the cache is
   // active, the corresponding index in `buckets' is save in
   // `cache_buckets' and the corresponding node in `cache_node'.
-  
+
   + cache_node:HASHED_SET_NODE(V);
   // Meaningful only when `cache_user' is not -1.
-  
+
   + cache_buckets:INTEGER;
   // Meaningful only when `cache_user' is not -1.
-    
+
 Section Public
-  
+
   - create:SELF <-
   // Create an empty set. Internal storage `capacity' of the set is
   // initialized using the `Default_size' value. Then, tuning of needed
@@ -77,15 +77,15 @@ Section Public
     result.make;
     result
   );
-  
-  - make <-  
-  (    
+
+  - make <-
+  (
     with_capacity default_size;
   )
   [ ...
     +? { capacity = default_size };
   ];
-  
+
   - create_with_capacity sz:INTEGER :SELF <-
   // Create an empty set using `medium_size' as an appropriate value
   // to help initialization of `capacity'. Thus, this feature may be used
@@ -96,18 +96,18 @@ Section Public
   // `capacity'. Keep in mind that the `capacity' tuning is done
   // automatically according to usage.
   ( + result:SELF;
-    
+
     result := clone;
-    result.with_capacity sz; 
+    result.with_capacity sz;
     result
   );
-  
+
   - with_capacity medium_size:INTEGER <-
   [ ...
     -? {medium_size > 0};
   ]
   ( + new_capacity:INTEGER;
-        
+
     new_capacity := HASH_TABLE_SIZE.prime_number_ceiling medium_size;
     buckets := NATIVE_ARRAY(HASHED_SET_NODE(V)).create new_capacity;
     capacity := new_capacity;
@@ -118,29 +118,29 @@ Section Public
     +? { is_empty };
     +? { capacity >= medium_size };
   ];
-  
+
   //
   // Counting:
   //
-  
+
   + capacity:INTEGER; // Of the `buckets' storage area.
-  
+
   + count:INTEGER;
-    
+
   //
   // Adding and removing:
   //
-  
+
   - add e:V <-
   // Add a new item to the set:the mathematical definition of
   // adding in a set is followed.
   ( + h, idx:INTEGER;
     + node:HASHED_SET_NODE(V);
-            
+
     cache_user := -1;
     h := e.hash_code;
     idx := h % capacity;
-    node := buckets.item idx;    
+    node := buckets.item idx;
     {(node = NULL) || {node.item == e}}.until_do {
       node := node.next;
     };
@@ -160,11 +160,11 @@ Section Public
   // adding in a set is followed.
   ( + h, idx:INTEGER;
     + node:HASHED_SET_NODE(V);
-        
+
     cache_user := -1;
     h := e.hash_code;
     idx := h % capacity;
-    node := buckets.item idx;    
+    node := buckets.item idx;
     {(node = NULL) || {node.item = e}}.until_do {
       node := node.next;
     };
@@ -176,15 +176,15 @@ Section Public
       node := HASHED_SET_NODE(V).create e next (buckets.item idx);
       buckets.put node to idx;
       count := count + 1;
-    };   
-  );  
-  	 
+    };
+  );
+  	
   - remove e:V <-
   // Remove item `e' from the set:the mathematical definition of
   // removing from a set is followed.
   ( + h, idx:INTEGER;
     + node, previous_node:HASHED_SET_NODE(V);
-       
+
     cache_user := -1;
     h := e.hash_code;
     idx := h % capacity;
@@ -206,15 +206,15 @@ Section Public
 	  previous_node.set_next (node.next);
 	};
       };
-    };    
+    };
   );
-  
+
   - fast_remove e:V <-
   // Remove item `e' from the set:the mathematical definition of
   // removing from a set is followed.
   ( + h, idx:INTEGER;
     + node, previous_node:HASHED_SET_NODE(V);
-       
+
     cache_user := -1;
     h := e.hash_code;
     idx := h % capacity;
@@ -236,9 +236,9 @@ Section Public
 	  previous_node.set_next (node.next);
 	};
       };
-    };    
+    };
   );
-  
+
   - clear <-
   // Empty the current set.
   (
@@ -249,29 +249,29 @@ Section Public
   [ ...
     +? {capacity = Old capacity};
   ];
-  
+
   //
   // Looking and searching:
   //
-  
+
   - has e:V :BOOLEAN <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE(V);
-        
+
     idx := e.hash_code % capacity;
     node := buckets.item idx;
     {(node = NULL) || {node.item == e}}.until_do {
       node := node.next;
     };
-    node != NULL        
+    node != NULL
   );
-  
+
   - fast_has e:V :BOOLEAN <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
     + node:HASHED_SET_NODE(V);
-        
+
     idx := e.hash_code % capacity;
     node := buckets.item idx;
     {(node = NULL) || {node.item = e}}.until_do {
@@ -279,9 +279,9 @@ Section Public
     };
     node != NULL
   );
-  
+
   - reference_at e:V :V <-
-  ( + idx:INTEGER; 
+  ( + idx:INTEGER;
     + node:HASHED_SET_NODE(V);
     + result:V;
 				
@@ -297,7 +297,7 @@ Section Public
   );
 
   - reference_at e:V with cmp:{(V,V); BOOLEAN} :V <-
-  ( + idx:INTEGER; 
+  ( + idx:INTEGER;
     + node:HASHED_SET_NODE(V);
     + result:V;
 				
@@ -311,27 +311,27 @@ Section Public
     };
     result
   );
-  
+
   //
   // To provide iterating facilities:
   //
-    
+
   - item i:INTEGER :V <-
   // Return the item indexed by `index'.
-  (         
+  (
     set_cache_user i;
     cache_node.item
-  );  
-  
+  );
+
   //
   // Mathematical operations:
   //
-  
+
   - intersection other:SELF <-
   // Make the intersection of the `self' set with `other'.
   ( + i,c:INTEGER;
     + node1, node2:HASHED_SET_NODE(V);
-        
+
     cache_user := -1;
     i := capacity - 1;
     c := count;
@@ -350,17 +350,17 @@ Section Public
 	  (! other.has (node2.item)).if {
 	    node1.set_next (node2.next);
 	    count := count - 1;
-	  } else { 
+	  } else {
 	    node1 := node2;
-	  };	  
+	  };	
 	  node2 := node2.next;
 	  c := c - 1;
 	};
       };
       i := i - 1;
-    };    
+    };
   );
-  
+
   - copy other:SELF <-
   // Copy 'other' into the current set
   (
@@ -371,12 +371,12 @@ Section Public
     } else {
       clear;
     };
-    
+
     lower.to (other.count) do { i:INTEGER;
       add (other.item i);
     };
   );
-  
+
   - from_collection model:COLLECTION(V) <-
   ( + i, up:INTEGER;
 				
@@ -388,15 +388,15 @@ Section Public
       i := i + 1;
     };
   );
-  
-Section Private  
-  
+
+Section Private
+
   - increase_capacity <-
   // There is no more free slots:the set must grow.
   ( + i,idx, new_capacity:INTEGER;
     + old_buckets:NATIVE_ARRAY(HASHED_SET_NODE(V));
     + node1, node2:HASHED_SET_NODE(V);
-    
+
     new_capacity := HASH_TABLE_SIZE.prime_number_ceiling (capacity + 1);
     old_buckets := buckets;
     buckets := buckets.create new_capacity;
@@ -413,11 +413,11 @@ Section Private
       };
       i := i - 1;
     };
-    cache_user := -1;    
+    cache_user := -1;
   );
-  
+
   - set_cache_user index:INTEGER <-
-  (      
+  (
     (index = cache_user + 1).if {
       cache_user := index;
       cache_node := cache_node.next;
@@ -440,16 +440,16 @@ Section Private
 	set_cache_user (cache_user + 1);
       };
     };
-    
+
     ? { cache_user = index};
     ? { cache_buckets.in_range 0 to (capacity - 1)};
     ? { cache_node != NULL};
   );
-  
+
   //
   // Invariant.
   //
-  
+
 //  [
 //    -? {capacity > 0};
 //    -? {capacity >= count};
@@ -457,21 +457,21 @@ Section Private
 //    -? {(cache_user > 0) ->> {cache_node != NULL}};
 //    -? {(cache_user > 0) ->> {cache_buckets.in_range 0 to (capacity - 1)}}
 //  ];
-    
-  // -----------------OLD-----------------  
-  
+
+  // -----------------OLD-----------------
+
   /*
-  
-  
-  
+
+
+
   - union other:SELF <-
   // Make the union of the `self' set with `other'.
   ( + e:V;
     + old_count:INTEGER;
-    
-    ? {old_count := count; 
+
+    ? {old_count := count;
        other != NULL};
-    
+
     lower.to (other.count) do { i:INTEGER;
       e := other.item i;
       add e;
@@ -483,39 +483,39 @@ Section Private
   // Make the union of the `self' set with `other'.
   ( + old_count:INTEGER;
     + e:V;
-    ? {old_count := count; 
+    ? {old_count := count;
        other != NULL};
-    
+
     lower.to (other.count) do { i:INTEGER;
       e := other.item i;
       fast_add e;
     };
     ? { count <= (old_count + other.count)};
   );
-  
-  
+
+
   - '+' Left 1 other:SELF :SELF <-
   // Return the union of the `self' set with `other'.
   (
     + result:SELF;
-    
+
     ? { other != NULL};
-    
+
     result := twin ;
     result.union other ;
-    
+
     ? { result.count <= count + other.count};
     ? { (Self.is_subset_of result) && (other.is_subset_of result)};
-    
+
     result
   );
-  
-  
-  
+
+
+
   - is_disjoint other:SELF :BOOLEAN <-
   ( + j:INTEGER;
     + result:BOOLEAN;
-     
+
     (other.count<count).if {
       result := other.is_disjoint Self;
     } else {
@@ -526,12 +526,12 @@ Section Private
       result := (j=0);
     };
     result
-  ); 
+  );
 
   - fast_is_disjoint other:SELF :BOOLEAN <-
   ( + j:INTEGER;
     + result:BOOLEAN;
-     
+
     (other.count<count).if {
       result := other.fast_is_disjoint Self;
     } else {
@@ -543,63 +543,63 @@ Section Private
     };
     result
   );
- 
+
   - '^' other:SELF :SELF <-
   // Return the intersection of the `self' set with `other'.
   (
     + result:SELF;
     ? {other != NULL};
-    
+
     result := twin;
     result.intersection(other) ;
-    
+
     ? { result.count <= other.count.min count};
     ? { (result.is_subset_of Self) && { result.is_subset_of other}};
   );
-  
+
   - minus other:SELF <-
   // Make the set `self' - `other'.
   (
     + old_count:INTEGER;
-    
+
     ? { other != NULL};
-    
+
     old_count:=count;
-    
+
     lower.to (other.count) do { i:INTEGER;
       remove (other.item i);
     };
-    
+
     ? { count <= old count};
   );
-  
-  
+
+
   - '-' other:SELF :SELF <-
   // Return  the set `self' - `other'.
   (
     + result:SELF;
-    
+
     ? { other != NULL};
-    
+
     result := twin ;
     result.minus other;
-    
+
     ? { result.count <= count};
     ? { result.is_subset_of(Self)};
-    
+
     result
   );
-  
+
   // Comparison:
-  
+
   - is_subset_of other:SELF :BOOLEAN <-
   // Is the `self' set a subset of `other'?
   (
     + i:INTEGER;
     + result:BOOLEAN;
-    
+
     ? { other != NULL};
-    
+
     result := FALSE;
     (Self = other).if {
       result := TRUE;
@@ -612,21 +612,21 @@ Section Private
       };
     };
     ? { result ->> {count <= other.count}};
-    
+
     result
   );
-  
-  
+
+
   - is_disjoint_from other:SELF :BOOLEAN <-
   // Is the `self' set disjoint from `other' ?
   (
     + result:BOOLEAN;
     + i:INTEGER;
-    
+
     ? { other != NULL};
-    
+
     result := FALSE;
-    
+
     ( Self != other).if {
       result := TRUE;
       i := 1;
@@ -643,17 +643,17 @@ Section Private
       };
     };
     ? { result = (Self ^ other).is_empty };
-    
+
     result
   );
-  
-  
+
+
   - '=='  Right 60 other:SELF :BOOLEAN <-
   // Is the `self' set equal to `other'?
   (
     + i:INTEGER;
     + result:BOOLEAN;
-    
+
     result := FALSE;
     ( Self = other ).if {
       result := TRUE;
@@ -667,11 +667,11 @@ Section Private
     };
     //ensure then
     //? { result = ((is_subset_of other) & (other.is_subset_of self))};
-    
+
     result
   );
-  
-  
+
+
 
   - fast_copy other:SELF <-
   // Copy 'other' into the current set
@@ -683,17 +683,17 @@ Section Private
     } else {
       clear;
     };
-    
+
     lower.to (other.count) do { i:INTEGER;
       fast_add (other.item i);
     };
   );
-  
-  
+
+
   // NONE
-  
-    
-  - force e:V <-  
+
+
+  - force e:V <-
   // Add a new item to the set: the mathematical definition of
   // adding in a set is followed.
   ( + h, idx: INTEGER;
@@ -710,7 +710,7 @@ Section Private
     count := count + 1;
     ? {fast_has e};
   );
-  
+
     - search e:V :V <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
@@ -727,7 +727,7 @@ Section Private
     };
     result
   );
-  
+
   - get_if cmp:BLOCK with_hash h:INTEGER :V <-
   // Is element `e' in the set?
   ( + idx:INTEGER;
@@ -761,10 +761,10 @@ Section Private
     };
     result
   );
-  
+
   - fast_index_of elt:V :INTEGER <-
   ( + result:INTEGER;
-    
+
     result := upper;
     {(result<lower) || {item result = elt}}.until_do {
       result := result - 1;

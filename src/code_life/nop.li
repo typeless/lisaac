@@ -19,25 +19,25 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := NOP;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "The nop instruction";
-  
+
   // BSBS: il faurai voir si c'est encore utile... (attention à la phase recursive)
-  
+
 Section Inherit
-  
+
   + parent_instr:Expanded INSTR;
-  
+
 Section Public
-  
+
   - my_copy:SELF <- Self;
-  
+
   //
   // Execute.
   //
@@ -46,7 +46,7 @@ Section Public
   (
     // Nothing.
   );
-  
+
   - execute:INSTR <- NULL;
 
   //

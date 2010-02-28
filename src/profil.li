@@ -32,6 +32,8 @@ Section Inherit
 
   + parent_any:Expanded ANY;
 
+  - parent_parameter_to_type:Expanded PARAMETER_TO_TYPE;
+
 Section PROFIL_LIST
 
   + life_index:INTEGER;
@@ -42,6 +44,29 @@ Section PROFIL_LIST
   );
 
 Section Public
+
+  - arg_type_tmp:FAST_ARRAY(EXPR);
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
+  ( + idx:INTEGER;
+    + result:TYPE_FULL;
+
+    (p.name = ALIAS_STR.prototype_self).if {
+      // For Self.
+      result := type_self;
+    } else {
+      // For Genericity.
+      //result := type_self.raw.parameter_to_type p;
+      result := slot_code.receiver_type.parameter_to_type p;
+      (result = NULL).if {
+        // For Type parametric.
+        idx := slot_code.get_index_argument_type p;
+        (idx != - 1).if {
+          result := arg_type_tmp.item idx.static_type + TYPE_FULL.generic_bit;
+        };
+      };
+    };
+    result
+  );
 
   - propagation_external <-
   (
@@ -676,7 +701,7 @@ Section Private
     };
     buffer.append " */\n";
   );
-  
+
   /*
   - recur_cpa buf:STRING arg n:INTEGER <-
   ( + var:LOCAL;
@@ -702,7 +727,7 @@ Section Private
     };
   );
   */
-  
+
   - append_type buffer:STRING <-
   ( + v:VARIABLE;
     + nb_arg,nb_arg_poly,tmp:INTEGER;
@@ -715,10 +740,10 @@ Section Private
         nb_arg := nb_arg + 1; // BSBS à mettre ds le if
         (is_statistic).if {
 
-          (v.type_list.count > 1).if {
+          (v.type_set.count > 1).if {
             nb_arg_poly := nb_arg_poly + 1;
           };
-          tmp := v.type_list.count;
+          tmp := v.type_set.count;
           (tmp > nb_arg_size_type.upper).if {
             nb_arg_size_type.force 1 to tmp;
           } else {

@@ -295,7 +295,7 @@ Section Public
     FALSE
   );
   
-  - Self:SELF '==' other:COLLECTION2(V) :BOOLEAN <-
+  - Self:SELF '==' other:E :BOOLEAN <-
   // Do both collections have the same `lower1', `lower2', `upper1' and `upper2', and items?
   // The basic `=' is used for comparison of items.
   //

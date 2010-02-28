@@ -19,15 +19,15 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Inherit
-  
+
   + parent:STRING;
 
 Section Private
-  
+
   + is_valid:BOOLEAN;
-  
+
   - src_path <-
-  ( 
+  (
     path "./";
     path "tools/";
     path "type/";
@@ -39,67 +39,66 @@ Section Private
     path "external/arithmetic/";
     path "external/comparison/";
     path "dispatcher/";
-    path "code_life/";    
-    path "lip/";    
+    path "code_life/";
+    path "lip/";
   );
-  
+
   - compiler_path <-
   (
-    src_path;    
+    src_path;
     input_file := "lisaac";
     path "compiler_any/";
   );
-    
+
   - shorter_path <-
   (
-    src_path;    
+    src_path;
     input_file := "shorter";
     path "shorter_any/";
   );
-    
+
   //
   // Execute function.
   //
-  
+
   - front_end <-
-  (    
-    general_front_end;        
-    ((input_file = "") | (input_file = "lisaac")).if {    
+  (
+    general_front_end;
+    ((input_file = "") | (input_file = "lisaac")).if {
       compiler_path;
       (is_valid).if {
         boost;
       };
-    };                 
+    };
   );
-  
+
   - back_end <-
   (
     general_back_end;
     (is_valid).if {
       execute "cp lisaac.c ../bin/.";
       execute "cp lisaac ../bin/.";
-    };    
+    };
   );
-  
+
 Section Public
-  
+
   - compiler <-
   // Compile the Lisaac compiler.
   (
     compiler_path;
   );
-  
+
   - shorter <-
   // Compile the shorter.
   (
     shorter_path;
   );
-  
+
   - valid <-
-  // Compile the Lisaac compiler with `-boost' option and 
+  // Compile the Lisaac compiler with `-boost' option and
   // update your `/bin' compiler version.
   (
-    is_valid := TRUE;    
+    is_valid := TRUE;
   );
-  
-  
+

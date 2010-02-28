@@ -19,64 +19,64 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := READ;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Read for local, global or slot";
-  
+
 Section Inherit
 
   + parent_expr:Expanded EXPR;
-    
+
 Section Public
-  
+
   - is_slot:BOOLEAN <- FALSE;
-  
-  - variable:VARIABLE <- 
+
+  - variable:VARIABLE <-
   (
     deferred;
     NULL
   );
 
-  - static_type:TYPE_FULL <- 
-  ( 
+  - static_type:TYPE_FULL <-
+  (
     variable.type
   );
-  
+
   - my_copy:SELF <-
   ( + result:SELF;
     result ?= variable.read position;
     result
   );
-  
+
   //
   // Searching.
   //
-  
+
   - get_type t:TYPES_TMP <-
-  (     
+  (
     variable.get_type t;
   );
-  
+
   - get_last_value:EXPR <- variable.get_last_value NULL;
-  
+
   //
   // Executing pass.
   //
 
   - remove <-
   (
-    variable.unread Self;      
+    variable.unread Self;
   );
-    
+
   - is_require_constant:CONSTANT <-
   ( + result:CONSTANT;
     + j:INTEGER;
-    + val:EXPR;   
+    + val:EXPR;
     + req_list:FAST_ARRAY(WRITE);
     //? { variable.require_first != NULL };
     /* BSBS: A REVOIR
@@ -109,22 +109,22 @@ Section Public
     result
   );
 
-  - execute_access_unlink:INSTR <- 
+  - execute_access_unlink:INSTR <-
   (
     deferred;
     NULL
   );
-  
+
   - execute_access_link <- deferred;
-  
+
   - execute_unlink:INSTR <-
   // Delete read
   (
     variable.unread Self;
     new_execute_pass;
-    execute_access_unlink    
+    execute_access_unlink
   );
-  
+
   - execute_link:EXPR <-
   ( + cst:CONSTANT;
     + rec:INSTR;
@@ -132,19 +132,19 @@ Section Public
     + val:EXPR;
     + s:SLOT_DATA;
     + l:LOCAL;
-    + wrt:WRITE;    
+    + wrt:WRITE;
     //+ old_loop_invariant:LOOP;
-        
+
     simplify_type variable;
-    
+
     //
     s ?= variable;
-    ( 
+    (
       (s = NULL) || {
 	((s.style != '+') || {! s.id_section.is_mapping}) &&
 	{(! variable.type.is_expanded) || {variable.type.is_default_expanded}}
       }
-    ).if {      
+    ).if {
       cst := is_require_constant;  // BSBS: Ce cas devrait rentrer dans get_last_value
       (cst != NULL).if {
 	//
@@ -157,22 +157,22 @@ Section Public
 	};
 	result := cst.my_copy;
 	new_execute_pass;
-      }.elseif {      
+      }.elseif {
 	(val := get_last_value) != NULL
       } then {
 	//
 	// VALUE_EXPR propagation, step by step.
-	//      	
+        //      	        
 	result := val;
 	variable.unread Self;	
 	new_execute_pass;
       };
     };
-    
+
     (result = NULL).if {
       //
       // Normal.
-      //      
+      //
       ((is_slot) && {loop_invariant != NULL} && {is_invariant}).if {	
 	//old_loop_invariant := loop_invariant;
 	//loop_invariant := NULL;
@@ -190,7 +190,7 @@ Section Public
       } else {
 	variable.set_read;
 	execute_access_link;
-	result := Self;  
+	result := Self;
       };
     };
     result
@@ -223,7 +223,7 @@ Section Public
       buffer.add_last '>';
     //};
   );
-  
+
   - display buffer:STRING <-
   (
     buffer.append (variable.intern_name);

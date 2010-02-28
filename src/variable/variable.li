@@ -37,6 +37,33 @@ Section Public
   - is_local:BOOLEAN <- FALSE;
 
   //
+  // Creation.
+  //
+
+  - create p:POSITION name n:STRING_CONSTANT type t:TYPE_FULL :SELF <-
+  ( + result:SELF;
+
+    result := clone;
+    result.make p name n type t;
+    result
+  );
+
+  - make p:POSITION name n:STRING_CONSTANT type t:TYPE_FULL <-
+  ( + tmp:TYPES_TMP;
+    position := p;
+    name := n;
+    intern_name := ALIAS_STR.get_intern n;
+    type := t;
+    (is_static).if {
+      tmp := TYPES_TMP.new;
+      tmp.add (t.raw);
+      type_set := tmp.to_types;
+    } else {
+      type_set := TYPES_TMP.types_empty;
+    };
+  );
+
+  //
   //
   //
 
@@ -71,7 +98,7 @@ Section Public
   ((type.is_expanded) && {type.raw != type_boolean}) ||
   {name = ALIAS_STR.variable_self};
 
-  + type_list:TYPES;
+  + type_set:TYPES;
 
   + ensure_count:INTEGER;
 
@@ -95,6 +122,12 @@ Section Public
     result
   );
 
+  - set_require w:WRITE list wl:FAST_ARRAY(WRITE) <-
+  (
+    require_first := w;
+    require_list  := wl;
+  );
+
   + level_type:INTEGER;
   - level_pass:INTEGER;
 
@@ -103,45 +136,49 @@ Section Public
     level_pass := level_pass + 1;
   );
 
-  // BSBS: BIG OPTIMISATION.
-  // Les listes de types s'auto-entretien (références cyclique)
-  // Il faut absolument régler ca !!!
-  // Nous avons le même pb avec 'item' et 'put__to'
-  // Il faudrai uniformiser la chose (item et put_to travailleraient
-  // avec une variable virtuel...)
-  // Aussi, il faut que tu profite de last_write pour optimiser...
+  - busy_set:HASHED_SET(VARIABLE) := HASHED_SET(VARIABLE).create;
   - get_type t:TYPES_TMP <-
   ( + tmp_type:TYPES_TMP;
-    + typ:TYPE;
 
-    (level_type < level_pass).if {
-      (! is_static).if {
-	typ := type.raw;
-	(
-	  (is_executing_pass) || {
-	    (require_first != NULL)/* &&
-	    {
-	      ((typ.subtype_list = NULL) || {typ.subtype_list.count > type_list.count}) ||
-	      {typ = type_block}
-	    }*/
-	}).if {	
-	  level_type := level_pass;
-	  tmp_type := TYPES_TMP.new;
-          (require_first != NULL).if {	
-
-	    require_first.get_type tmp_type;		
-	    (require_list != NULL).if {
-	      (require_list.lower).to (require_list.upper) do { j:INTEGER;	
-		require_list.item j.get_type tmp_type;
-	      };
-            };
-	  };	
-	  type_list := tmp_type.update type_list;
-	};
+    ((is_optimization_type_set) && {! busy_set.is_empty}).if {
+      (! busy_set.fast_has Self).if {
+        ((level_type < level_pass) && {! is_static}).if {
+          busy_set.fast_add Self;
+          sub_get_type t;
+        } else {
+          t.union type_set;
+        };
       };
+    } else {
+      ((level_type < level_pass) && {! is_static}).if {
+        ((is_executing_pass) || {require_first != NULL}).if {	
+          level_type := level_pass;
+          busy_set.fast_add Self;
+          tmp_type := TYPES_TMP.new;
+          sub_get_type tmp_type;
+          type_set := tmp_type.update type_set;
+          busy_set.clear;
+        };
+      };
+      t.union type_set;
     };
-    t.union type_list;
   );
+
+Section Private
+
+  - sub_get_type t:TYPES_TMP <-
+  (
+    (require_first != NULL).if {	
+      require_first.get_type t;		
+      (require_list != NULL).if {
+        (require_list.lower).to (require_list.upper) do { j:INTEGER;	
+          require_list.item j.get_type t;
+        };
+      };
+    };	
+  );
+
+Section Public
 
   //
   // Sequence optimizer
@@ -174,6 +211,29 @@ Section Public
   // Writing.
   //
 
+  - add_write wrt:WRITE <-
+  ( + tmp_type:TYPES_TMP;
+
+    (require_first = NULL).if {
+      require_first := wrt;
+    } else {
+      (require_list = NULL).if {
+	require_list := FAST_ARRAY(WRITE).create_with_capacity 1;
+      };
+      require_list.add_last wrt;
+    };
+
+    // Update type list.
+    ((! is_static) && {wrt.value != NULL} && {! is_executing_pass}).if {
+      tmp_type := TYPES_TMP.new;
+      (type_set != NULL).if {
+	tmp_type.union type_set;
+      };	
+      wrt.value.get_type tmp_type;
+      type_set := tmp_type.update type_set;		
+    };
+  );
+
   - write p:POSITION value val:EXPR :WRITE <-
   (
     write p with NULL value val
@@ -183,42 +243,32 @@ Section Public
   (
     write_direct p with r value val
   );
-
+  
+  - cnt:INTEGER;
+  - wrt:WRITE;
+  
   - write_direct p:POSITION with r:EXPR value val:EXPR :WRITE <-
   ( + e:WRITE;
-    + tmp_type:TYPES_TMP;
-
+        
     e := new_write p with r value val;
-    // Update require list.
-    (require_first = NULL).if {
-      require_first := e;
-    } else {
-      (require_list = NULL).if {
-	require_list := FAST_ARRAY(WRITE).create_with_capacity 1;
-      };
-      require_list.add_last e;
-    };
-
-    // Update type list.
-    ((! is_static) && {e.value != NULL} && {! is_executing_pass}).if {
-      tmp_type := TYPES_TMP.new;
-      (type_list != NULL).if {
-	tmp_type.union type_list;
-      };	
-      e.value.get_type tmp_type;
-      type_list := tmp_type.update type_list;		
-    };
-
+    add_write e;    
     e.set_create;
     e
   );
 
+Section VARIABLE
+
+  - new_write p:POSITION with r:EXPR value v:EXPR :WRITE <-
+  (
+    deferred;
+    NULL
+  );
+
+Section Public
+
   - unwrite e:WRITE <-
   ( + idx:INTEGER;
-    (! e.is_create).if {
-      crash;
-    };
-
+        
     (e.is_delete).if {
       crash;
     };
@@ -230,8 +280,8 @@ Section Public
     // Require list.
     (require_first = e).if {
       (require_list != NULL).if {
-	require_first := require_list.first;
-	require_list.remove_first;
+	require_first := require_list.first;  // BSBS: pourquoi conserver l'ordre?
+	require_list.remove_first;            // C'est plus rapide de faire remove_last
 	(require_list.is_empty).if {
 	  require_list := NULL;
 	};
@@ -242,26 +292,32 @@ Section Public
       ? {require_list != NULL};
       //e.debug_display;
       (require_list = NULL).if {
-	intern_name.print; '\n'.print;
+        e.debug_display;
+        intern_name.print; '\n'.print;
+        "require_first =".print;
+        (require_first = NULL).if { 
+          "NULL\n".print;
+        } else {
+          require_first.debug_display;
+        };
 	crash_with_message "******** VARIABLE.unwrite : BUG require_list = NULL **********\n";
       };
 
       idx := require_list.fast_first_index_of e;
-      ? {idx <= require_list.upper};
+      //? {idx <= require_list.upper};
 
       (idx > require_list.upper).if {
-	intern_name.print; '\n'.print;
-	/*
-	e.to_pointer.print; ' '.print;
-	
-	e.debug_display;
+        e.debug_display;
+	intern_name.print; '\n'.print;		
 	"\n--------\n".print;
 	require_first.debug_display;
 	(require_list.lower).to (require_list.upper) do { j:INTEGER;
 	  require_list.item j.debug_display;
 	};
-	*/
-	crash_with_message "******** VARIABLE.unwrite : BUG !!! **********\n";
+        
+        //warning_error (position,"ICI");
+        crash_with_message "******** VARIABLE.unwrite : BUG !!! **********\n";
+
       };
 
       require_list.remove idx;
@@ -269,6 +325,7 @@ Section Public
 	require_list := NULL;
       };
     };
+   
   );
 
   //
@@ -374,12 +431,12 @@ Section Public
   - display_type buffer:STRING <-
   (
     buffer.add_last '{';
-    (type_list.is_empty).if_false {
-      (type_list.lower).to (type_list.upper - 1) do { j:INTEGER;
-	buffer.append (type_list.item j.intern_name);
+    (type_set.is_empty).if_false {
+      (type_set.lower).to (type_set.upper - 1) do { j:INTEGER;
+	buffer.append (type_set.item j.intern_name);
 	buffer.add_last 'x';
       };
-      buffer.append (type_list.last.intern_name);
+      buffer.append (type_set.last.intern_name);
     };
     buffer.add_last '}';
   );

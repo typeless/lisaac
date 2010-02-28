@@ -82,7 +82,7 @@ Section Public
 
 Section Private
 
-  - version:STRING_CONSTANT := "0.39 rc1";
+  - version:STRING_CONSTANT := "0.39 rc2";
 
   //
   //
@@ -583,7 +583,10 @@ Section Private
   );
 
 Section Public
-
+  
+  - tab:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
+  - tab_null:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
+  
   //
   // Creation.
   //
@@ -802,7 +805,6 @@ Section Public
 	STD_ERROR.put_string " warning(s).\n";
       };
     };
-
     (is_statistic).if {
       STD_ERROR.put_string "  Local counter        : ";
       STD_ERROR.put_integer (LIST.local_counter);
@@ -858,15 +860,149 @@ Section Public
         tmp2.print;
         '\n'.print;
       };
+      
+      (TYPE_GENERIC.paper_list.lower).to (TYPE_GENERIC.paper_list.upper) do { i:INTEGER;
+        + var:VARIABLE;
+        + t:TYPES;        
+        + idx:INTEGER;
+        var := TYPE_GENERIC.paper_list.item i.native_array_variable;
+        t := var.type_set;
+        ((var.is_static) || {t.count = 0}).if {
+          tab.put (tab.item 0+1) to 0;
+        } else {          
+          idx := t.count;
+          tab.put (tab.item idx+1) to idx;
+          (t.first = TYPE_NULL).if {
+            tab_null.put (tab_null.item idx+1) to idx;
+          };
+        };
+      };
+      "TAB:\n".print;
+      (tab.lower).to (tab.upper) do { i:INTEGER;
+        (tab.item i != 0).if {
+          i.print; '='.print; tab.item i.print; '\n'.print;
+        };
+      };
+      "TAB NULL:\n".print;
+      (tab_null.lower).to (tab_null.upper) do { i:INTEGER;
+        (tab_null.item i != 0).if {
+          i.print; '='.print; tab_null.item i.print; '\n'.print;
+        };
+      };
+      
+      /*
+      // Counter on '==' and '!='
+      "\nCounter on '==' and '!=':".print;
+      "\nParser counter       : ".print;
+      count_equal_parse.print;
+      "\nLive counter         : ".print;
+      count_equal_live.print;
+      "\nCreate counter       : ".print;
+      count_equal_creat.print;
+      "\nRemove counter       : ".print;
+      count_equal_remov.print;
+      "\nGenerate counter     : ".print;
+      count_equal_gener.print;
+      '\n'.print;
+      "\nConstant counter     : ".print;
+      count_equal_const.print;
+      "\na = a counter        : ".print;
+      count_equal_ident.print;
+      "\nNULL = NULL counter  : ".print;
+      count_equal_null.print;
+      "\nIntersection counter : ".print;
+      count_equal_inter.print;
+      '\n'.print;
+      // native_array:
+      "\nNATIVE_ARRAY expanded       : ".print;
+      count_na_expanded.print;
+      "\nNATIVE_ARRAY with NULL      : ".print;
+      count_na_null.print;
+      "\nNATIVE_ARRAY without NULL   : ".print;
+      count_na_not_null.print;
+      "\nNATIVE_ARRAY with monomorph : ".print;
+      count_na_mono.print;
+      "\nNATIVE_ARRAY allways NULL   : ".print;
+      count_na_always_null.print;
+      '\n'.print;
+      // local:
+      "\nLocal expanded       : ".print;
+      count_local_expanded.print;
+      "\nLocal with NULL      : ".print;
+      count_local_null.print;
+      "\nLocal without NULL   : ".print;
+      count_local_not_null.print;
+      "\nLocal with monomorph : ".print;
+      count_local_mono.print;
+      "\nLocal allways NULL   : ".print;
+      count_local_always_null.print;
+      '\n'.print;
+      // switch:
+      "\nswitch          : ".print;
+      count_switch.print;
+      "\nswitch merging  : ".print;
+      count_switch_merging.print;
+      '\n'.print;
+      */
     };
-    
+
     /*
     PROFIL.list_cpa.lower.to (PROFIL.list_cpa.upper) do { i:INTEGER;
       PROFIL.list_cpa.item i.print;
       '\n'.print;
     };
     */
-    
+    /*
+    "LOCAL : type set size\n".print;
+    (LIST.stat_local.lower).to (LIST.stat_local.upper) do { i:INTEGER;
+      (LIST.stat_local.item i != 0).if {
+        i.print; '='.print;
+        LIST.stat_local.item i.print;
+        '\n'.print;
+      };
+    };
+    "LOCAL : type set size with NULL\n".print;
+    (LIST.stat_local_null.lower).to (LIST.stat_local_null.upper) do { i:INTEGER;
+      (LIST.stat_local_null.item i != 0).if {
+        i.print; '='.print;
+        LIST.stat_local_null.item i.print;
+        '\n'.print;
+      };
+    };
+    "GLOBAL : type set size\n".print;
+    (TYPE.stat_global.lower).to (TYPE.stat_global.upper) do { i:INTEGER;
+      (TYPE.stat_global.item i != 0).if {
+        i.print; '='.print;
+        TYPE.stat_global.item i.print;
+        '\n'.print;
+      };
+    };
+    "GLOBAL : type set size with NULL\n".print;
+    (TYPE.stat_global_null.lower).to (TYPE.stat_global_null.upper) do { i:INTEGER;
+      (TYPE.stat_global_null.item i != 0).if {
+        i.print; '='.print;
+        TYPE.stat_global_null.item i.print;
+        '\n'.print;
+      };
+    };
+    "SLOT : type set size\n".print;
+    (TYPE.stat_slot.lower).to (TYPE.stat_slot.upper) do { i:INTEGER;
+      (TYPE.stat_slot.item i != 0).if {
+        i.print; '='.print;
+        TYPE.stat_slot.item i.print;
+        '\n'.print;
+      };
+    };
+    "SLOT : type set size with NULL\n".print;
+    (TYPE.stat_slot_null.lower).to (TYPE.stat_slot_null.upper) do { i:INTEGER;
+      (TYPE.stat_slot_null.item i != 0).if {
+        i.print; '='.print;
+        TYPE.stat_slot_null.item i.print;
+        '\n'.print;
+      };
+    };
+    */
+
     //
     // Execute finality command (front end).
     //

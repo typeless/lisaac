@@ -115,6 +115,8 @@ Section Public
   - variable_void          :STRING_CONSTANT := "VOID";
   - variable_tmp           :STRING_CONSTANT := "__tmp";
 
+  - variable_mark          :STRING_CONSTANT := "MARK";
+
   - variable_lisaac     :STRING_CONSTANT := "lisaac";
   /*
   - variable_input_file :STRING_CONSTANT := "input_file";
@@ -412,6 +414,9 @@ Section Public
     list.add variable_null;
     list.add variable_void;
     list.add variable_tmp;
+
+    list.add variable_mark;
+
 
     list.add variable_lisaac;
     /*

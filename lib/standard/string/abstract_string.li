@@ -402,11 +402,10 @@ Section Public
 
   - has_prefix p:ABSTRACT_STRING :BOOLEAN <-
   // True if prefix of `Current' is `p'.
+  [ ? { p != NULL }; ]
   (
     + result:BOOLEAN;
     + i:INTEGER;
-
-    ? { p != NULL };
 
     ( p.count <= count ).if {
       i := p.count;

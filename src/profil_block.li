@@ -36,6 +36,15 @@ Section Inherit
 
 Section Public
 
+  - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
+  ( + result:TYPE_FULL;
+    result := profil_slot.parameter_to_type p;
+    (result = NULL).if {
+      warning_error (position,"ICI Je suis dans la merde!!");
+    };
+    result
+  );
+
   - slot:SLOT <-
   (
     //crash_with_message "PROFIL_BLOCK.slot";
@@ -99,6 +108,7 @@ Section Public
     };
 
     list := base.list;
+    position := list.position;
     //stack_top := stack_local .upper + 1;
 
     PROFIL_LIST.add Self;
@@ -108,11 +118,11 @@ Section Public
     );
     //
     slot_self  := SLOT_DATA.clone;
-    slot_self.make (list.position) name (ALIAS_STR.slot_self) style '+' base NULL type type_self;
+    slot_self.make position name (ALIAS_STR.slot_self) style '+' base NULL type type_self;
     slot_self.set_intern_name (ALIAS_STR.slot_self);
     //
     slot_value := SLOT_DATA.clone;
-    slot_value.make (list.position) name (ALIAS_STR.slot_id) style '+' base NULL type default;
+    slot_value.make position name (ALIAS_STR.slot_id) style '+' base NULL type default;
     slot_value.set_intern_name (ALIAS_STR.slot_id);
     //
     profil_list := FAST_ARRAY(PROFIL_SLOT).create_with_capacity 2;
@@ -131,30 +141,31 @@ Section Public
     old_profil := profil_current;
     old_list   := list_current;
     profil_current := Self;
-    list_current := LIST.create (list.position);
+    list_current := LIST.create position;
 
     (old_stack_top,old_bottom_index,old_context) := ITM_OBJECT.push_context;
     // Add context debug.
     (debug_level_option != 0).if {
-      context := TYPE_CONTEXT.default.new_local (list.position)
+      context := TYPE_CONTEXT.default.new_local position
       name (ALIAS_STR.variable_context) style '+';
       context.set_ensure_count 1;
-      list_current.add_last (PUSH.create (list.position) context context first TRUE);
+      list_current.add_last (PUSH.create position context context first TRUE);
     };
 
     // Append arguments.
     a_list := ALIAS_ARRAY(TYPE_FULL).new;
     (base.argument != NULL).if {
+      //arg_type_tmp :=
       argument_list := FAST_ARRAY(LOCAL).create_with_capacity (base.argument.count+1);
       argument_list.add_last NULL;
-      base.argument.to_run_in argument_list for profil_slot;
+      base.argument.to_run_in argument_list for Self;
       1.to (argument_list.upper) do { j:INTEGER;
         a_list.add_last (argument_list.item j.type);
       };
     } else {
       argument_list := FAST_ARRAY(LOCAL).create 1;
     };
-    var := LOCAL.create (list.position) name (ALIAS_STR.variable_self) style ' ' type type_self;
+    var := LOCAL.create position name (ALIAS_STR.variable_self) style ' ' type type_self;
 
     argument_list.put var to 0;
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
@@ -350,13 +361,6 @@ Section Public
   );
 
 Section Public
-  /*
-  - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  (
-    "PROFIL BLOCK\n".print;
-    NULL
-  );
-  */
 
   - is_sub_type other:TYPE :BOOLEAN <-
   ( + result:BOOLEAN;

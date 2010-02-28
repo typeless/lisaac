@@ -370,6 +370,14 @@ Section Public
     };
   );
 
+Section Public
+/*
+  - stat_global:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
+  - stat_global_null:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
+  - stat_slot:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
+  - stat_slot_null:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
+*/
+
   - genere_all_struct <-
   (
     TYPE_NULL.genere_typedef;
@@ -386,6 +394,24 @@ Section Public
     };
     (genere_list_global.lower).to (genere_list_global.upper) do { j:INTEGER;
       // In global.
+/*
+      + s:SLOT_DATA;
+      + idx:INTEGER;
+      s := genere_list_global.item j;
+      (s.type.is_expanded).if {
+        stat_global.put (stat_global.item 0 + 1) to 0;
+      } else {
+        //(s.type.raw.subtype_list != NULL).if {
+        //  idx := s.type.raw.subtype_list.count; //s.type_set.count;
+        //} else {
+          idx := s.type_set.count;
+        //};
+        stat_global.put (stat_global.item idx + 1) to idx;
+        (s.type_set.last = TYPE_MARK).if {
+          stat_global_null.put (stat_global_null.item idx + 1) to idx;
+        };
+      };
+*/
       genere_list_global.item j.genere output_glob;
     };
   );
@@ -472,7 +498,6 @@ Section Public
     + tg:TYPE_GENERIC;
     + count_slot:SLOT_DATA;
     + storage_slot:SLOT_DATA;
-
 
     ((slot_run.is_empty) || {slot_run.first != NULL}).if {
       (detect_recursivity_generation).if {
@@ -794,7 +819,22 @@ Section Public
 Section Private
 
   - add_slot_struct s:SLOT_DATA <-
-  (
+  (/*
+    + idx:INTEGER;
+    (s.type.is_expanded).if {
+      stat_slot.put (stat_slot.item 0 + 1) to 0;
+    } else {
+      //(s.type.raw.subtype_list != NULL).if {
+      //  idx := s.type.raw.subtype_list.count; //s.type_set.count;
+      //} else {
+        idx := s.type_set.count;
+      //};
+      stat_slot.put (stat_slot.item idx + 1) to idx;
+      (s.type_set.last = TYPE_MARK).if {
+        stat_slot_null.put (stat_slot_null.item idx + 1) to idx;
+      };
+    };
+*/
     (prototype.is_mapping).if {
       (s.id_section.is_mapping).if {
 	slot_size.first.add_last s;

@@ -172,12 +172,21 @@ Section Public
         SYSTEM.get_current_date.append_in string_tmp;
         string_tmp.add_last ' ';
         SYSTEM.get_current_time.append_in string_tmp;
-	result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
+	result := STRING_CST.create position text (ALIAS_STR.get string_tmp)
+        length (string_tmp.count);
       }
-      .when 21 then { // forall_data action:{ E; }
-        //result := forall_data_product;
+      .when 21 then { // OBJECT.type_name -> STRING_CONSTANT
+        type := profil_slot.argument_list.first.type;
+        string_tmp.clear;
+        type.raw.append_name_in string_tmp;
+	result := STRING_CST.create position text (ALIAS_STR.get string_tmp)
+        length (string_tmp.count);
       }
-      .when 22 to 31 then { // FREE
+      .when 22 then { // OBJECT.foreach_intern_data action:{ (STRING_CONSTANT,STRING_CONSTANT,T,E); }
+        forall_data_product;
+        result := PROTOTYPE_CST.create position type (TYPE_VOID.default);
+      }
+      .when 23 to 31 then { // FREE
         syntax_error (position,"Free external lisaac code.");
       };
     } else {
@@ -194,8 +203,56 @@ Section Private
   // Reflexivity
   //
 
-  - forall_data_product:EXPR <-
+  - forall_data_product <-
   ( + type:TYPE_FULL;
+    + slot:SLOT;
+    + sl_dta:SLOT_DATA;
     type := profil_slot.argument_list.first.type;
+    (type.raw.prototype.is_mapping).if_false {
+      semantic_error (position,"Sorry, not yet implemented.");
+    };
+    (type.slot_run.lower).to (type.slot_run.upper) do { i:INTEGER;
+      slot := type.slot_run.item i;
+      sl_dta := slot.slot_data_intern;
+      (sl_dta != NULL).if {
+        product_access sl_dta;
+        (slot.slot_data_list != NULL).if {
+          (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { j:INTEGER;
+            product_access (slot.slot_data_list.item j);
+          };
+        };
+      };
+    };
+  );
 
+  - product_access slot:SLOT_DATA <-
+  ( + arg_sec,arg_nam,arg_typ,arg_val,rec:EXPR;
+    + args:FAST_ARRAY(EXPR);
+
+    (slot.style = '+').if {
+      // Section name.
+      string_tmp.clear;
+      slot.id_section.append_in string_tmp;
+      arg_sec := STRING_CST.create position text (ALIAS_STR.get string_tmp)
+      length (string_tmp.count);
+      // Name slot.
+      arg_nam := STRING_CST.create position text (slot.name)
+      length (slot.name.count);
+      // Type.
+      arg_typ := PROTOTYPE_CST.create position type (slot.type);
+      // Value.
+      arg_val := slot.read position with
+      (profil_slot.argument_list.first.read position);
+      // {}.value.
+      rec := (profil_slot.argument_list.second.read position);
+      args := FAST_ARRAY(EXPR).create_with_capacity 5;
+      args.add_last (rec.my_copy);
+      args.add_last arg_sec;
+      args.add_last arg_nam;
+      args.add_last arg_typ;
+      args.add_last arg_val;
+      list_current.add_last (        
+        NODE.new_block position receiver rec with args
+      );      
+    };
   );

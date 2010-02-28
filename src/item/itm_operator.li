@@ -19,26 +19,26 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_OPERATOR;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "operator list message";
-  
+
 Section Inherit
-  
+
   + parent_itm_code:Expanded ITM_CODE;
-  
+
 Section Public
 
   + name:STRING_CONSTANT;
-  
+
   //
   // Constructor
-  //  
+  //
 
   - create p:POSITION name n:STRING_CONSTANT :SELF <-
   [
@@ -49,30 +49,30 @@ Section Public
     result.make p name n;
     result
   );
-  
+
   - make p:POSITION name n:STRING_CONSTANT <-
-  (   
+  (
     position := p;
-    name := n;
+    name := n;    
   );
-  
+
   //
   // Runnable.
   //
-  
+
   - to_run_expr:EXPR <-
   (
     crash_with_message "ITM_OPERATOR.to_run_expr";
     NULL
-  );    
-  
+  );
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
-    buffer.append name; 
+    buffer.append name;
   );
 
 

@@ -97,6 +97,10 @@ Section Public
       ALIASER_LOCAL.add_var_size local;
     };
     
+    ((variable.type_set.count = 1) && {variable.type_set.first = TYPE_NULL}).if {
+      buffer.append " /* Always NULL */ ";
+    };
+    
   );
   
 

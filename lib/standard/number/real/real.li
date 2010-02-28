@@ -100,7 +100,7 @@ Section Public
     (Self + 0.9999).floor
   );
   
-  - rounded:INTEGER <-
+  - round:INTEGER <-
   // Rounded integral value.
   (
     (Self + 0.5).floor
