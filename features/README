@@ -1,0 +1,23 @@
+Cucumber Test Suite
+===================
+
+
+These .feature files are cucumber tests. Cucumber is a behaviour driven
+developpment tool, see http://cukes.info for more information.
+
+Cucumber is written in ruby and to install it, you can just run:
+
+    gem install cucumber rake
+
+To run the tests, just run cucumber like this:
+
+    cucumber features/bootstrap.feature
+
+or
+
+    cucumber features/*.feature
+
+You can generate an HTMl report using the `html` format:
+
+    cucumber -t html -o report.html features/*.feature
+
