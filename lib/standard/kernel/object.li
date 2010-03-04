@@ -177,7 +177,7 @@ Section Public
   - print <- to_abstract_string.print;
 
   - println <- to_abstract_string.println;
-  
+
   - dynamic_type:SELF <- SELF;
 
   - same_dynamic_type other:OBJECT :BOOLEAN <-

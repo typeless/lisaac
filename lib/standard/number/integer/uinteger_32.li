@@ -19,34 +19,34 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := Expanded UINTEGER_32;
 
   - export  := INTEGER, UINTEGER_64, INTEGER_64;
-   
+
   - comment := "Unsigned 32 bits integer.";
-  
+
   - type    := `unsigned int`;
   - default := (0.to_raw_uinteger_32);
 
 Section Insert
-  
+
   - parent_unsigned_integer:UNSIGNED_INTEGER := UNSIGNED_INTEGER;
-  
+
 Section Public
-  
+
   - object_size:INTEGER := 4;
 
   //
   // Range.
   //
-  
+
   - maximum:UINTEGER_64 := ~ 0.to_raw_uinteger_32;
-  
+
   //
   // Conversion with test.
   //
-  
+
   - to_uinteger_32:UINTEGER_32 <- Self;
 
   - to_uinteger_64:UINTEGER_64 <- to_raw_uinteger_64;

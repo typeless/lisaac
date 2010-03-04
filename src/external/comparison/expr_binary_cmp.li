@@ -67,7 +67,7 @@ Section Public
   - create p:POSITION with l:EXPR and r:EXPR :SELF <-
   ( + result:SELF;
 
-    
+
     ((symbol == "==") || {symbol == "!="}).if {
       (is_executing_pass).if_false {
         count_equal_live := count_equal_live + 1;
@@ -107,7 +107,7 @@ Section Public
   (
     left .remove;
     right.remove;
-    
+
     ((symbol == "==") || {symbol == "!="}).if {
       count_equal_remov := count_equal_remov + 1;
     };
@@ -123,11 +123,11 @@ Section Public
     (instr != NULL).if {
       list_current.insert_before instr;
     };
-    
+
     ((symbol == "==") || {symbol == "!="}).if {
       count_equal_remov := count_equal_remov + 1;
     };
-    
+
     right.execute_unlink
   );
 

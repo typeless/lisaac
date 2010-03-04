@@ -19,30 +19,30 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := VIDEO;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment     := "Generic Driver video - Text mode -";
-    
+
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
-  
+
 Section Inherit
-  
+
   + parent_bitmap:Expanded BITMAP_ASCII;
-  
+
 Section Public
-  
+
   - is_active:BOOLEAN;
-  
+
   - create <-
-  ( 
+  (
     make (190,80);
     is_active := TRUE;
   );
-  
+
   - display_screen <-
   (
     0.to (height-1) do { y:INTEGER;
@@ -66,7 +66,7 @@ Section Public
       '\n'.print;
     };
   );
-  
+
   - close <-
   (
     ? {is_active};

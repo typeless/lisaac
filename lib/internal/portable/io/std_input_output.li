@@ -19,20 +19,20 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        :=STD_INPUT_OUTPUT;
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment     :="To have the useful `io'";
-  
+
 Section Inherit
-  
+
   - inherit_input_stream:INPUT_STREAM := INPUT_STREAM;
 
   - inherit_output_stream:OUTPUT_STREAM := OUTPUT_STREAM;
-  
+
 Section Public
 
   - is_connected:BOOLEAN := TRUE;
@@ -70,7 +70,7 @@ Section Public
   (
     std_input.end_of_input
   );
-  
+
   - read_line_in buffer:STRING <-
   (
     std_input.read_line_in buffer;

@@ -25,9 +25,9 @@ Section Inherit
 Section Private
 
   + is_valid:BOOLEAN;
-  
+
   + is_shorter:BOOLEAN;
-  
+
   - src_path <-
   (
     path "./";

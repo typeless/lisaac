@@ -19,23 +19,23 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ENTRY;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - bibliography:= "http://IsaacOS.com";
 
-  - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";  
+  - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
 
   - comment     := "Entry ANSI";
-    
+
 Section Inherit
-  
+
   + parent_abstract_entry:Expanded ABSTRACT_ENTRY;
-    
-Section Public  
-    
+
+Section Public
+
   //
   // Physical implementation.
   //
@@ -61,35 +61,35 @@ Section Public
     `}`;
     result
   );
-  
+
   - physical_remove_directory:BOOLEAN <-
   ( + p:NATIVE_ARRAY(CHARACTER);
     p := path.to_external;
     `rmdir(@p)`:(INTEGER) = 0
   );
-  
+
   - physical_remove_file:BOOLEAN <-
   ( + p:NATIVE_ARRAY(CHARACTER);
     p := path.to_external;
     `remove(@p)`:(INTEGER) = 0
   );
-  
+
   - physical_rename old_path:ABSTRACT_STRING with new_path:ABSTRACT_STRING :BOOLEAN <-
   ( + old_p,new_p:NATIVE_ARRAY(CHARACTER);
     old_p := old_path.to_external;
     new_p := new_path.to_external;
     `rename(@old_p,@new_p)`:(INTEGER) = 0
   );
-  
+
   //
   // Time / Date: Unix -> Lisaac
   //
-  
+
   - to_date t:POINTER :DATE <-
   ( + result:DATE;
     + wd,md,m:UINTEGER_8;
     + y:UINTEGER_16;
-    
+
     y  := `((struct tm *)@t)->tm_year`:UINTEGER_16 + 1900;
     m  := `((struct tm *)@t)->tm_mon` :UINTEGER_8 + 1;
     md := `((struct tm *)@t)->tm_mday`:UINTEGER_8;
@@ -97,15 +97,15 @@ Section Public
     (! wd.in_range 1 to 7).if { // Bug in UNIX ?
       wd := 1;
     };
-    result := DATE.create (y,m,md,wd)     
+    result := DATE.create (y,m,md,wd)
   );
 
   - to_time t:POINTER :TIME <-
   (
-    TIME.create 
+    TIME.create
     ((`((struct tm *)@t)->tm_hour`:UINTEGER_8),
     (`((struct tm *)@t)->tm_min` :UINTEGER_8),
     (`((struct tm *)@t)->tm_sec` :UINTEGER_8),
     0)
   );
-  
+

@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := FLOAT_PROCESSOR;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -32,14 +32,14 @@ Section Inherit
   - parent_object:OBJECT := OBJECT;
 
 Section Public
-  
+
   - init; // Compatibility IsaacOS.
-  
-  - atan    n:REAL    :REAL    <- `atanf(@n)`:REAL;  
-  - atan_32 n:REAL_32 :REAL_32 <- `atanf(@n)`:REAL_32;  
+
+  - atan    n:REAL    :REAL    <- `atanf(@n)`:REAL;
+  - atan_32 n:REAL_32 :REAL_32 <- `atanf(@n)`:REAL_32;
   - atan_64 n:REAL_64 :REAL_64 <- `atan(@n)`:REAL_64;
   - atan_80 n:REAL_80 :REAL_80 <- `atanl(@n)`:REAL_80;
-  
+
   - sqrt    n:REAL    :REAL    <- `sqrtf(@n)`:REAL;
   - sqrt_32 n:REAL_32 :REAL_32 <- `sqrtf(@n)`:REAL_32;
   - sqrt_64 n:REAL_64 :REAL_64 <- `sqrt(@n)`:REAL_64;
@@ -65,4 +65,3 @@ Section Public
   - pow_64 (n,exp:REAL_64) :REAL_64 <- `pow(@n,@exp)`:REAL_64;
   - pow_80 (n,exp:REAL_80) :REAL_80 <- `powl(@n,@exp)`:REAL_80;
 
-  

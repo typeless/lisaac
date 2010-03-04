@@ -90,8 +90,8 @@ Section Public
     last_character
   );
 
-  - unread_character <- 
-  ( 
+  - unread_character <-
+  (
     push_back_flag := TRUE;
   );
 
@@ -109,7 +109,7 @@ Section Private
 
   - raw_read_character :CHARACTER <-
   (
-    
+
   );
 
 // kate: hl Lisaac v0.2; indent-width 2; space-indent on; replace-tabs on;

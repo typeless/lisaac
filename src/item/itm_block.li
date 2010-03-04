@@ -74,7 +74,7 @@ Section Public
     tb := PROFIL_BLOCK.create Self;
     t := tb.default;
     //
-    loc := t.get_temporary position;	
+    loc := t.get_temporary position;
     // tmp.id := id_block;
     rec := loc.read position;
     val := PROTOTYPE_CST.create position type t;

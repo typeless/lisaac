@@ -197,26 +197,26 @@ Section Private
       (profil.link_count = 1).if {
         //
         // Inlining simple.
-        //	  	  	  	
+        //
         (list_current.old_seq_or_and = seq_or_and).if {
-          argument_to_assignment source index 0 alias FALSE style '+';	
+          argument_to_assignment source index 0 alias FALSE style '+';
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
             source.add_last (result_list.item j.write);
           };
           result := source.execute;
-	  profil.remove_inline;	  	
+	  profil.remove_inline;
           new_execute_pass;
           is_good := TRUE;
         };
       } else {
 	//
-	// Inline by copy:	
+	// Inline by copy:
 	//
-        (list_current.old_seq_or_and = seq_or_and).if {	    	    	
-          profil.unlink Self;	  	  	    	
-          
+        (list_current.old_seq_or_and = seq_or_and).if {
+          profil.unlink Self;
+
           prof_block ?= profil;
-          ((prof_block != NULL) && {prof_block.is_context_sensitive}).if {	
+          ((prof_block != NULL) && {prof_block.is_context_sensitive}).if {
             (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
               loc := profil.argument_list.item j;
               (loc != NULL).if {
@@ -226,19 +226,19 @@ Section Private
 	  } else {
 	    LOCAL.alias_on;
           };
-          
+
           //LOCAL.alias_on;
 
-          new_src := source.my_copy;	
+          new_src := source.my_copy;
           argument_to_assignment new_src index 0 alias TRUE style '+';
           (result_list.lower).to (result_list.upper) do { j:INTEGER;
             wrt := result_list.item j.write;
             old_val := wrt.value;
-            wrt.set_value (old_val.my_copy);	      	
+            wrt.set_value (old_val.my_copy);
             old_val.remove;
             new_src.add_last wrt;
-          };		  	
-          
+          };
+
           ((prof_block != NULL) && {prof_block.is_context_sensitive}).if {
 	    (profil.argument_list.lower).to (profil.argument_list.upper) do { j:INTEGER;
 	      loc := profil.argument_list.item j;
@@ -248,13 +248,13 @@ Section Private
 	    };
 	  } else {
 	    LOCAL.alias_off;
-          };	
-          
+          };
+
           //LOCAL.alias_off;
 
 	  result := new_src.execute;
           is_good := TRUE;
-	  new_execute_pass;	  	
+	  new_execute_pass;
         };
       };
     };
@@ -271,8 +271,8 @@ Section Private
     //profil := profil.update self link FALSE;
 
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
-      wrt ?= argument_list.item j;	
-      (wrt != NULL).if {			
+      wrt ?= argument_list.item j;
+      (wrt != NULL).if {
 	(wrt.execute_argument).if {
 	  new_execute_pass;
           argument_list.put NULL to j;
@@ -281,7 +281,7 @@ Section Private
 	  };
 	};
       };
-    };            	
+    };
     /* BSBS: A revoir avec pb `list' l.352 et `profil' pour result
     (result_list.lower).to (result_list.upper) do { j:INTEGER;
       result_list.item j.execute;
@@ -328,8 +328,8 @@ Section Public
     (! is_good).if {
       execute_normal;
       (source.is_empty).if {
-        // Suppression.	
-        profil.unlink Self;	
+        // Suppression.
+        profil.unlink Self;
         new_execute_pass;
       } else {
         result := Self;
@@ -371,7 +371,7 @@ Section Public
     argument_list.is_empty.if {
       buffer.append "()";
     } else {
-      buffer.append "(";		
+      buffer.append "(";
       argument_list.lower.to (argument_list.upper) do { j:INTEGER;
 	arg := argument_list.item j;
 	(arg = NULL).if {
@@ -380,8 +380,8 @@ Section Public
 	  arg.value.display buffer;
 	};
 	buffer.add_last ',';
-      };		
-      buffer.put ')' to (buffer.upper);	
+      };
+      buffer.put ')' to (buffer.upper);
     };
   );
 
@@ -428,13 +428,13 @@ Section Public
         buffer.append "->thread.mutex));\n";
         (low).to (argument_list.upper) do { j:INTEGER;
           val := argument_list.item j;
-          (val != NULL).if {	
+          (val != NULL).if {
             buffer.append indent;
             cop_argument.genere buffer;
             buffer.append "->param_";
             np.append_in buffer;
             buffer.append "=(int)";
-            val.genere_value buffer;	
+            val.genere_value buffer;
             buffer.append ";\n";
             np := np + 1;
           } else {
@@ -483,15 +483,15 @@ Section Public
         };
       };
       (! is_interrupt).if {
-        buffer.add_last '(';	
+        buffer.add_last '(';
         (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
           val := argument_list.item j;
           arg := profil.argument_list.item j;
-          (val != NULL).if {	
+          (val != NULL).if {
             (buffer.last != '(').if {
               buffer.add_last ',';
             };
-            val.genere_value buffer;	
+            val.genere_value buffer;
           };
         };
         (result_list.count > 1).if {
@@ -500,7 +500,7 @@ Section Public
               buffer.add_last ',';
             };
             wrt ?= result_list.item j.write;
-            wrt.genere_argument_result buffer;	
+            wrt.genere_argument_result buffer;
           };
         };
         buffer.add_last ')';
@@ -533,24 +533,24 @@ Section PROFIL
     // Argument -> Affectation.
     wrt := argument_list.first;
     (wrt != NULL).if {
-      argument_list.put NULL to 0;	
-      (! wrt.value.static_type.is_expanded).if {	
+      argument_list.put NULL to 0;
+      (! wrt.value.static_type.is_expanded).if {
 	new_val := CAST.create (wrt.static_type) value (wrt.value);
 	wrt.set_value new_val;
       };
       wrt.variable.set_style '+';
       new_wrt := wrt.execute;
-      (new_wrt != NULL).if {	
-	list_current.insert new_wrt to (list_current.index);	
+      (new_wrt != NULL).if {
+	list_current.insert new_wrt to (list_current.index);
       };
     };
     (argument_list.lower + 1).to (argument_list.upper) do { k:INTEGER;
       wrt := argument_list.item k;
-      (wrt != NULL).if {	
-	argument_list.put NULL to k;	
+      (wrt != NULL).if {
+	argument_list.put NULL to k;
 	wrt.variable.set_style '+';
 	new_wrt := wrt.execute;
-	(new_wrt != NULL).if {	
+	(new_wrt != NULL).if {
 	  list_current.insert new_wrt to (list_current.index);
 	};
       };
@@ -566,9 +566,9 @@ Section PROFIL
     switch ?= source.last;
     (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
       body := switch.list.item k.code;
-      (body.is_empty).if_false {	
+      (body.is_empty).if_false {
 	msg_slot ?= body.last;
-	((msg_slot != NULL) && {msg_slot.profil = profil}).if {	
+	((msg_slot != NULL) && {msg_slot.profil = profil}).if {
 	  // DEBUG
 	  (msg_slot = Self).if {
 	    semantic_error (position,"CALL_SLOT : BUG!!!!");
@@ -576,7 +576,7 @@ Section PROFIL
 	  // FIN DEBUG
 	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE;
 	  body.put (LOOP_END.create (msg_slot.position) loop result) to (body.upper);
-	};	
+	};
       };
     };
     result
@@ -592,14 +592,14 @@ Section PROFIL
     // Argument -> Affectation.
     (argument_list.upper).downto (argument_list.lower) do { k:INTEGER;
       val   := argument_list.item k;
-      (val != NULL).if {	
+      (val != NULL).if {
 	argument_list.put NULL to k;
 	(is_alias).if {
-	  loc ?= val.variable;	
-	  new_wrt := loc.write (val.position) value (val.value);	  	
-	  loc.unwrite val;	
+	  loc ?= val.variable;
+	  new_wrt := loc.write (val.position) value (val.value);
+	  loc.unwrite val;
 	} else {
-	  new_wrt := val;	
+	  new_wrt := val;
 	};
         lst.insert new_wrt to idx;
         new_wrt.variable.set_style styl;

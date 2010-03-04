@@ -19,37 +19,37 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_TYPE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Parent for all type";
-  
+
 Section Inherit
-  
+
   - parent_any:ANY := ANY;
-  
+
 Section Public
-  
+
   - print <-
   (
     string_tmp.clear;
     append_in string_tmp;
     string_tmp.print;
   );
-  
+
   - append_in buffer:STRING <- deferred;
-  
+
   - shorter_in buf:STRING <- deferred;
-  
+
   - to_run_in lst:FAST_ARRAY(TYPE_FULL) for p:PARAMETER_TO_TYPE <-
   (
     deferred;
   );
-  
+
   - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
   (
     deferred;

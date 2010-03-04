@@ -19,19 +19,19 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := REAL_CST;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Real float constant";
-  
+
 Section Inherit
-  
+
   + parent_constant:Expanded CONSTANT;
-  
+
 Section Public
 
   //
@@ -39,7 +39,7 @@ Section Public
   //
 
   + value:STRING_CONSTANT;
-    
+
   //
   // Creation.
   //
@@ -50,12 +50,12 @@ Section Public
     result.make p value v type t;
     result
   );
-  
+
   - make p:POSITION value v:STRING_CONSTANT type t:TYPE_FULL <-
   (
     position := p;
     value    := v;
-    static_type := t;    
+    static_type := t;
   );
 
   - my_copy:SELF <- SELF.create position value value type static_type;
@@ -63,7 +63,7 @@ Section Public
   //
   // Comparaison.
   //
-  
+
   - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-
   ( + p:REAL_CST;
     p ?= other;
@@ -77,7 +77,7 @@ Section Public
   - cast_type p:TYPE_FULL <-
   (
     ? { p != type_real };
-    static_type := p;    
+    static_type := p;
   );
 
   //
@@ -101,8 +101,8 @@ Section Public
     buffer.append value;
     display_ref buffer;
   );
-  
-  
+
+
 
 
 

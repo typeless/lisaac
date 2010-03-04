@@ -19,19 +19,19 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_REAL;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Real float constant";
-  
+
 Section Inherit
-  
+
   + parent_itm_constant:Expanded ITM_CONSTANT;
-  
+
 Section Public
 
   //
@@ -49,26 +49,26 @@ Section Public
     result.make p value n;
     result
   );
-  
+
   - make p:POSITION value n:STRING_CONSTANT <-
   (
     position:=p;
     value:=n;
   );
-  
+
   //
   // Runnable
   //
 
   - to_run_expr:EXPR <-
-  (     
-    REAL_CST.create position value value type (type_real.default)    
+  (
+    REAL_CST.create position value value type (type_real.default)
   );
-  
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     buffer.append value;

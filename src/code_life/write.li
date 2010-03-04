@@ -154,7 +154,7 @@ Section Public
       /*( // BSBS: Bug, mais de toute facon le gain n'est pas la... (entre +5 a +20)
 	(loop_invariant != NULL) && {list_current = loop_invariant.body} &&
 	{is_invariant} && {variable.get_last_index != -1}
-      ).if {	
+      ).if {
 	//old_loop_invariant := loop_invariant;
 	//loop_invariant := NULL;
 	//
@@ -179,13 +179,13 @@ Section Public
     };
     result
   );
-    
+
   - remove <-
   ( + l:LOCAL;
     l ?= variable;
     ((l != NULL) && {l.my_alias != NULL}).if {
       // It's for generation code, with ALIAS_LOCAL and SWITCH fusion case.
-      l.my_alias.unwrite Self; 
+      l.my_alias.unwrite Self;
     } else {
       variable.unwrite Self;
     };

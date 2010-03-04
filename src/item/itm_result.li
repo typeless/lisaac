@@ -19,52 +19,52 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_RESULT;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Result value";
-  
+
 Section Inherit
-  
+
   - parent_itm_code:ITM_CODE := ITM_CODE;
-  
+
 Section Public
-  
+
   - is_affect:POSITION <- value.is_affect;
-  
+
   - position:POSITION <- value.position;
-  
+
   //
   // Data
   //
-  
+
   + value:ITM_CODE;
 
   //
   // Constructor
   //
-  
+
   - create r:ITM_CODE :SELF <-
   [
     -? {r != NULL};
     -? {r.position.code != 0};
   ]
   ( + result:SELF;
-           
+
     result := clone;
     result.make r;
     result
   );
-  
+
   - make r:ITM_CODE <-
   (
     value    := r;
   );
-  
+
   //
   // Runnable
   //
@@ -73,8 +73,8 @@ Section Public
   ( + mul:EXPR_MULTIPLE;
     + val:EXPR;
     + result:INSTR;
-    
-    val := value.to_run_expr;    
+
+    val := value.to_run_expr;
     mul ?= val;
     (mul != NULL).if {
       (mul.lower).to (mul.upper-1) do { j:INTEGER;
@@ -87,17 +87,17 @@ Section Public
     };
     result
   );
-  
+
   - to_run_expr:EXPR <-
   (
     crash;
     NULL
   );
-  
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     buffer.append "return(";
@@ -108,10 +108,10 @@ Section Public
 Section Private
 
   - to_run_intern val:EXPR :INSTR <-
-  ( + var:LOCAL;  
-        
+  ( + var:LOCAL;
+
     var := val.static_type.get_temporary position;
-    ITM_LIST.stack_result.add_last var;    
-    var.write position value val    
+    ITM_LIST.stack_result.add_last var;
+    var.write position value val
   );
-  
+

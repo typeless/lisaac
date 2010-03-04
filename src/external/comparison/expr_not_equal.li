@@ -86,7 +86,7 @@ Section Public
       ).if {
         left .remove;
         right.remove;
-        result := PROTOTYPE_CST.create position type (type_true.default);	
+        result := PROTOTYPE_CST.create position type (type_true.default);
 
         count_equal_const := count_equal_const + 1;
 

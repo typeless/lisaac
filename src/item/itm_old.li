@@ -87,7 +87,7 @@ Section Public
         `/* Bug1 */`;
         node ?= instr;
         `/* Bug-end */`;
-        (node != NULL).if {         
+        (node != NULL).if {
 	  NODE.node_list.remove (NODE.node_list.fast_first_index_of node);
 	  NODE.node_list_base.add_last node;
 	};

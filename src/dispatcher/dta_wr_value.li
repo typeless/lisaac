@@ -110,8 +110,8 @@ Section NODE_TYPE, DTA
 
     result := parent_dta.update_branch l self type_self;
     (l.count < 3).if {
-      wrt_slot ?= l.first;	
-      wrt_glob ?= l.first;	
+      wrt_slot ?= l.first;
+      wrt_glob ?= l.first;
       (wrt_slot != NULL).if {
 	(wrt_slot.slot.slot_id != NULL).if {
 	  add_write_id (wrt_slot.receiver,wrt_slot.slot) in l;

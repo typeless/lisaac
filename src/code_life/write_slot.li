@@ -19,33 +19,33 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := WRITE_SLOT;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Write slot";
-  
+
 Section Inherit
 
   + parent_write:Expanded WRITE;
-    
+
 Section Public
-  
+
   - is_invariant:BOOLEAN <- receiver.is_invariant && {value.is_invariant};
-  
+
   + slot:SLOT_DATA;
-  
+
   - variable:VARIABLE <- slot;
-  
+
   + receiver:EXPR;
-  
+
   //
   // Creation.
   //
-  
+
   - create p:POSITION with val:EXPR in (r:EXPR,s:SLOT_DATA) :SELF <-
   ( + result:SELF;
     ? {p.code != 0};
@@ -53,19 +53,19 @@ Section Public
     result.make p with val in (r,s);
     result
   );
-  
+
   - make p:POSITION with val:EXPR in (r:EXPR,s:SLOT_DATA) <-
-  (     
-    position := p;    
+  (
+    position := p;
     value    := val;
     receiver := r;
     slot     := s;
   );
-    
+
   - my_copy:SELF <-
-  ( + new_val:EXPR;    
+  ( + new_val:EXPR;
     + result:SELF;
-    
+
     new_val := value.my_copy;
     result ?= variable.write position with (receiver.my_copy) value new_val;
     (quiet_generation).if {
@@ -73,80 +73,80 @@ Section Public
     };
     result
   );
-  
+
   //
   // Execute.
   //
 
-  - execute_access_unlink:INSTR <- 
-  (    
+  - execute_access_unlink:INSTR <-
+  (
     slot.execute;
     receiver.execute_unlink
   );
-    
-  - execute_access_link <- 
-  ( 
+
+  - execute_access_link <-
+  (
     slot.execute;
-    receiver := receiver.execute_link;        
+    receiver := receiver.execute_link;
   );
-  
+
   - remove <-
   (
     receiver.remove;
     parent_write.remove;
   );
-  
+
   //
   // Genere
   //
-  
+
   - genere buffer:STRING <-
   ( + tf:TYPE_FULL;
     + t:TYPE;
-    
+
     t := slot.receiver_type;
-    t.add_genere_list;            
+    t.add_genere_list;
     (! quiet_generation).if {
       (t.alias_slot = variable).if {
-        tf := receiver.static_type;    
+        tf := receiver.static_type;
         ((tf.is_strict) || {tf.is_expanded_ref}).if {
           buffer.append "(*";
-          receiver.genere buffer;          
+          receiver.genere buffer;
           buffer.add_last ')';
-        }.elseif {tf.is_expanded} then {      
-          receiver.genere buffer;          
+        }.elseif {tf.is_expanded} then {
+          receiver.genere buffer;
         } else {
           buffer.append "*((";
           t := slot.receiver_type;
-          t.put_reference_declaration buffer;	
+          t.put_reference_declaration buffer;
           buffer.add_last ' ';
-          t.put_reference_star_declaration buffer;	
+          t.put_reference_star_declaration buffer;
           buffer.add_last ')';
           receiver.genere buffer;
-          buffer.add_last ')';          
-        };        
+          buffer.add_last ')';
+        };
       } else {
-        // Receiver.            
+        // Receiver.
         (is_java).if {
           receiver.genere buffer;
-          buffer.add_last '.';          
-        } else {        
-          tf := receiver.static_type;    
+          buffer.add_last '.';
+        } else {
+          tf := receiver.static_type;
           ((tf.is_strict) || {tf.is_expanded_ref}).if {
             receiver.genere buffer;
             buffer.append "->";
-          }.elseif {tf.is_expanded} then {      
+          }.elseif {tf.is_expanded} then {
             receiver.genere buffer;
-            buffer.add_last '.';          
+            buffer.add_last '.';
           } else {
             buffer.append "((";
             t := slot.receiver_type;
-            t.put_reference_declaration buffer;	
+            t.put_reference_declaration buffer;
             buffer.add_last ' ';
-            t.put_reference_star_declaration buffer;	
+            t.put_reference_star_declaration buffer;
             buffer.add_last ')';
             receiver.genere buffer;
-            buffer.append ")->";          
+            buffer.append ")->";
           };
         };
         //
@@ -156,12 +156,12 @@ Section Public
       ((value.static_type.raw = TYPE_NULL) && {variable.type.raw.is_block}).if {
         buffer.append ".__id=0";
       } else {
-        buffer.add_last '=';    
-        genere_value buffer;        
+        buffer.add_last '=';
+        genere_value buffer;
       };
     };
   );
-  
+
   //
   // Display.
   //
@@ -170,11 +170,11 @@ Section Public
   (
     receiver.display buffer;
     buffer.append "->";
-    parent_write.display buffer;    
+    parent_write.display buffer;
   );
 
-  
-  
+
+
 
 
 

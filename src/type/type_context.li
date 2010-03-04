@@ -19,34 +19,34 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := TYPE_CONTEXT;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Type Context for debug mode";
-  
+
 Section Inherit
-  
+
   + parent_type:Expanded TYPE;
-  
+
 Section Public
-  
+
   - name:STRING_CONSTANT <- ALIAS_STR.prototype_context;
-  
+
   - intern_name:STRING_CONSTANT <- name;
-  
+
   - type_c:STRING_CONSTANT <- "_____CONTEXT";
-  
+
   //
   // Creation.
   //
-    
+
   - make_context <-
-  (     
-    dico_type.fast_put Self to name;        
+  (
+    dico_type.fast_put Self to name;
     //slot_run := FAST_ARRAY(SLOT).create_with_capacity 1; // BSBS: Plus utile !
     default := TYPE_FULL.create Self with (TYPE_FULL.expanded_bit);
   );
@@ -55,10 +55,10 @@ Section Public
   (
     // Nothing.
   );
-  
+
   - genere_struct <-
-  ( 
-    output_decl.append 
+  (
+    output_decl.append
     "/* ___CONTEXT */\n\
     \typedef struct ___CONTEXT_struct _____CONTEXT; \n\
     \struct ___CONTEXT_struct {\n\
@@ -67,4 +67,3 @@ Section Public
     \};\n\
     \_____CONTEXT *top_context; \n\n";
   );
-   

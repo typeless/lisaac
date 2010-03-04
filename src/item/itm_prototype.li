@@ -19,74 +19,74 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_PROTOTYPE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Prototype constant";
-  
+
 Section Inherit
-  
+
   + parent_itm_constant:Expanded ITM_CONSTANT;
-  
+
 Section Public
 
   + type:ITM_TYPE_MONO;
-  
+
   //
   // Constructor
   //
-  
+
   - create p:POSITION type n:ITM_TYPE_MONO :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p type n;
     result
   );
-    
+
   - make p:POSITION type n:ITM_TYPE_MONO <-
-  ( 
+  (
     position := p;
-    type := n;    
+    type := n;
   );
 
   //
   // Runnable
   //
 
-  - to_run_expr:EXPR <- 
+  - to_run_expr:EXPR <-
   ( + t:TYPE_FULL;
     + result:EXPR;
-        
-    t := type.to_run_for profil_slot;            
+
+    t := type.to_run_for profil_slot;
     (t = NULL).if {
       string_tmp.copy "Type `";
       type.append_in string_tmp;
-      string_tmp.append "' not found (Undefine type parameter).";      
+      string_tmp.append "' not found (Undefine type parameter).";
       semantic_error (position,string_tmp);
     };
-    // TYPE Classic.    
+    // TYPE Classic.
     (
-      (t.is_expanded_c) && 
-      {t.raw != type_boolean} && 
-      {t.raw != type_true} && 
+      (t.is_expanded_c) &&
+      {t.raw != type_boolean} &&
+      {t.raw != type_true} &&
       {t.raw != type_false}
     ).if {
       result := t.default_value position;
       result := result.check_type t with position;
-    } else {      
+    } else {
       result := PROTOTYPE_CST.create position type t;
     };
     result
   );
-  
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     type.append_in buffer;

@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := Expanded BOOLEAN;
 
 
@@ -29,80 +29,80 @@ Section Header
 
   - type    := `char`;
   - default := FALSE;
-  
+
 Section Insert
-  
+
   - parent_object:OBJECT := OBJECT;
-  
-Section Private  
-  
+
+Section Private
+
   - deferred_boolean:BOOLEAN <-
   ( + result:BOOLEAN;
-    
+
     deferred;
     result
   );
-  
+
 Section Public
 
   //
   // Conditional :
   //
-  
+
   - if_true block:{}  <- deferred;
-  
+
   - if_false block:{} <- deferred;
-  
+
   - if true_block:{} else false_block:{} <- `ERROR`; //deferred;
-  
+
   - if_true true_block:{} else false_block:{} <- deferred;
-  
+
   - if_false true_block:{} else false_block:{} <- deferred;
-  
+
   - if true_block:{} :BOOLEAN <- deferred_boolean;
-  
+
   - elseif cond:{BOOLEAN} then block:{} :BOOLEAN <- deferred_boolean;
-  
+
   - elseif cond:{BOOLEAN} then block:{} else block_else:{} <- deferred;
-    
-  - else_if cond:{BOOLEAN} then block:{} :BOOLEAN <- 
+
+  - else_if cond:{BOOLEAN} then block:{} :BOOLEAN <-
   // Alias.
   elseif cond then block;
-  
-  - else_if cond:{BOOLEAN} then block:{} else block_else:{} <- 
+
+  - else_if cond:{BOOLEAN} then block:{} else block_else:{} <-
   // Alias.
   elseif cond then block else block_else;
-  
+
   //
   // Binary operator :
   //
 
   - Self:SELF '=='  Right 60 other:SELF :BOOLEAN <- Self = other;
-  
+
   - Self:SELF '!==' Right 60 other:SELF :BOOLEAN <- Self != other;
-  
+
   - Self:SELF '||' Left 10  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean;
-  
-  - Self:SELF '&&' Left 20  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean; 
-  
+
+  - Self:SELF '&&' Left 20  other:{BOOLEAN}   :BOOLEAN <- deferred_boolean;
+
   - Self:SELF '|'  Left 10  other:BOOLEAN :BOOLEAN <- deferred_boolean;
-  
+
   - Self:SELF '&'  Left 20  other:BOOLEAN :BOOLEAN <- deferred_boolean;
-  
+
   - Self:SELF '^' Left 10  other:BOOLEAN :BOOLEAN  <- deferred_boolean;
-  
+
   - Self:SELF '->' Right 25 other:BOOLEAN :BOOLEAN <- deferred_boolean;
 
   - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- deferred_boolean;
-  
+
   - Self:SELF '=>' s:ABSTRACT_STRING <- deferred;
-  
+
   //
   // Prefix operator
   //
-  
+
   - '!' Self:SELF :BOOLEAN <- deferred;
-  
+
   //
   // Convertion
   //
@@ -115,19 +115,19 @@ Section Public
   );
 
   - to_abstract_string:ABSTRACT_STRING <- "BOOLEAN";
-  
-  - to_integer:INTEGER <- 
+
+  - to_integer:INTEGER <-
   ( + result:INTEGER;
-    
+
     deferred;
     result
   );
-  
-  - to_character:CHARACTER <- 
+
+  - to_character:CHARACTER <-
   ( + result:CHARACTER;
-    
+
     deferred;
     result
   );
-  
+
   - append_in str:STRING <- str.append to_abstract_string;

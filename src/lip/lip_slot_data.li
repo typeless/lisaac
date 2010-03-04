@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_SLOT_DATA;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -32,16 +32,16 @@ Section Inherit
   + parent_lip_slot:Expanded LIP_CODE;
 
 Section Public
-  
+
   + name:STRING_CONSTANT;
-  
+
   + value:LIP_CONSTANT;
-  
+
   //
   // Creation.
   //
 
-  - create p:POSITION name n:STRING_CONSTANT value v:LIP_CONSTANT 
+  - create p:POSITION name n:STRING_CONSTANT value v:LIP_CONSTANT
   argument is_arg:BOOLEAN :SELF <-
   [
     -? {v != NULL};
@@ -69,39 +69,38 @@ Section Public
   (
     position := p;
     name     := n;
-    value    := v;    
+    value    := v;
     (is_arg).if_false {
       list_data.add Self to n;
-    };    
+    };
   );
-  
+
   //
   // Value.
   //
-  
+
   - set_value v:LIP_CONSTANT :BOOLEAN <-
   ( + new_val:LIP_CONSTANT;
-    
+
     new_val := value.copy_of v;
     (new_val != NULL).if {
-      value := new_val;            
-    }    
+      value := new_val;
+    }
   );
-    
+
   - get_value:LIP_CONSTANT <-
   (
     value.copy
   );
-  
+
   //
   // Print.
   //
-  
+
   - print <-
   (
     name.print;
     ':'.print;
     value.name.print;
   );
-  
-  
+

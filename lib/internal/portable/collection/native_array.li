@@ -191,7 +191,7 @@ Section Public
     -? {(other_upper >= other_lower) ->> {other.is_not_null}};
   ]
   ( + i:INTEGER;
-    	
+
     i := other_upper - other_lower;
     {(i >= 0) && {safe_equal (item (at + i),other.item (other_lower + i))}}.while_do {
       i := i - 1;
@@ -221,15 +221,15 @@ Section Public
     -? {other_upper >= other_lower - 1};
     -? {(other_upper >= other_lower) ->> {other.is_not_null}};
   ]
-  ( + i:INTEGER;		
-		
+  ( + i:INTEGER;
+
     i := other_upper - other_lower;
     {(i < 0) || {item (at + i) != other.item (other_lower + i)}}.until_do {
       i := i - 1;
     };
     i < 0
   );
-			
+
   - deep_memcmp other:NATIVE_ARRAY(V) until capacity:INTEGER :BOOLEAN <-
   // Same jobs as `memcmp' but uses `is_deep_equal' instead `equal'.
   [ ...
@@ -269,7 +269,7 @@ Section Public
   ( + i:INTEGER;
     + e1,e2:V;
     + result:BOOLEAN;
-	
+
     i := other_upper - other_lower;
     result := TRUE;
     {(! result) || {i < 0}}.until_do {
@@ -740,7 +740,7 @@ Section Public
     };
     result
   );
-			
+
   - all_default upper:INTEGER :BOOLEAN <-
   // Do all items in range [0 .. `upper'] have their type's
   // default value?
@@ -769,7 +769,7 @@ Section Public
   ( + i:INTEGER;
     + v:V;
     + result:BOOLEAN;
-		
+
     result := TRUE;
     i := lower;
     {(i > upper) || {! result}}.until_do {

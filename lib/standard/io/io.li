@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := IO;
 
 
@@ -28,7 +28,7 @@ Section Header
   - comment := "Standard Input Output.";
 
 Section Inherit
-  
+
   - inherit_std_input:STD_INPUT := STD_INPUT;
-  
+
   - inherit_std_output:STD_OUTPUT := STD_OUTPUT;

@@ -19,24 +19,24 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_CODE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Parent for all item code";
-  
+
 Section Inherit
-  
+
   + parent_itm_object:Expanded ITM_OBJECT;
-  
+
 Section Public
-  
-  // Use by PARSER, for left expr assignment ( in EXPR1 := EXPR2, EXPR1.is_affect). 
+
+  // Use by PARSER, for left expr assignment ( in EXPR1 := EXPR2, EXPR1.is_affect).
   - is_affect:POSITION <- position;
-  
+
   //
   // Flags.
   //
@@ -45,32 +45,32 @@ Section Public
 
   //
   // Runnable.
-  // 
-    
+  //
+
   - to_run:INSTR <-
   (
     to_run_expr
   );
-  
+
   - to_run_expr:EXPR <-
-  ( 
+  (
     warning_error (position,"Error: ITM_CODE.to_run");
     deferred;
     NULL
   );
-  
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     "ITM_CODE : Type:".print;
-    type_id_intern.print; 
+    type_id_intern.print;
     '\n'.print;
     deferred;
   );
-  
+
   - print <-
   (
     string_tmp.clear;

@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := Expanded FALSE;
 
 
@@ -29,24 +29,24 @@ Section Header
 
   - type    := `char`;
   - default := FALSE;
-  
+
 Section Inherit
-  
+
   - inherit_boolean:BOOLEAN := BOOLEAN;
-  
+
 Section Public
-  
+
   //
   // Conditional :
   //
-  
+
   - if_true block:{};
-  
+
   - if_false block:{} <-
   ( //? {block!=NULL};
     block.value;
   );
-  
+
   - if true_block:{} else false_block:{} <-
   (
     false_block.value;
@@ -56,24 +56,24 @@ Section Public
   (
     false_block.value;
   );
-  
-  - if_false true_block:{} else false_block:{} <- 
+
+  - if_false true_block:{} else false_block:{} <-
   (
     true_block.value;
   );
-  
+
   - if true_block:{} :BOOLEAN <- FALSE;
-  
+
   - elseif cond:{BOOLEAN} then block:{} :BOOLEAN <-
   ( + result:BOOLEAN;
-    
+
     result := cond.value;
     result.if {
       block.value;
     };
     result
   );
-  
+
   - elseif cond:{BOOLEAN} then block:{} else block_else:{} <-
   (
     (cond.value).if {
@@ -82,44 +82,44 @@ Section Public
       block_else.value;
     };
   );
-  
+
   //
   // Binary operator :
   //
-  
+
   - Self:SELF '||'  Left 10  other:{BOOLEAN}   :BOOLEAN <- other.value;
-  
+
   - Self:SELF '&&'  Left 20  other:{BOOLEAN}   :BOOLEAN <- FALSE;
-  
+
   - Self:SELF '|'   Left 10  other:BOOLEAN :BOOLEAN <- other;
-  
+
   - Self:SELF '&'   Left 20  other:BOOLEAN :BOOLEAN <- FALSE;
-  
+
   - Self:SELF '^'  Left 10  other:BOOLEAN :BOOLEAN <- other;
-  
+
   - Self:SELF '->'  Right 25 other:BOOLEAN :BOOLEAN <- TRUE;
-  
+
   - Self:SELF '->>' Right 25 other:{BOOLEAN}  :BOOLEAN <- TRUE;
-  
+
   - Self:SELF '=>' s:ABSTRACT_STRING <-
   (
   );
-  
+
   //
   // Prefix operator
   //
-  
+
   - '!' Self:SELF :BOOLEAN <- TRUE;
-  
+
   //
   // Convertion
   //
-  
+
   - to_string:STRING       <- "0".to_string;
 
   - to_abstract_string:ABSTRACT_STRING <- "FALSE";
-  
+
   - to_integer:INTEGER     <- 0;
-  
+
   - to_character:CHARACTER <- '0';
 

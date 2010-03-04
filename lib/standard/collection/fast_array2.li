@@ -129,7 +129,7 @@ Section Public
   // The `model' is used to fill line by line the COLLECTION2.
   // Assume all sub-collections of `model' have the number of items.
   ( + l,c:INTEGER;
-		
+
     make(model.count, model.first.count);
     l := model.lower;
     lower1.to upper1 do { line:INTEGER;
@@ -145,13 +145,13 @@ Section Public
   - sub_collection2 (line_min,column_min:INTEGER) to (line_max,column_max:INTEGER) :SELF <-
   ( + l,c:INTEGER;
     + result:SELF;
-		
+
     result := create (line_max - line_min + 1, column_max - column_min + 1);
     l := line_min;
     (result.lower1).to (result.upper1) do { line:INTEGER;
       c := column_min;
       (result.lower2).to (result.upper2) do { column:INTEGER;
-	result.put (item (l, c)) to (line, column);					
+	result.put (item (l, c)) to (line, column);
 	c := c + 1;
       };
       l := l + 1;

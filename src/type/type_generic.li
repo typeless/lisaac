@@ -103,7 +103,7 @@ Section Private
       (j <= lst.upper).if {
 	result := TRUE;
 	last_cast_name.copy msg;
-	lstp.item j.append_cast_name_in last_cast_name;	
+	lstp.item j.append_cast_name_in last_cast_name;
       };
     };
     result
@@ -149,9 +149,9 @@ Section Public
     (styl = NULL).if {
       result := base.default;
     } else {
-      (styl = ALIAS_STR.keyword_expanded).if {	
-	result := base.default + TYPE_FULL.expanded_bit;	
-      } else {	
+      (styl = ALIAS_STR.keyword_expanded).if {
+	result := base.default + TYPE_FULL.expanded_bit;
+      } else {
 	result := base.default + TYPE_FULL.strict_bit;
       };
     };
@@ -160,7 +160,7 @@ Section Public
 
   //
   // Life Type for collection (see PUT_TO and ITEM)
-  // 
+  //
 
   + native_array_variable:VARIABLE;
 
@@ -200,9 +200,9 @@ Section Public
   );
 
 Section Public
-  
+
   - paper_list:FAST_ARRAY(TYPE_GENERIC) := FAST_ARRAY(TYPE_GENERIC).create_with_capacity 8192;
-  
+
   - make itm_typ:ITM_TYPE_SIMPLE <-
   (
     crash_with_message "TYPE_GENERIC.make";
@@ -211,8 +211,8 @@ Section Public
   - make itm_typ:ITM_TYPE_SIMPLE with proto:PROTOTYPE
   generic gen:FAST_ARRAY(TYPE_FULL) key k:STRING_CONSTANT <-
   ( + mask_bit:UINTEGER_8;
-    
-    
+
+
     index        := index_count;
     index_count  := index_count + 1;
     //
@@ -238,7 +238,7 @@ Section Public
       native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first);
       paper_list.add_last Self;
     };
-    
+
     //
     prototype   := proto;
     itm_type    := itm_typ;

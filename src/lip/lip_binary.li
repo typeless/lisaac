@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_BINARY;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -32,13 +32,13 @@ Section Inherit
   + parent_lip_code:Expanded LIP_CODE;
 
 Section Public
-  
+
   + left:LIP_CODE;
-  
+
   + right:LIP_CODE;
-  
+
   + operator:CHARACTER;
-  
+
   //
   // Creation.
   //
@@ -51,23 +51,23 @@ Section Public
   );
 
   - make p:POSITION  with l:LIP_CODE operator op:CHARACTER and r:LIP_CODE<-
-  ( 
+  (
     position := p;
     left := l;
     right := r;
     operator := op;
   );
-  
+
   //
   // Run.
   //
-  
+
   - run_expr:LIP_CONSTANT <-
   ( + result:LIP_CONSTANT;
     + lv,rv:LIP_CONSTANT;
-    
+
     lv := left.run_expr;
-    rv := right.run_expr;    
+    rv := right.run_expr;
     (operator)
     .when '|' then { result := lv |   rv; }
     .when '&' then { result := lv &   rv; }
@@ -83,7 +83,7 @@ Section Public
       operator.print; '\n'.print;
       lv.print; '\n'.print;
       rv.print; '\n'.print;
-      semantic_error (position,"Incorrect type operator.");      
+      semantic_error (position,"Incorrect type operator.");
     };
-    result    
+    result
   );

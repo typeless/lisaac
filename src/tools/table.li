@@ -19,53 +19,53 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   - name        := TABLE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Display array manager.";
-  
-Section Inherit  
-  
+
+Section Inherit
+
   - parent_object:OBJECT := OBJECT;
-  
+
 Section Private
-  
+
   - table:FAST_ARRAY2(ABSTRACT_STRING) := FAST_ARRAY2(ABSTRACT_STRING).create (10,10);
-  
+
   - size:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create_with_capacity 10;
-  
+
   - line:INTEGER;
   - column:INTEGER;
-    
+
 Section Public
-  
+
   - new_table (l,c:INTEGER) <-
   (
     table.make (l,c);
-    line := column := 0;    
+    line := column := 0;
   );
-  
+
   - add n:ABSTRACT_STRING <-
   (
     ? {n != NULL};
-    
+
     table.put n to (line,column);
     (column = table.upper2).if {
       column := 0;
       line   := line + 1;
     } else {
       column := column + 1;
-    };    
+    };
   );
-  
+
   - append_in buffer:STRING <-
   ( + siz:INTEGER;
     + append_line,append_bar:BLOCK;
-    
+
     // Size column.
     size.make (table.count2);
     0.to (table.upper1) do { l:INTEGER;
@@ -76,15 +76,15 @@ Section Public
 	};
       };
     };
-    
+
     // Sub-code for one line.
-    append_line := 
+    append_line :=
     { l:INTEGER;
       + n:ABSTRACT_STRING;
       buffer.append "// ";
       0.to (table.upper2) do { c:INTEGER;
 	n := table.item (l,c);
-	buffer.append "| ";	
+	buffer.append "| ";
 	buffer.append n;
 	buffer.extend_multiple ' ' by (size.item c - n.count + 1);
       };

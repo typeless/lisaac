@@ -26,41 +26,41 @@ Section Header
 
   - comment :="Windows - Timer management.";
 
-  - version := 1;  
-    
-Section Inherit  
-  
+  - version := 1;
+
+Section Inherit
+
   + parent_input:Expanded INPUT;
-  
+
 Section Private
-  
+
   - timer_count:UINTEGER_32;
-  
+
   + buffer_event:FAST_ARRAY(EVENT_TIMER);
-  
+
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
-  
+
   - p_end:UINTEGER_8;  // Pointer on the buffer (end)
-    
-Section Public  
-  
-  - timer_interrupt <-  
-  ( + tmp:UINTEGER_8;     
-    
+
+Section Public
+
+  - timer_interrupt <-
+  ( + tmp:UINTEGER_8;
+
     timer_count := timer_count + 1;
-    
+
     tmp:=(p_end+1)&003h;
-    buffer_event.item p_end.make timer_count; 
+    buffer_event.item p_end.make timer_count;
     (((tmp+2)&3)!=p_beg).if {
       p_end:=tmp;
-    };    
+    };
   );
-  
+
 Section Public
 
   - make <-
   ( + new_event:EVENT_TIMER;
-    
+
     is_actif := TRUE;
     //
     // Software configuration.
@@ -74,9 +74,9 @@ Section Public
       };
     };
     buffer_event.first.set_prev new_event;
-    
-    //hdle := timer_interrupt;    
-        
+
+    //hdle := timer_interrupt;
+
     `SetTimer(hwnd_glob, 0, 50, NULL)`;
   );
 
@@ -88,13 +88,13 @@ Section Public
   - get_event <-
   ( + p:INTEGER;
     + evt:EVENT_TIMER;
-    
+
     p := p_beg;
     { p != p_end }.while_do {
       evt := buffer_event.item p;
       (list_client.lower).to (list_client.upper) do { j:INTEGER;
 	list_client.item j.receive (buffer_event.item p);
-      };      
+      };
       p := (p + 1) & 03h;
-    };    
+    };
   );

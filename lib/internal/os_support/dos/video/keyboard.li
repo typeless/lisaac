@@ -23,22 +23,22 @@ Section Header
   + name    := KEYBOARD;
 
   - copyright   := "2003-2005 J√©rome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - bibliography:="http://IsaacOS.com";
   - author      :="Boutet Jerome (boutet@loria.fr),Sonntag Benoit (bsonntag@loria.fr)";
   - comment     :="Keyboard for DOS - AZERTY";
 
-  - version := 1;  
+  - version := 1;
   - date    :="2003/04";
-  
+
 Section Inherit
-  
+
   + parent_input_keyboard:Expanded INPUT_KEYBOARD;
 
 Section Private
- 
-  + e_code:BOOLEAN;   // TRUE If extended mode 
-  
+
+  + e_code:BOOLEAN;   // TRUE If extended mode
+
   // Lower case.
   - cmin:STRING_CONSTANT := "\0d\&Ç\"\39d\(-ä_áÖ)=\1d\\2d\azertyuiop^$\3d\^qsdfghjklmó˝^*wxcvbn,;:!^*^ ";
   // Upper case.
@@ -46,27 +46,27 @@ Section Private
 
   - cmm:STRING_CONSTANT  := "\27d\\8d\\9d\\13d\"; // 0:Echap 1:Del 2:Tab 3:Enter
   - caltgr:STRING_CONSTANT  := "'ê~#{[|`\\^@]}";
-  
+
   // Num keyb.
   - keynum0:STRING_CONSTANT := "789-456+1230."; // from 70-82
   - keynum1:STRING_CONSTANT := "BUA\0d\LMR\0d\ELZIS"; // Without NumLock
-  
+
   // Extended keyboard from 88 to 102
-  - ext_key:STRING_CONSTANT := "\55d\\28d\\52d\\27d\\70d\\78d\\81d\\82d\\76d\\74d\\71d\\79d\\80d\\72d\\54d\"; 
+  - ext_key:STRING_CONSTANT := "\55d\\28d\\52d\\27d\\70d\\78d\\81d\\82d\\76d\\74d\\71d\\79d\\80d\\72d\\54d\";
   - buf_extk:STRING_CONSTANT := "\13d\BEISRLUDZAH";
 
-Section Public  
-  
+Section Public
+
   - old_scan:UINTEGER_8;
-  
+
   //
   // Get Character (Interrupt #21)
   //
 
   - get_scan <-
   ( + cu,scancode,tmp:UINTEGER_8;
-        
-    scancode:=SYSTEM.itemb 60h;     
+
+    scancode:=SYSTEM.itemb 60h;
     (scancode != old_scan).if {
       old_scan := scancode;
       cu:=getcode (scancode-1);
@@ -76,7 +76,7 @@ Section Public
 	  "Reboot ...\n".print;
 	  die_with_code exit_failure_code;
 	};
-	
+
 	tmp:=(p_end+1)&003h;
 	buffer_event.item p_end.make ((cmd.to_uinteger_16<<8)|cu);
 	(((tmp+2)&3)!=p_beg).if {
@@ -86,30 +86,30 @@ Section Public
       };
     };
   );
-  
+
 Section Private
-  
+
   - send_cmd (comm,dta:UINTEGER_8) <-
-  // Send a command to keyboard 
+  // Send a command to keyboard
   (
     // Empty buffer
     { ((SYSTEM.itemb 64h) & 2) != 0}.while_do {
-      SYSTEM.itemb 60h;                         
-    };    
+      SYSTEM.itemb 60h;
+    };
     // Send command
-    SYSTEM.putb comm to 60h;                      
+    SYSTEM.putb comm to 60h;
     // Waiting for answer
-    { ((SYSTEM.itemb 64h) & 1) == 0}.while_do {};       
+    { ((SYSTEM.itemb 64h) & 1) == 0}.while_do {};
     // Read answer
-    SYSTEM.itemb 60h;                           
+    SYSTEM.itemb 60h;
     // Send data
-    SYSTEM.putb dta to 60h;                      
+    SYSTEM.putb dta to 60h;
     // Waiting for answer
-    { ((SYSTEM.itemb 64h) & 1) == 0}.while_do {};   
+    { ((SYSTEM.itemb 64h) & 1) == 0}.while_do {};
     // Read answer
-    SYSTEM.itemb 60h;                           
+    SYSTEM.itemb 60h;
   );
-  
+
   - light <-
   (
     send_cmd (0EDh,(((cmd & 80h)>>7)|((cmd & 40h)>>5)|((cmd & 20h)>>3)));
@@ -117,7 +117,7 @@ Section Private
 
   - keyup cu:UINTEGER_8 :UINTEGER_8 <-
   ( + result:UINTEGER_8;
-    cmd := cmd & 0F7h; // Deactivate the cmd bit    
+    cmd := cmd & 0F7h; // Deactivate the cmd bit
     bin_code.put ((bin_code.item (cu>>3)) & ~(1<<(cu&7))) to (cu>>3);
     // Analyze: for deactivate the cmd
     ((cu == 28) || {cu == 89}).if {
@@ -128,9 +128,9 @@ Section Private
       cmd := cmd & (~02h);
     }.elseif { cu == 55 } then {
       // Alt
-      cmd := cmd & (~04h);      
+      cmd := cmd & (~04h);
       result := ascii_code;
-      ascii_code := 0;      
+      ascii_code := 0;
     }.elseif { (cu == 41) || { cu == 53} } then {
       // Shift 1 or Shift 2
       cmd := cmd & (~10h);
@@ -150,7 +150,7 @@ Section Private
       cmd := cmd | 02h;
     }.elseif { cu == 55 } then {
       // Alt
-      cmd := cmd | 04h;      
+      cmd := cmd | 04h;
     }.elseif { (cu == 41) || { cu == 53} } then {
       // Shift 1 or Shift 2
       cmd := cmd | 10h;
@@ -189,7 +189,7 @@ Section Private
 	} else {
 	  cmd := cmd | 08h;
 	  result := cmm.item (cu2+1).to_uinteger_8;
-	};	
+	};
       };
     }.elseif {cu <= 67} then {
       cmd :=  cmd | 08h;      // F1 to F10 = cmd
@@ -221,11 +221,11 @@ Section Private
       result := '/'.to_uinteger_8;
     } else {
       cmd := cmd | 08h;
-      result := buf_extk.item (cu-90).to_uinteger_8;       
+      result := buf_extk.item (cu-90).to_uinteger_8;
     };
     result
   );
-  
+
   - getcode cu:UINTEGER_8 :UINTEGER_8 <-
   // Translate Scan Code -> cmd.ASCII
   ( + j:INTEGER;
@@ -264,8 +264,8 @@ Section Private
     };
     result
   );
-  
-  
+
+
 
 
 

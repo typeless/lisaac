@@ -19,58 +19,58 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := INSTR;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Parent for all Instruction.";
-  
+
 Section Inherit
-  
+
   + parent_itm_object:Expanded ITM_OBJECT;
-  
+
 Section Public
-    
+
   - is_invariant:BOOLEAN <- FALSE;
-  
+
   //
   //
   //
-  
+
   - hash_code:INTEGER <- INTEGER.force_conversion position;
 
-  - my_copy:SELF <- 
-  ( 
+  - my_copy:SELF <-
+  (
     debug_display;
-    deferred; 
-    NULL 
-  );  
-  
+    deferred;
+    NULL
+  );
+
   //
   // Executing pass.
   //
 
   - cmp other:INSTR :BOOLEAN := FALSE;
-  
+
   - i_am_the_last i:INSTR :BOOLEAN <- (i = Self);
-  
-  - execute:INSTR <- 
-  ( 
+
+  - execute:INSTR <-
+  (
     debug_display;
-    deferred; 
+    deferred;
     NULL
   );
-  
-  - remove <- 
+
+  - remove <-
   (
-    debug_display;    
+    debug_display;
     deferred;
   );
 
-  - genere buffer:STRING <- 
+  - genere buffer:STRING <-
   (
     // BUG.
     display buffer;
@@ -92,34 +92,34 @@ Section Public
     };
   );
 
-  - display buffer:STRING <- 
+  - display buffer:STRING <-
   (
     "INSTR.display\n".print;
-    deferred; 
+    deferred;
   );
 
   - debug_display <-
   ( + voir:STRING;
-    
+
     voir := STRING.create 250;
     display voir;
     voir.print;
     '\n'.print;
   );
-  
+
   - simplify_type v:VARIABLE <-
   ( + tmp_type:TYPES_TMP;
-    
+
     ((! v.is_static) && {! v.type.is_strict}).if {
       tmp_type := TYPES_TMP.new;
       v.get_type tmp_type;
       (tmp_type.count != 0).if {
         (tmp_type.first = TYPE_NULL).if {
           tmp_type.remove_first;
-          (tmp_type.count = 1).if {        
-            v.set_type (tmp_type.first.default.to_strict);        
+          (tmp_type.count = 1).if {
+            v.set_type (tmp_type.first.default.to_strict);
           };
-        };              
+        };
       };
       tmp_type.free;
     };

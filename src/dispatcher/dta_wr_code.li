@@ -19,38 +19,38 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := DTA_WR_CODE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Write site with code";
-    
+
 Section Inherit
-  
+
   + parent_dta:Expanded DTA;
-    
+
 Section Public
 
   // Add.
-    
+
   + code:ITM_CODE;
-    
+
   //
   // Creation.
   //
-  
+
   - create p:POSITION slot sl:SLOT self arg:EXPR code v:ITM_CODE :SELF <-
   [ -? {p != 0}; ]
   ( + result:SELF;
-    
+
     result := clone;
     result.make p slot sl self arg code v;
     result
   );
-  
+
   - make p:POSITION slot sl:SLOT self arg:EXPR code v:ITM_CODE <-
   (
     position    := p;
@@ -68,23 +68,23 @@ Section Public
   //
   // Display.
   //
-  
-  - display buffer:STRING <- 
+
+  - display buffer:STRING <-
   (
     buffer.append "DTA_WR_CODE:";
-    buffer.append (slot.name);    
+    buffer.append (slot.name);
   );
-  
+
   //
   // Service
   //
-    
-Section DTA  
-  
-  - finalise typ:TYPE with (expr:EXPR,s:SLOT) in lst:LIST <- 
+
+Section DTA
+
+  - finalise typ:TYPE with (expr:EXPR,s:SLOT) in lst:LIST <-
   ( + id:PROTOTYPE_CST;
     + pos:POSITION;
-    
+
     pos := expr.position;
     id := PROTOTYPE_CST.create pos type (TYPE_ID.get_index (s.add_style code).default);
     (s.style = '+').if {
@@ -93,4 +93,4 @@ Section DTA
       lst.add_last (s.slot_id.write pos value id);
     };
   );
-  
+

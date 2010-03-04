@@ -19,29 +19,29 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_READ_ARGS;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Message with a lot of arguments";
-  
+
 Section Inherit
-  
+
   + parent_itm_read:Expanded ITM_READ;
-  
+
 Section Public
-  
+
   - is_affect:POSITION <-
   ( + result,default:POSITION;
     + j:INTEGER;
-    
+
     (args.first != NULL).if {
       result := args.first.position;
     } else {
-      j := args.lower + 1;      
+      j := args.lower + 1;
       {(j <= args.upper) && {result = default}}.while_do {
 	result := args.item j.is_affect;
 	j := j + 1;
@@ -49,7 +49,7 @@ Section Public
     };
     result
   );
-  
+
   //
   // Data
   //
@@ -59,14 +59,14 @@ Section Public
   //
   // Constructor
   //
-  
+
   - create p:POSITION name n:STRING_CONSTANT args arg:FAST_ARRAY(ITM_CODE) :SELF <-
   ( + result:SELF;
     result := clone;
     result.make p name n args arg;
     result
   );
-  
+
   - make p:POSITION name n:STRING_CONSTANT args arg:FAST_ARRAY(ITM_CODE) <-
   (
     position := p;
@@ -79,15 +79,15 @@ Section Public
   //
 
   - to_run_expr:EXPR <-
-  ( + l_arg:FAST_ARRAY(ITM_CODE);    
-    
-    l_arg := ALIAS_ARRAY(ITM_CODE).new;       
-    (args.lower+1).to (args.upper) do { j:INTEGER;         
+  ( + l_arg:FAST_ARRAY(ITM_CODE);
+
+    l_arg := ALIAS_ARRAY(ITM_CODE).new;
+    (args.lower+1).to (args.upper) do { j:INTEGER;
       l_arg.add_last (args.item j);
-    };        
+    };
     to_run_with (args.first) args l_arg
   );
-     
+
 
 
 

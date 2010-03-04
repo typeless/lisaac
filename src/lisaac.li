@@ -26,7 +26,7 @@ Section Header
 
   - author   := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
   - comment  := "The main prototype";
-  
+
   // Top 5 memory record :
   // 1 - LOCAL         (>20MB) (il fo Aliaser les tmp !)
   // 2 - READ_LOCAL    (15MB)
@@ -47,7 +47,7 @@ Section Public
     LIP_CODE.print_usage;
     COMMON.command_line_footer.print;
   );
-  
+
   - show_version <-
   (
     COMMON.command_line_header "Compiler".print;
@@ -59,9 +59,9 @@ Section Private
 
   - output_name     :STRING_CONSTANT;
   - output_extension:STRING_CONSTANT;
-  
+
   - input_name:STRING_CONSTANT;
-  
+
   //
   // Command.
   //
@@ -74,7 +74,7 @@ Section Private
   \        interpreted.                                            \n\
   \                                                                \n\
   \Options:                                                        \n";
-  
+
 
   - display_usage <-
   (
@@ -357,7 +357,7 @@ Section Private
 	+ key:UINTEGER_32;
 
         title "SOURCE LINE REFERENCE" in output_decl;
-	
+
 	buf.append
 	"struct __source {\n\
 	\  unsigned int pos;\n\
@@ -365,7 +365,7 @@ Section Private
 	\} __src[";
 	src := PUSH.source_line;
 	src.count.append_in buf;
-	buf.append "]={\n";		
+	buf.append "]={\n";
 	(src.lower).to (src.upper) do { j:INTEGER;
 	  key := src.key j;
 	  output_decl.append "#define L";
@@ -374,7 +374,7 @@ Section Private
 	  (j-1).append_in output_decl;
 	  output_decl.add_last '\n';
 	  //
-	  buf.append "  {";	
+	  buf.append "  {";
 	  key.append_in buf;
 	  buf.append ",\"";
 	  buf.append (src.item j);
@@ -398,12 +398,12 @@ Section Private
 	\  die_with_code(1);                     \n\
 	\}                                       \n\n";
       };
-	
+
       //
       // Stack manager.
       //
 
-      buf.append 	
+      buf.append
       "void lisaac_push_first(_____CONTEXT *path,unsigned long code)\n\
       \{ \n";
       (debug_level_option = 20).if {
@@ -412,7 +412,7 @@ Section Private
 	\  cur = top_context; \n\
 	\  while ((cur != (void *)0) && (cur != path)) cur = cur->back; \n\
 	\  if (cur == path) {\n\
-	\    loop.back = top_context;\n\	
+	\    loop.back = top_context;\n\
 	\    loop.code = code; \n\
 	\    lisaac_stack_print(&loop);\n\
 	\    print_string(\"COMPILER: Debug context looping detected !\\n\");\n\
@@ -426,7 +426,7 @@ Section Private
       \} \n\
       \  \n\
       \void lisaac_push(_____CONTEXT *path,unsigned long code)\n\
-      \{ \n\      	
+      \{ \n\
       \  path->code  = code;\n\
       \  top_context = path;\n\
       \} \n\
@@ -461,8 +461,8 @@ Section Private
         \    };                                                  \n\
         \    print_char('^');    \n\
 	\    print_char('\\n');   \n\
-\ }; \n";	
-	
+\ }; \n";
+
       } else {
 	buf.append
 	"    print_string(\"Line #\");                \n\
@@ -482,7 +482,7 @@ Section Private
       \ \n\
       \void print_integer(unsigned short n) \n\
       \{ unsigned short val;                \n\
-      \  char car;                          \n\	
+      \  char car;                          \n\
       \  car = (n % 10) + '0';              \n\
       \  val = n / 10;                      \n\
       \  if (val != 0) print_integer(val);  \n\
@@ -567,10 +567,10 @@ Section Private
   );
 
 Section Public
-  
+
   - tab:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
   - tab_null:FAST_ARRAY(INTEGER) := FAST_ARRAY(INTEGER).create 128;
-  
+
   //
   // Creation.
   //
@@ -845,16 +845,16 @@ Section Public
         tmp2.print;
         '\n'.print;
       };
-      
+
       (TYPE_GENERIC.paper_list.lower).to (TYPE_GENERIC.paper_list.upper) do { i:INTEGER;
         + var:VARIABLE;
-        + t:TYPES;        
+        + t:TYPES;
         + idx:INTEGER;
         var := TYPE_GENERIC.paper_list.item i.native_array_variable;
         t := var.type_set;
         ((var.is_static) || {t.count = 0}).if {
           tab.put (tab.item 0+1) to 0;
-        } else {          
+        } else {
           idx := t.count;
           tab.put (tab.item idx+1) to idx;
           (t.first = TYPE_NULL).if {
@@ -874,7 +874,7 @@ Section Public
           i.print; '='.print; tab_null.item i.print; '\n'.print;
         };
       };
-      
+
       /*
       // Counter on '==' and '!='
       "\nCounter on '==' and '!=':".print;

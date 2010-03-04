@@ -56,7 +56,7 @@ Section Public
   - from_string s:STRING :SELF <- create_from s;
 
   - to_string :STRING <- parent_string;
-  
+
   - to_abstract_string:ABSTRACT_STRING <- parent_string;
 
   - Self:SELF '+' other:ABSTRACT_STRING :STRING_BUFFER <-

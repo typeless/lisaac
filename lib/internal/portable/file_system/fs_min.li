@@ -19,64 +19,64 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name     := FS_MIN;
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
 
   - comment  := "File system minimum";
-  
+
   - external := `#include <unistd.h>`;
-  
+
 Section Inherit
-  
+
   - parent_object:OBJECT <- OBJECT;
-  
-Section Private  
-  
+
+Section Private
+
   - string_tmp:STRING := STRING.create 128;
-  
+
 Section Public
-  
+
   //
-  // Independance File System 
+  // Independance File System
   //
-  
-  - open_read n:ABSTRACT_STRING :POINTER <- 
+
+  - open_read n:ABSTRACT_STRING :POINTER <-
   ( + buf:NATIVE_ARRAY(CHARACTER);
     string_tmp.copy n;
     buf := string_tmp.to_external;
-    `fopen((char*)@buf,"rb")`:(POINTER)    
+    `fopen((char*)@buf,"rb")`:(POINTER)
   );
 
-  - open_write n:ABSTRACT_STRING :POINTER <- 
+  - open_write n:ABSTRACT_STRING :POINTER <-
   ( + buf:NATIVE_ARRAY(CHARACTER);
     string_tmp.copy n;
     buf := string_tmp.to_external;
     `fopen((char*)@buf,"wb")`:(POINTER)
   );
-  
-  - read f:POINTER in buf:STRING size sz:INTEGER :INTEGER <-   
+
+  - read f:POINTER in buf:STRING size sz:INTEGER :INTEGER <-
   ( + ptr:NATIVE_ARRAY(CHARACTER);
     + result:INTEGER;
-    ptr := buf.to_external;    
+    ptr := buf.to_external;
     result := `fread((void *)(@ptr),(size_t)(1), (size_t)(@sz),(FILE*)(@f))`:(INTEGER);
     ptr.put '\0' to sz;
     buf.from_external ptr;
     result
   );
 
-  - write f:POINTER with buf:STRING size sz:INTEGER :INTEGER <-   
+  - write f:POINTER with buf:STRING size sz:INTEGER :INTEGER <-
   ( + ptr:NATIVE_ARRAY(CHARACTER);
     + result:INTEGER;
-    ptr := buf.to_external;    
+    ptr := buf.to_external;
     result := `fwrite((void *)(@ptr),(size_t)(1), (size_t)(@sz),(FILE*)(@f))`:(INTEGER);
     result
   );
-  
+
   - close p:POINTER <- `fclose((FILE*)(@p))`;
-  
+
   - file_size p:POINTER :INTEGER <-
   ( + result:INTEGER;
     `fseek((FILE*)(@p),0,SEEK_END)`;
@@ -89,13 +89,13 @@ Section Public
   ( + p:NATIVE_ARRAY(CHARACTER);
     + stream:POINTER;
     + result:BOOLEAN;
-    
+
     string_tmp.copy new_path;
-    p := string_tmp.to_external;    
+    p := string_tmp.to_external;
     stream := `fopen((char*)@p,"w+b")`:POINTER;
     (result := (stream != NULL)).if {
-      close stream; 
+      close stream;
     };
     result
   );
-  
+

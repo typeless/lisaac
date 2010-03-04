@@ -162,9 +162,9 @@ Section Public
       } then {
 	//
 	// VALUE_EXPR propagation, step by step.
-        //      	        
+        //
 	result := val;
-	variable.unread Self;	
+	variable.unread Self;
 	new_execute_pass;
       };
     };
@@ -173,14 +173,14 @@ Section Public
       //
       // Normal.
       //
-      ((is_slot) && {loop_invariant != NULL} && {is_invariant}).if {	
+      ((is_slot) && {loop_invariant != NULL} && {is_invariant}).if {
 	//old_loop_invariant := loop_invariant;
 	//loop_invariant := NULL;
 	//
 	l := static_type.get_temporary position;
 	wrt := l.write position value Self;
 	loop_list.insert_before wrt;
-	result := l.read position;	
+	result := l.read position;
 	//
 	//wrt.execute;
 	//result := result.execute_link;

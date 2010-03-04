@@ -53,7 +53,7 @@ Section LISAAC
   (
     reduce_profil := profil_list.upper >= life_limit;
     {profil_list.upper >= life_limit}.while_do {
-      profil_list.last.remove;	
+      profil_list.last.remove;
       profil_list.remove_last;
     };
   );
@@ -105,11 +105,11 @@ Section Public
 
     idx := p.life_index;
     (idx < life_limit).if {
-      life_limit := life_limit - 1;	
+      life_limit := life_limit - 1;
       (idx < life_limit).if {
 	(idx > current).if {
-	  swap idx with life_limit;	
-	} else {	
+	  swap idx with life_limit;
+	} else {
 	  swap idx with current;
 	  swap current with life_limit;
 	  current := current - 1;
@@ -160,7 +160,7 @@ Section Public
     list_current   := NULL;
     list_main.execute;
     current := profil_list.lower;
-    {current < life_limit}.while_do {			
+    {current < life_limit}.while_do {
       profil_current := profil_list.item current;
       profil_current.execute inline_level_current;
       current := current + 1;

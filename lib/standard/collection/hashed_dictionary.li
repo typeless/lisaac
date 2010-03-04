@@ -29,7 +29,7 @@ Section Header
   \Values of type `V' are stored using Keys of type `K'.";
 
   // Efficient implementation of DICTIONARY using `hash_code' on keys.
-	
+
 Section Inherit
 
   - parent_simple_dictionary:Expanded SIMPLE_DICTIONARY(V,K);
@@ -310,7 +310,7 @@ Section Public
   - fast_remove k:K <-
   ( + h, idx:INTEGER;
     + node, previous_node:HASHED_DICTIONARY_NODE(V,K);
-		
+
     cache_user := -1;
     h := k.hash_code;
     idx := h % capacity;
@@ -320,10 +320,10 @@ Section Public
 	count := count - 1;
 	node := dispose_node node;
 	buckets.put node to idx;
-      } else {					
+      } else {
 	previous_node := node;
-	node := node.next;	
-	{(node = NULL) || {node.key = k}}.until_do {	
+	node := node.next;
+	{(node = NULL) || {node.key = k}}.until_do {
 	  previous_node := node;
 	  node := node.next;
 	};
@@ -369,7 +369,7 @@ Section Public
     + idx:INTEGER;
 
     node := buckets.item idx;
-    count.downto 1 do { i:INTEGER;	
+    count.downto 1 do { i:INTEGER;
       {node != NULL}.until_do {
 	idx := idx + 1;
 	? {idx < capacity};
@@ -582,7 +582,7 @@ Section Public
     +? { is_empty };
     +? { capacity >= medium_size };
   ];
-		
+
   //
   // Invariant
   //

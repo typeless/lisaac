@@ -24,23 +24,23 @@ Section Header
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment := "Auxiliary class to implement AVL_DICTIONARY.";
-  
+
 Section Inherit
-  
+
   + parent_avl_tree_node:Expanded AVL_TREE_NODE(K);
-  
+
   - parent_any_avl_dictionary_node:ANY_AVL_DICTIONARY_NODE := ANY_AVL_DICTIONARY_NODE;
-  
+
 Section Public
-  
+
   - key:K <- item;
-  
+
   - set_key i:K <- set_item i;
-  
+
 Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
-  
+
   + value:V;
 
   - set_value v:V <-
@@ -54,7 +54,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
   - fast_at k:K :AVL_DICTIONARY_NODE(V, K) <-
   // Is element `e' in the tree?
   ( + result:AVL_DICTIONARY_NODE(V, K);
-    
+
     (key = k).if {
       result := Self;
     }.elseif {key == k /*SAFE_EQUAL(K).test key and k*/} then {
@@ -63,7 +63,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
     }.elseif {k < key} then {
       (left != NULL).if {
 	result := left.fast_at k;
-      };	
+      };
     } else {
       (right != NULL).if {
 	result := right.fast_at k;
@@ -84,7 +84,7 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
 
   - key_at v:V :K <-
   ( + result:K;
-    
+
     (v == value /*SAFE_EQUAL(V).test v and value*/).if {
       result := key;
     }.elseif {left != NULL} then {
@@ -97,19 +97,19 @@ Section AVL_DICTIONARY, AVL_DICTIONARY_NODE
 
   - fast_key_at v:V :K <-
   ( + result:K;
-    
+
     (v = value).if {
       result := key;
     }.elseif {left != NULL} then {
-      result := left.fast_key_at v;      
+      result := left.fast_key_at v;
     }.elseif {right != NULL} then {
       result := right.fast_key_at v;
     };
     result
   );
-	
+
 Section AVL_DICTIONARY_NODE
-  
+
   - occurrences v:V start cnt:INTEGER :INTEGER <-
   ( + result:INTEGER;
 
@@ -152,15 +152,15 @@ Section AVL_DICTIONARY
   //
   // Creation:
   //
-  
+
   - create (v:V,k:K) :SELF <-
   ( + result:SELF;
-    
+
     result := clone;
     result.make (v,k);
     result
   );
-  
+
   - make (v:V,k:K) <-
   (
     set_balance balanced;

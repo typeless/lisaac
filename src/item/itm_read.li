@@ -123,7 +123,7 @@ Section ITM_READ, SLOT_DATA
       itm_list ?= first_itm;
       (itm_list != NULL).if {
 	itm_read ?= itm_list.code.first;
-      } else {	
+      } else {
 	itm_read ?= first_itm;
       };
       is_resend := (
@@ -187,7 +187,7 @@ Section ITM_READ, SLOT_DATA
 	  position.put_position;
 	  POSITION.send_error;
 	};
-	last_position := slot_msg.position;	
+	last_position := slot_msg.position;
         (
           (profil_slot != NULL) &&
           {! slot_msg.id_section.access rec_type with (profil_slot.type_self.raw)}
@@ -237,7 +237,7 @@ Section ITM_READ, SLOT_DATA
 	string_tmp.copy "Deferred in `";
 	profil_slot.slot.pretty_name_in string_tmp;
 	string_tmp.append "' for ";
-	rec.static_type.append_name_in string_tmp;	
+	rec.static_type.append_name_in string_tmp;
 	warning_error (position,string_tmp);
       };
 
@@ -248,7 +248,7 @@ Section ITM_READ, SLOT_DATA
     } else {
       // Classic message with arguments.
       (is_resend).if {
-	args.put (lookup (ALIAS_STR.variable_self).read position) to 0;	
+	args.put (lookup (ALIAS_STR.variable_self).read position) to 0;
       } else {
 	args.put (args.first.my_copy) to 0;
       };
@@ -286,7 +286,7 @@ Section Private
       args.add_last e;
     };
     (verify).if {
-      (! is_block_value).if {	
+      (! is_block_value).if {
         itm_arg := slot.argument_list.item idx;
         (itm_arg.count != count).if {
           string_tmp.copy "Incorrect vector size for #";

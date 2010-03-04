@@ -70,7 +70,7 @@ Section Public
     (my_alias = NULL).if {
       my_alias := my_copy;
       my_alias.set_type_set type_set;
-      list_alias.add_last Self;	
+      list_alias.add_last Self;
     };
     my_alias
   );
@@ -244,14 +244,14 @@ Section Public
 	  } ||
 	  { // Global propagation.
 	    (g != NULL) && {g.style = '-'} && {
-	      (		
+	      (
 		(g.last_write != NULL) && {g.last_seq_index < last_seq.last_seq_index} &&
 		{last_seq.last_seq_call_and_loop = seq_call_and_loop} &&
 		{is_seq_list (g.last_list_current)}
 	      ) || {g.require_count = 1}
 	    }
 	  }
-	).if {	  	
+	).if {
 	  result := val.my_copy;
 	}.elseif {
 	  // Propagation step by step.
@@ -259,10 +259,10 @@ Section Public
 	  {ensure_count = 1} &&
 	  {list_current.index > list_current.lower} &&
 	  {list_current.item (list_current.index - 1) = last_seq.last_write}
-	} then {    	
+	} then {
 	  unwrite (last_seq.last_write);
 	  last_seq.set_last_write NULL;
-	  list_current.put NOP to (list_current.index - 1);	
+	  list_current.put NOP to (list_current.index - 1);
 	  result := val;
 	};
       };
@@ -347,7 +347,7 @@ Section Public
     val := type.default_value position;
     (ALIAS_STR.is_integer (type.raw.name)).if {
       int ?= val;
-      (int != NULL).if {	
+      (int != NULL).if {
 	int.cast_type type;
       };
     } else {

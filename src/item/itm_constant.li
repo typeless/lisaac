@@ -19,19 +19,19 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_CONSTANT;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Parent for all constant";
-  
+
 Section Inherit
-  
+
   + parent_itm_code:Expanded ITM_CODE;
-  
+
 Section Public
 
   - is_constant:BOOLEAN := TRUE;

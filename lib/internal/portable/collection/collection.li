@@ -205,7 +205,7 @@ Section Public
     -? { other != NULL };
   ]
   (
-    (other.lower).to (other.upper) do { i:INTEGER; 	
+    (other.lower).to (other.upper) do { i:INTEGER;
       add_last (other.item i);
     };
   )
@@ -227,7 +227,7 @@ Section Public
       copy same;
     } else {
       clear;
-      (other.lower).to (other.upper) do { i:INTEGER; 	
+      (other.lower).to (other.upper) do { i:INTEGER;
         add_last (other.item i);
       };
     };

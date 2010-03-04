@@ -19,18 +19,18 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := EVENT_SYSTEM;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment     := "X11 - Event System";
-    
+
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr)";
-  
-  - external :=   
-`  
+
+  - external :=
+`
 void (*get_event)()=NULL;
 int event_num;
 int event_p1;
@@ -40,9 +40,9 @@ int event_p4;
 
 unsigned char buf[50];
 
-HDC hdc_glob; 
+HDC hdc_glob;
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{ 
+{
   PAINTSTRUCT ps;
   HDC hdc_old;
   RECT rect;
@@ -54,9 +54,9 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       get_event();
       return 0;
       // Create
-      case WM_CREATE:	
+      case WM_CREATE:
       return 0;
-      
+
       // Repaint
       case WM_PAINT:
       event_num = 0;
@@ -65,18 +65,18 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       event_p1 = ps.rcPaint.left;
       event_p2 = ps.rcPaint.top;
       event_p3 = ps.rcPaint.right;
-      event_p4 = ps.rcPaint.bottom;      
-      get_event();	                
+      event_p4 = ps.rcPaint.bottom;
+      get_event();
       EndPaint(hwnd, &ps);
       hdc_glob = hdc_old;
       return 0;
-      
+
       // Destroy
       case WM_DESTROY:
       PostQuitMessage(0);
       exit(0);
       return 0;
-            
+
       // Mouse
       case WM_MOUSEMOVE:
       event_num = 1;
@@ -89,7 +89,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       event_num = 2;
       get_event();
       return 0;
-      case WM_LBUTTONUP: 
+      case WM_LBUTTONUP:
       event_num = 3;
       get_event();
       return 0;
@@ -97,13 +97,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       event_num = 4;
       get_event();
       return 0;
-      case WM_RBUTTONUP: 
+      case WM_RBUTTONUP:
       event_num = 5;
       get_event();
       return 0;
-      
+
       // Kayboard
-      case WM_KEYDOWN: 
+      case WM_KEYDOWN:
       //sprintf(buf,"KeyDown : %c(%d) ,%lx      ",wParam,wParam,lParam);
       //TextOutA(hdc_glob,10,100,buf,strlen(buf));
       event_num = 10;
@@ -111,7 +111,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       event_p2 = lParam;
       get_event();
       return 0;
-      
+
       case WM_CHAR:
       //sprintf(buf,"Char : %c(%d) ,%lx      ",wParam,wParam,lParam);
       //TextOutA(hdc_glob,10,120,buf,strlen(buf));
@@ -120,8 +120,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
       event_p2 = lParam;
       get_event();
       return 0;
-      
-      case WM_KEYUP: 
+
+      case WM_KEYUP:
       //sprintf(buf,"KeyUp : %c(%d) ,%lx      ",wParam,wParam,lParam);
       //TextOutA(hdc_glob,10,140,buf,strlen(buf));
       event_num = 12;
@@ -137,19 +137,19 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 `;
 
 Section Inherit
-  
+
   - parent_object:OBJECT := OBJECT;
-  
-Section Interrupt  
-  
+
+Section Interrupt
+
   - get_physical_event <-
   ( + p1,p2,p3,p4:INTEGER;
-    
+
     p1 := `event_p1`:INTEGER;
     p2 := `event_p2`:INTEGER;
     p3 := `event_p3`:INTEGER;
     p4 := `event_p4`:INTEGER;
-    
+
     `event_num`:INTEGER
     //
     // Event Window
@@ -199,22 +199,22 @@ Section Interrupt
       TIMER.get_event;
     };
   );
-  
-Section Public  
-  
+
+Section Public
+
   - sleep n:INTEGER <-
   // Milisecond
   (
     `sleep(@n)`;
   );
-  
-  - make <-  
+
+  - make <-
   ( + ptr:POINTER;
-    
+
     ptr := get_physical_event;
     `get_event = @ptr`;
   );
-    
+
   - get_event <-
   (
     `
@@ -223,8 +223,8 @@ Section Public
     DispatchMessage(&msg_glob);
     `;
   );
-  
-  
+
+
 
 
 

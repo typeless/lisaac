@@ -19,34 +19,34 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := Expanded UINTEGER_CPU;
 
   - export  := UINTEGER_64, POINTER;
-   
+
   - comment := "Unsigned integer (variable size according to CPU word).";
-  
+
   - type    := `unsigned long`;
   - default := (0.to_raw_uinteger_cpu);
 
 Section Insert
-  
+
   - parent_unsigned_integer:UNSIGNED_INTEGER := UNSIGNED_INTEGER;
-  
+
 Section Public
-  
+
   - object_size:INTEGER <- `sizeof(unsigned long)`:INTEGER;
 
   //
   // Range.
   //
-  
+
   - maximum:UINTEGER_64 := (~ 0.to_uinteger_cpu).to_raw_uinteger_64;
-  
+
   //
   // Conversion with test.
   //
-  
+
   - to_uinteger_64:UINTEGER_64 <- to_raw_uinteger_64;
-  
+
   - to_pointer:POINTER <- to_raw_pointer;

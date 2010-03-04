@@ -19,19 +19,19 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_LOCAL;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Local declaration slot";
-  
+
 Section Inherit
-  
+
   + parent_itm_object:Expanded ITM_OBJECT;
-  
+
 Section Public
 
   //
@@ -60,7 +60,7 @@ Section Public
     result.set_type t;
     result
   );
-  
+
   - make p:POSITION name n:STRING_CONSTANT <-
   (
     name     := n;
@@ -80,10 +80,10 @@ Section Public
   // Runnable
   //
 
-  - to_run:LOCAL <- 
+  - to_run:LOCAL <-
   ( + pos:POSITION;
     + result:LOCAL;
-    
+
     last_position := position;
     result := LOCAL.create position name name style '+' type (type.to_run_for profil_slot);
     last_position := pos;
@@ -97,11 +97,11 @@ Section Public
     + larg:FAST_ARRAY(ITM_ARGUMENT);
     + arg:ITM_ARGUMENT;
     + proto:PROTOTYPE;
-    
+
     (type = ITM_TYPE_SIMPLE.type_self).if {
       semantic_error (position,"Type `SELF' is not possible for `-' style local.");
     };
-    result := LOCAL.create position name name style '-' type (type.to_run_for profil_slot);    
+    result := LOCAL.create position name name style '-' type (type.to_run_for profil_slot);
     //
     proto := position.prototype;
     slot := proto.first_slot;
@@ -109,7 +109,7 @@ Section Public
       slot := slot.next;
     };
     (slot = NULL).if {
-      slot := ITM_SLOT.create position name (result.intern_name) 
+      slot := ITM_SLOT.create position name (result.intern_name)
       feature (SECTION_.get_name (ALIAS_STR.section_private));
       slot.set_style '-';
       slot.set_result_type type;
@@ -118,7 +118,7 @@ Section Public
       type (ITM_TYPE_SIMPLE.type_self);
       larg.add_last arg;
       larg := ALIAS_ARRAY(ITM_ARGUMENT).copy larg;
-      slot.set_argument_list larg; 
+      slot.set_argument_list larg;
       proto.add_slot slot;
     } else {
       result.set_intern_name (slot.name);
@@ -126,18 +126,18 @@ Section Public
     //
     result
   );
-  
-  // 
+
+  //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     buffer.append name;
     buffer.add_last ':';
     type.append_in buffer;
   );
-    
+
 
 
 

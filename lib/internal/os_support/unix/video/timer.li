@@ -45,17 +45,17 @@ Section Inherit
 Section Public
 
   - timer_count:UINTEGER_32;
-  
+
 Section Private
-  
+
   - buffer_event:FAST_ARRAY(EVENT_TIMER);
 
   - p_beg:UINTEGER_8;  // Pointer on the buffer (beginning)
 
   - p_end:UINTEGER_8;  // Pointer on the buffer (end)
-  
+
   - delay:INTEGER := 50_000;
-  
+
 Section Interrupt
 
   - timer_interrupt <-
@@ -87,12 +87,12 @@ Section Interrupt
   );
 
 Section Public
-  
+
   - set_delay d:INTEGER <-
   (
     delay := d;
   );
-  
+
   - make <-
   ( + hdle:POINTER;
     + new_event:EVENT_TIMER;

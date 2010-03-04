@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_IF;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -32,18 +32,18 @@ Section Inherit
   + parent_lip_code:Expanded LIP_CODE;
 
 Section Public
-  
+
   + condition:LIP_CODE;
-  
+
   + then:FAST_ARRAY(LIP_CODE);
-  
+
   + else:FAST_ARRAY(LIP_CODE);
-  
+
   //
   // Creation.
   //
 
-  - create p:POSITION if rec:LIP_CODE then the:FAST_ARRAY(LIP_CODE) 
+  - create p:POSITION if rec:LIP_CODE then the:FAST_ARRAY(LIP_CODE)
   else els:FAST_ARRAY(LIP_CODE) :SELF <-
   ( + result:SELF;
     result := clone;
@@ -51,9 +51,9 @@ Section Public
     result
   );
 
-  - make p:POSITION if rec:LIP_CODE then the:FAST_ARRAY(LIP_CODE) 
+  - make p:POSITION if rec:LIP_CODE then the:FAST_ARRAY(LIP_CODE)
   else els:FAST_ARRAY(LIP_CODE) <-
-  ( 
+  (
     position := p;
     condition := rec;
     then := the;
@@ -65,14 +65,14 @@ Section Public
       warning_error (else.last.position,"Unreachable expression.");
     };
   );
-  
+
   //
   // Run.
   //
-  
+
   - run <-
   ( + val:LIP_BOOLEAN;
-    
+
     val ?= condition.run_expr;
     (val = NULL).if {
       semantic_error (position,"BOOLEAN needed.");
@@ -80,7 +80,7 @@ Section Public
     (val.value).if {
       (then.lower).to (then.upper-1) do { i:INTEGER;
         then.item i.run;
-      };      
+      };
     }.elseif {else != NULL} then {
       (else.lower).to (else.upper-1) do { i:INTEGER;
         else.item i.run;

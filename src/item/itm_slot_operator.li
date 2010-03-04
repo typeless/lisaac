@@ -19,28 +19,28 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := ITM_SLOT_OPERATOR;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Slot item";
-  
+
 Section Inherit
-  
+
   + parent_itm_slot:Expanded ITM_SLOT;
-  
+
 Section Public
-  
+
   + pretty_name:STRING_CONSTANT;
-  
+
   - set_pretty_name n:STRING_CONSTANT <-
   (
     pretty_name := n;
   );
-  
+
   //
   // Access associativity & priority level.
   //
@@ -56,7 +56,7 @@ Section Public
     };
     result
   );
-  
+
   - priority:INTEGER <-
   (
     priority_and_level.abs
@@ -70,28 +70,28 @@ Section Public
       priority_and_level := -l;
     };
   );
-  
+
   //
   // Display.
   //
-    
+
   - pretty_name_in buffer:STRING <-
-  ( 
+  (
     (name.has_prefix (ALIAS_STR.slot_postfix)).if {
       buffer.append "Postfix '";
     }.elseif {name.has_prefix (ALIAS_STR.slot_infix)} then {
       buffer.append "Infix '";
     } else {
       buffer.append "Prefix '";
-    };          
+    };
     buffer.append pretty_name;
     buffer.add_last '\'';
   );
-  
+
 Section ITM_SLOT
-  
+
   - shorter_profile_intern_in buf:STRING <-
-  ( 
+  (
     (name.has_prefix (ALIAS_STR.slot_postfix)).if {
       argument_list.first.shorter_in buf;
       buf.add_last ' ';
@@ -123,5 +123,5 @@ Section ITM_SLOT
       buf.add_last ' ';
       argument_list.first.shorter_in buf;
       buf.add_last ' ';
-    };    
+    };
   );

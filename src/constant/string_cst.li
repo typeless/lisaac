@@ -19,37 +19,37 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := STRING_CST;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "String constant";
-  
+
 Section Inherit
-  
+
   + parent_constant:Expanded CONSTANT;
-  
+
 Section Public
-   
-  - output:STRING := 
+
+  - output:STRING :=
   ( + result:STRING;
-    
+
     result := STRING.create 256;
     title "STRING CONSTANT" in result;
     result
   );
-  
+
   - output_count:INTEGER;
-  
+
   //
   // Value.
   //
 
   + string:STRING_CONSTANT;
-  
+
   //
   // Creation.
   //
@@ -60,7 +60,7 @@ Section Public
     result.make p text n length len;
     result
   );
-  
+
   - make p:POSITION text n:STRING_CONSTANT length len:INTEGER <-
   (
     position := p;
@@ -74,8 +74,8 @@ Section Public
   //
   // Comparaison.
   //
-  
-  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-  
+
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-
   ( + p:STRING_CST;
     p ?= other;
     (p != NULL) && {string = p.string}
@@ -86,24 +86,24 @@ Section Public
   //
 
   - genere buffer:STRING <-
-  ( + idx,count,cur:INTEGER;    
+  ( + idx,count,cur:INTEGER;
     - is_init:BOOLEAN;
     - is_storage:BOOLEAN;
     - is_count:BOOLEAN;
-    
+
     (is_init).if_false {
       is_storage := type_string_constant.get_local_slot (ALIAS_STR.slot_storage)
       .slot_data_intern.ensure_count != 0;
       is_count   := type_string_constant.get_local_slot (ALIAS_STR.slot_count)
-      .slot_data_intern.ensure_count != 0;      
+      .slot_data_intern.ensure_count != 0;
       is_init := TRUE;
     };
-    
+
     count := dico_string.fast_at string;
     (count >= 0).if {
       output_count := output_count + 1;
       idx := output_count;
-      
+
       cur := output.count - 1;
       (is_java).if {
         output.append "private static ";
@@ -120,7 +120,7 @@ Section Public
         (static_type.is_late_binding).if {
           output.append "__";
           output.append (static_type.raw.intern_name);
-          output.append "__,";	
+          output.append "__,";
         };
       };
       (is_count).if {
@@ -133,7 +133,7 @@ Section Public
 	{(output.count - cur) > 78}.while_do {
 	  output.insert_string "\\\n" to (cur+78);
 	  cur := cur + 78;
-	};            
+	};
 	output.add_last '\"';
       } else {
         output.remove_last 1;
@@ -150,14 +150,14 @@ Section Public
     //
     (is_java).if {
       buffer.append "__string_";
-      idx.append_in buffer;      
+      idx.append_in buffer;
     } else {
       buffer.append "(&__string_";
       idx.append_in buffer;
       buffer.add_last ')';
     };
   );
-  
+
   //
   // Display.
   //
@@ -169,10 +169,10 @@ Section Public
     buffer.add_last '\"';
     display_ref buffer;
   );
-  
-Section Private  
-  
-  - dico_string:HASHED_DICTIONARY(INTEGER,STRING_CONSTANT) := 
+
+Section Private
+
+  - dico_string:HASHED_DICTIONARY(INTEGER,STRING_CONSTANT) :=
   HASHED_DICTIONARY(INTEGER,STRING_CONSTANT).create;
 
 

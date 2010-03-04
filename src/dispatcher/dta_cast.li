@@ -33,9 +33,9 @@ Section Inherit
   - parent_dta:DTA := DTA;
 
 Section Public
-  
+
   + position:POSITION;
-  
+
   + result_expr:EXPR;
 
   //
@@ -91,7 +91,7 @@ Section NODE_TYPE, DTA
 	(cast.type.raw = t).if {
 	  new_value := CAST.create (cast.type) value (e.my_copy);
 	};
-      }.elseif {t.is_sub_type (cast.type.raw)} then {	
+      }.elseif {t.is_sub_type (cast.type.raw)} then {
 	new_value := CAST.create (t.default) value (e.my_copy);
       };
     };

@@ -30,9 +30,9 @@ Section Header
 Section Inherit
 
   - parent_any:ANY := ANY;
-  
-Section ALIASER_LOCAL,LIST  
-  
+
+Section ALIASER_LOCAL,LIST
+
   - free_context:FAST_ARRAY(LOCAL) := FAST_ARRAY(LOCAL).create_with_capacity 64;
 
   - top_context:INTEGER;
@@ -67,7 +67,7 @@ Section Public
 
     loc  := wr.local;
     ((is_on) && {loc.style = '+'}).if {
-      loc2 := loc.my_alias;      
+      loc2 := loc.my_alias;
       (loc2 = NULL).if {
         loc2 := search_alias loc;
         (loc2 = loc).if {
@@ -165,7 +165,7 @@ Section ALIASER_LOCAL, READ_LOCAL
 	j := j + 1;
       };
       ((j > tab.upper) || {tab.item j != v}).if {
-	tab.add v to j;	
+	tab.add v to j;
       };
     };
   );

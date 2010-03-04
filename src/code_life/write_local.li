@@ -101,12 +101,12 @@ Section Public
   //
   // Genere
   //
-    
+
   - genere buffer:STRING <-
   ( + idf:STRING_CONSTANT;
-    
+
     idf := ALIASER_LOCAL.write Self;
-    
+
     (quiet_generation).if_false {
       (local.is_result).if {
         buffer.add_last '*';

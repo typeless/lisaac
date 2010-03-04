@@ -168,8 +168,8 @@ Section Public
       {(idx1 <= upper) && {item idx1.index < t2idx}}.while_do {
 	idx1 := idx1 + 1;
       };
-      ((idx1 > upper) || {item idx1 != t2}).if {	
-	add t2 to idx1;	
+      ((idx1 > upper) || {item idx1 != t2}).if {
+	add t2 to idx1;
       };
       idx1 := idx1 + 1;
       idx2 := idx2 + 1;

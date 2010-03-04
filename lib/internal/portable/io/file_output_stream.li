@@ -50,21 +50,21 @@ Section Public
     result.make std_file;
     result
   );
-    
+
 Section Public
 
   - put_character c:CHARACTER <-
   // Put `c' on stream
-  ( 
+  (
     tmp.put c to 0;
     file.physical_write tmp size 1;
   );
 
   - flush <- (); //file.basic_fush;
-  
+
 Section Private
-  
+
   - tmp:NATIVE_ARRAY(UINTEGER_8) := NATIVE_ARRAY(UINTEGER_8).create 1;
-  
+
 // kate: hl Lisaac v0.2; indent-width 2; space-indent on; replace-tabs off;
 // kate: tab-width 8; remove-trailing-space on;

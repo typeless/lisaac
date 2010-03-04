@@ -54,9 +54,9 @@ Section PROTOTYPE
       is_ok := node_list.item j.update;
       (is_ok).if {
 	node_list.remove j;
-      } else {	
+      } else {
 	j := j + 1;
-      };	
+      };
     };
   );
 
@@ -299,7 +299,7 @@ Section Public
   - display buffer:STRING <-
   (
     (switch = NULL).if {
-      (first_code = NULL).if {	
+      (first_code = NULL).if {
 	to_pointer.append_in buffer;
 	buffer.append "<NODE VIDE=";
 	expr.display buffer;

@@ -19,44 +19,44 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := PIXEL_8;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment     := "Pixel 8 bits (RR-VVV-BBB)";
-  
+
   - bibliography:= "http://IsaacOS.com";
-  
+
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
-  
+
 Section Inherit
-  
+
   - parent_pixel:PIXEL := PIXEL;
-  
+
 Section Mapping
-  
+
   + real_color:UINTEGER_8;
-        
+
 Section Public
-  
+
   - red:UINTEGER_8   <- real_color & 11000000b;
-  
+
   - green:UINTEGER_8 <- (real_color & 00111000b) << 2;
-  
+
   - blue:UINTEGER_8  <- real_color << 5;
-  
+
   - color col:UINTEGER_32 <-
   (
     real_color := (((col >> 16).to_uinteger_8) &11000000b) | ((((col & 00FF00h) >> 10).to_uinteger_8)&00111000b) | (((col & 0000FFh).to_uinteger_8) >>5);
   );
-  
+
   - color_rgb (r,g,b:UINTEGER_8) <-
   (
     real_color := (r &11000000b) | (g&00111000b) | (b >>5);
   );
-  
-  - size:UINTEGER_8       := 8; 
+
+  - size:UINTEGER_8       := 8;
   - red_size:UINTEGER_8   := 2;
   - red_pos:UINTEGER_8    := 6;
   - green_size:UINTEGER_8 := 3;
@@ -65,14 +65,14 @@ Section Public
   - blue_pos:UINTEGER_8   := 0;
   - reserved_size:UINTEGER_8 :=0;
   - reserved_pos:UINTEGER_8  :=0;
-  
-  - copy other:SELF <-  
+
+  - copy other:SELF <-
   (
     real_color := other.real_color;
   );
-  
+
   - to_pixel_8:PIXEL_8 <- Self;
-  
+
 
 
 

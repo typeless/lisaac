@@ -127,9 +127,9 @@ Section Public
 	};
 	cur := cur.next;
       };
-    };	
+    };
   );
-	
+
   //
   // Mapping / Late binding / Expanded
   //
@@ -379,7 +379,7 @@ Section Public
         PROFIL_LIST.execute_pass;
 
         (SWITCH.switch_new_pass).if {
-          new_execute_pass;	
+          new_execute_pass;
         };
         (modify_count != 0).if {
           pass_recur := TRUE;
@@ -400,7 +400,7 @@ Section Public
       (is_optimization).if {
         is_optimization_type_set := TRUE;
       };
-      (pass_recur).if_false {        
+      (pass_recur).if_false {
         exec.value;
       };
     }.do_while {pass_recur};
@@ -510,13 +510,13 @@ Section PROTOTYPE
 
     s := first_slot;
     {
-      ((s.id_section.is_public) && {s.name = ALIAS_STR.slot_main}).if {	
+      ((s.id_section.is_public) && {s.name = ALIAS_STR.slot_main}).if {
 	(s.result_type != ITM_TYPE_SIMPLE.type_void).if {
 	  semantic_error (s.position,"Unix mode: Not value return.");
 	};
 	(s.argument_count != 1).if {
 	  semantic_error (s.position,"Unix mode: Not argument list.");
-	};	
+	};
 	result := type_input.get_slot (s.name);
       };
       s := s.next;

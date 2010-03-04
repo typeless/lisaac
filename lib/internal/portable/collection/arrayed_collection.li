@@ -120,15 +120,15 @@ Section Public
 
   - reverse <-
   ( + i,j:INTEGER;
-    	
+
     i := lower;
-    j := upper;		
+    j := upper;
     {i >= j}.until_do {
       swap i with j;
       i := i + 1;
       j := j - 1;
     };
-  );	
+  );
 
   //
   // Interfacing with C:

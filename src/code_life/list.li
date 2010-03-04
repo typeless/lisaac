@@ -289,7 +289,7 @@ Section Public
       old_index := index;
 
       new_expr := item index.execute;
-      (new_expr != NULL).if {	
+      (new_expr != NULL).if {
         put new_expr to index;
         index := index + 1;
         (new_expr = CALL_NULL).if {
@@ -417,7 +417,7 @@ Section Private
 
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
-        loc := tab.item j;	
+        loc := tab.item j;
         loc.is_result.if_false {
           /*
           (loc.type.is_expanded).if {

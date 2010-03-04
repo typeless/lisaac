@@ -26,7 +26,7 @@ Section Header
   - copyright     := "2008 Mildred Ki'Lya";
   - bibliography  := "";
   - comment       := "Detect charecteristics of the system/C compiler";
-  
+
   // Don't hesitate to add others slots to detect your platform.
 
 Section Inherit

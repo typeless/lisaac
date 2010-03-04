@@ -31,7 +31,7 @@ Section Header
                   \Unlike ARRAY, the `lower' bound of a FAST_ARRAY is frozen \
                   \to 0. Thus, some memory is saved and looping toward `lower' \
                   \bound (which is 0) run a little bit faster.";
-		  		
+
   // General purpose resizable FAST_ARRAYs. The only difference with ARRAY is the
   // fact that the `lower' bound is actually frozen to 0. The `item' access is likely
   // to be more efficient as well as loop going from `upper' to `lower' just because
@@ -46,7 +46,7 @@ Section Header
   // `add_last' / `last' / `remove_last'. Conversely `add_first' and `remove_first' are
   // likely to slow down your program if they are too often used. If the fact that
   // `lower' is stuck to 0 do matter, also consider ARRAY.
-		
+
 Section Inherit
 
   + parent_arrayed_collection:Expanded ARRAYED_COLLECTION(V);
@@ -188,9 +188,9 @@ Section Public
       (capacity = 0).if {
   	storage := NATIVE_ARRAY(V).create new_capacity;
       } else {
-  	storage := storage.realloc capacity with new_capacity;	
+  	storage := storage.realloc capacity with new_capacity;
       };
-      capacity := new_capacity;	
+      capacity := new_capacity;
     };
   )
   [
@@ -224,7 +224,7 @@ Section Public
 	  new_capacity := new_capacity * 2;
 	};
 	storage := storage.realloc capacity with new_capacity;
-	capacity := new_capacity;	
+	capacity := new_capacity;
       };
     }.elseif { new_count != count } then {
       storage.clear new_count to (count - 1);
@@ -360,17 +360,17 @@ Section Public
     up  := max;
     {
       sw:=FALSE;
-      low.to up do { i:INTEGER;	
+      low.to up do { i:INTEGER;
 	(cmp.value (item i,item (i+1))).if {
 	  swap i with (i+1);
 	  sw := TRUE;
 	};
-	
+
         idx := max - i;
 	(cmp.value (item idx,item (idx+1))).if {
 	  swap idx with (idx+1);
 	  sw := TRUE;
-	};		
+	};
       };
       up  := up - 1;
       low := low + 1;
@@ -512,7 +512,7 @@ Section Public
   (
     storage.fast_reverse_index_of (element, start_index)
   );
-	
+
   - subarray min:INTEGER to max:INTEGER :SELF <-  // slice
   ( + result:SELF;
 

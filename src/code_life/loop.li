@@ -84,7 +84,7 @@ Section Public
       case := switch.list.item k.code;
       (! case.is_empty).if {
 	loop_end ?= case.last;
-	(loop_end != NULL).if {	
+	(loop_end != NULL).if {
 	  ? {loop_end.loop = Self};
 	  (loop_end.loop != Self).if {
 	    semantic_error (position,"LOOP.my_copy BUG!!!");
@@ -221,9 +221,9 @@ Section Public
 	  //
 	  result := TRUE;
 	  inverse.if {
-	    buffer.append "while (!";	
+	    buffer.append "while (!";
 	  } else {
-	    buffer.append "while (";	
+	    buffer.append "while (";
 	  };
 	  switch.expr.genere buffer;
 	  //
@@ -239,14 +239,14 @@ Section Public
 	  body.remove_last;
 	  body.genere buffer;
 	  inverse.if {
-	    buffer.append " while (!";	
+	    buffer.append " while (!";
 	  } else {
-	    buffer.append " while (";	
-	  };	
+	    buffer.append " while (";
+	  };
 	  //
 	  switch.expr.genere buffer;
 	  buffer.add_last ')';
-        };	
+        };
 
         current_list_level := current_list_level - 1;
 

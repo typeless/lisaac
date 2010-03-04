@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_VALUE;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -32,9 +32,9 @@ Section Inherit
   + parent_lip_code:Expanded LIP_CODE;
 
 Section Public
-  
+
   + value:LIP_CONSTANT;
-  
+
   //
   // Creation.
   //
@@ -47,15 +47,15 @@ Section Public
   );
 
   - make p:POSITION with v:LIP_CONSTANT <-
-  ( 
+  (
     position := p;
     value := v;
   );
-  
+
   //
   // Run.
   //
-  
+
   - run_expr:LIP_CONSTANT <-
   (
     value.copy

@@ -53,7 +53,7 @@ Section Public
   - make p:POSITION name n:STRING_CONSTANT <-
   (
     position := p;
-    name := n;    
+    name := n;
   );
 
   //

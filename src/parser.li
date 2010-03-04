@@ -67,7 +67,7 @@ Section Public
 	  beg.to (end-1) do { j:INTEGER;
 	    token.add_last (source.item j);
 	    output_code.remove pos;
-	  };	
+	  };
 	  short_derive := short_derive - token.count;
 	  // Insert format.
 	  fmt := short_dico.at key;
@@ -76,10 +76,10 @@ Section Public
 	      add_text := token;
 	    } else {
 	      add_text := fmt.item j;
-	    };	
+	    };
 	    output_code.insert_string add_text to pos;
 	    pos := pos + add_text.count;
-	    short_derive := short_derive + add_text.count;	
+	    short_derive := short_derive + add_text.count;
 	  };
 	};
       };
@@ -89,7 +89,7 @@ Section Public
   - short_remove begin:INTEGER to end:INTEGER <-
   (
     output_code.remove_between
-    (begin + short_derive) to (end + short_derive);	
+    (begin + short_derive) to (end + short_derive);
     short_derive := short_derive - (end - begin + 1);
   );
 
@@ -249,7 +249,7 @@ Section Private
             .when 2 then {            };
           };
         };
-	position := position + 1;	
+	position := position + 1;
       };
 
       (position < source.upper).if {
@@ -311,7 +311,7 @@ Section Private
 	// Skip C comment style :
 	pos2 := position;
 	((last_character = '/') && {source.item (position+1) = '*'}).if {
-	  position := position + 2; 	
+	  position := position + 2;
 	  level_comment := 1;
 	  {
 	    (last_character = 0.to_character) || {level_comment = 0}
@@ -605,7 +605,7 @@ Section Private
 	  last_integer := string_tmp.to_binary;
 	  position := position+1;
 	} else {
-	  (last_character='d').if {	
+	  (last_character='d').if {
 	    position := position+1;
 	  };
 	  (! string_tmp.is_integer_64).if {
@@ -638,9 +638,9 @@ Section Private
 	};
 	position := position + 1;
       };
-      (last_character = '.').if {	
+      (last_character = '.').if {
 	string_tmp.add_last '.';
-	position := position + 1;		
+	position := position + 1;
 	(last_character.is_digit).if {
 	  result := TRUE;
 	  string_tmp.add_last last_character;
@@ -664,7 +664,7 @@ Section Private
 	    {last_character.is_digit}.while_do {
 	      string_tmp.add_last last_character;
 	      position := position + 1;
-	    };	
+	    };
 	  } else {
 	    syntax_error (current_position,"Incorrect real number.");
 	  };
@@ -772,7 +772,7 @@ Section Private
           read_escape_character;
           count := count + 1;
 	} else {
-          position := position+1;	
+          position := position+1;
           count := count + 1;
 	};
       };
@@ -792,7 +792,7 @@ Section Private
     };
     result
   );
-  
+
   //-- string         -> '\"' string_char '\"'
   //-- string_char    -> escape
   //--                 | ascii
@@ -814,7 +814,7 @@ Section Private
 	  position := position+1;
 	  read_escape_character;
 	} else {
-	  position := position+1;	
+	  position := position+1;
 	};
       };
       (last_character='\"').if {
@@ -962,8 +962,8 @@ Section Private
 	// Public, Private, ...
 	(ALIAS_STR.is_section last_string).if_false {
 	  syntax_error (current_position,"Incorrect type section.");
-	};	
-	last_section := SECTION_.get_name last_string;	
+	};
+	last_section := SECTION_.get_name last_string;
 	(last_section.is_mapping).if {
           object.set_mapping;
         }.elseif {last_section.is_external} then {
@@ -972,15 +972,15 @@ Section Private
 	  (last_section.is_inherit_or_insert) &&
 	  {object.last_slot != NULL} &&
 	  {! object.last_slot.id_section.is_inherit_or_insert}
-	} then {	
+	} then {
 	  syntax_error (current_position,
 	  "`Section Inherit/Insert' must to be first section.");
-	}.elseif {	
+	}.elseif {
 	  (last_section.is_inherit) &&
 	  {object.type_style = ALIAS_STR.keyword_expanded} &&
 	  {object.name != ALIAS_STR.prototype_true } &&
 	  {object.name != ALIAS_STR.prototype_false}
-	} then {	
+	} then {
 	  warning_error (current_position,
 	  "`Section Inherit' is not possible with Expanded object (Use `Section Insert').");
 	};
@@ -1001,10 +1001,10 @@ Section Private
 	  {last_section.is_private}
 	).if {
 	  output_code.remove_between
-	  (pos_sec + old_derive) to (position + short_derive - 1);	
+	  (pos_sec + old_derive) to (position + short_derive - 1);
 	  short_derive := old_derive - (position - pos_sec);
 	};
-	
+
 	pos_sec:=position;
 	old_derive:=short_derive;
       };
@@ -1051,7 +1051,7 @@ Section Private
       } else {
 	affect := ' ';
       };
-	
+
       // ':' (TYPE|'('TYPE_LIST')'
       ((affect = ' ') && {read_character ':'}).if {
 	(read_character '(').if {
@@ -1068,8 +1068,8 @@ Section Private
 	  (t = NULL).if {
 	    syntax_error (current_position,"Incorrect result type.");
 	  };
-	};	
-	
+	};
+
 	(read_affect).if {
 	  affect := last_string.first;
 	};
@@ -1105,14 +1105,14 @@ Section Private
           last_slot.set_comment last_comment_slot;
         };
       };
-	
+
       (is_shorter).if {
 	(
 	  (! is_short_code) &&
 	  {old_pos != 0} &&
 	  {! last_section.is_header}
 	).if {
-	  (current_position.column<5).if {	
+	  (current_position.column<5).if {
 	    {
 	      (last_character != 0.to_character) &&
 	      {last_character.is_separator} &&
@@ -1125,7 +1125,7 @@ Section Private
 	    };
 	  };
 	  output_code.remove_between
-	  (old_pos + old_derive) to (position + short_derive - 1);	
+	  (old_pos + old_derive) to (position + short_derive - 1);
 	  short_derive := old_derive - (position - old_pos);
 	};
       };
@@ -1194,12 +1194,12 @@ Section Private
       n.copy last_string;
       arg := read_loc_arg FALSE with_self FALSE;
       (arg != NULL).if {
-	list_arg.add_last arg;	
+	list_arg.add_last arg;
 	(read_identifier).if {
 	  (last_section.is_external).if {
 	    syntax_error (current_position,"Incorrect in `Section External'.");
-	  };	
-	  {	
+	  };
+	  {
 	    short (ALIAS_STR.short_slot) token
 	    (position-last_string.count) to position;
 	    n.append (ALIAS_STR.separate);
@@ -1263,7 +1263,7 @@ Section Private
       (arg != NULL).if {
 	// Infix operator.
 	list_arg.add_last arg;
-	name := operator (ALIAS_STR.slot_infix) name name;	
+	name := operator (ALIAS_STR.slot_infix) name name;
 	(associativity = NULL).if {
 	  associativity := ALIAS_STR.keyword_left;
 	};
@@ -1326,7 +1326,7 @@ Section Private
 	  syntax_error (current_position,"Type `SELF' is needed.");
 	};
 	result := ITM_ARG.create pos name n type t;
-		
+
 	(is_shorter).if {
 	  short_local.add n;
 	};
@@ -1349,7 +1349,7 @@ Section Private
     };
     result
   );
-	
+
   //++ LOCAL        -> { identifier [ ':' TYPE ] ',' } identifier ':' TYPE
   - read_local m:BOOLEAN :FAST_ARRAY(ITM_LOCAL) <-
   ( + t:ITM_TYPE_MONO;
@@ -1386,10 +1386,10 @@ Section Private
 	  result := NULL;
 	} else {
 	  syntax_error (current_position,"Incorrect local type.");
-	};	
+	};
       } else {
 	result := ALIAS_ARRAY(ITM_LOCAL).copy result;
-	
+
 	(is_shorter).if {
 	  (result.lower).to (result.upper) do { j:INTEGER;
 	    short_local.add (result.item j.name);
@@ -1439,7 +1439,7 @@ Section Private
       (beg != name.upper + 1).if {
 	(mute).if_false {
 	  syntax_error (current_position,"Incorrect argument type.");
-	};	
+	};
 	ALIAS_ARRAY(STRING_CONSTANT).free name;
 	ALIAS_ARRAY(ITM_TYPE_MONO).free type;
       } else {
@@ -1467,7 +1467,7 @@ Section Private
 	  tm := ITM_TYPE_MULTI.get type;
 	  result := ITM_ARGS.create current_position name name type tm;
 	};
-	
+
 	(is_shorter).if {
 	  (name.lower).to (name.upper) do { j:INTEGER;
 	    short_local.add (name.item j);
@@ -1533,13 +1533,13 @@ Section Private
 	  syntax_error (current_position,"Incorrect type list.");
 	};
 	(lst.count = 1).if {
-	  typ_arg := lst.first;	
+	  typ_arg := lst.first;
 	} else {
 	  typ_arg := ITM_TYPE_MULTI.get lst;
 	};
 	(! read_character ')').if {
 	  warning_error (current_position,"Added ')'.");
-	}; // if      	
+	}; // if
 	(! read_character ';').if {
 	  warning_error (current_position,"Added ';'.");
         }; // if
@@ -1547,7 +1547,7 @@ Section Private
       } else {
 	lst := read_type_list FALSE;
 	(lst != NULL).if {
-	  (read_character ';').if {	
+	  (read_character ';').if {
 	    (lst.count = 1).if {
 	      typ_arg := lst.first;
 	    } else {
@@ -1570,7 +1570,7 @@ Section Private
       };
       (! read_character '}').if {
 	warning_error (current_position,"Added '}'.");
-      }; // if      	
+      }; // if
       result := ITM_TYPE_BLOCK.get typ_arg and typ_res;
     } else {
       // Expanded | Strict
@@ -1627,7 +1627,7 @@ Section Private
       }.do_while {continue};
       nam := ALIAS_STR.get string_tmp2;
       //
-      (read_character '(').if {	
+      (read_character '(').if {
 	// Multiple Genericity.
         genericity := ALIAS_ARRAY(ITM_TYPE_MONO).new;
         {
@@ -1642,8 +1642,8 @@ Section Private
         (read_character ')').if_false {
           warning_error (current_position,"Added ')'.");
         };
-      } else {	
-        // Simple type.	
+      } else {
+        // Simple type.
         (is_parameter_type).if {
           (styl != NULL).if {
             string_tmp.copy "Style `";
@@ -1733,22 +1733,22 @@ Section Private
 	  };
 	  name := ALIAS_STR.get string_tmp2;
 	  l_assignment.add_last name;
-	
+
 	  (is_shorter).if {
-	    (! short_local.fast_has name).if {	  	
-	      short (ALIAS_STR.short_slot_call) token p to position;	
+	    (! short_local.fast_has name).if {
+	      short (ALIAS_STR.short_slot_call) token p to position;
 	    };
 	  };
-	
+
 	  (read_character ',').if {
 	    again := TRUE;
 	  };
 	};
       }.do_while {again};
-      ((! l_assignment.is_empty) && {read_character ')'} && {read_affect}).if {	
+      ((! l_assignment.is_empty) && {read_character ')'} && {read_affect}).if {
 	l_assignment := ALIAS_ARRAY(STRING_CONSTANT).copy l_assignment;
 	result := ITM_LIST_IDF.create current_position with l_assignment;
-	affect := last_string.first;	
+	affect := last_string.first;
 	value  := read_expr;
 	(value = NULL).if {
 	  syntax_error (current_position,"Incorrect expression.");
@@ -1763,7 +1763,7 @@ Section Private
 	.when '?' then {
 	  syntax_error (current_position,"Sorry, Not yet implemented !");
 	  result := ITM_WRITE_CAST.create (result.position) assign result with value;
-	};	
+	};
       } else {
 	ALIAS_ARRAY(STRING_CONSTANT).free l_assignment;
       };
@@ -1777,14 +1777,14 @@ Section Private
       name := ALIAS_STR.get string_tmp2;
 
       (is_shorter).if {
-	(! short_local.fast_has name).if {	  	
-	  short (ALIAS_STR.short_slot_call) token p to position;	
+	(! short_local.fast_has name).if {
+	  short (ALIAS_STR.short_slot_call) token p to position;
 	};
       };
 
       (read_affect).if {
 	result := ITM_READ.create current_position name name;
-	affect := last_string.first;	
+	affect := last_string.first;
 	value  := read_expr;
 	(value = NULL).if {
 	  syntax_error (current_position,"Incorrect expression.");
@@ -1798,7 +1798,7 @@ Section Private
 	}
 	.when '?' then {
 	  result := ITM_WRITE_CAST.create (result.position) assign result with value;
-	};	
+	};
       };
     };
     (result = NULL).if {
@@ -1833,14 +1833,14 @@ Section Private
       first_msg := l_expr.count;
       {
 	last_msg := l_expr.count;
-	l_expr.add_last expr;	
+	l_expr.add_last expr;
 	(read_operator).if {
 	  {
 	    expr := ITM_OPERATOR.create current_position name last_string;
 	    l_expr.add_last expr;
-	  }.do_while {read_operator};	
+	  }.do_while {read_operator};
 	  expr := read_expr_message;
-	} else {	
+	} else {
 	  expr := NULL;
 	};
       }.do_while {expr != NULL};
@@ -1864,13 +1864,13 @@ Section Private
 	  l_expr.put expr to first_msg;
 	  first_msg := first_msg - 1;
 	  l_expr.remove first_msg;
-	};	
+	};
       };
       (l_expr.count = 1).if {
-	result := l_expr.first;	
+	result := l_expr.first;
 	ALIAS_ARRAY(ITM_CODE).free l_expr;
       }.elseif {l_expr.count = 3} then {
-	// Simple binary message.	
+	// Simple binary message.
 	itm_op ?= l_expr.second;
 	result := ITM_READ_ARG2.create (itm_op.position)
 	name (operator (ALIAS_STR.slot_infix) name (itm_op.name))
@@ -1910,7 +1910,7 @@ Section Private
 
     (read_this_keyword (ALIAS_STR.keyword_old)).if {
       old_value := read_expr;
-      (old_value = NULL).if {	
+      (old_value = NULL).if {
 	syntax_error (current_position,"Incorrect `Old' expression.");
       };
       result := ITM_OLD.create current_position value old_value;
@@ -1983,14 +1983,14 @@ Section Private
       //
       arg := read_loc_arg TRUE with_self FALSE;
       //
-      (arg != NULL).if {	
+      (arg != NULL).if {
 	(read_character ';').if_false {
 	  warning_error (current_position,"Added ';'.");
 	}; // if
       } else {
-	
+
 	restore_context; // !! RESTORE CONTEXT !!
-	
+
       };
       result := ITM_BLOCK.create last_group argument arg;
 
@@ -2063,7 +2063,7 @@ Section Private
       e := read_expr;
     };
     (e != NULL).if {
-      (read_character ',').if {	
+      (read_character ',').if {
 	{
 	  e := ITM_RESULT.create e;
 	  result.add_last e;
@@ -2074,8 +2074,8 @@ Section Private
 	  };
 	  (e = NULL).if {
 	    syntax_error (current_position,"Incorrect multiple result expression.");
-	  };	
-        }.do_while {read_character ','};	
+	  };
+        }.do_while {read_character ','};
       };
       e := ITM_RESULT.create e;
       result.add_last e;
@@ -2175,14 +2175,14 @@ Section Private
 	(read_character ';').if_false {
 	  warning_error (current_position,"Added ';'.");
 	};
-	
+
 	save_context; // !! SAVE CONTEXT !!
-	
+
 	styl := read_style;
       } else {
-	
+
 	restore_context; // !! RESTORE CONTEXT !!
-	
+
 	styl := ' ';
       };
     };
@@ -2221,12 +2221,12 @@ Section Private
       l_arg := ALIAS_ARRAY(ITM_CODE).new;
       arg := read_argument;
       (arg != NULL).if {
-	l_arg.add_last arg;	
+	l_arg.add_last arg;
 	{read_identifier}.while_do {
-	
+
 	  short (ALIAS_STR.short_slot_call) token
 	  (position-last_string.count) to position;
-	
+
 	  n.append (ALIAS_STR.separate);
 	  n.append last_string;
 	  arg := read_argument;
@@ -2265,7 +2265,7 @@ Section Private
 	ALIAS_ARRAY(ITM_CODE).free l_arg;
       } else {
 	l_arg.add_first first_arg;
-	l_arg := ALIAS_ARRAY(ITM_CODE).copy l_arg;	
+	l_arg := ALIAS_ARRAY(ITM_CODE).copy l_arg;
 	result := ITM_READ_ARGS.create current_position name name args l_arg;
       };
     }; // if
@@ -2313,8 +2313,8 @@ Section Private
 	  //
 	  // Read `name' slot.
 	  //
-	
-          (style = '-').if {	
+
+          (style = '-').if {
             semantic_error (current_position,"COP not yet implemented.");
             is_cop := TRUE;
             (is_java).if {
@@ -2417,31 +2417,31 @@ Section Private
               \};\n\n";
             };
 	  };
-	
+
 	  // style "name" ':=' [type] cap_identifier [ '(' PARAM {',' PARAM}')' ]
 	  // PARAM -> cap_identifier | identifier ':' TYPE
 	  short (ALIAS_STR.short_slot) token
 	  (position-last_string.count) to position;
-	
+
 	  object.set_position current_position;
           object.set_style style;
 	  (read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
 	    warning_error (current_position,"Added ':='.");
 	  };
-	
+
 	  (
 	    (read_this_keyword (ALIAS_STR.keyword_expanded)) ||
-	    {read_this_keyword (ALIAS_STR.keyword_strict)}	
+	    {read_this_keyword (ALIAS_STR.keyword_strict)}
 	  ).if {
-	    object.set_type_style last_string;	
+	    object.set_type_style last_string;
 	  };
-	
+
 	  (! read_cap_identifier).if {
 	    syntax_error (current_position,"Prototype identifier is needed.");
 	  };
 	  short (ALIAS_STR.short_prototype) token
 	  (position-last_string.count) to position;
-	
+
 	  (object.shortname != last_string).if {
 	    syntax_error (current_position,"Incorrect name (filename != name).");
           };
@@ -2450,7 +2450,7 @@ Section Private
 	    // Generic loader.
             //
             param := { + res:ITM_TYPE_PARAMETER;
-              (read_identifier).if {	
+              (read_identifier).if {
                 (read_character ':').if_false {
                   warning_error (current_position,"Added ':'.");
                 };
@@ -2470,7 +2470,7 @@ Section Private
 	      res
 	    };
 
-	    ((! is_shorter) && {! is_shorter2}).if {	
+	    ((! is_shorter) && {! is_shorter2}).if {
               (object.generic_count = 0).if {
 		syntax_error (current_position,"Object can't be generic.");
 	      };
@@ -2478,27 +2478,27 @@ Section Private
             parameter_type := param.value;
             (parameter_type = NULL).if {
               syntax_error (current_position,"Identifier parameter type is needed.");
-            };            	
-	    	
-	    object.idf_generic_list.add_last parameter_type;	
-	    {read_character ','}.while_do {	      	
+            };
+
+	    object.idf_generic_list.add_last parameter_type;
+	    {read_character ','}.while_do {
 	      parameter_type := param.value;
 	      (parameter_type = NULL).if {
                 syntax_error (current_position,"Identifier parameter type is needed.");
-              };	      	
+              };
 	      object.idf_generic_list.add_last parameter_type;
 	    }; // loop
-	    	
+
 	    (! read_character ')').if {
 	      warning_error (current_position,"Added ')'.");
 	    };
-	
-	    ((! is_shorter) && {! is_shorter2}).if {	      	
+
+	    ((! is_shorter) && {! is_shorter2}).if {
 	      (object.idf_generic_list.count != object.generic_count).if {
 		syntax_error (current_position,"Invalid generic list number.");
 	      };
 	    };
-	  };	
+	  };
 	} else {
 	  syntax_error (current_position,"Slot `name' must to be first slot.");
 	};
@@ -2526,7 +2526,7 @@ Section Private
 	//
 	// Read `external' slot.
 	//
-	
+
 	// - "external" ':=' `<code_c>`
 	short (ALIAS_STR.short_slot) token
 	(position-last_string.count) to position;
@@ -2540,17 +2540,17 @@ Section Private
 	output_decl.append "/* ";
 	output_decl.append (object.name);
 	output_decl.append " */\n";
-	output_decl.append last_string;	
+	output_decl.append last_string;
 	output_decl.add_last '\n';
       }.elseif {read_word(ALIAS_STR.slot_default)} then {
 	//
 	// Read `default' slot.
 	//
-	
+
 	// '-' "default" ':=' EXPR_PRIMARY
 	short (ALIAS_STR.short_slot) token
 	(position-last_string.count) to position;
-	
+
 	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
 	  warning_error (current_position,"Added ':='.");
 	};
@@ -2566,11 +2566,11 @@ Section Private
 	//
 	// Read `type' slot.
 	//
-	
+
 	// '-' "type" ':=' `<type C>`
 	short (ALIAS_STR.short_slot) token
 	(position-last_string.count) to position;
-	
+
 	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
 	  warning_error (current_position,"Added ':='.");
 	};
@@ -2585,11 +2585,11 @@ Section Private
 	//
 	// Read `version' slot.
 	//
-	
+
 	// '-' "version" ':=' integer
 	short (ALIAS_STR.short_slot) token
 	(position-last_string.count) to position;
-	
+
 	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
 	  warning_error (current_position,"Added ':='.");
 	};
@@ -2629,22 +2629,22 @@ Section Private
 	{read_word (ALIAS_STR.slot_copyright)} ||
 	{read_word (ALIAS_STR.slot_bug_report)}
       } then {
-	//	
+	//
 	// Read `date', `comment', `author', `bibliography',
 	// `language', `copyright' or `bug_report' slots.
 	//
-	
+
 	// '-' ("date"|"comment"|"author"|"bibliography"|"language"|"copyright"|"bug_report")
         // ':=' string
 	short (ALIAS_STR.short_slot) token
 	(position-last_string.count) to position;
-	
+
 	(read_symbol (ALIAS_STR.symbol_affect_immediate)).if_false {
 	  warning_error (current_position,"Added ':='.");
-	};	
+	};
 	(read_string).if_false {
 	  syntax_error (current_position,"Incorrect string.");
-        };	
+        };
         (is_shorter2).if {
           object.set_comment_slot last_string;
         };

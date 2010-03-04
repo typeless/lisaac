@@ -51,7 +51,7 @@ Section Public
   //
 
   - maximum:UINTEGER_64 <-
-  // Maximum of integer	
+  // Maximum of integer
   07FFFFFFFh.to_raw_uinteger_64;
 
   - minimum:INTEGER_64  <-

@@ -19,40 +19,40 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := BITMAP_8;
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment     := "Bitmap 8 bits";
-  
+
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
-  
+
 Section Inherit
-  
+
   + parent_bitmap:Expanded BITMAP;
-  
+
 Section Public
-  
+
   - pixel_geometry:PIXEL := PIXEL_8;
-  
-Section Private  
-  
+
+Section Private
+
   //
   // Data.
   //
-  
+
   // Mapping memory bitmap.
   + image:FAST_ARRAY(BMP_LINE_8);
-  
+
   - get_line y:INTEGER :BMP_LINE <-
   (
     image.item y
   );
-  
+
   //
-  // Creation. 
+  // Creation.
   //
 
   - make (w,h:INTEGER) <-
@@ -65,13 +65,13 @@ Section Private
       image.put (BMP_LINE_8.create w) to y;
     };
     clipping_off;
-  );  
-  
+  );
+
   - make (w,h:INTEGER) at offset_begin:UINTEGER_32 bytes_per_line lx:INTEGER <-
   ( + offset:UINTEGER_32;
-    
+
     width  := w;
-    height := h;    
+    height := h;
     image := FAST_ARRAY(BMP_LINE_8).create h;
     offset:=offset_begin;
     0.to (image.upper) do { y:INTEGER;
@@ -80,8 +80,8 @@ Section Private
     };
     clipping_off;
   );
-  
- 
+
+
 
 
 

@@ -151,7 +151,7 @@ Section Public
       };
     } else {
       ((level_type < level_pass) && {! is_static}).if {
-        ((is_executing_pass) || {require_first != NULL}).if {	
+        ((is_executing_pass) || {require_first != NULL}).if {
           level_type := level_pass;
           busy_set.fast_add Self;
           tmp_type := TYPES_TMP.new;
@@ -168,14 +168,14 @@ Section Private
 
   - sub_get_type t:TYPES_TMP <-
   (
-    (require_first != NULL).if {	
-      require_first.get_type t;		
+    (require_first != NULL).if {
+      require_first.get_type t;
       (require_list != NULL).if {
-        (require_list.lower).to (require_list.upper) do { j:INTEGER;	
+        (require_list.lower).to (require_list.upper) do { j:INTEGER;
           require_list.item j.get_type t;
         };
       };
-    };	
+    };
   );
 
 Section Public
@@ -228,9 +228,9 @@ Section Public
       tmp_type := TYPES_TMP.new;
       (type_set != NULL).if {
 	tmp_type.union type_set;
-      };	
+      };
       wrt.value.get_type tmp_type;
-      type_set := tmp_type.update type_set;		
+      type_set := tmp_type.update type_set;
     };
   );
 
@@ -243,15 +243,15 @@ Section Public
   (
     write_direct p with r value val
   );
-  
+
   - cnt:INTEGER;
   - wrt:WRITE;
-  
+
   - write_direct p:POSITION with r:EXPR value val:EXPR :WRITE <-
   ( + e:WRITE;
-        
+
     e := new_write p with r value val;
-    add_write e;    
+    add_write e;
     e.set_create;
     e
   );
@@ -268,7 +268,7 @@ Section Public
 
   - unwrite e:WRITE <-
   ( + idx:INTEGER;
-        
+
     (e.is_delete).if {
       crash;
     };
@@ -295,7 +295,7 @@ Section Public
         e.debug_display;
         intern_name.print; '\n'.print;
         "require_first =".print;
-        (require_first = NULL).if { 
+        (require_first = NULL).if {
           "NULL\n".print;
         } else {
           require_first.debug_display;
@@ -308,13 +308,13 @@ Section Public
 
       (idx > require_list.upper).if {
         e.debug_display;
-	intern_name.print; '\n'.print;		
+	intern_name.print; '\n'.print;
 	"\n--------\n".print;
 	require_first.debug_display;
 	(require_list.lower).to (require_list.upper) do { j:INTEGER;
 	  require_list.item j.debug_display;
 	};
-        
+
         //warning_error (position,"ICI");
         crash_with_message "******** VARIABLE.unwrite : BUG !!! **********\n";
 
@@ -325,7 +325,7 @@ Section Public
 	require_list := NULL;
       };
     };
-   
+
   );
 
   //

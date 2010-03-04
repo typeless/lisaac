@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_LIST;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -32,9 +32,9 @@ Section Inherit
   + parent_lip_code:Expanded LIP_CODE;
 
 Section Public
-  
+
   + list:FAST_ARRAY(LIP_CODE);
-  
+
   //
   // Creation.
   //
@@ -47,15 +47,15 @@ Section Public
   );
 
   - make p:POSITION with v:FAST_ARRAY(LIP_CODE) <-
-  ( 
+  (
     position := p;
     list := v;
   );
-  
+
   //
   // Run.
   //
-  
+
   - run <-
   (
     run_intern;
@@ -63,18 +63,18 @@ Section Public
       semantic_error (position,"Incorrect expression.");
     };
   );
-  
+
   - run_expr:LIP_CONSTANT <-
-  (     
+  (
     run_intern;
     (list.last = NULL).if {
       semantic_error (position,"Unreachable expression.");
     };
     list.last.run_expr
   );
-  
+
 Section Private
-  
+
   - run_intern <-
   (
     (list.lower).to (list.upper-1) do { i:INTEGER;

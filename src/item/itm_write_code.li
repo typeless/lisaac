@@ -19,25 +19,25 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_WRITE_CODE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Assignment slot with new code";
-  
+
 Section Inherit
-  
+
   + parent_itm_write:Expanded ITM_WRITE;
-  
+
 Section Public
 
   - type:STRING_CONSTANT <- "<-";
 
   //
-  // Runnable 
+  // Runnable
   //
 
   - to_run_expr:EXPR <-
@@ -49,15 +49,15 @@ Section Public
     + type:TYPE_FULL;
     + slot:SLOT;
     + name:STRING_CONSTANT;
-        
+
     itm_read ?= assign;
     name := itm_read.name;
-    ? {itm_read != NULL};  
+    ? {itm_read != NULL};
     loc := lookup (ALIAS_STR.variable_self);
     rec := loc.read position;
     //
-    type     := rec.static_type;    
-    slot     := type.get_slot name; 
+    type     := rec.static_type;
+    slot     := type.get_slot name;
     (slot = NULL).if {
       string_tmp.copy "Slot `";
       string_tmp.append name;
@@ -70,11 +70,11 @@ Section Public
     node := NODE.new_write position slot slot receiver rec code value;
     list_current.add_last node;
     result := node.result_expr;
-    
+
     result
   );
 
-  
+
 
 
 

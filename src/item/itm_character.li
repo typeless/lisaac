@@ -19,19 +19,19 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_CHARACTER;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Character constant";
-  
+
 Section Inherit
-  
+
   + parent_itm_constant:Expanded ITM_CONSTANT;
-  
+
 Section Public
 
   //
@@ -50,7 +50,7 @@ Section Public
     result.make p char n;
     result
   );
-  
+
   - make p:POSITION char n:STRING_CONSTANT <-
   (
     position:=p;
@@ -62,14 +62,14 @@ Section Public
   //
 
   - to_run_expr:EXPR <-
-  ( 
-    CHARACTER_CST.create position char character    
+  (
+    CHARACTER_CST.create position char character
   );
-  
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     buffer.add_last '\'';

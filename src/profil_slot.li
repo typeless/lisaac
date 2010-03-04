@@ -117,15 +117,15 @@ Section Public
     tm ?= s.result_type;
     (tm != NULL).if {
       result_list.make_with_capacity (tm.count);
-      (tm.lower).to (tm.upper) do { k:INTEGER;	
-        typ := tm.item k.to_run_for Self;	
+      (tm.lower).to (tm.upper) do { k:INTEGER;
+        typ := tm.item k.to_run_for Self;
         loc := typ.get (s.position) result (k+1);
         result_list.add_last loc;
       };
     } else {
       ts ?= s.result_type;
       (ts != ITM_TYPE_SIMPLE.type_void).if {
-        typ := ts.to_run_for Self;	
+        typ := ts.to_run_for Self;
         result_list.add_last (typ.get (s.position) result 0);
         (is_external).if {
           result_list.last.set_ensure_count 1;

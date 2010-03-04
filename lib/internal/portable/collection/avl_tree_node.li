@@ -19,23 +19,23 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name := AVL_TREE_NODE(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment := "Auxiliary class to implement AVL_SET.";
-	
-  // This a classic implementation of an AVL tree (balanced tree first designed 
+
+  // This a classic implementation of an AVL tree (balanced tree first designed
   // by Adelson-Velskii and Landis (hence A.V.L.), 1960)
 
 Section Insert
-  
+
   - parent_avl_constants:AVL_CONSTANTS := AVL_CONSTANTS;
 
 Section Public
-  
+
   - out_in_tagged_out_memory <-
   (
     item.out_in_tagged_out_memory;
@@ -54,9 +54,9 @@ Section Public
     tagged_out_memory.add_last ')';
   );
 
-Section Public 
+Section Public
   //AVL_TREE_NODE, AVL_TREE
-  
+
   + left:AVL_TREE_NODE(V);
 
   + right:AVL_TREE_NODE(V);
@@ -70,7 +70,7 @@ Section Public
 
   - count:INTEGER <-
   ( + result:INTEGER;
-    
+
     result := 1;
     (left != NULL).if {
       result := result + left.count;
@@ -83,7 +83,7 @@ Section Public
 
   - height:INTEGER <-
   ( + result:INTEGER;
-		
+
     (left != NULL).if {
       result := left.height;
     };
@@ -101,7 +101,7 @@ Section Public
     (left != NULL).if {
       left.map_in map;
     };
-    map.add_last Self; 
+    map.add_last Self;
     (right != NULL).if {
       right.map_in map;
     };
@@ -113,7 +113,7 @@ Section Public
   - has e:V :BOOLEAN <-
   // Is element `e' in the tree?
   ( + result:BOOLEAN;
-		
+
     result := item == e; //SAFE_EQUAL(V).test item and e;
     (! result).if {
       (e < item).if {
@@ -123,12 +123,12 @@ Section Public
       };
     };
     result
-  );	
+  );
 
   - fast_has e:V :BOOLEAN <-
   // Is element `e' in the tree?
   ( + result:BOOLEAN;
-		
+
     result := item = e;
     ((! result) && {! item == e /*SAFE_EQUAL(V).test item and e*/}).if {
       (e < item).if {
@@ -146,7 +146,7 @@ Section Public
   - at e:V :AVL_TREE_NODE(V) <-
   // Is element `e' in the tree?
   ( + result:AVL_TREE_NODE(V);
-			
+
     (item == e /*SAFE_EQUAL(V).test item and e*/).if {
       result := Self;
     }.elseif {e < item} then {
@@ -206,16 +206,16 @@ Section Public
   ];
 
 Section AVL_TREE, AVL_DICTIONARY, AVL_SET
-  
+
   //
   // Rotations:
   //
-  
+
   - rotate_right:AVL_TREE_NODE(V) <-
   // Proceeds to some reorganisation and returns the upper node.
   ( + result:AVL_TREE_NODE(V);
     + left_right:AVL_TREE_NODE(V);
-    
+
     result := left;
     left_right := left.right;
     left.set_right Self;
@@ -230,14 +230,14 @@ Section AVL_TREE, AVL_DICTIONARY, AVL_SET
   // Proceeds to some reorganisation and returns the upper node.
   ( + result:AVL_TREE_NODE(V);
     + right_left:AVL_TREE_NODE(V);
-		
+
     result := right;
     right_left := right.left;
-    right.set_left Self; 
+    right.set_left Self;
     set_right right_left;
     result
-  ) 
+  )
   [
     +? {Result != NULL};
   ];
-  
+

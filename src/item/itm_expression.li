@@ -90,7 +90,7 @@ Section Public
       {
 	idx := idx + 1;
 	itm_op ?= value_list.item idx;
-      }.do_while {(itm_op != NULL) && {idx != value_list.upper}};	
+      }.do_while {(itm_op != NULL) && {idx != value_list.upper}};
       (itm_op != NULL).if {
         semantic_error (itm_op.position,"Operator postfix not found.");
       };
@@ -99,7 +99,7 @@ Section Public
       (typ = TYPE_VOID).if {
         semantic_error (val.position,"Expression type `Void'.");
       };
-      // Post-fix.	
+      // Post-fix.
       idx_post := idx + 1;
       continue := TRUE;
       {(idx_post <= value_list.upper) && {continue}}.while_do {
@@ -110,7 +110,7 @@ Section Public
         ((idx_post = value_list.upper) || {itm_op != NULL}).if {
           itm_op ?= value_list.item idx_post;
           slo := typ.get_slot (operator (ALIAS_STR.slot_postfix) name (itm_op.name));
-          (slo != NULL).if {	
+          (slo != NULL).if {
             site := NODE.new_read (itm_op.position) slot slo receiver val self val intern FALSE;
             list_current.add_last site;
             val := site.result_expr;
@@ -130,12 +130,12 @@ Section Public
         ((idx_pre = low) || {itm_op != NULL}).if {
           itm_op ?= value_list.item idx_pre;
           slo := typ.get_slot (operator (ALIAS_STR.slot_prefix) name (itm_op.name));
-          (slo = NULL).if {	
+          (slo = NULL).if {
             error_slot (itm_op.position) name "prefix" operator (itm_op.name) in typ;
           };
           site := NODE.new_read (itm_op.position) slot slo receiver val self val intern FALSE;
           list_current.add_last site;
-          val := site.result_expr;	    	
+          val := site.result_expr;
           idx_pre := idx_pre - 1;
           continue := TRUE;
         };
@@ -182,7 +182,7 @@ Section Public
 	    max_pri := ALIAS_STR.keyword_right;
 	    max_pos := j;
 	  };
-	} else {	
+	} else {
 	  // Other:
 	  slo := site.data.slot;
 	  (
@@ -205,8 +205,8 @@ Section Public
       right ?= val_list.item (max_pos + 1);
       (n_t = NULL).if {
 	// '=' or '!='.
-	extern ?= val_list.item max_pos;	
-	extern.set_left left and_right right;	
+	extern ?= val_list.item max_pos;
+	extern.set_left left and_right right;
 	loc  := type_boolean.default.get_temporary (extern.position);
 	instr:= loc.write (extern.position) value extern;
 	list_current.add_last instr;

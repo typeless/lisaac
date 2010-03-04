@@ -67,7 +67,7 @@ Section Public
 
     (args = NULL).if {
       // For auto-load external section.
-      result := PROFIL_SLOT.clone;		
+      result := PROFIL_SLOT.clone;
       profil.add_last result;
       is_new := TRUE;
     } else {
@@ -108,12 +108,12 @@ Section Public
         };
 
         (result = NULL).if {
-          result := PROFIL_SLOT.clone;	
+          result := PROFIL_SLOT.clone;
           result.set_context_sensitive;
           typ_block.profil_list.add_last result;
-          is_new := TRUE;	
+          is_new := TRUE;
         };
-      } else {	
+      } else {
         // Select classic Profil (no block).
         (id_section.is_external).if {
           result := profil.first;
@@ -125,13 +125,13 @@ Section Public
               result := pro;
               i := args.lower + 1;
               {(i <= args.upper) && {result != NULL}}.while_do {
-                loc := pro.argument_list.item i;	    	
+                loc := pro.argument_list.item i;
                 (
-                  (loc != NULL) && {loc.require_first != NULL} &&	
+                  (loc != NULL) && {loc.require_first != NULL} &&
                   {args.item i.static_type != loc.require_first.value.static_type} &&
                   {loc.type.raw != type_boolean}
                 ).if {
-                  result := NULL;	      	      	
+                  result := NULL;
                 };
                 i := i + 1;
               };
@@ -139,8 +139,8 @@ Section Public
             j := j + 1;
           };
         };
-        (result = NULL).if {	
-          result := PROFIL_SLOT.clone;		
+        (result = NULL).if {
+          result := PROFIL_SLOT.clone;
           profil.add_last result;
           ((id_section.is_external) && {profil.count > 1}).if {
             semantic_error (position,"Polymorphic External slot is not possible.");
@@ -167,13 +167,13 @@ Section Public
     result.make base with val;
     result
   );
-  
+
   - count_slot:INTEGER;
-  
+
   - make base:SLOT with val:ITM_CODE <-
   (
     count_slot := count_slot + 1;
-    
+
     parent_slot := base;
     value := val;
     profil := FAST_ARRAY(PROFIL_SLOT).create_with_capacity 1;

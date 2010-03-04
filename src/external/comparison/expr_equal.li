@@ -69,13 +69,13 @@ Section Public
       result := PROTOTYPE_CST.create position type (type_true.default);
       left .remove;
       right.remove;
-      
+
       (left.static_type.raw = TYPE_NULL).if {
         count_equal_null := count_equal_null + 1;
       } else {
         count_equal_ident := count_equal_ident + 1;
       };
-      
+
     } else {
       r ?= right;
       (

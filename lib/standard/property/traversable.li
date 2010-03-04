@@ -19,18 +19,18 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := TRAVERSABLE(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment := "A `TRAVERSABLE(E_)' is a finite readable sequence of objects of type E_.";
-  
+
   // For instance, `COLLECTION's and `STRING's are `TRAVERSABLE'.
   //
-  // A good performance should always be obtained by sequentially acessing a 
-  // `TRAVERSABLE' with increasing indexes (from `lower' to `upper'), as 
+  // A good performance should always be obtained by sequentially acessing a
+  // `TRAVERSABLE' with increasing indexes (from `lower' to `upper'), as
   // demonstrated in the following code snippet :
   //
   //  i := a_traversable.lower;
@@ -39,20 +39,20 @@ Section Header
   //    i := i + 1;
   //  };
   //
-  // Other accessing methods (including random access and sequential access 
-  // from `upper' to `lower') may or may not lead to acceptable performance, 
+  // Other accessing methods (including random access and sequential access
+  // from `upper' to `lower') may or may not lead to acceptable performance,
   // depending on the particular implementation of `TRAVERSABLE'.
-  
+
 Section Inherit
-  
+
   - parent_object:OBJECT := OBJECT;
-  
+
 Section Public
-  
+
   //
   // Indexing:
   //
-  
+
   - lower:INTEGER <-
   // Minimum index.
   //
@@ -69,23 +69,23 @@ Section Public
   (
     deferred;
     0
-  );	
-  
+  );
+
   - valid_index i:INTEGER :BOOLEAN <-
   // True when `i' is valid (i.e., inside actual bounds).
   //
   // See also `lower', `upper', `item'.
-  ( 
+  (
     (lower <= i) && {i <= upper}
   )
-  [        
+  [
     "Definition." +? {Result = ((lower <= i) & (i <= upper))};
   ];
 
   //
   // Counting:
   //
-  
+
   - count:INTEGER <-
   // Number of available indices.
   //
@@ -108,11 +108,11 @@ Section Public
   [
     "Definition." +? {Result = (count = 0)};
   ];
-  
+
   //
   // Accessing:
   //
-  
+
   - item i:INTEGER :V <-
   // Item at the corresponding index `i'.
   //
@@ -135,7 +135,7 @@ Section Public
   (
     item lower
   )
-  [	
+  [
     "Definition." +? {Result = item lower};
   ];
 
@@ -143,7 +143,7 @@ Section Public
   // The `last' item.
   //
   // See also `first', `item'.
-  [ 
+  [
     -? {! is_empty};
   ]
   (
@@ -152,7 +152,7 @@ Section Public
   [
     "Definition." +? {Result = item upper};
   ];
-  
+
   //
   // Iterate:
   //

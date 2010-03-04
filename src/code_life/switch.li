@@ -209,7 +209,7 @@ Section Public
     //
     // BSBS: Ajoute un pattern pour les elseif ...
     //
-    (lst_typ.lower).to (lst_typ.upper) do { j:INTEGER;	
+    (lst_typ.lower).to (lst_typ.upper) do { j:INTEGER;
       typ := lst_typ.item j;
       {typ = list.item j.id}.until_do {
 	list.item j.remove;
@@ -276,19 +276,19 @@ Section Public
       expr := expr.execute_link;
 
       CALL_SLOT.reset_count_no_recursive;
-      ((list.first.id = TYPE_NULL) && {list.count = 2}).if { 	
+      ((list.first.id = TYPE_NULL) && {list.count = 2}).if {
 	list.first .code.execute_case;
-        list.second.code.execute_case;		
+        list.second.code.execute_case;
         ((list.second.id.is_block) && {debug_level_option != 0}).if {
           list.second.id.set_late_binding;
         };
-      } else {		
+      } else {
 	(list.lower).to (list.upper) do { j:INTEGER;
-          list.item j.execute;	
+          list.item j.execute;
 	};
       };
       result := detect_logic_expr;
-      (result = NULL).if {      	
+      (result = NULL).if {
 	result := Self;
       };
     };
@@ -339,7 +339,7 @@ Section Public
         is_genered := TRUE;
         (expr.static_type.raw != type_boolean).if {
           buffer.append "==";
-          typ_first.put_id buffer;	
+          typ_first.put_id buffer;
         } else {
           ? {typ_first.name = ALIAS_STR.prototype_true};
         };
@@ -418,7 +418,7 @@ Section Public
             buffer.remove_last 1;
             buffer.append " break;\n";
           };
-        };	
+        };
         // Debug...
         (debug_level_option != 0).if {
           buffer.append indent;
@@ -519,14 +519,14 @@ Section Private
 	{wr_true.variable = wr_false.variable}
       ).if {
 	val_true  := wr_true .value;
-	val_false := wr_false.value;	
+	val_false := wr_false.value;
 	// BSBS: val_true.static_type = type_true ???
 	(
 	  (a := val_true.is_constant) &&
 	  {b := (val_true.static_type.raw = type_true)}
 	).if {
 	  // | or ||
-	  rd ?= val_false;	
+	  rd ?= val_false;
 	  (rd != NULL).if {
 	    // |
 	    wr_true.remove;
@@ -541,35 +541,35 @@ Section Private
 	    wr_false.set_value val_false;
 	    result := wr_false;
 	    switch_new_pass := TRUE;
-	  };	  	
+	  };
 	}.elseif {
 	  (c := val_false.is_constant) &&
 	  {d := (val_false.static_type.raw = type_false)}
 	} then {
-	  // & or &&	
-	  rd ?= val_true;	
+	  // & or &&
+	  rd ?= val_true;
 	  (rd != NULL).if {
 	    // &
-	    wr_false.remove;	
+	    wr_false.remove;
 	    val_true := EXPR_AND_LOGIC.create position with expr and val_true;
 	    wr_true.set_value val_true;
-	    result := wr_true;	
+	    result := wr_true;
 	    new_execute_pass;
 	  }.elseif {(CALL_SLOT.count_no_recursive = 0) || {modify_count = 0}} then {
-	    // &&	
+	    // &&
 	    wr_false.remove;
 	    val_true := EXPR_AND_AND_LOGIC.create position with expr and val_true;
 	    wr_true.set_value val_true;
 	    result := wr_true;
 	    switch_new_pass := TRUE;
-	  };	
+	  };
 	}.elseif {
 	  (a) && {!b} && {c} && {!d}
 	} then {
 	  // !
 	  wr_false.remove;
 	  wr_true.set_value (EXPR_NOT_LOGIC.create position with expr);
-	  result := wr_true;	
+	  result := wr_true;
 	  new_execute_pass;
 	};
       };
@@ -598,7 +598,7 @@ Section Private
         wrt ?= list_current.item index;
         rd  ?= expr;
         ((wrt != NULL) && {rd != NULL} && {wrt.variable != rd.variable}).if {
-          rd2   ?= wrt.value;	
+          rd2   ?= wrt.value;
           other ?= list_current.item (index + 1);
           ((rd2 != NULL) && {other != NULL} &&
           {other.expr ~= expr} && {other.list.count = list.count}).if {
@@ -609,7 +609,7 @@ Section Private
             list.last.code.add_last wrt;
             list_current.put NOP to index;
             concat_switch other;
-            list_current.put NOP to (index + 1);	
+            list_current.put NOP to (index + 1);
           };
         };
       };

@@ -167,7 +167,7 @@ Section Public
     tm ?= result_type;
     (tm != NULL).if {
       slot_data_list := FAST_ARRAY(SLOT_DATA).create_with_capacity (tm.count-1);
-      (tm.lower).to (tm.upper-1) do { k:INTEGER;	
+      (tm.lower).to (tm.upper-1) do { k:INTEGER;
 	typ := tm.item k.to_run_for receiver_type;
 	slot_data_list.add_last (
 	  SLOT_DATA.create common_slot type_full typ

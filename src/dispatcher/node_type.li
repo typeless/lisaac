@@ -122,7 +122,7 @@ Section Private
       result := TRUE;
     }.elseif {(typ_f.raw = type_boolean) && {count = 2}} then {
       result := TRUE;
-    } else {	
+    } else {
       ((typ_f.raw.is_block) || {typ_f.raw.subtype_list.count != count}).if {
 	lst_typ := TYPES_TMP.new;
         expr.get_type lst_typ;
@@ -153,8 +153,8 @@ Section Private
 	    };
 	    list := switch.list;
 	    (list.count != lst_typ.count).if {
-	      (lst_typ.lower).to (lst_typ.upper) do { j:INTEGER;	
-		typ := lst_typ.item j;	
+	      (lst_typ.lower).to (lst_typ.upper) do { j:INTEGER;
+		typ := lst_typ.item j;
 		((j > list.upper) || {typ != list.item j.id}).if {
 		  add_stack_type typ;
 		  //
@@ -162,7 +162,7 @@ Section Private
 		  list.add case to j;
 		  //
 		  stack_type.remove_last;
-		};	
+		};
 	      };
 	    };
 	  };
@@ -183,11 +183,11 @@ Section Private
 
     (switch = NULL).if {
       (first_code != NULL).if {
-	(self_type = NULL).if {	
+	(self_type = NULL).if {
 	  new_type_self := expr.static_type;
 	  ((! new_type_self.is_expanded) || {new_type_self.raw = type_boolean}).if {
 	    new_type_self := first_type.default.to_strict;
-	  };	
+	  };
 	} else {
 	  new_type_self := self_type;
         };

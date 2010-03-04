@@ -243,7 +243,7 @@ Section Public
         result :=
         ((other.is_strict)    && {raw ~= other.raw      }) ||
         {(raw = type_boolean) && {other.is_sub_type Self}} ||
-        {(raw = type_pointer) && {other.raw = TYPE_NULL }};	
+        {(raw = type_pointer) && {other.raw = TYPE_NULL }};
       } else {
         // A: Reference.
         result :=
@@ -254,7 +254,7 @@ Section Public
             (tb != NULL)
           }
         ) && {other.is_sub_type Self};
-      };	
+      };
     };
     result
   );
@@ -275,7 +275,7 @@ Section Public
   ( + result:EXPR;
 
     ((prototype != NULL) && {prototype.default_value != NULL}).if {
-      // Prototype User definition.	
+      // Prototype User definition.
       (recursivity_test).if {
         crash;
         POSITION.put_error semantic text

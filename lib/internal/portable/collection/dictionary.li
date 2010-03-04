@@ -23,27 +23,27 @@ Section Header
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   - comment := "Associative memory. Values of type `V' are stored using Keys of type `K'.";
-  
-  // To make a comparison with the well knowned ARRAY class, with a DICTIONARY, 
-  // index used are not only INTEGER, you can use for example a STRING to access 
+
+  // To make a comparison with the well knowned ARRAY class, with a DICTIONARY,
+  // index used are not only INTEGER, you can use for example a STRING to access
   // to your information.
   //
   // Well knowned implementations, see HASHED_DICTIONARY and AVL_DICTIONARY.
   //
   // See also BIJECTIVE_DICTIONARY class.
-  
+
 Section Inherit
-  
+
   + parent_traversable:Expanded TRAVERSABLE(V);
-  
+
 Section Public
-  
+
   //
   // Counting:
   //
-  
+
   - count:INTEGER <-
   // Actual `count' of stored elements.
   (
@@ -53,17 +53,17 @@ Section Public
 
   - is_empty:BOOLEAN <- count = 0;
   // Is it empty?
-  
+
   //
   // Basic access:
   //
-  
+
   - has k:K :BOOLEAN <-
   // Is there a value currently associated with key `k'?
   //
   // See also `fast_has', `at'.
-  [ ... 
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
   ]
   (
     deferred;
@@ -74,11 +74,11 @@ Section Public
   // Return the value associated to key `k'.
   //
   // See also `fast_at', `reference_at', `has'.
-  [ ... 
-    -? {has k}; 
+  [ ...
+    -? {has k};
   ]
   ( + result:V;
-    
+
     deferred;
     result
   );
@@ -91,16 +91,16 @@ Section Public
   //
   // See also `fast_reference_at', `at', `has'.
   [ ...
-    -? {k != NULL}; 
+    -? {k != NULL};
     // "Values are expanded." -? {(Result != NULL) -> (! Result.is_expanded_type)};
   ]
   ( + result:V;
-    
-    deferred;    
+
+    deferred;
     result
   )
   [ ...
-    +? {(has k) ->> {Result = at k}}; 
+    +? {(has k) ->> {Result = at k}};
   ];
 
   - fast_has k:K :BOOLEAN <-
@@ -108,8 +108,8 @@ Section Public
   // Using basic `=' for comparison.
   //
   // See also `has', `at', `fast_at'.
-  [ ... 
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
   ]
   (
     deferred;
@@ -121,10 +121,10 @@ Section Public
   //
   // See also `at', `reference_at', `fast_reference_at'.
   [ ...
-    -? {fast_has k}; 
+    -? {fast_has k};
   ]
   ( + result:V;
-    
+
     deferred;
     result
   );
@@ -133,55 +133,55 @@ Section Public
   // Same work as `reference_at', but basic `=' is used for comparison.
   //
   // See also `reference_at', `at', `has'.
-  [ ...    
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
     // BSBS: Il faut que tu init Result, sinon ca ne marche pas !!!
-    //"Values are expanded." -? {(Result != NULL) ->> {! Result.is_expanded_type}};    
+    //"Values are expanded." -? {(Result != NULL) ->> {! Result.is_expanded_type}};
   ]
-  ( + result:V; 
-    
+  ( + result:V;
+
     deferred;
     result
   )
   [ ...
-    +? {fast_has k ->> {Result = fast_at k}}; 
+    +? {fast_has k ->> {Result = fast_at k}};
   ];
-  
+
   //
   // Modification.
   //
-  
+
   - put v:V to k:K <-
-  // Change some existing entry or `add' the new one. If there is as yet 
-  // no key `k' in the dictionary, enter it with item `v'. Otherwise 
+  // Change some existing entry or `add' the new one. If there is as yet
+  // no key `k' in the dictionary, enter it with item `v'. Otherwise
   // overwrite the item associated with key `k'.
-  // As the `put' procedure actually uses `is_equal', you may consider 
+  // As the `put' procedure actually uses `is_equal', you may consider
   // to use `fast_put' for expanded objects as well while trying to get
   // the very best performances.
   //
   // See also `fast_put', `add'.
-  [ ... 
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
   ]
   (
     deferred;
   )
   [ ...
-    +? {v = at k}; 
+    +? {v = at k};
   ];
 
   - fast_put v:V to k:K <-
   // Same job as `put', but uses basic `=' for comparison.
   //
   // See also `put', `add'.
-  [ ... 
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
   ]
   (
     deferred
   )
   [ ...
-    +? {v = fast_at k}; 
+    +? {v = fast_at k};
   ];
 
   - add v:V to k:K <-
@@ -189,8 +189,8 @@ Section Public
   // Actually, this is equivalent to call `put', but it may run a little bit faster.
   //
   // See also `put', `fast_put'.
-  [ ... 
-    -? {! has k}; 
+  [ ...
+    -? {! has k};
   ]
   (
     deferred
@@ -199,18 +199,18 @@ Section Public
     +? {count = 1 + Old count};
     +? {v = at k};
   ];
-  
+
   //
   // Looking and searching some value:
   //
-  
+
   - occurrences v:V :INTEGER <-
   // Number of occurrences using `is_equal' for comparison.
   //
   // See also `fast_occurrences', `fast_has', `has'.
-  ( + i,result:INTEGER; 
+  ( + i,result:INTEGER;
     + safe_equal:SAFE_EQUAL(V);
-    
+
     i := 1;
     {i > count}.until_do {
       (safe_equal.test v with (item i)).if {
@@ -221,15 +221,15 @@ Section Public
     result
   )
   [ ...
-    +? {Result >= 0}; 
+    +? {Result >= 0};
   ];
-  
+
   - fast_occurrences v:V :INTEGER <-
   // Number of occurrences using basic `=' for comparison.
   //
   // See also `occurrences', `fast_has', `has'.
   ( + result,i:INTEGER;
-    
+
     i := 1;
     {i > count}.until_do {
       (v = item i).if {
@@ -240,19 +240,19 @@ Section Public
     result
   )
   [ ...
-    +? {Result >= 0}; 
+    +? {Result >= 0};
   ];
-  
+
   - key_at v:V :K <-
   // Retrieve the key used for value `v' using `is_equal' for comparison.
   //
   // See also `fast_key_at', `at'.
-  [ ...	
+  [ ...
     -? {occurrences v = 1};
   ]
-  ( + i:INTEGER; 
+  ( + i:INTEGER;
     + safe_equal:SAFE_EQUAL(V);
-    
+
     i := 1;
     {safe_equal.test v with (item i)}.until_do {
       i := i + 1;
@@ -271,7 +271,7 @@ Section Public
     -? {fast_occurrences v = 1};
   ]
   ( + i:INTEGER;
-    
+
     i := 1;
     {v = item i}.until_do {
       i := i + 1;
@@ -280,45 +280,45 @@ Section Public
   )
   [ ...
     +? {at Result = v};
-  ];			
-  
+  ];
+
   //
   // Removing:
   //
-  
+
   - remove k:K <-
   // Remove entry `k' (which may exist or not before this call).
-  // As the `remove' procedure actually uses `is_equal', you may 
-  // consider to use `fast_remove' for expanded objects as well 
+  // As the `remove' procedure actually uses `is_equal', you may
+  // consider to use `fast_remove' for expanded objects as well
   // while trying to get the very best performances.
   //
   // See also `fast_remove', `clear_count'.
-  [ ... 
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
   ]
   (
     deferred
   )
   [ ...
-    +? {! has k};   
+    +? {! has k};
   ];
-  
+
   - fast_remove k:K <-
   // Same job as `remove', but uses basic `=' for comparison.
   //
   // See also `remove', `clear_count'.
-  [ ... 
-    -? {k != NULL}; 
+  [ ...
+    -? {k != NULL};
   ]
   (
     deferred
   )
   [ ...
-    -? {! has k};   
+    -? {! has k};
   ];
 
   - clear_count <-
-  // Discard all items (`is_empty' is True after that call). 
+  // Discard all items (`is_empty' is True after that call).
   // The internal `capacity' is not changed by this call.
   //
   // See also `clear_count_and_capacity', `remove'.
@@ -331,7 +331,7 @@ Section Public
   ];
 
   - clear_count_and_capacity <-
-  // Discard all items (`is_empty' is True after that call). 
+  // Discard all items (`is_empty' is True after that call).
   // The internal `capacity' may also be reduced after this call.
   //
   // See also `clear_count', `remove'.
@@ -341,24 +341,24 @@ Section Public
   [ ...
     "Is empty." +? {count = 0};
     +? {capacity <= Old capacity};
-  ];	
+  ];
 
   - capacity:INTEGER <-
-  // Approximation of the actual internal storage `capacity'. 
-  // The `capacity' will grow automatically when needed 
-  // (i.e. `capacity' is not a limit for the number of values stored). 
-  // Also note that the `capacity' value may not be always accurate 
-  // depending of the implementation (anyway, this `capacity' value 
+  // Approximation of the actual internal storage `capacity'.
+  // The `capacity' will grow automatically when needed
+  // (i.e. `capacity' is not a limit for the number of values stored).
+  // Also note that the `capacity' value may not be always accurate
+  // depending of the implementation (anyway, this `capacity' value
   // is at least equals to `count').
   (
     deferred;
     0
   );
-  
+
   //
   // To provide iterating facilities:
   //
-  
+
   - lower:INTEGER := 1;
 
   - upper:INTEGER <-
@@ -371,7 +371,7 @@ Section Public
 
   - item i:INTEGER :V <-
   ( + result:V;
-    
+
     deferred;
     result
   )
@@ -380,7 +380,7 @@ Section Public
   ];
 
   - first:V <- item lower;
-  
+
   - last:V  <- item upper;
 
   - key index:INTEGER :K <-
@@ -388,14 +388,14 @@ Section Public
     -? {valid_index index};
   ]
   ( + result:K;
-    
+
     deferred;
     result
   )
   [ ...
     +? {(fast_at Result) = item index};
   ];
-	
+
   - key_map_in buffer:COLLECTION(K) <-
   // Append in `buffer', all available keys (this may be useful to
   // speed up the traversal).
@@ -405,7 +405,7 @@ Section Public
     -? {buffer != NULL};
   ]
   ( + i:INTEGER;
-    
+
     i := count;
     {i < lower}.until_do {
       buffer.add_last (key i);
@@ -425,7 +425,7 @@ Section Public
     -? {buffer != NULL};
   ]
   ( + i:INTEGER;
-    
+
     i := count;
     {i < lower}.until_do {
       buffer.add_last (item i);
@@ -435,11 +435,11 @@ Section Public
   [
     +? {buffer.count = count + Old buffer.count};
   ];
-  
+
   //
   // Comparaison.
   //
-  
+
   - Self:SELF '==' other:SELF :BOOLEAN <-
   // Do both dictionaries have the same set of associations?
   // Keys are compared with `is_equal' and values are comnpared
@@ -448,7 +448,7 @@ Section Public
   // See also `is_equal_map'.
   ( + i:INTEGER;
     + result:BOOLEAN;
-    
+
     (Self = other).if {
       result := TRUE;
     }.elseif {count = other.count} then {
@@ -477,14 +477,14 @@ Section Public
   // Both keys and values are compared with `is_equal'.
   //
   // See also `is_equal'.
-  ( + i:INTEGER; 
-    + k:K; 
+  ( + i:INTEGER;
+    + k:K;
     + safe_equal:SAFE_EQUAL(V);
     + result:BOOLEAN;
-    
+
     (Self = other).if {
       result := TRUE;
-    }.elseif {count = other.count} then {				
+    }.elseif {count = other.count} then {
       result := TRUE;
       i := 1;
       {(! result) || {i > count}}.until_do {
@@ -497,7 +497,7 @@ Section Public
 	  };
 	} else {
 	  result := FALSE;
-	};	
+	};
       };
     };
     result
@@ -506,7 +506,7 @@ Section Public
   - copy other:SELF <-
   // Reinitialize by copying all associations of `other'.
   ( + i:INTEGER;
-    
+
     clear_count;
     i := 1;
     {i > other.count}.until_do {
@@ -518,15 +518,15 @@ Section Public
   //
   // Agents based features:
   //
-  
+
   - do_all action:BLOCK <-
   // Apply `action' to every (V, K) associations of `Current'.
   //
   // See also `for_all', `exist'.
-  ( + i:INTEGER; 
-    + v:V; 
+  ( + i:INTEGER;
+    + v:V;
     + k:K;
-    
+
     i := lower;
     {i > upper}.until_do {
       v := item i;
@@ -534,7 +534,7 @@ Section Public
       action.value (v, k);
       i := i + 1;
     };
-  );		
+  );
 
   - foreach_pair action:{(K,V);} <-
   (
@@ -553,8 +553,8 @@ Section Public
   - foreach_key action:{K; } until test:{K; BOOLEAN} <-
   ( + i:INTEGER;
     + k:K;
-    i := lower; 
-    {(i > upper) || {test.value (k := key i)}}.until_do { 
+    i := lower;
+    {(i > upper) || {test.value (k := key i)}}.until_do {
       action.value k;
       i := i + 1;
     };
@@ -563,13 +563,13 @@ Section Public
   - foreach_key action:{K; } while test:{K; BOOLEAN} <-
   ( + i:INTEGER;
     + k:K;
-    i := lower; 
-    {(i <= upper) && {test.value (k := key i)}}.while_do { 
+    i := lower;
+    {(i <= upper) && {test.value (k := key i)}}.while_do {
       action.value k;
       i := i + 1;
     };
   );
-  
+
   - foreach_value action:{V; } <-
   (
     lower.to upper do { i:INTEGER;
@@ -580,8 +580,8 @@ Section Public
   - foreach_value action:{V; } until test:{V; BOOLEAN} <-
   ( + i:INTEGER;
     + v:V;
-    i := lower; 
-    {(i > upper) || {test.value (v := item i)}}.until_do { 
+    i := lower;
+    {(i > upper) || {test.value (v := item i)}}.until_do {
       action.value v;
       i := i + 1;
     };
@@ -590,8 +590,8 @@ Section Public
   - foreach_value action:{V; } while test:{V; BOOLEAN} <-
   ( + i:INTEGER;
     + v:V;
-    i := lower; 
-    {(i <= upper) && {test.value (v := item i)}}.while_do { 
+    i := lower;
+    {(i <= upper) && {test.value (v := item i)}}.while_do {
       action.value v;
       i := i + 1;
     };
@@ -601,14 +601,14 @@ Section Public
   // Do all (V, K) associations satisfy `test'?
   //
   // See also `do_all', `exist'.
-  ( + i:INTEGER; 
-    + v:V; 
+  ( + i:INTEGER;
+    + v:V;
     + k:K;
     + result:BOOLEAN;
-    
+
     result := TRUE;
     i := lower;
-    {(! result) || {i > upper}}.until_do {			
+    {(! result) || {i > upper}}.until_do {
       v := item i;
       k := key i;
       result := test.value (v, k);
@@ -621,25 +621,25 @@ Section Public
   // Does at least one (V, K) association satisfy `test'?
   //
   // See also `for_all', `do_all'.
-  ( + i:INTEGER; 
-    + v:V; 
+  ( + i:INTEGER;
+    + v:V;
     + k:K;
     + result:BOOLEAN;
-		    
-    i := lower;		
+
+    i := lower;
     {result || {i > upper}}.until_do {
       v := item i;
       k := key i;
-      result := test.value (v, k);      
+      result := test.value (v, k);
       i := i + 1;
     };
     result
   );
-  
+
   //
   // Other features:
   //
-  
+
   - internal_key k:K :K <-
   // Retrieve the internal key object which correspond to the existing
   // entry `k' (the one memorized into the `Current' dictionary).
@@ -649,7 +649,7 @@ Section Public
     -? {has k};
   ]
   ( + result:K;
-    
+
     deferred;
     result
   )
@@ -660,15 +660,15 @@ Section Public
   //
   // Creation.
   //
-  
+
   - create:SELF <-
   ( + result:SELF;
-    
+
     result := clone;
     result.make;
     result
   );
-  
+
   - make <-
   // Creates an empty dictionary.
   (
@@ -681,7 +681,7 @@ Section Public
   //
   //
   //
-  
+
   - key_safe_equal k1:K with k2:K :BOOLEAN <-
   // Because keys are never NULL, we do not rely on the SAFE_EQUAL class.
   [ ...
@@ -689,7 +689,7 @@ Section Public
     -? {k2 != NULL};
   ]
   ( + result:BOOLEAN;
-    
+
     (k1 = k2).if {
       result := TRUE;
     }.elseif {k1.same_dynamic_type k2} then {
@@ -701,5 +701,5 @@ Section Public
   //
   // invariant
   //
-  
+
 //  [ -? {capacity >= count}; ]

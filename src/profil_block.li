@@ -265,7 +265,7 @@ Section Public
 	lst.add_last (loc.type.get_temporary_expr (loc.position));
       };
       result := EXPR_MULTIPLE.create lst;
-    }.elseif {result_list.count = 1} then {	
+    }.elseif {result_list.count = 1} then {
       loc := result_list.first;
       result := loc.type.get_temporary_expr (loc.position);
     } else {

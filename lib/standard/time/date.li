@@ -45,9 +45,9 @@ Section Private
   (
     CONVERT(UINTEGER_32,SELF).on i
   );
-  
+
 Section Public
-  
+
   - Self:SELF '>' Right 60 other:SELF :BOOLEAN <- to_raw > other.to_raw;
 
   - Self:SELF '<' Right 60 other:SELF :BOOLEAN <- to_raw < other.to_raw;

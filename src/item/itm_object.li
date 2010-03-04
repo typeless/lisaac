@@ -43,7 +43,7 @@ Section Public
   - push_context:(INTEGER,INTEGER,LOCAL) <-
   (
     bottom_index := stack_local.upper + 1;
-    context_extern := NULL; 
+    context_extern := NULL;
     bottom_index,Old bottom_index,Old context_extern
   );
 
@@ -62,7 +62,7 @@ Section Public
     ? {n = ALIAS_STR.get n};
 
     j := stack_local.upper;
-    {(j < stack_local.lower) || {stack_local.item j.name = n}}.until_do {	
+    {(j < stack_local.lower) || {stack_local.item j.name = n}}.until_do {
       j := j - 1;
     };
     (j >= stack_local.lower).if {
@@ -115,7 +115,7 @@ Section Public
 	stack_local.remove_last;
 	n := var.name;
 	(
-	  (n != ALIAS_STR.variable_self) && 	
+	  (n != ALIAS_STR.variable_self) &&
 	  {n != ALIAS_STR.variable_tmp}
 	).if {
 	  ((var.ensure_count = 0) && {var.style != ' '}).if {

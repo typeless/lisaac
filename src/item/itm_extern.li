@@ -19,19 +19,19 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_EXTERN;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Parent for externals";
-  
+
 Section Inherit
-  
+
   + parent_itm_code:Expanded ITM_CODE;
-  
+
 Section Public
 
   //
@@ -40,19 +40,19 @@ Section Public
 
   + extern:STRING_CONSTANT;
 
-  //  
+  //
   // Constructor.
   //
-  
+
   - last_code:STRING_CONSTANT;
-  
+
   - get_access:FAST_ARRAY(EXPR) <-
   ( + idx,base:INTEGER;
     + e:EXPR;
     + loc:STRING_CONSTANT;
     + var:VARIABLE;
     + access_list:FAST_ARRAY(EXPR);
-    
+
     string_tmp2.copy extern;
     idx := string_tmp2.index_of '@' since (string_tmp2.lower);
     (idx <= string_tmp2.count).if {
@@ -60,9 +60,9 @@ Section Public
       {idx > string_tmp2.upper}.until_do {
 	base := idx;
 	idx  := idx + 1;
-	string_tmp.clear;	
+	string_tmp.clear;
 	{
-	  (idx > string_tmp2.upper) || 
+	  (idx > string_tmp2.upper) ||
 	  {
 	    (! string_tmp2.item idx.is_letter_or_digit) &&
 	    {string_tmp2.item idx != '_'}
@@ -89,7 +89,7 @@ Section Public
 	};
 	e := var.read position;
 	access_list.add_last e;
-	
+
 	string_tmp2.remove_between base to (base+loc.count);
 	string_tmp2.insert_string "(@)" to base;
 	idx := string_tmp2.index_of '@' since (base+2);
@@ -99,11 +99,11 @@ Section Public
     last_code := ALIAS_STR.get string_tmp2;
     access_list
   );
-  
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     buffer.add_last '`';

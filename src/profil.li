@@ -252,10 +252,10 @@ Section Public
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       loc := argument_list.item j;
       val := args.item j;
-      (loc != NULL).if {	
+      (loc != NULL).if {
 	wrt := loc.write (val.position) value val;
 	result.add_last wrt;
-      } else {	
+      } else {
 	result.add_last NULL;
 	val.remove;
       };
@@ -349,20 +349,20 @@ Section Public
       {result_list.is_empty}
     ).if {
       switch ?= code.last;
-      (switch != NULL).if {	
+      (switch != NULL).if {
 	// Verification cases:
 	(switch.list.lower).to (switch.list.upper) do { j:INTEGER;
 	  lst := switch.list.item j.code;
 	  (lst.is_empty).if_false {
 	    msg ?= lst.last;
-	    ((msg != NULL) && {msg.profil = Self}).if {	      	
+	    ((msg != NULL) && {msg.profil = Self}).if {
 	      count_recur := count_recur + 1;
 	    };
 	  };
 	};
 	(count_recur = switch.list.count).if {
 	  semantic_error (slot.position,"Recursivity without end.");
-        };        	
+        };
         ((count_intern_call - 1) = count_recur).if {
           ((link_count = count_intern_call) || {! is_context_sensitive}).if {
             new_execute_pass;
@@ -385,21 +385,21 @@ Section Public
 
     (stat = -1).if {
       count_intern_call := count_intern_call + 1;
-      (count_intern_call = 1).if {	  	
+      (count_intern_call = 1).if {
         old_list_current   := list_current;
         old_profil_current := profil_current;
         //
         profil_current := Self;
 	execute 3;
-	//	
+	//
         list_current   := old_list_current;
         profil_current := old_profil_current;
 	? {code != NULL};
-	(count_intern_call = 1).if {	
+	(count_intern_call = 1).if {
           stat := 0;
 	} else {
           stat := recursivity_bit;
-        };	
+        };
       };
     };
   );
@@ -499,7 +499,7 @@ Section Public
       v := argument_list.item j;
       (v != NULL).if {
         ? {(v.style = ' ') || {v.style = '!'}};
-        genere v result FALSE in buffer;	
+        genere v result FALSE in buffer;
         buffer.add_last ',';
       };
     };
@@ -577,7 +577,7 @@ Section Public
           {! t.is_expanded_c}
         ).if {
           buffer.add_last '&';
-        };	
+        };
         (loc.my_alias = NULL).if {
           idf := loc.intern_name;
         } else {
@@ -603,7 +603,7 @@ Section Public
         buffer.append indent;
         v := argument_list.first;
         ((v != NULL) && {v.name = ALIAS_STR.variable_self}).if {
-          genere v result FALSE in buffer;	
+          genere v result FALSE in buffer;
           buffer.add_last '=';
           put_cast_self buffer;
           buffer.append "obj;\n";
@@ -615,12 +615,12 @@ Section Public
           v := argument_list.item j;
           (v != NULL).if {
             buffer.append indent;
-            genere v result FALSE in buffer;	
+            genere v result FALSE in buffer;
             buffer.append "=(";
             ts := v.type;
             ts.genere_declaration buffer;
             buffer.add_last ' ';
-            ts.genere_star_declaration buffer;	
+            ts.genere_star_declaration buffer;
             buffer.append ")((";
             put_cast_self buffer;
             buffer.append "obj)->param_";
@@ -674,7 +674,7 @@ Section Private
   - put_cast_self buffer:STRING <-
   (
     buffer.add_last '(';
-    type_self.genere_declaration buffer;	
+    type_self.genere_declaration buffer;
     buffer.add_last ' ';
     type_self.genere_star_declaration buffer;
     buffer.add_last ')';
@@ -800,7 +800,7 @@ Section Private
 
     ts.genere_declaration buffer;
     buffer.add_last ' ';
-    ts.genere_star_declaration buffer;	
+    ts.genere_star_declaration buffer;
     (is_res).if {
       buffer.add_last '*';
     };
@@ -836,13 +836,13 @@ Section Private
     switch ?= code.last;
     (switch.list.lower).to (switch.list.upper) do { k:INTEGER;
       body := switch.list.item k.code;
-      (body.is_empty).if_false {	
+      (body.is_empty).if_false {
 	msg_slot ?= body.last;
-        ((msg_slot != NULL) && {msg_slot.profil = Self}).if {	  	
+        ((msg_slot != NULL) && {msg_slot.profil = Self}).if {
           link_count := link_count - 1;
 	  msg_slot.argument_to_assignment body index (body.upper) alias FALSE style '!';
 	  body.put (LOOP_END.create (msg_slot.position) loop loop) to (body.upper);
-	};	
+	};
       };
     };
     count_intern_call := 1;

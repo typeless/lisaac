@@ -29,11 +29,11 @@ Section Header
   - comment     := "Put for NATIVE_ARRAY(E) (see ITEM)";
 
 Section Inherit
-  
-  + parent_write:Expanded WRITE; 
-  
+
+  + parent_write:Expanded WRITE;
+
   + parent_expr:Expanded EXPR; // Note: C'est une INSTR, mais pb dans ITM_EXTERNAL
-    
+
 Section Public
 
   - is_invariant:BOOLEAN <-
@@ -44,14 +44,14 @@ Section Public
   + index:EXPR;
 
   - static_type:TYPE_FULL <- TYPE_VOID.default;
-  
+
   - variable:VARIABLE <-
   ( + typ_gen:TYPE_GENERIC;
 
     typ_gen ?= receiver.static_type.raw;
-    typ_gen.native_array_variable    
+    typ_gen.native_array_variable
   );
-  
+
   //
   // Creation.
   //
@@ -65,7 +65,7 @@ Section Public
   );
 
   - make p:POSITION base rec:EXPR index idx:EXPR value v:EXPR <-
-  ( 
+  (
     position := p;
     receiver := rec;
     index    := idx;
@@ -82,7 +82,7 @@ Section Public
   //
 
   - remove <-
-  (     
+  (
     variable.unwrite Self;
     //
     receiver.remove;
@@ -93,9 +93,9 @@ Section Public
   //
   // Execute
   //
-  
+
   - execute:INSTR <- execute_unlink;
-  
+
   - execute_unlink:INSTR <-
   (
     execute_link

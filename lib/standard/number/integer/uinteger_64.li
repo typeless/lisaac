@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := Expanded UINTEGER_64;
 
   - export  := INTEGER;
@@ -28,24 +28,23 @@ Section Header
 
   - type    := `unsigned long long`;
   - default := (0.to_raw_uinteger_64);
-  
+
 Section Insert
-  
+
   - parent_unsigned_integer:UNSIGNED_INTEGER := UNSIGNED_INTEGER;
-  
+
 Section Public
-  
+
   - object_size:INTEGER := 8;
 
   //
   // Range.
   //
-  
-  - maximum:UINTEGER_64 := `0xFFFFFFFFFFFFFFFFLLU`:UINTEGER_64; //BSBS pb C 0FFFFFFFFFFFFFFFFh; 
-  
+
+  - maximum:UINTEGER_64 := `0xFFFFFFFFFFFFFFFFLLU`:UINTEGER_64; //BSBS pb C 0FFFFFFFFFFFFFFFFh;
+
   //
   // Conversion with test.
   //
-  
+
   - to_uinteger_64:UINTEGER_64   <- Self;
-  

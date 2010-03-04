@@ -81,8 +81,8 @@ Section Public
   - make t:TRAVERSABLE(V) increment inc:INTEGER :SELF <-
     make t index (t.lower) increment inc;
 
-  - make t:TRAVERSABLE(V) index i:INTEGER increment inc:INTEGER :SELF <-    
-  [  
+  - make t:TRAVERSABLE(V) index i:INTEGER increment inc:INTEGER :SELF <-
+  [
     -? {inc != 0};
     -? {t != NULL};
     -? {t.valid_index i};
@@ -91,7 +91,7 @@ Section Public
     increment := inc;
     traversable := t;
     index := i;
-    Self    
+    Self
   );
 
   - make t:TRAVERSABLE(V) index i:INTEGER :SELF <-

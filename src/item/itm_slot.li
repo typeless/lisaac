@@ -164,7 +164,7 @@ Section Public
         (argument_list != NULL).if {
           (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
             argument_list.item j.is_equal (other.argument_list.item j);
-          };	
+          };
         };
       };
     };

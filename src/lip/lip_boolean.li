@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_BOOLEAN;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -30,31 +30,31 @@ Section Header
 Section Inherit
 
   + parent_lip_constant:Expanded LIP_CONSTANT;
-  
+
 Section Private
-  
-  - true:LIP_BOOLEAN := 
+
+  - true:LIP_BOOLEAN :=
   ( + result:LIP_BOOLEAN;
     result := clone;
     result.set_value TRUE;
     result
   );
-  
+
   - false:LIP_BOOLEAN := LIP_BOOLEAN;
-  
+
   - set_value i:BOOLEAN <-
   (
     value := i;
   );
-  
+
 Section Public
 
   + value:BOOLEAN;
-  
+
   //
   // Creation.
   //
-  
+
   - get b:BOOLEAN :LIP_BOOLEAN <-
   ( + result:LIP_BOOLEAN;
     b.if {
@@ -64,45 +64,44 @@ Section Public
     };
     result
   );
-  
+
   - free; // Nothing.
-  
+
   //
   // Operation.
   //
-  
+
   - name:STRING_CONSTANT <- "BOOLEAN";
-  
+
   - '!' Self:SELF :LIP_CONSTANT <- get (! value);
-  
+
   - copy:LIP_CONSTANT <- Self;
-  
+
   - print <-
   (
     value.print;
   );
 
 Section LIP_CONSTANT
-  
+
   - my_copy other:SELF :LIP_CONSTANT <- other;
-           
-  - Self:SELF '|#'  other:SELF :LIP_CONSTANT <- 
-  ( 
+
+  - Self:SELF '|#'  other:SELF :LIP_CONSTANT <-
+  (
     get (value | other.value)
   );
-  
-  - Self:SELF '&#'  other:SELF :LIP_CONSTANT <- 
-  ( 
+
+  - Self:SELF '&#'  other:SELF :LIP_CONSTANT <-
+  (
     get (value & other.value)
   );
-      
-  - Self:SELF '=#'  other:SELF :LIP_CONSTANT <- 
-  ( 
+
+  - Self:SELF '=#'  other:SELF :LIP_CONSTANT <-
+  (
     get (value = other.value)
   );
-  
-  - Self:SELF '!=#' other:SELF :LIP_CONSTANT <- 
-  ( 
+
+  - Self:SELF '!=#' other:SELF :LIP_CONSTANT <-
+  (
     get (value != other.value)
   );
-  

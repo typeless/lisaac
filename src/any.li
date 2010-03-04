@@ -87,7 +87,7 @@ Section Public
   - loop_invariant:LOOP;
 
   //
-	
+
   - late_binding_counter:INTEGER;
 
   - null_counter:INTEGER;

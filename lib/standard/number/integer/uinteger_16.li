@@ -19,39 +19,39 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := Expanded UINTEGER_16;
 
   - export  :=
-  UINTEGER_64, UINTEGER_32, 
+  UINTEGER_64, UINTEGER_32,
   INTEGER_64 , INTEGER_32 ,
   INTEGER;
-  
+
   - comment :="Unsigned 16 bits integer.";
 
   - type    := `unsigned short`;
   - default := (0.to_raw_uinteger_16);
-  
+
 Section Insert
-  
+
   - parent_unsigned_integer:UNSIGNED_INTEGER := UNSIGNED_INTEGER;
-  
+
 Section Public
 
-  - object_size:INTEGER := 2;  
+  - object_size:INTEGER := 2;
 
   //
   // Range.
   //
-  
-  - maximum:UINTEGER_64 := 65535.to_raw_uinteger_64; 
-  
+
+  - maximum:UINTEGER_64 := 65535.to_raw_uinteger_64;
+
   //
   // Conversion with test.
   //
-  
+
   - to_uinteger_16:UINTEGER_16 <- Self;
-  
+
   //- to_char_unicode:CHAR_UNICODE <- CHAR_UNICODE.force_conversion Self;
 
 

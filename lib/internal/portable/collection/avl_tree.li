@@ -19,24 +19,24 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name := AVL_TREE(V);
 
 
   - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-  
+
   // Definition of a mathematical set of comparable objects. All common
   // operations on mathematical sets are available.
 
 Section Insert
-  
+
   - parent_avl_constants:AVL_CONSTANTS := AVL_CONSTANTS;
 
 Section Public
-  
+
   - debug_string:STRING <-
   ( + result:STRING;
-    
+
     (root = NULL).if {
       result := "NULL";
     } else {
@@ -48,13 +48,13 @@ Section Public
   );
 
   + count:INTEGER;
-  
+
 Section Public
-  
+
   //
   // Adding and removing:
   //
-  
+
   - remove e:V <-
   (
     root := do_remove (root, e);
@@ -66,7 +66,7 @@ Section Public
   );
 
 Section SELF
-  
+
   + root:AVL_TREE_NODE(V);
 
   + rebalance:BOOLEAN;
@@ -85,7 +85,7 @@ Section SELF
 
   - fast_do_insert n:AVL_TREE_NODE(V) :AVL_TREE_NODE(V) <-
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n = NULL).if {
       result := new_node;
       set_value_and_key result;
@@ -104,7 +104,7 @@ Section SELF
 	result := n;
       };
     } else {
-      ? {item_memory > n.item};				
+      ? {item_memory > n.item};
       n.set_right (do_insert (n.right));
       (rebalance).if {
 	result := right_grown n;
@@ -122,7 +122,7 @@ Section SELF
 
   - do_insert n:AVL_TREE_NODE(V) :AVL_TREE_NODE(V) <-
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n = NULL).if {
       result := new_node;
       set_value_and_key result;
@@ -144,7 +144,7 @@ Section SELF
 	result := n;
       };
     } else {
-      ? {item_memory == n.item};				
+      ? {item_memory == n.item};
       result := n;
       set_value result;
       rebalance := FALSE;
@@ -164,7 +164,7 @@ Section SELF
     -? {node_height (n.right) - node_height (n.left) + 1 = n.balance};
   ]
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n.balance)
     .when imbalanced_left then {
       (n.left.balance = imbalanced_left).if {
@@ -205,7 +205,7 @@ Section SELF
     +? {Result != NULL};
     +? {Result.balance = node_height (Result.right) - node_height (Result.left)};
     +? {
-      rebalance = (node_height Result > 1 + 
+      rebalance = (node_height Result > 1 +
       Old node_height (n.right).max (node_height (n.left) - 1))
     };
   ];
@@ -217,7 +217,7 @@ Section SELF
     -? {node_height (n.right) - 1 - node_height (n.left) = n.balance};
   ]
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n.balance)
     .when imbalanced_right then {
       (n.right.balance = imbalanced_right).if {
@@ -237,7 +237,7 @@ Section SELF
 	  n.set_balance balanced;
 	  n.right.set_balance imbalanced_right;
 	};
-	
+
 	n.right.left.set_balance balanced;
 	n.set_right (n.right.rotate_right);
       };
@@ -259,14 +259,14 @@ Section SELF
     +? {Result != NULL};
     +? {Result.balance = node_height (Result.right) - node_height (Result.left)};
     +? {
-      rebalance = (node_height Result > 1 + 
+      rebalance = (node_height Result > 1 +
       Old node_height (n.left).max (node_height (n.right) - 1))
     };
   ];
 
   - fast_do_remove (n:AVL_TREE_NODE(V),e:V) :AVL_TREE_NODE(V) <-
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n = NULL).if {
       rebalance := FALSE;
     }.elseif {e = n.item} then {
@@ -292,7 +292,7 @@ Section SELF
 	result := n;
       };
     } else {
-      ? {e > n.item};			
+      ? {e > n.item};
       n.set_right (do_remove (n.right, e));
       (rebalance).if {
 	result := right_shrunk n;
@@ -303,7 +303,7 @@ Section SELF
     result
   )
   [
-    +? {Result = NULL || 
+    +? {Result = NULL ||
       {Result.balance = node_height (Result.right) - node_height (Result.left)}
     };
     +? {rebalance = (node_height Result < Old node_height n)};
@@ -311,7 +311,7 @@ Section SELF
 
   - do_remove (n:AVL_TREE_NODE(V),e:V) :AVL_TREE_NODE(V) <-
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n = NULL).if {
       rebalance := FALSE;
     }.elseif {e < n.item} then {
@@ -356,7 +356,7 @@ Section SELF
     -? {n2 != NULL};
   ]
   ( + result:AVL_TREE_NODE(V);
-    
+
     (n2.right = NULL).if {
       result := n2.left;
       exchange_and_discard (n1, n2);
@@ -371,7 +371,7 @@ Section SELF
     result
   )
   [
-    +? {Result = NULL || 
+    +? {Result = NULL ||
     {Result.balance = node_height (Result.right) - node_height (Result.left)}};
     +? {rebalance = (node_height Result < Old node_height n2)};
   ];
@@ -383,7 +383,7 @@ Section SELF
     -? {node_height (n.right) - node_height (n.left) - 1 = n.balance};
   ]
   ( + result:AVL_TREE_NODE(V);
-				
+
     (n.balance)
     .when imbalanced_left then {
       n.set_balance balanced;
@@ -410,7 +410,7 @@ Section SELF
 	  n.set_balance imbalanced_left;
 	  n.right.set_balance balanced;
 	};
-	
+
 	n.right.left.set_balance balanced;
 	n.set_right (n.right.rotate_right);
       }
@@ -427,10 +427,10 @@ Section SELF
     };
     result
   )
-  [		    
+  [
     +? {Result != NULL};
     +? {Result.balance = node_height (Result.right) - node_height (Result.left)};
-    +? {rebalance = (node_height Result < 1 + 
+    +? {rebalance = (node_height Result < 1 +
     Old node_height (n.right).max (node_height (n.left) + 1))};
   ];
 
@@ -441,7 +441,7 @@ Section SELF
     -? {node_height (n.right) + 1 - node_height (n.left) = n.balance};
   ]
   ( + result:AVL_TREE_NODE(V);
-		
+
     (n.balance)
     .when imbalanced_right then {
       n.set_balance balanced;
@@ -467,7 +467,7 @@ Section SELF
 	.when imbalanced_left then {
 	  n.set_balance imbalanced_right;
 	  n.left.set_balance balanced;
-	};					
+	};
 	n.left.right.set_balance balanced;
 	n.set_left (n.left.rotate_left);
       }
@@ -487,7 +487,7 @@ Section SELF
   [
     +? {Result != NULL};
     +? {Result.balance = node_height (Result.right) - node_height (Result.left)};
-    +? {rebalance = (node_height Result < 1 + 
+    +? {rebalance = (node_height Result < 1 +
     Old node_height (n.left).max (node_height (n.right) + 1))};
   ];
 
@@ -504,7 +504,7 @@ Section SELF
     +? {count = Old count - 1};
     +? {rebalance};
   ];
-	
+
   - clear_nodes node:AVL_TREE_NODE(V) <-
   (
     (node.left != NULL).if {
@@ -518,19 +518,19 @@ Section SELF
 
   - node_height node:AVL_TREE_NODE(V) :INTEGER <-
   ( + result:INTEGER;
-    
+
     (node != NULL).if {
       result := node.height;
     };
     result
   );
-		
-Section Public		
-  
+
+Section Public
+
   //
   // Looking and searching:
   //
-  
+
   - has e:V :BOOLEAN <-
   // Is element `e' in the set?
   (
@@ -544,11 +544,11 @@ Section Public
   );
 
 Section SELF
-  
+
   //
   // Iterating internals:
   //
-  
+
   - build_map <-
   [
     "build_needed" -? {map_dirty};
@@ -568,13 +568,13 @@ Section SELF
   // Elements in a row for iteration. See `build_map'.
 
   + map_dirty:BOOLEAN;
-  // True when the map needs to be built again for the iterators. 
+  // True when the map needs to be built again for the iterators.
   // See `build_map'.
 
 Section SELF
-  
+
   - new_node:AVL_TREE_NODE(V) <-
-  ( 
+  (
     a_new_node
   );
 
@@ -583,7 +583,7 @@ Section SELF
     deferred;
     NULL
   );
-	
+
   - discard_node n:AVL_TREE_NODE(V) <-
   [
     -? {n != NULL};
@@ -591,11 +591,11 @@ Section SELF
   (
     deferred;
   );
-	
-  //	
+
+  //
   // invariant
   //
-  
+
 //  [
 //    -? {map != NULL};
 //    -? {(! map_dirty) -> (map.count = count)};

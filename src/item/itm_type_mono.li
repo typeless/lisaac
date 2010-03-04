@@ -19,62 +19,62 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_TYPE_MONO;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Type simple";
-  
+
 Section Inherit
-  
+
   + parent_itm_type:Expanded ITM_TYPE;
-  
+
 Section Public
-  
-  - hash_code:INTEGER <- 
+
+  - hash_code:INTEGER <-
   (
     deferred;
     0
   );
-        
+
   //
   // Runnable.
   //
 
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
-  (        
+  (
     deferred;
     NULL
   );
-  
+
   - to_run_in lst:FAST_ARRAY(TYPE_FULL) for p:PARAMETER_TO_TYPE <-
   (
     lst.add_last (to_run_for p);
   );
-  
+
   - get_expr_for p:PARAMETER_TO_TYPE :EXPR <-
   ( + t:TYPE_FULL;
     + result:EXPR;
-        
-    t := to_run_for p;            
+
+    t := to_run_for p;
     result := t.get_temporary_expr (p.position);
     result
-  );  
-  
+  );
+
   //
   // Display.
   //
-  
+
   - append_in buffer:STRING <-
   (
     deferred;
   );
-  
+
   //
   // Cast.
   //
-  
+
   - append_cast_name_in buf:STRING <- deferred;

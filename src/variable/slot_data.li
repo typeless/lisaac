@@ -149,7 +149,7 @@ Section Public
 	  l      := rd_loc.local;
 	  wrt_slot ?= require_first;
 	  rd_loc ?= wrt_slot.receiver;
-	  (rd_loc.local = l).if {	
+	  (rd_loc.local = l).if {
 	    my_require_count := 1;
 	  } else {
 	    my_require_count := 0;
@@ -157,7 +157,7 @@ Section Public
 	  (require_list.lower).to (require_list.upper) do { j:INTEGER;
 	    wrt_slot ?= require_list.item j;
 	    rd_loc   ?= wrt_slot.receiver;
-	    (rd_loc.local = l).if {	
+	    (rd_loc.local = l).if {
 	      my_require_count := my_require_count + 1;
 	    };
 	  };
@@ -172,8 +172,8 @@ Section Public
       ).if {
 	// Receiver test.
 	(rec = NULL).if {
-	  is_rec_ok := TRUE;	
-	}.elseif {rec.is_constant} then {	
+	  is_rec_ok := TRUE;
+	}.elseif {rec.is_constant} then {
 	  wrt_slot ?= last_write;
 	  is_rec_ok := rec ~= wrt_slot.receiver;
 	} else {
@@ -184,7 +184,7 @@ Section Public
 	    wrt_slot ?= last_write;
 	    rd ?= wrt_slot.receiver;
 	    is_rec_ok := (rd != NULL) && {
-	      (	      		
+	      (
 		{l = rd.variable} && {is_seq_list last_list_current} && {
 		  (
 		    (l.last_seq != NULL) && {l.last_seq.last_write != NULL} &&
@@ -202,7 +202,7 @@ Section Public
 		  ) || {g.require_count = 1}
 		}
 	      }
-	    };	
+	    };
 	  };
 	};
 	(is_rec_ok).if {
@@ -210,7 +210,7 @@ Section Public
 	  rd  ?= val;
 	  (rd = NULL).if {
 	    l := NULL;
-	    g := NULL;	
+	    g := NULL;
 	  } else {
 	    l ?= rd.variable;
 	    g ?= rd.variable;
@@ -219,8 +219,8 @@ Section Public
 	    ( // Constant propagation.
 	      val.is_constant
 	    ) ||
-	    { // Local propagation.	
-	      (l != NULL) && {is_seq_list last_list_current} && {				
+	    { // Local propagation.
+	      (l != NULL) && {is_seq_list last_list_current} && {
 		(
 		  (l.last_seq != NULL) && {l.last_seq.last_write != NULL} &&
 		  {l.last_seq.last_seq_index < last_seq_index} &&
@@ -237,10 +237,10 @@ Section Public
 		) || {g.require_count = 1}
 	      }
 	    }
-	  ).if {	
+	  ).if {
 	    (rec != NULL).if {
 	      rec.remove;
-	    };	    	
+	    };
 	    result := val.my_copy;
 	  }.elseif {
 	    // Propagation step by step.
@@ -248,7 +248,7 @@ Section Public
 	    {ensure_count = 1} &&
 	    {list_current.index > list_current.lower} &&
 	    {list_current.item (list_current.index - 1) = last_write}
-	  } then {    	  	
+	  } then {
 	    (rec != NULL).if {
 	      rec.remove;
 	      wrt_slot ?= last_write;
@@ -263,16 +263,16 @@ Section Public
 	    {last_index.in_range (last_list_current.lower) to (last_list_current.upper)} &&
 	    {last_list_current.item last_index = last_write}
 	  } then {
-	    // Local conversion.	
+	    // Local conversion.
 	    l := type.get_temporary position;
 	    i := l.write (last_write.position) value val;
 	    last_list_current.put i to last_index;
 	    result := l.read (rec.position);
-	    //	
+	    //
 	    rec.remove;
 	    wrt_slot ?= last_write;
 	    wrt_slot.receiver.remove;
-	    unwrite last_write;	
+	    unwrite last_write;
 	  };
 	};
       };
@@ -349,8 +349,8 @@ Section Public
 
       (Self = slot_id).if {
 	val := PROTOTYPE_CST.create position type type;
-      } else {		
-        // Code.	
+      } else {
+        // Code.
         (value != NULL).if {
           rd ?= value;
           ((rd != NULL) && {rd.arg = NULL}).if {
@@ -362,7 +362,7 @@ Section Public
         } else {
           val := type.default_value position;
         };
-	val := val.check_type type with position;		
+	val := val.check_type type with position;
       };
       (style = '+').if {
 	rec := PROTOTYPE_CST.create position type (receiver_type.default);
@@ -414,7 +414,7 @@ Section Public
           (lst.lower).to (lst.upper) do { j:INTEGER;
             s := lst.item j;
             (s.style = '+').if {
-              slot := s.slot_data_intern;	
+              slot := s.slot_data_intern;
               (slot != NULL).if {
                 slot.execute;
               };

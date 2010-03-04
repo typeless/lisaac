@@ -19,23 +19,23 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := PARAMETER_TO_TYPE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Type parameter -> type full";
-  
+
 Section Public
-  
-  - position:POSITION <- 
+
+  - position:POSITION <-
   ( + result:POSITION;
     deferred;
     result
   );
-  
+
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   (
     deferred;

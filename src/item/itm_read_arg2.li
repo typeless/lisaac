@@ -95,7 +95,7 @@ Section Public
 	t1 := v1.static_type;
 	t2 := v2.static_type;
 	(
-	  (! t1.is_expanded) && 	
+	  (! t1.is_expanded) &&
 	  {! t2.is_expanded} &&
 	  {! t1.is_sub_type t2} &&
 	  {! t2.is_sub_type t1}

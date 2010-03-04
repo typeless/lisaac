@@ -19,25 +19,25 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name        := ITM_WRITE_VALUE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Write with a value";
-  
+
 Section Inherit
-  
+
   + parent_itm_write:Expanded ITM_WRITE;
-  
+
 Section Public
 
   - type:STRING_CONSTANT <- ":=";
 
   //
-  // Runnable 
+  // Runnable
   //
 
   - to_run_expr:EXPR <-
@@ -49,26 +49,26 @@ Section Public
     + itm_read:ITM_READ;
     + lst_exp:FAST_ARRAY(EXPR);
     + result:EXPR;
-        
+
     val := value.to_run_expr;
-            
-    val_multiple ?= val;        
+
+    val_multiple ?= val;
     (val_multiple != NULL).if {
       //
-      // Assignment Vector.      
+      // Assignment Vector.
       //
       lst_exp := FAST_ARRAY(EXPR).create_with_capacity (val_multiple.count);
       ass_multiple ?= assign;
-      (ass_multiple != NULL).if {	
+      (ass_multiple != NULL).if {
 	lst_idf := ass_multiple.list_name;
 	(lst_idf.lower).to (lst_idf.upper-1) do { i:INTEGER;
 	  j := affect (lst_idf.item i) with val_multiple index j in lst_exp;
-	};	
-	j := affect (lst_idf.last) with val_multiple index j in lst_exp;	
+	};
+	j := affect (lst_idf.last) with val_multiple index j in lst_exp;
       } else {
 	itm_read ?= assign;
 	? {itm_read != NULL};
-	j := affect (itm_read.name) with val_multiple index j in lst_exp;	
+	j := affect (itm_read.name) with val_multiple index j in lst_exp;
       };
       (j <= val_multiple.upper).if {
 	semantic_error (position,"Incorrect size vector.");
@@ -77,30 +77,30 @@ Section Public
     } else {
       //
       // Assignment simple.
-      //      
-      itm_read ?= assign;      
-      ? {itm_read != NULL};      
+      //
+      itm_read ?= assign;
+      ? {itm_read != NULL};
       result := affect (itm_read.name) with val;
     };
     result
   );
 
 Section Private
-  
-  - affect idf:STRING_CONSTANT with val:EXPR_MULTIPLE 
+
+  - affect idf:STRING_CONSTANT with val:EXPR_MULTIPLE
   index n:INTEGER in lst:FAST_ARRAY(EXPR) :INTEGER <-
   ( + loc:LOCAL;
     + result:INTEGER;
     + slot:SLOT;
     + typ_multi:ITM_TYPE_MULTI;
     + lst_expr:FAST_ARRAY(EXPR);
-    
+
     (n > val.upper).if {
       semantic_error (position,"Incorrect size vector.");
     };
-    
+
     loc := lookup idf;
-    (loc != NULL).if {      
+    (loc != NULL).if {
       lst.add_last (affect_local loc with (val.item n));
       result := n + 1;
     } else {
@@ -120,10 +120,10 @@ Section Private
 	  semantic_error (position,"Incorrect size vector.");
 	};
 	//BSBS: Recycle les EXPR_MULTIPLE
-	lst_expr := FAST_ARRAY(EXPR).create_with_capacity (typ_multi.count);	
+	lst_expr := FAST_ARRAY(EXPR).create_with_capacity (typ_multi.count);
 	0.to (typ_multi.upper) do { i:INTEGER;
 	  lst_expr.add_last (val.item (n+i));
-	};	
+	};
 	lst.add_last (affect_slot idf with (EXPR_MULTIPLE.create lst_expr));
       } else {
 	lst.add_last (affect_slot idf with (val.item n));

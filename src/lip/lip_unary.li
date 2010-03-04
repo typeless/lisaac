@@ -19,7 +19,7 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name      := LIP_UNARY;
 
   - copyright := "2003-2008 Sonntag Benoit";
@@ -29,14 +29,14 @@ Section Header
 
 Section Inherit
 
-  + parent_lip_code:Expanded LIP_CODE; 
+  + parent_lip_code:Expanded LIP_CODE;
 
 Section Public
-  
+
   + value:LIP_CODE;
-    
+
   + operator:CHARACTER;
-  
+
   //
   // Creation.
   //
@@ -49,25 +49,25 @@ Section Public
   );
 
   - make p:POSITION operator op:CHARACTER with v:LIP_CODE <-
-  ( 
-    position := p;    
+  (
+    position := p;
     operator := op;
     value := v;
   );
-  
+
   //
   // Run.
   //
-  
+
   - run_expr:LIP_CONSTANT <-
   ( + result:LIP_CONSTANT;
-        
-    result := value.run_expr;        
+
+    result := value.run_expr;
     (operator)
     .when '-' then { result := - result; }
     .when '!' then { result := ! result; };
     (result = NULL).if {
       semantic_error (position,"Incorrect type.");
     };
-    result    
+    result
   );

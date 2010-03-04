@@ -19,90 +19,90 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-  
+
   + name    := READ_LOCAL;
 
   - copyright   := "2003-2007 Benoit Sonntag";
 
-  
+
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment := "Read for local.";
-  
+
 Section Inherit
-  
+
   + parent_read:Expanded READ;
-    
+
 Section Public
-  
-  - is_invariant:BOOLEAN <- local.is_invariant;  
-  
+
+  - is_invariant:BOOLEAN <- local.is_invariant;
+
   + local:LOCAL;
-  
+
   - variable:VARIABLE <- local;
-  
+
   //
   // Comparison.
   //
-  
-  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <- 
+
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-
   ( + rd:READ_LOCAL;
-    
+
     rd ?= other;
-    ((rd != NULL) && {local = rd.local})    
+    ((rd != NULL) && {local = rd.local})
   );
-    
+
   //
   // Creation.
   //
-    
+
   - create p:POSITION with l:LOCAL :SELF <-
   ( + result:SELF;
-    
+
     result := clone;
     result.make p with l;
-    result    
+    result
   );
-  
+
   - make p:POSITION with l:LOCAL <-
   (
     position := p;
-    local    := l;       
+    local    := l;
   );
-  
+
   //
   // Execute
   //
-  
+
   - execute_access_unlink:INSTR <- NULL;
-  
+
   - execute_access_link;
-  
+
   //
   // Genere
   //
-    
+
   - genere buffer:STRING <-
   ( + tb:PROFIL_BLOCK;
     + idf:STRING_CONSTANT;
-    
+
     idf := ALIASER_LOCAL.read Self;
     (local.is_result /*ensure_count = -100*/).if {
       buffer.add_last '*';
     };
     buffer.append idf;
     //
-    
-    tb ?= local.type.raw;    
+
+    tb ?= local.type.raw;
     (tb != NULL).if {
       ALIASER_LOCAL.add_var_size local;
     };
-    
+
     ((variable.type_set.count = 1) && {variable.type_set.first = TYPE_NULL}).if {
       buffer.append " /* Always NULL */ ";
     };
-    
+
   );
-  
+
 
 
 
