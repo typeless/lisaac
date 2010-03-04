@@ -4,7 +4,8 @@ Feature: Bootstrapping
   I want to bootstrap the compiler
 
   Background:
-    Given lisaac/ is in the PATH
+    Given I am in the lisaac directory
+    And   lisaac/ is in the PATH
     And   make.lip is installed
     And   a file "tmp/path.h" constructed with:
       """

@@ -20,8 +20,12 @@ Given /^I am in an empty directory$/ do
   FileUtils.cd(dir);
 end
 
-Given /^I am in "(.*)"$/ do |dir|
+Given /^I am in the lisaac directory$/ do |dir|
+  @oldcwd = FileUtils.pwd();
   FileUtils.cd($lisaac_path);
+end
+
+Given /^I am in "(.*)"$/ do |dir|
   @oldcwd = FileUtils.pwd();
   FileUtils::mkdir_p(dir);
   FileUtils.cd(dir);
