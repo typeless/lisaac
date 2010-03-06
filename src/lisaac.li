@@ -509,7 +509,7 @@ Section Private
       buf.append
       "static void lisaac_coverage_hook(unsigned long start, unsigned long stop)\n\
       \{\n\
-      \  fprintf (lisaac_coverage_file, \"%d:%d:%d:%d:%s\\n\",\n\
+      \  fprintf (lisaac_coverage_file, \"COV:%d:%d:%d:%d:%s\\n\",\n\
       \          start >> 17, (start >> 9) & 0xFF,\n\
       \          stop  >> 17, (stop  >> 9) & 0xFF,\n\
       \          __Lisaac_proto_file_names[start & 0x1FF]);\n\
@@ -620,6 +620,10 @@ Section Public
     // Load Environment.
     //
     read_options;
+    is_coverage.if {
+      output_coverage := STRING.create_from_string
+        "# CODE:BEGIN_LINE:COL:END_LINE:COL:FILENAME\n";
+    };
     is_verbose.if {
       string_tmp.copy "\ninput  file: ";
       string_tmp.append input_name;
@@ -740,8 +744,9 @@ Section Public
     output_code.append "{\n";
     is_coverage.if {
       output_code.append "lisaac_coverage_file = fopen(\"";
-      output_code.append (type_input.prototype.filename);
+      output_code.append output_name;
       output_code.append ".cov\", \"a\");\n";
+      output_code.append "  fprintf (lisaac_coverage_file, \"# COV:BEGIN_LINE:COL:END_LINE:COL:FILENAME\\n\");\n";
     };
     indent.append "  ";
 
@@ -798,7 +803,21 @@ Section Public
     };
     FS_MIN.write file_output with output_code size (output_code.count);
     FS_MIN.close file_output;
-    //
+
+    is_coverage.if {
+      string_tmp.copy output_name;
+      string_tmp.append ".cov";
+      (! FS_MIN.make_file string_tmp).if {
+        STD_ERROR.put_string "Error: File ";
+        STD_ERROR.put_string string_tmp;
+        STD_ERROR.put_string " is not created !\n";
+        die_with_code exit_failure_code;
+      };
+      f := FS_MIN.open_write string_tmp;
+      FS_MIN.write f with output_coverage size (output_coverage.count);
+      FS_MIN.close f;
+    };
+
     (is_graph).if {
       + p:PROFIL;
       (PROFIL_LIST.profil_list.lower).to (PROFIL_LIST.profil_list.upper) do { j:INTEGER;

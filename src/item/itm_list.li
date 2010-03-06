@@ -126,6 +126,13 @@ Section Public
       lst.add_first ( // TODO: Mildred: optimize (ALIAS_ARRAY)
         ITM_EXTERNAL.create position text (ALIAS_STR.get string_tmp)
       );
+      output_coverage.append "CODE:";
+      position     .line  .append_in output_coverage; output_coverage.add_last ':';
+      position     .column.append_in output_coverage; output_coverage.add_last ':';
+      last_position.line  .append_in output_coverage; output_coverage.add_last ':';
+      last_position.column.append_in output_coverage; output_coverage.add_last ':';
+      output_coverage.append (position.prototype.filename);
+      output_coverage.add_last '\n';
     };
   );
 
