@@ -138,6 +138,7 @@ Section Public
 
   - is_readable:BOOLEAN;
   - is_graph:BOOLEAN;
+  - is_coverage:BOOLEAN;
 
   //
   // Other flags.

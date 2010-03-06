@@ -44,7 +44,8 @@ Section Private
   
   // Generate code.
   + is_cop:BOOLEAN;     // Correct value after compilation.
-  + is_library:BOOLEAN; // For build a lisaac library C 
+  + is_library:BOOLEAN; // For build a lisaac library C
+  + is_coverage:BOOLEAN;// Generate coverage information
   + execute_back_end:BOOLEAN := TRUE;
   + execute_status_code:INTEGER := 0;
 
@@ -344,11 +345,17 @@ Section Public
   (
     is_quiet := TRUE;
   );
-  
+
   - build_library <-
-  // For to build library (`main' => `init') 
+  // For to build library (`main' => `init')
   (
     is_library := TRUE;
+  );
+
+  - coverage <-
+  // Build coverage information
+  (
+    is_coverage := TRUE;
   );
   
   //

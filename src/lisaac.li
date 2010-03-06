@@ -257,6 +257,7 @@ Section Private
     is_statistic       := LIP_CODE.get_boolean (ALIAS_STR.slot_is_statistic);
     is_quiet           := LIP_CODE.get_boolean (ALIAS_STR.slot_is_quiet);
     is_library         := LIP_CODE.get_boolean (ALIAS_STR.slot_is_library);
+    is_coverage        := LIP_CODE.get_boolean (ALIAS_STR.slot_is_coverage);
     //
     ((input_name = NULL) || {input_name.is_empty}).if {
       "ERROR: `input_file' is empty.\n".print;
@@ -489,6 +490,32 @@ Section Private
       \  print_char(car);                   \n\
       \} \n\n";
     };
+    is_coverage.if {
+      buf.append "char *__Lisaac_proto_file_names[";
+      buf.append (PROTOTYPE.prototype_list.count.to_string);
+      buf.append "]={\n";
+      (PROTOTYPE.prototype_list.lower).to (PROTOTYPE.prototype_list.upper-1) do {
+        j:INTEGER;
+        proto := PROTOTYPE.prototype_list.item j;
+        buf.append "  \"";
+        buf.append (proto.filename);
+        buf.append "\",\n";
+      };
+      proto := PROTOTYPE.prototype_list.last;
+      buf.append "  \"";
+      buf.append (proto.filename);
+      buf.append "\"\n};\n\n";
+      title "CODE COVERAGE HOOKS" in buf;
+      buf.append
+      "static void lisaac_coverage_hook(unsigned long start, unsigned long stop)\n\
+      \{\n\
+      \  fprintf (lisaac_coverage_file, \"%d:%d:%d:%d:%s\\n\",\n\
+      \          start >> 17, (start >> 9) & 0xFF,\n\
+      \          stop  >> 17, (stop  >> 9) & 0xFF,\n\
+      \          __Lisaac_proto_file_names[start & 0x1FF]);\n\
+      \}\n\
+      \\n";
+    };
   );
 
   - load_main_object <-
@@ -630,6 +657,9 @@ Section Public
       (debug_level_option != 0).if {
         output_decl.append "#include <signal.h>\n";
       };
+      is_coverage.if {
+        output_decl.append "#include <stdio.h>\n";
+      };
       output_decl.append
       "int arg_count;\n\
       \char **arg_vector;\n";
@@ -682,6 +712,15 @@ Section Public
       };
     };
 
+    // Coverage
+    is_coverage.if {
+      output_code.append "\
+        \\n/* Code Coverage Hooks */\n\
+        \static FILE* lisaac_coverage_file = NULL;\n\
+        \static void lisaac_coverage_hook(unsigned long start, unsigned long stop);\n\
+        \\n";
+    };
+
     // Extern source code.
     output_code.append "/* Source code */\n";
     PROFIL_LIST.genere_handler output_code;
@@ -699,11 +738,20 @@ Section Public
       };
     };
     output_code.append "{\n";
+    is_coverage.if {
+      output_code.append "lisaac_coverage_file = fopen(\"";
+      output_code.append (type_input.prototype.filename);
+      output_code.append ".cov\", \"a\");\n";
+    };
     indent.append "  ";
 
     profil_current := NULL;
     list_main.genere_extern output_code;
 
+    is_coverage.if {
+      output_code.append "fflush(lisaac_coverage_file);\n";
+      output_code.append "fclose(lisaac_coverage_file);\n";
+    };
     (is_java).if_false {
       output_code.append "  return(0);\n";
     };

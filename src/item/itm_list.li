@@ -34,7 +34,7 @@ Section Inherit
 
 Section Public
 
-  // BSBS: OPTIM : Dans 95% des cas, les list sont sans local (il faudrait spécialiser)
+  // BSBS: OPTIM : Dans 95% des cas, les list sont sans local (il faudrait spï¿½cialiser)
   // Mais pb avec le parser...
 
   //
@@ -110,6 +110,27 @@ Section Public
     };
     result
   );
+
+  - insert_code_coverage_hook last_position:POSITION in lst:FAST_ARRAY(ITM_CODE) <-
+  [
+    -? { lst != NULL };
+  ]
+  (
+    is_coverage.if {
+      //warning_error2 (position, last_position, "ITM_LIST.insert_code_coverage_hook");
+      string_tmp.copy "lisaac_coverage_hook(";
+      position.code.append_in string_tmp;
+      string_tmp.append ",";
+      last_position.code.append_in string_tmp;
+      string_tmp.append ")";
+      lst.add_first ( // TODO: Mildred: optimize (ALIAS_ARRAY)
+        ITM_EXTERNAL.create position text (ALIAS_STR.get string_tmp)
+      );
+    };
+  );
+
+  - insert_code_coverage_hook last_position:POSITION <-
+    insert_code_coverage_hook last_position in code;
 
   //
   // Runnable.
