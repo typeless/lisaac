@@ -1,0 +1,322 @@
+#!/usr/bin/perl -w
+
+#######################################################################
+##                        <http://lisaac.org>                        ##
+##                       Lisaac  Coverage Tool                       ##
+##                                                                   ##
+##                LSIIT - ULP - CNRS - INRIA - FRANCE                ##
+##                                                                   ##
+#######################################################################
+## Copyright (c) 2010 Mildred Ki'Lya <mildred593(at)online.fr>
+##
+## Permission is hereby granted, free of charge, to any person
+## obtaining a copy of this software and associated documentation
+## files (the "Software"), to deal in the Software without
+## restriction, including without limitation the rights to use,
+## copy, modify, merge, publish, distribute, sublicense, and/or sell
+## copies of the Software, and to permit persons to whom the
+## Software is furnished to do so, subject to the following
+## conditions:
+##
+## The above copyright notice and this permission notice shall be
+## included in all copies or substantial portions of the Software.
+##
+## THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+## EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+## OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+## NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+## HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+## WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+## FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+## OTHER DEALINGS IN THE SOFTWARE.
+#######################################################################
+
+=pod
+
+=head1 NAME
+
+licoverage - Generate coverage reports for Lisaac projects
+
+=head1 SYNOPSIS
+
+licoverage [I<OPTION> ...] [I<FILE> ...]
+
+=head1 DESCRIPTION
+
+B<licoverage> will read the given input file(s) and generate an HTML report
+in the output directory.
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--help, -h>
+
+Show this help
+
+=item B<--exclude, -e> I<PATTERN>
+
+Exclude files matching the I<PATTERN>
+
+=item B<--html>
+
+Generate HTML report
+
+=item B<--output, -o> I<DIR>
+
+Select output directory I<DIR> for HTML generation
+
+=back
+
+=cut
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use File::Basename;
+use Template;
+use File::Path;
+
+###############################################################################
+##                              READ OPTIONS
+###############################################################################
+
+
+my @cov_files = '-';
+my $outdir    = '.';
+my $help      = '';
+my $gen_html  = '';
+my @excludes;
+
+GetOptions ("help|h|?"        => \$help,
+            "output|o=s"      => \$outdir,
+            "exclude|x=s"     => \@excludes,
+            "html"            => \$gen_html)
+           or pod2usage(1);
+if ($help) {
+  pod2usage(-exitstatus => 0, -verbose => 2);
+  exit 0;
+}
+
+@cov_files=@ARGV;
+
+###############################################################################
+##                               READ <DATA>
+###############################################################################
+
+my %all_templates;      # Templates
+
+my $template_name = '';
+while(my $line = <DATA>) {
+  if ($line =~ m/^#TEMPLATE:(.*)\n$/) {
+    $template_name = $1;
+  } elsif ($template_name) {
+    $all_templates{$template_name} .= $line;
+  }
+}
+
+###############################################################################
+##                            COVERAGE ALGORITHM
+###############################################################################
+
+
+my $num_blocks = 0;             # How many blocks
+my %all_blocks;                 # Information about a block
+my %all_files;                  # Information about a file indexed by filename
+my $common_dir = "";            # Common dir for all filenames
+my %file_id;                    # Set for all file id (simple and unique file name)
+
+sub common_dir {
+    my $prefix = shift;
+    for (@_) {
+        while (! /^$prefix/) {
+          $prefix =~ s|/[^/]+/?$||;
+        }
+    }
+    return $prefix;
+}
+
+sub phtml {
+  $_ = join(' ', @_);
+  $_ =~ s/&/&nbsp;/g;
+  $_ =~ s/>/&gt;/g;
+  $_ =~ s/</&lt;/g;
+  return $_;
+}
+
+sub new_block {
+  my ($start_line, $start_col, $stop_line, $stop_col, $proto_file) = @_;
+  my $block_id = "$start_line:$start_col:$proto_file";
+  if(not $all_files{$proto_file}) {
+    #
+    # This is a new file
+    #
+    my $id = basename($proto_file);
+    $id = basename(dirname($proto_file))."_$id" if $file_id{$id};
+    my $i = 1;
+    while ($file_id{$id}) {
+      $i++;
+      $id =~ s/(\.[0-9]*)\.?([^\.]*)$/.$i.$2/;
+    }
+    $file_id{$id} = 1;
+    $all_files{$proto_file} = {
+      'filename',       $proto_file,    # File name
+      'id',             $id,            # File id (simple file name)
+      'count',          0,              # How many blocks in the file
+      'covered',        0,              # How many covered blocks
+      'blocks',         []              # List of all block ids
+    }
+  }
+  if(not $all_blocks{$block_id}) {
+    #
+    # This is a new block
+    #
+    $all_files{$proto_file}->{count}++;
+    my @file_blocks = \$all_files{$proto_file}->{blocks};
+    $file_blocks[@file_blocks] = $block_id;
+    $all_blocks{$block_id} = {
+      'start',          [$start_line, $start_col],      # Start line and column
+      'stop',           [$stop_line,  $stop_col],       # Stop line and column
+      'filename',       $proto_file,                    # Proto filename
+      'count',          0                               # How many time executed
+    };
+    if ($num_blocks == 0) {
+      $common_dir = dirname ($proto_file);
+    } else {
+      $common_dir = common_dir ($common_dir, dirname($proto_file));
+    }
+    $num_blocks++;
+  }
+  return $block_id;
+}
+
+foreach my $filename (@cov_files) {
+  my $FILE;
+  if ($filename ne '-') {
+    open ($FILE, '<', $filename);
+  } else {
+    $FILE = 'STDIN';
+  }
+  my $lineno=0;
+  while (my $line = <$FILE>) {
+    $lineno++;
+    next if substr($line, 0, 1) eq '#';
+    chop $line;
+    @_ = split(':', $line);
+    my $line_type = shift @_;
+    if ($line_type eq "COV" or $line_type eq "CODE") {
+      my $start_line = shift @_;
+      my $start_col  = shift @_;
+      my $stop_line  = shift @_;
+      my $stop_col   = shift @_;
+      my $proto_file = join(':', @_);
+      my $skip       = 0;
+      foreach my $exclude (@excludes) {
+        $skip = ($proto_file =~ m/$exclude/);
+      }
+      next if $skip;
+      my $block_id = new_block($start_line, $start_col, $stop_line, $stop_col, $proto_file);
+      if ($line_type eq "COV") {
+        if (not $all_blocks{$block_id}->{count}) {
+          $all_files{$proto_file}->{covered}++;
+        }
+        $all_blocks{$block_id}->{count}++;
+      }
+    } else {
+      print STDERR "$filename:$lineno: Unknown line type $line_type\n";
+    }
+  }
+  if ($filename ne '-') {
+    close $FILE;
+  }
+}
+
+if ($gen_html) {
+  my $template = Template->new() || die Template->error(), "\n";
+  my $vars = {
+    common_dir  => phtml($common_dir),
+    files       => [],
+  };
+  my $i = 0;
+  while (my ($id, $file) = each(%all_files)) {
+    $vars->{files}->[$i++] = {
+      shortname         => phtml(substr($file->{filename}, length($common_dir)+1)),
+      block_count       => $file->{count},
+      block_covered     => $file->{covered},
+      percent_covered   => sprintf("% 3.2f", 100 * $file->{covered}/$file->{count}),
+      url               => phtml("coverage_".$file->{id}.".html")
+    }
+  }
+  mkpath($outdir);
+  open INDEX, '>', "$outdir/index.html";
+  $template->process(\$all_templates{"index.html"}, $vars, \*INDEX)
+    || die $template->error(), "\n";
+  close INDEX;
+}
+
+while (my ($id, $file) = each(%all_files)) {
+  my $proto_file = $file->{filename};
+  print substr($proto_file, length($common_dir)+1);
+  my $percent = 100 * $file->{covered}/$file->{count};
+  printf(": % 3.2f%% covered", $percent);
+  print " ($file->{covered}/$file->{count})\n"
+}
+
+
+
+__END__
+
+#TEMPLATE:index.html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Code coverage</title>
+    <style>
+      .progressbar {
+        width: 100px;
+        border: solid thin black;
+        height: 0.5em;
+        background-color: white;
+      }
+      .progressbar div {
+        background-color: black;
+        height: 100%;
+      }
+      td.numeric, .right {
+        text-align: right;
+      }
+      .left {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Code coverage</h1>
+    <dl>
+      <dt>Directory</dt>
+      <dd>[% common_dir %]</dd>
+    </dl>
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th colspan="6">Coverage</th>
+        </tr>
+      </thead>
+      <tbody>
+[% FOREACH file IN files %]
+        <tr>
+          <td><a href="[% file.url %]">[% file.shortname %]</a></td>
+          <td class="numeric">[% file.percent_covered %]%</td>
+          <td><div class="progressbar"><div style="width: [% file.percent_covered %]px;"></div></div></td>
+          <td class="right">[% file.block_count %]</td>
+          <td>/</td>
+          <td class="left">[% file.block_covered %]</td>
+        </tr>
+[% END %]
+      </tbody>
+    </table>
+  </body>
+</html>
