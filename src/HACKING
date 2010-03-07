@@ -1,99 +1,279 @@
 A Guide to Hacking in the Compiler Source
 =========================================
 
-Type Hierarchy
+You can generate the type hierarchy using the script `src/hierarchy.sh`
+
+Questions to Benoit
+===================
+
+- Why `&` and `|` are duplicated in `EXPR_AND_LOGIC`, `EXPR_AND`,
+  `EXPR_OR_LOGIC` and `EXPR_OR`. Is that for optimization purposes knowing that
+  the logic AND might not have to keep the exact result of the arithmetic AND?
+
+- Why no postcondition in `LIST.execute` ?
+
+        [ // make sure LIST.execute return a list
+          +? { + l:LIST; l ?= Result != NULL };
+        ]
+
+Global Variables
+================
+
+Found in `ANY`.
+
+- `list_main:LIST` is the list of the `main()` function.
+
+- `profil_current:PROFIL`: the profil being executed in the current execution
+  pass
+
+- `seq_list:FAST_ARRAY(LIST)`: the list hierarchy during the execute pass.
+  First comes the containing lists and then the contained lists. This is sort of
+  a stack trace.
+
+- `list_current:LIST`: the current list being executed. This is not always the
+  last element of `seq_list` as when a `PROFIL` is executed, the `list_current`
+  is reset to `NULL`.
+
+
+Passes
+======
+
+Passes can be found in `PROTOTYPE.depend`
+
+Depending Pass
 --------------
 
-### `INSTR`
+Main code in `NODE.extend_pass`.
 
-`external`:
+This is where all the parsing happens and all the abstract syntax tree (AST) is
+generated.
 
-- `FORALL_DATA`
-- `CALL_NULL`
+Executing Pass
+--------------
 
-`code_life`:
+Recursive executing pass is in `PROFIL_LIST.execute_pass_recursive`
 
-- `LOOP_END`
-- `COP_LOCK`
-- `LIST`
-- `CALL_SLOT`
-- `PUSH`
-- `COP_UNLOCK`
-- `NOP`
-- `LOOP`
-- `SWITCH`
-- `NODE`
-- `EXPR`
-- `WRITE`
-    - `WRITE_SLOT`
-    - `WRITE_LOCAL`
-    - `WRITE_GLOBAL`
-    - `PUT_TO` (external)
+Main code in `PROFIL_LIST.execute` with some code before and after in
+`PROTOTYPE.depend` to cleanup before a new pass or check something that would
+trigger a new pass.
 
-### `EXPR`
+`PROFIL_LIST` contain all profils for slots generated. They are ordered with the
+profils that are alive first, and the dead profils last. There are three
+categories of profils:
+- the profils that are always alive (`Section External`) below `life_limit_base`
+- the profils alive for the current executing pass below `life_limit`
+- the dead profils with an index greater or equal to `life_limit`.
 
-`external`:
+A standard execution pass is like this:
 
-- `EXTERNAL_C`
-- `SIZE_OF`
-- `ITEM`
-- `GET_TYPE_ID`
-- `IS_EXPANDED`
-- `PUT_TO`
+1. First, all profils alive from the previous pass are marked dead (lower
+   `life_limit` to `life_limit_base`)
+2. It call `execute` on `list_main`
+3. For the profils (`profil_current`) that were marked alive during the previous
+   step, it call `execute` on them.
+4. Clean the dead profils.
+5. Determine if there is a need for a new executing pass.
 
-`external/comparison`:
+A recursive execution pass has `PROFIL.mode_recursive` to `TRUE` and is similar
+to a normal execution pass, with some differences.
 
-- `EXPR_BINARY_CMP`
-    - `EXPR_SUP_EQ`
-    - `EXPR_SUP`
-    - `EXPR_INF`
-    - `EXPR_EQUAL`
-    - `EXPR_INF_EQ`
-    - `EXPR_NOT_EQUAL`
+Code Generation
+---------------
 
-`external/logic`:
+Generate function signatures: `PROFIL_LIST.genere_handler`
 
-- `EXPR_BINARY_LOGIC`
-    - `EXPR_AND_LOGIC`
-        - `EXPR_AND_AND_LOGIC`
-    - `EXPR_OR_LOGIC`
-        - `EXPR_OR_OR_LOGIC`
-- `EXPR_UNARY_LOGIC`
-    - `EXPR_NOT_LOGIC`
+Generate the `main()` source code: `LIST.genere_extern`
 
-`external/arithmetic`:
+Generate functions: `PROFIL_LIST.genere`
 
-- `EXPR_UNARY`
-    - `EXPR_NEG`
-    - `EXPR_NOT`
-- `EXPR_BINARY`
-    - `EXPR_AND`
-    - `EXPR_DIV`
-    - `EXPR_MOD`
-    - `EXPR_MUL`
-    - `EXPR_SUB`
-    - `EXPR_SHIFT_L`
-    - `EXPR_SHIFT_R`
-    - `EXPR_ADD`
-    - `EXPR_OR`
-    - `EXPR_XOR`
+Particular Types
+================
 
-`code_life`:
+AST Objects (items)
+-------------------
 
-- `CAST`
-- `EXPR_MULTIPLE`
-- `RESULT`
-- `READ`
-    - `READ_SLOT`
-    - `READ_LOCAL`
-    - `READ_GLOBAL`
+The objects descending from `ITM_CODE` and `ITM_ARGUMENT` and `ITM_TYPE` and
+more generally, all items in the `item` directory form the abstract syntax tree.
 
-`constant`:
+# `ITM_ARGUMENT` #
 
-- `CONSTANT`
-    - `CHARACTER_CST`
-    - `INTEGER_CST`
-    - `NATIVE_ARRAY_CHARACTER_CST`
-    - `PROTOTYPE_CST`
-    - `REAL_CST`
-    - `STRING_CST`
+- `ITM_ARGUMENT` (`item`)
+    - `ITM_ARG` (`item`)
+    - `ITM_ARGS` (`item`)
+
+
+This represents an argument type list. This is a list of `ITM_TYPE_MONO` and is
+specialized in two versions. `ITM_ARG` contains only one type while `ITM_ARGS`
+can contain multiple types
+
+# `ITM_CODE` #
+
+- `ITM_CODE` (`item`)
+    - `ITM_LIST` (`item`)
+    - `ITM_BLOCK` (`item`)
+    - `ITM_RESULT` (`item`)
+    - `ITM_BINARY` (`item`)
+    - `ITM_OLD` (`item`)
+    - `ITM_LDOTS` (`item`)
+    - `ITM_EXPRESSION` (`item`)
+    - `ITM_OPERATOR` (`item`)
+    - `ITM_LIST_IDF` (`item`)
+    - `ITM_READ` (`item`)
+        - `ITM_READ_ARG1` (`item`)
+        - `ITM_READ_ARGS` (`item`)
+        - `ITM_READ_ARG2` (`item`)
+    - `ITM_EXTERN` (`item`)
+        - `ITM_EXTERNAL` (`item`)
+        - `ITM_EXTERNAL_TYPE` (`item`)
+    - `ITM_WRITE` (`item`)
+        - `ITM_WRITE_CAST` (`item`)
+        - `ITM_WRITE_VALUE` (`item`)
+        - `ITM_WRITE_CODE` (`item`)
+    - `ITM_CONSTANT` (`item`)
+        - `ITM_PROTOTYPE` (`item`)
+        - `ITM_REAL` (`item`)
+        - `ITM_CHARACTER` (`item`)
+        - `ITM_STRING` (`item`)
+        - `ITM_NUMBER` (`item`)
+
+This represents a bit of code in the AST. It can be transformed in code_life
+objects (instructions and expressions) using the `to_run` for instructions and
+`to_run_expr` for expressions.
+
+The default behaviour of `to_run` is to return the expression from `to_run_expr`
+as an instruction is an instruction (`EXPR` inherit from `INSTR`).
+
+# `ITM_TYPE` #
+
+- `ITM_TYPE` (`item`)
+    - `ITM_TYPE_MULTI` (`item`)
+    - `ITM_TYPE_MONO` (`item`)
+        - `ITM_TYPE_GENERIC_ELT` (`item`)
+        - `ITM_TYPE_BLOCK` (`item`)
+        - `ITM_TYPE_SIMPLE` (`item`)
+            - `ITM_TYPE_PARAMETER` (`item`)
+            - `ITM_TYPE_STYLE` (`item`)
+                - `ITM_TYPE_GENERIC` (`item`)
+
+
+
+
+Code Life Types
+---------------
+
+# `INSTR` #
+
+- `INSTR` (`code_life`)
+    - `FORALL_DATA` (`external`)
+    - `CALL_NULL` (`external`)
+    - `PUT_TO` (`external`)
+    - `LOOP_END` (`code_life`)
+    - `COP_LOCK` (`code_life`)
+    - `LIST` (`code_life`)
+    - `CALL_SLOT` (`code_life`)
+    - `PUSH` (`code_life`)
+    - `COP_UNLOCK` (`code_life`)
+    - `NOP` (`code_life`)
+    - `LOOP` (`code_life`)
+    - `SWITCH` (`code_life`)
+    - `WRITE` (`code_life`)
+        - `PUT_TO` (`external`)
+        - `WRITE_SLOT` (`code_life`)
+        - `WRITE_LOCAL` (`code_life`)
+        - `WRITE_GLOBAL` (`code_life`)
+    - `NODE` (`dispatcher`)
+        - `NODE_TYPE` (`dispatcher`)
+        - `NODE_STYLE` (`dispatcher`)
+    - `EXPR` (`code_life`)
+        - ...
+
+This is an instruction. Instructions can be generated in the target language
+using the `genere` slot and they are subject to the execution pass through the
+`execute` slot.
+
+When executed, an instruction returns a better version of itself as a return
+value, or return `NULL` in case it wishes to remove itself.
+
+TODO: What is `remove` exactly?
+
+# `EXPR` #
+
+- `EXPR` (`code_life`)
+    - `CAST` (`code_life`)
+    - `RESULT` (`code_life`)
+    - `EXPR_MULTIPLE` (`code_life`)
+    - `READ` (`code_life`)
+        - `READ_SLOT` (`code_life`)
+        - `READ_LOCAL` (`code_life`)
+        - `READ_GLOBAL` (`code_life`)
+    - `EXTERNAL_C` (`external`)
+    - `SIZE_OF` (`external`)
+    - `GET_TYPE_ID` (`external`)
+    - `ITEM` (`external`)
+    - `IS_EXPANDED` (`external`)
+    - `EXPR_BINARY_CMP` (`external/comparison`), contains basic operators for
+      `>=`, `>`, `<`, `<=`, `=`, `!=`
+    - `EXPR_BINARY_LOGIC` (`external/logic`), contains basic operators for
+      `&`, `&&`, `|`, `||`
+    - `EXPR_UNARY_LOGIC` (`external/logic`), contains basic operator `!`
+    - `EXPR_UNARY` (`external/arithmetic`), contains basic operator `~` (not)
+       and `-` (minus),
+    - `EXPR_BINARY` (`external/arithmetic`), contains basic operator `^` (xor),
+      `%` (mod), `+`, `-`, `/`, `*`, `&`, `|`, `<<`, `>>`
+    - `CONSTANT` (`constant`)
+        - `STRING_CST` (`constant`)
+        - `PROTOTYPE_CST` (`constant`)
+        - `CHARACTER_CST` (`constant`)
+        - `INTEGER_CST` (`constant`)
+        - `REAL_CST` (`constant`)
+        - `NATIVE_ARRAY_CHARACTER_CST` (`constant`)
+
+
+This is an instruction and represents an expression. It does have a
+`static_type`. As for all instructions, it is subject to the excuting pass
+through the `execute` slot.
+
+TODO: What are `execute_link` and `execute_unlink`
+
+# `LIST` #
+
+This is a list of instructions (`INSTR`) and is itself an instruction. This can
+be either a list in Lisaac (in braces), a block (curly braces) or contract
+blocks (brackets). It has an embedded index that point to a specific
+instruction.
+
+TODO: understand how the list return its expressions, given that they are
+expressions and not instructions, and that there can be more than one
+expression. Is it through `RESULT`?
+
+## Execution ##
+
+When executed, it puts itself as `list_current` for the time of its execution
+and restore the old value afterwards. Then, for all the instructions it
+contains, it excutes the instruction and replace the new instruction (returned
+by `execute`) in the list.
+
+The new list (which is the same but modified on the fly) is returned from the
+execution step except in the following optimizing cases:
+
+- When there is a call on NULL, all following instructions are removed as they
+  are not expected to be executed
+- When there is a `list_current` (a parent list). The list move all its
+  instructions in the `list_current` just before the child list.
+
+# `PROFIL` #
+
+A profil is a function signature in C. It represents a slot in Lisaac that might
+be customized with generic parameters or for optimization purposes.
+
+A profil can be living or dead in the `PROFIL_LIST`. Just look at the
+documentation on the executing pass for more information about `PROFIL_LIST`.
+
+A profil contains `code` which is a `LIST`. This is the implementation of the
+function. When executed through the `execute` slot, it forward the message
+calling `code.execute`. And the resulting instruction has better to still be
+a `LIST`
+
+`execute_recursive` is not called by `PROFIL_LIST` but by `PROFIL.set_life`
+only when in a recursive pass.
+

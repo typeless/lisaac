@@ -246,7 +246,11 @@ Section Public
     execute_case;
 
     (list_current != NULL).if {
-      // Fusion list.
+      // Merge the child list in the parent list
+      //
+      // Optimization: don't copy the last instruction but instead return it
+      // so it avoid shifting all elements of 1 position before shifting them
+      // back because the list is no longer there.
       (is_empty).if_false {
         lower.to (upper-1) do { j:INTEGER;
           list_current.insert_before (item j);
@@ -410,6 +414,7 @@ Section Public
 Section Private
 
   - add_local tab:FAST_ARRAY(LOCAL) in buf:STRING <-
+  // Generate C code to add locals
   ( + loc:LOCAL;
     + t:TYPE_FULL;
     + cur:INTEGER;
