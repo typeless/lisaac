@@ -1,0 +1,99 @@
+A Guide to Hacking in the Compiler Source
+=========================================
+
+Type Hierarchy
+--------------
+
+### `INSTR`
+
+`external`:
+
+- `FORALL_DATA`
+- `CALL_NULL`
+
+`code_life`:
+
+- `LOOP_END`
+- `COP_LOCK`
+- `LIST`
+- `CALL_SLOT`
+- `PUSH`
+- `COP_UNLOCK`
+- `NOP`
+- `LOOP`
+- `SWITCH`
+- `NODE`
+- `EXPR`
+- `WRITE`
+    - `WRITE_SLOT`
+    - `WRITE_LOCAL`
+    - `WRITE_GLOBAL`
+    - `PUT_TO` (external)
+
+### `EXPR`
+
+`external`:
+
+- `EXTERNAL_C`
+- `SIZE_OF`
+- `ITEM`
+- `GET_TYPE_ID`
+- `IS_EXPANDED`
+- `PUT_TO`
+
+`external/comparison`:
+
+- `EXPR_BINARY_CMP`
+    - `EXPR_SUP_EQ`
+    - `EXPR_SUP`
+    - `EXPR_INF`
+    - `EXPR_EQUAL`
+    - `EXPR_INF_EQ`
+    - `EXPR_NOT_EQUAL`
+
+`external/logic`:
+
+- `EXPR_BINARY_LOGIC`
+    - `EXPR_AND_LOGIC`
+        - `EXPR_AND_AND_LOGIC`
+    - `EXPR_OR_LOGIC`
+        - `EXPR_OR_OR_LOGIC`
+- `EXPR_UNARY_LOGIC`
+    - `EXPR_NOT_LOGIC`
+
+`external/arithmetic`:
+
+- `EXPR_UNARY`
+    - `EXPR_NEG`
+    - `EXPR_NOT`
+- `EXPR_BINARY`
+    - `EXPR_AND`
+    - `EXPR_DIV`
+    - `EXPR_MOD`
+    - `EXPR_MUL`
+    - `EXPR_SUB`
+    - `EXPR_SHIFT_L`
+    - `EXPR_SHIFT_R`
+    - `EXPR_ADD`
+    - `EXPR_OR`
+    - `EXPR_XOR`
+
+`code_life`:
+
+- `CAST`
+- `EXPR_MULTIPLE`
+- `RESULT`
+- `READ`
+    - `READ_SLOT`
+    - `READ_LOCAL`
+    - `READ_GLOBAL`
+
+`constant`:
+
+- `CONSTANT`
+    - `CHARACTER_CST`
+    - `INTEGER_CST`
+    - `NATIVE_ARRAY_CHARACTER_CST`
+    - `PROTOTYPE_CST`
+    - `REAL_CST`
+    - `STRING_CST`
