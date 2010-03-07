@@ -35,14 +35,21 @@ Section Inherit
 Section Public
 
   - is_invariant:BOOLEAN <- FALSE;
+  // TODO: Documentation
+  // For expressions, it seems they are invariant if they are constant, like 
+  // sizeof or binary operators on two invariant expressions.
+  // For instructions, it is redefined in LIST, SWITCH and WRITE
 
   //
   //
   //
 
   - hash_code:INTEGER <- INTEGER.force_conversion position;
+  // Hash code of instruction for storage
 
   - my_copy:SELF <-
+  // TODO: Documentation
+  // Deferred
   (
     debug_display;
     deferred;
@@ -54,10 +61,14 @@ Section Public
   //
 
   - cmp other:INSTR :BOOLEAN := FALSE;
+  // TODO: Documentation
 
   - i_am_the_last i:INSTR :BOOLEAN <- (i = Self);
+  // TODO: Documentation
 
   - execute:INSTR <-
+  // TODO: Documentation
+  // Deferred
   (
     debug_display;
     deferred;
@@ -65,12 +76,16 @@ Section Public
   );
 
   - remove <-
+  // TODO: Documentation
+  // Deferred
   (
     debug_display;
     deferred;
   );
 
   - genere buffer:STRING <-
+  // Generate the C code in `buffer'
+  // Deferred
   (
     // BUG.
     display buffer;
@@ -84,6 +99,7 @@ Section Public
   //
 
   - display_ref buffer:STRING <-
+  // Display reference for debug purposes
   (
     is_verbose.if {
       buffer.append "<";
@@ -93,12 +109,15 @@ Section Public
   );
 
   - display buffer:STRING <-
+  // Display instruction for debug purposes
+  // Deferred
   (
     "INSTR.display\n".print;
     deferred;
   );
 
   - debug_display <-
+  // Print the result of the `display' slot
   ( + voir:STRING;
 
     voir := STRING.create 250;
@@ -108,6 +127,7 @@ Section Public
   );
 
   - simplify_type v:VARIABLE <-
+  // TODO: Documentation
   ( + tmp_type:TYPES_TMP;
 
     ((! v.is_static) && {! v.type.is_strict}).if {

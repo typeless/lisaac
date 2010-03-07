@@ -128,7 +128,7 @@ bin/shorter: bin/lisaac make.lip bin/path.h
 # Documentation
 #
 
-doc: doc/html
+doc: doc/html src/HACKING.html
 doc/html: bin/shorter make.lip lib
 	mkdir -p doc/html
 	cd doc && ../bin/shorter -d -f belinda ../lib -o html 
@@ -191,3 +191,27 @@ clean:
 
 clean-spaces:
 	-find . \( -name "*.li" -o -name "*.lip" \) -print0 | xargs -0 sed -i 's/\s*$$//'
+
+src/HACKING.html: src/HACKING Markdown.pl
+	$(MARKDOWN_CMDLINE)
+
+### Markdown ###
+
+MARKDOWN_URL=http://daringfireball.net/projects/downloads/Markdown_1.0.1.zip
+MARKDOWN_DIR=Markdown_1.0.1
+MARKDOWN_CMDLINE=./Markdown.pl <$< >$@
+
+Markdown.zip:
+	wget $(MARKDOWN_URL) -O $@
+
+Markdown.pl:
+	$(MAKE) Markdown.zip
+	unzip -u -j Markdown.zip $(MARKDOWN_DIR)/$@
+	chmod +x $@
+	-$(RM) Markdown.zip
+
+%.html: %.mdwn Markdown.pl
+	$(MARKDOWN_CMDLINE)
+
+%.html: % Markdown.pl
+	$(MARKDOWN_CMDLINE)
