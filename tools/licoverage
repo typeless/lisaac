@@ -126,6 +126,8 @@ my %all_blocks;                 # Information about a block
 my %all_files;                  # Information about a file indexed by filename
 my $common_dir = "";            # Common dir for all filenames
 my %file_id;                    # Set for all file id (simple and unique file name)
+my %all_starts;                 # Array of block id indexed by filename, start line and column
+my %all_stops;                  # Array of block id indexed by filename, stop line and column
 
 sub common_dir {
     my $prefix = shift;
@@ -176,11 +178,14 @@ sub new_block {
     my @file_blocks = \$all_files{$proto_file}->{blocks};
     $file_blocks[@file_blocks] = $block_id;
     $all_blocks{$block_id} = {
+      'id',             $block_id,
       'start',          [$start_line, $start_col],      # Start line and column
       'stop',           [$stop_line,  $stop_col],       # Stop line and column
       'filename',       $proto_file,                    # Proto filename
       'count',          0                               # How many time executed
     };
+    $all_starts{$proto_file}[$start_line][$start_col] = $block_id;
+    $all_stops {$proto_file}[$stop_line] [$stop_col]  = $block_id;
     if ($num_blocks == 0) {
       $common_dir = dirname ($proto_file);
     } else {
@@ -191,77 +196,126 @@ sub new_block {
   return $block_id;
 }
 
-foreach my $filename (@cov_files) {
-  my $FILE;
-  if ($filename ne '-') {
-    open ($FILE, '<', $filename);
-  } else {
-    $FILE = 'STDIN';
-  }
-  my $lineno=0;
-  while (my $line = <$FILE>) {
-    $lineno++;
-    next if substr($line, 0, 1) eq '#';
-    chop $line;
-    @_ = split(':', $line);
-    my $line_type = shift @_;
-    if ($line_type eq "COV" or $line_type eq "CODE") {
-      my $start_line = shift @_;
-      my $start_col  = shift @_;
-      my $stop_line  = shift @_;
-      my $stop_col   = shift @_;
-      my $proto_file = join(':', @_);
-      my $skip       = 0;
-      foreach my $exclude (@excludes) {
-        $skip = ($proto_file =~ m/$exclude/);
-      }
-      next if $skip;
-      my $block_id = new_block($start_line, $start_col, $stop_line, $stop_col, $proto_file);
-      if ($line_type eq "COV") {
-        if (not $all_blocks{$block_id}->{count}) {
-          $all_files{$proto_file}->{covered}++;
-        }
-        $all_blocks{$block_id}->{count}++;
-      }
+sub process_files {
+  foreach my $filename (@_) {
+    my $FILE;
+    if ($filename ne '-') {
+      open ($FILE, '<', $filename);
     } else {
-      print STDERR "$filename:$lineno: Unknown line type $line_type\n";
+      $FILE = 'STDIN';
     }
-  }
-  if ($filename ne '-') {
-    close $FILE;
+    my $lineno=0;
+    while (my $line = <$FILE>) {
+      $lineno++;
+      next if substr($line, 0, 1) eq '#';
+      chop $line;
+      @_ = split(':', $line);
+      my $line_type = shift @_;
+      if ($line_type eq "COV" or $line_type eq "CODE") {
+        my $start_line = shift @_;
+        my $start_col  = shift @_;
+        my $stop_line  = shift @_;
+        my $stop_col   = shift @_;
+        my $proto_file = join(':', @_);
+        my $skip       = 0;
+        foreach my $exclude (@excludes) {
+          $skip = ($proto_file =~ m/$exclude/);
+        }
+        next if $skip;
+        my $block_id = new_block($start_line, $start_col, $stop_line, $stop_col, $proto_file);
+        if ($line_type eq "COV") {
+          if (not $all_blocks{$block_id}->{count}) {
+            $all_files{$proto_file}->{covered}++;
+          }
+          $all_blocks{$block_id}->{count}++;
+        }
+      } else {
+        print STDERR "$filename:$lineno: Unknown line type $line_type\n";
+      }
+    }
+    if ($filename ne '-') {
+      close $FILE;
+    }
   }
 }
 
-if ($gen_html) {
+sub generate_html {
+  mkpath($outdir);
   my $template = Template->new() || die Template->error(), "\n";
-  my $vars = {
+  my $vars_index = {
     common_dir  => phtml($common_dir),
     files       => [],
   };
   my $i = 0;
   while (my ($id, $file) = each(%all_files)) {
-    $vars->{files}->[$i++] = {
+    my $html_file = "coverage_".$file->{id}.".html";
+    $vars_index->{files}->[$i++] = {
       shortname         => phtml(substr($file->{filename}, length($common_dir)+1)),
       block_count       => $file->{count},
       block_covered     => $file->{covered},
       percent_covered   => sprintf("% 3.2f", 100 * $file->{covered}/$file->{count}),
-      url               => phtml("coverage_".$file->{id}.".html")
+      url               => phtml($html_file)
+    };
+    open SRC, '<', $file->{filename};
+    my $source_code;
+    my $lineno = 0;
+    while (my $line = <SRC>) {
+      $lineno++;
+      my @characters = split //, $line;
+      my $colno = 0;
+      foreach my $char (@characters) {
+        my $stop  = $all_stops {$file->{filename}}[$lineno][$colno];
+        my $start = $all_starts{$file->{filename}}[$lineno][$colno];
+        if ($start){
+          my @classes = ('block');
+          if ($all_blocks{$start}->{count}) {
+            $classes[@classes] = 'covered';
+          } else {
+            $classes[@classes] = 'not-covered';
+          }
+          $source_code .= '<span class="'.join(' ', @classes).'">'
+        }
+        $source_code .= phtml($char);
+        if ($stop){
+          $source_code .= '</span>'
+        }
+        $colno++;
+      }
     }
+    close SRC;
+    my $vars = {
+      shortname => phtml($file->{id}),
+      code      => $source_code,
+    };
+    open HTML, '>', "$outdir/$html_file";
+    $template->process(\$all_templates{"coverage.html"}, $vars, \*HTML)
+      || die $template->error(), "\n";
+    close HTML;
   }
-  mkpath($outdir);
   open INDEX, '>', "$outdir/index.html";
-  $template->process(\$all_templates{"index.html"}, $vars, \*INDEX)
+  $template->process(\$all_templates{"index.html"}, $vars_index, \*INDEX)
     || die $template->error(), "\n";
   close INDEX;
 }
 
-while (my ($id, $file) = each(%all_files)) {
-  my $proto_file = $file->{filename};
-  print substr($proto_file, length($common_dir)+1);
-  my $percent = 100 * $file->{covered}/$file->{count};
-  printf(": % 3.2f%% covered", $percent);
-  print " ($file->{covered}/$file->{count})\n"
+sub generate_summary {
+  while (my ($id, $file) = each(%all_files)) {
+    my $proto_file = $file->{filename};
+    print substr($proto_file, length($common_dir)+1);
+    my $percent = 100 * $file->{covered}/$file->{count};
+    printf(": % 3.2f%% covered", $percent);
+    print " ($file->{covered}/$file->{count})\n"
+  }
 }
+
+process_files(@cov_files);
+
+if ($gen_html) {
+  generate_html();
+}
+
+generate_summary();
+
 
 
 
@@ -311,12 +365,35 @@ __END__
           <td><a href="[% file.url %]">[% file.shortname %]</a></td>
           <td class="numeric">[% file.percent_covered %]%</td>
           <td><div class="progressbar"><div style="width: [% file.percent_covered %]px;"></div></div></td>
-          <td class="right">[% file.block_count %]</td>
-          <td>/</td>
           <td class="left">[% file.block_covered %]</td>
+          <td>/</td>
+          <td class="right">[% file.block_count %]</td>
         </tr>
 [% END %]
       </tbody>
     </table>
+  </body>
+</html>
+
+
+
+#TEMPLATE:coverage.html
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Code coverage for [% shortname %]</title>
+    <style>
+      .covered {
+        background-color: lightgreen;
+      }
+      .not-covered {
+        background-color: coral;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Code coverage for [% shortname %]</h1>
+    <pre>[% code %]</pre>
   </body>
 </html>
