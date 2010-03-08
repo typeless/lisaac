@@ -133,6 +133,8 @@ Section Private
     s := typ.get_local_slot name;
     (s = NULL).if {
       // Lookup parent.
+      // First, evaluate the parent slot in the EXPR r
+      // Then chain another NODE_TYPE to dispatch on r
       s := typ.get_path_slot name;
       r := s.result_type.get_expr_for typ;
       node_style := NODE_STYLE.create (expr.my_copy,s) with Self result r;

@@ -1,99 +1,409 @@
 A Guide to Hacking in the Compiler Source
 =========================================
 
-Type Hierarchy
+You can generate the type hierarchy using the script `src/hierarchy.sh`
+
+Questions to Benoît
+===================
+
+- Why `&` and `|` are duplicated in `EXPR_AND_LOGIC`, `EXPR_AND`,
+  `EXPR_OR_LOGIC` and `EXPR_OR`. Is that for optimization purposes knowing that
+  the logic AND might not have to keep the exact result of the arithmetic AND?
+
+- Why no postcondition in `LIST.execute` ?
+
+        [ // make sure LIST.execute return a list
+          +? { + l:LIST; l ?= Result != NULL };
+        ]
+
+Global Variables
+================
+
+Found in `ANY`.
+
+- `list_main:LIST` is the list of the `main()` function.
+
+- `profil_current:PROFIL`: the profil being executed in the current execution
+  pass
+
+- `seq_list:FAST_ARRAY(LIST)`: the list hierarchy during the execute pass.
+  First comes the containing lists and then the contained lists. This is sort of
+  a stack trace.
+
+- `list_current:LIST`: the current list being executed. This is not always the
+  last element of `seq_list` as when a `PROFIL` is executed, the `list_current`
+  is reset to `NULL`.
+
+- `modify_count:INTEGER`: How many times a new pass was requested during the
+  current pass.
+
+
+Passes
+======
+
+Passes can be found in `PROTOTYPE.depend`. The passes continues until
+`modify_count` hasn't increased in the pass.
+
+Depending Pass
 --------------
 
-### `INSTR`
+This is where all the parsing happens and all the abstract syntax tree (AST) is
+generated.
 
-`external`:
+Main code in `NODE.extend_pass`. This will walk through all the `NODE_TYPE`s
+and `update` them. A `NODE_TYPE` is a possible polymorphic call that need
+resolution. If the `update` return `TRUE`, it means that the node no longer need
+to be updated and can be skipped from the depending pass next time.
 
-- `FORALL_DATA`
-- `CALL_NULL`
+Executing Pass
+--------------
 
-`code_life`:
+Recursive executing pass is in `PROFIL_LIST.execute_pass_recursive`
 
-- `LOOP_END`
-- `COP_LOCK`
-- `LIST`
-- `CALL_SLOT`
-- `PUSH`
-- `COP_UNLOCK`
-- `NOP`
-- `LOOP`
-- `SWITCH`
-- `NODE`
-- `EXPR`
-- `WRITE`
-    - `WRITE_SLOT`
-    - `WRITE_LOCAL`
-    - `WRITE_GLOBAL`
-    - `PUT_TO` (external)
+Main code in `PROFIL_LIST.execute` with some code before and after in
+`PROTOTYPE.depend` to cleanup before a new pass or check something that would
+trigger a new pass.
 
-### `EXPR`
+`PROFIL_LIST` contain all profils for slots generated. They are ordered with the
+profils that are alive first, and the dead profils last. There are three
+categories of profils:
+- the profils that are always alive (`Section External`) below `life_limit_base`
+- the profils alive for the current executing pass below `life_limit`
+- the dead profils with an index greater or equal to `life_limit`.
 
-`external`:
+A standard execution pass is like this:
 
-- `EXTERNAL_C`
-- `SIZE_OF`
-- `ITEM`
-- `GET_TYPE_ID`
-- `IS_EXPANDED`
-- `PUT_TO`
+1. First, all profils alive from the previous pass are marked dead (lower
+   `life_limit` to `life_limit_base`)
+2. It call `execute` on `list_main`
+3. For the profils (`profil_current`) that were marked alive during the previous
+   step, it call `execute` on them.
+4. Clean the dead profils.
+5. Determine if there is a need for a new executing pass.
 
-`external/comparison`:
+A recursive execution pass has `PROFIL.mode_recursive` to `TRUE` and is similar
+to a normal execution pass, with some differences.
 
-- `EXPR_BINARY_CMP`
-    - `EXPR_SUP_EQ`
-    - `EXPR_SUP`
-    - `EXPR_INF`
-    - `EXPR_EQUAL`
-    - `EXPR_INF_EQ`
-    - `EXPR_NOT_EQUAL`
+Code Generation
+---------------
 
-`external/logic`:
+Generate function signatures: `PROFIL_LIST.genere_handler`
 
-- `EXPR_BINARY_LOGIC`
-    - `EXPR_AND_LOGIC`
-        - `EXPR_AND_AND_LOGIC`
-    - `EXPR_OR_LOGIC`
-        - `EXPR_OR_OR_LOGIC`
-- `EXPR_UNARY_LOGIC`
-    - `EXPR_NOT_LOGIC`
+Generate the `main()` source code: `LIST.genere_extern`
 
-`external/arithmetic`:
+Generate functions: `PROFIL_LIST.genere`
 
-- `EXPR_UNARY`
-    - `EXPR_NEG`
-    - `EXPR_NOT`
-- `EXPR_BINARY`
-    - `EXPR_AND`
-    - `EXPR_DIV`
-    - `EXPR_MOD`
-    - `EXPR_MUL`
-    - `EXPR_SUB`
-    - `EXPR_SHIFT_L`
-    - `EXPR_SHIFT_R`
-    - `EXPR_ADD`
-    - `EXPR_OR`
-    - `EXPR_XOR`
+Abstract Syntax Tree
+====================
 
-`code_life`:
+The objects descending from `ITM_CODE` and `ITM_ARGUMENT` and `ITM_TYPE` and
+more generally, all items in the `item` directory form the abstract syntax tree.
 
-- `CAST`
-- `EXPR_MULTIPLE`
-- `RESULT`
-- `READ`
-    - `READ_SLOT`
-    - `READ_LOCAL`
-    - `READ_GLOBAL`
+# `ITM_ARGUMENT` #
 
-`constant`:
+- `ITM_ARGUMENT` (`item`)
+    - `ITM_ARG` (`item`)
+    - `ITM_ARGS` (`item`)
 
-- `CONSTANT`
-    - `CHARACTER_CST`
-    - `INTEGER_CST`
-    - `NATIVE_ARRAY_CHARACTER_CST`
-    - `PROTOTYPE_CST`
-    - `REAL_CST`
-    - `STRING_CST`
+
+This represents an argument type list. This is a list of `ITM_TYPE_MONO` and is
+specialized in two versions. `ITM_ARG` contains only one type while `ITM_ARGS`
+can contain multiple types
+
+# `ITM_CODE` #
+
+- `ITM_CODE` (`item`)
+    - `ITM_LIST` (`item`)
+    - `ITM_BLOCK` (`item`)
+    - `ITM_RESULT` (`item`)
+    - `ITM_BINARY` (`item`)
+    - `ITM_OLD` (`item`)
+    - `ITM_LDOTS` (`item`)
+    - `ITM_EXPRESSION` (`item`)
+    - `ITM_OPERATOR` (`item`)
+    - `ITM_LIST_IDF` (`item`)
+    - `ITM_READ` (`item`)
+        - `ITM_READ_ARG1` (`item`)
+        - `ITM_READ_ARGS` (`item`)
+        - `ITM_READ_ARG2` (`item`)
+    - `ITM_EXTERN` (`item`)
+        - `ITM_EXTERNAL` (`item`)
+        - `ITM_EXTERNAL_TYPE` (`item`)
+    - `ITM_WRITE` (`item`)
+        - `ITM_WRITE_CAST` (`item`)
+        - `ITM_WRITE_VALUE` (`item`)
+        - `ITM_WRITE_CODE` (`item`)
+    - `ITM_CONSTANT` (`item`)
+        - `ITM_PROTOTYPE` (`item`)
+        - `ITM_REAL` (`item`)
+        - `ITM_CHARACTER` (`item`)
+        - `ITM_STRING` (`item`)
+        - `ITM_NUMBER` (`item`)
+
+This represents a bit of code in the AST. It can be transformed in code_life
+objects (instructions and expressions) using the `to_run` for instructions and
+`to_run_expr` for expressions.
+
+The default behaviour of `to_run` is to return the expression from `to_run_expr`
+as an instruction is an instruction (`EXPR` inherit from `INSTR`).
+
+# `ITM_TYPE` #
+
+- `ITM_TYPE` (`item`)
+    - `ITM_TYPE_MULTI` (`item`)
+    - `ITM_TYPE_MONO` (`item`)
+        - `ITM_TYPE_GENERIC_ELT` (`item`)
+        - `ITM_TYPE_BLOCK` (`item`)
+        - `ITM_TYPE_SIMPLE` (`item`)
+            - `ITM_TYPE_PARAMETER` (`item`)
+            - `ITM_TYPE_STYLE` (`item`)
+                - `ITM_TYPE_GENERIC` (`item`)
+
+
+Dynamic Binding
+===============
+
+Dynamic binding is chen a slot is called and the receiver is of a polymorphic
+type. We have to generate a `switch` C statement to choose which implementation
+to use.
+
+When a call to a slot is converted from the AST to code life in
+`ITM_READ.to_run_expr`, it creates a `NODE_TYPE` instruction using
+`NODE.new_read`. At this stage, the node is not yet ready for the execution
+pass and need updates from the depending passes. Updating is divided in
+`update_case` and `update_depth`.
+
+`update_case`, beside handling special case for booleans and `Expanded`, will
+ask the dispatching `expr`ession for the list of possible runtime types using
+`EXPR.get_type`. Then for each type, it will ask the `data` (`DTA`) to produce
+a list for a special dynamic type. Then the list is inserted in the `switch`.
+As a special case, if the list of dynamic types is empty, don't generate a
+switch. If it contains only one type, only store the list generated by the
+`data` and don't bother with a `switch`.
+
+The list generated by the `data` might contains other nodes for further
+dispatching. For instance, it can contain a `NODE_STYLE` to dispatch between
+different versions of the same code slot (in case the slot has been written
+to). `update_depth` role is to call `data.update_branch` on each of the lists
+generated by the `data`. The `data` will then take care of updating further
+nodes it created. The `type_self` given is either the `type_self` already given
+or if `NULL`, the dynamic type.
+
+`TYPE_NODE`, requires a non `NULL` `self_type` when updated (`update_link`).
+This type always corresponds to the dynamic type and us used to generate the
+`CALL_SLOT` instruction, dispatching on the differents possible slot
+implementations.
+
+# `NODE` #
+
+- NODE (dispatcher)
+    - NODE_TYPE (dispatcher)
+    - NODE_STYLE (dispatcher)
+
+A `NODE` is a slot call site that need dispatching.
+
+`NODE_TYPE` dispatches polymorphic calls according to an `expr`ession dynamic
+type. The `data` is used to create the code `LIST` for each possible dynamic
+type, and further dispatch the call using `NODE_STYLE`.
+
+`NODE_STYLE` dispatches the slot call according to the different possible
+implementations of the slot. If the slot has only one implementation, this is
+just fine. In any case, it creates a `CALL_SLOT` instruction using the
+arguments supplied by the `data`.
+
+The `count` value represents the number of possibilities for dispatching
+computed until now.
+
+It has the following different states:
+
+- `switch = NULL` and `first_code = NULL`: No code at all, dispatching on an
+  empty set.
+- `switch = NULL` and `first_code != NULL`: The dispatching `expr`ession has
+  only one possibility. Don't bother generating a `switch`.
+- `switch != NULL`: the `expr`ession has more than one dispatching possibility,
+  the switch contains a `list` of `CASE` containing the code `LIST`s.
+
+
+Code Life
+=========
+
+Code Life is a special representation of the source code that is losely related
+to the syntax and is the best form to perform optimizations.
+
+# `INSTR` #
+
+- `INSTR` (`code_life`)
+    - `FORALL_DATA` (`external`)
+    - `CALL_NULL` (`external`)
+    - `PUT_TO` (`external`)
+    - `LOOP_END` (`code_life`)
+    - `COP_LOCK` (`code_life`)
+    - `LIST` (`code_life`)
+    - `CALL_SLOT` (`code_life`)
+    - `PUSH` (`code_life`)
+    - `COP_UNLOCK` (`code_life`)
+    - `NOP` (`code_life`)
+    - `LOOP` (`code_life`)
+    - `SWITCH` (`code_life`)
+    - `WRITE` (`code_life`)
+        - `PUT_TO` (`external`)
+        - `WRITE_SLOT` (`code_life`)
+        - `WRITE_LOCAL` (`code_life`)
+        - `WRITE_GLOBAL` (`code_life`)
+    - `NODE` (`dispatcher`)
+        - `NODE_TYPE` (`dispatcher`)
+        - `NODE_STYLE` (`dispatcher`)
+    - `EXPR` (`code_life`)
+        - ...
+
+This is an instruction. Instructions can be generated in the target language
+using the `genere` slot and they are subject to the execution pass through the
+`execute` slot.
+
+When executed, an instruction returns a better version of itself as a return
+value, or return `NULL` in case it wishes to remove itself.
+
+TODO: What is `remove` exactly?
+
+# `EXPR` #
+
+- `EXPR` (`code_life`)
+    - `CAST` (`code_life`)
+    - `RESULT` (`code_life`)
+    - `EXPR_MULTIPLE` (`code_life`)
+    - `READ` (`code_life`)
+        - `READ_SLOT` (`code_life`)
+        - `READ_LOCAL` (`code_life`)
+        - `READ_GLOBAL` (`code_life`)
+    - `EXTERNAL_C` (`external`)
+    - `SIZE_OF` (`external`)
+    - `GET_TYPE_ID` (`external`)
+    - `ITEM` (`external`)
+    - `IS_EXPANDED` (`external`)
+    - `EXPR_BINARY_CMP` (`external/comparison`), contains basic operators for
+      `>=`, `>`, `<`, `<=`, `=`, `!=`
+    - `EXPR_BINARY_LOGIC` (`external/logic`), contains basic operators for
+      `&`, `&&`, `|`, `||`
+    - `EXPR_UNARY_LOGIC` (`external/logic`), contains basic operator `!`
+    - `EXPR_UNARY` (`external/arithmetic`), contains basic operator `~` (not)
+       and `-` (minus),
+    - `EXPR_BINARY` (`external/arithmetic`), contains basic operator `^` (xor),
+      `%` (mod), `+`, `-`, `/`, `*`, `&`, `|`, `<<`, `>>`
+    - `CONSTANT` (`constant`)
+        - `STRING_CST` (`constant`)
+        - `PROTOTYPE_CST` (`constant`)
+        - `CHARACTER_CST` (`constant`)
+        - `INTEGER_CST` (`constant`)
+        - `REAL_CST` (`constant`)
+        - `NATIVE_ARRAY_CHARACTER_CST` (`constant`)
+
+
+This is an instruction and represents an expression. It does have a
+`static_type`. As for all instructions, it is subject to the excuting pass
+through the `execute` slot.
+
+An instruction has two execution slots: `execute_link` and `execute_unlink`.
+When executed as an instruction (`execute` slot called) the expression unlinks
+itself for an instruction by itself do nothing useful.
+
+Expressions are linked together in a tree structure, and linking or unlinking
+expressions propagate to children expressions. When an expression is found to be
+useful in a computation, `execute_link` is called. But when an expression value
+is not needed, `execute_unlink` is called instead.
+
+When an expression is executed as an instruction, its value is not needed so it
+is unlinked. Still, if the expression has a side effect, it can choose to return
+an instruction as a result to `execute_unlink` or call
+`list_current.insert_before`.
+
+# `LIST` #
+
+This is a list of instructions (`INSTR`) and is itself an instruction. This can
+be either a list in Lisaac (in braces), a block (curly braces) or contract
+blocks (brackets). It has an embedded index that point to a specific
+instruction.
+
+TODO: understand how the list return its expressions, given that they are
+expressions and not instructions, and that there can be more than one
+expression. Is it through `RESULT`?
+
+When executed, it puts itself as `list_current` for the time of its execution
+and restore the old value afterwards. Then, for all the instructions it
+contains, it excutes the instruction and replace the new instruction (returned
+by `execute`) in the list.
+
+The new list (which is the same but modified on the fly) is returned from the
+execution step except in the following optimizing cases:
+
+- When there is a call on NULL, all following instructions are removed as they
+  are not expected to be executed
+- When there is a `list_current` (a parent list). The list move all its
+  instructions in the `list_current` just before the child list.
+
+# `PROFIL` #
+
+A profil inherit from `ANY` and is a function signature in C. It represents a
+slot in Lisaac that might be customized with generic parameters or for
+optimization purposes.
+
+A profil can be living or dead in the `PROFIL_LIST`. Just look at the
+documentation on the executing pass for more information about `PROFIL_LIST`.
+
+A profil contains `code` which is a `LIST`. This is the implementation of the
+function. When executed through the `execute` slot, it forward the message
+calling `code.execute`. And the resulting instruction has better to still be
+a `LIST`
+
+`execute_recursive` is not called by `PROFIL_LIST` but by `PROFIL.set_life`
+only when in a recursive pass.
+
+
+Types
+-----
+
+There are many prototypes for types, they are expalined here:
+
+- `ITM_TYPE` hierarchy: represent a type plus all that surround the type
+  (`Strict`, `Expanded`, genericity, ...). This is only the name of the type in
+  the AST.
+
+- `ITM_PROTOTYPE`, `PROTOTYPE_CST`: is a constant reference value to the
+  prototype itself respectively in the AST and code life.
+
+- `PROTOTYPE`: The root of an AST, generated by `PARSER`.
+
+- `TYPE` hierarchy: the type information used for code life and execution
+  passes. This hierarchy represents a bare type without customization
+  (`Strict`, `Expanded`, ...)
+
+- `TYPE_FULL`: type with its customization.
+
+Tools
+-----
+
+# `ALIAS_STR` #
+
+`ALIAS_STR.get` serves to convert `STRING` to `STRING_CONSATNT`. The `STRING`s
+have to be compared using `==` while only `=` is necessary for
+`STRING_CONSTANT`s.
+
+# `ALIAS_ARRAY` #
+
+Storage pool for arrays, keep the memory from groing too much. This will give
+you an array with its capacity closest to what you need avoiding too much
+reallocation.
+
+# `POSITION` #
+
+Encodes in 32 bits any position in any file parsed now or ever. It contains a
+type id, a line number and a column number. 32 bits are a bit small but for the
+moment we hold it.
+
+# `PARSER` #
+
+The parser
+
+# `COMMON` #
+
+Common things for command lines. This is used by `LISAAC` and `SHORTER` to
+display help and compiler version.
