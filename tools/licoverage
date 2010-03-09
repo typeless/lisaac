@@ -141,7 +141,7 @@ sub common_dir {
 
 sub phtml {
   $_ = join(' ', @_);
-  $_ =~ s/&/&nbsp;/g;
+  $_ =~ s/&/&amp;/g;
   $_ =~ s/>/&gt;/g;
   $_ =~ s/</&lt;/g;
   return $_;
