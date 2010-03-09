@@ -1940,6 +1940,7 @@ Section Private
     + result_id:STRING_CONSTANT;
     + pos : POSITION;
 
+    read_space;
     pos := current_position; // Get the position before consuming the tokens
 
     (read_this_keyword (ALIAS_STR.variable_self)).if {
@@ -2086,7 +2087,7 @@ Section Private
       result.add_last e;
     };
     read_space;
-    last_group.insert_code_coverage_hook current_position in result;
+    last_group.set_last_position current_position;
     ALIAS_ARRAY(ITM_CODE).copy result
   );
 
@@ -2154,13 +2155,12 @@ Section Private
       }.do_while {continue};
 
       read_space;
-      pos := current_position;
+      result.set_last_position current_position;
 
       (! read_character ']').if {
 	warning_error (current_position,"Added ']'.");
       };
 
-      result.insert_code_coverage_hook pos in lst;
       e := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
       lst.add_last e;
       //

@@ -1,0 +1,124 @@
+///////////////////////////////////////////////////////////////////////////////
+//                             Lisaac Compiler                               //
+//                                                                           //
+//                   LSIIT - ULP - CNRS - INRIA - FRANCE                     //
+//                                                                           //
+//   This program is free software: you can redistribute it and/or modify    //
+//   it under the terms of the GNU General Public License as published by    //
+//   the Free Software Foundation, either version 3 of the License, or       //
+//   (at your option) any later version.                                     //
+//                                                                           //
+//   This program is distributed in the hope that it will be useful,         //
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of          //
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           //
+//   GNU General Public License for more details.                            //
+//                                                                           //
+//   You should have received a copy of the GNU General Public License       //
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.   //
+//                                                                           //
+//                     http://isaacproject.u-strasbg.fr/                     //
+///////////////////////////////////////////////////////////////////////////////
+Section Header
+
+  + name        := COV_INSTR;
+
+  - copyright   := "2010 Mildred Ki'Lya";
+
+  - author      := "Mildred Ki'Lya <http://ki.lya.online.fr>";
+  - comment     := "Coverage recorder instruction";
+
+Section Inherit
+
+  + parent_instr:Expanded INSTR;
+
+Section Private
+
+  - next_seq_num :INTEGER := 0;
+
+  + seq_num :INTEGER := -1;
+
+  - all_coverage :FAST_ARRAY(COV_INSTR) := FAST_ARRAY(COV_INSTR).create 1024;
+
+Section Public
+
+  - lower :INTEGER <- 0;
+  - upper :INTEGER <- next_seq_num - 1;
+  - item i:INTEGER :COV_INSTR <-
+  ( + j :INTEGER;
+    + res :COV_INSTR;
+    j := all_coverage.lower;
+    {(j < all_coverage.upper) && {res = NULL}}.while_do {
+      (all_coverage.item j != NULL).if {
+        (all_coverage.item j.seq_num = i).if {
+          res := all_coverage.item j;
+        };
+      };
+      j := j + 1;
+    };
+    res
+  );
+
+  - count :INTEGER := 0;
+
+  + last_position :POSITION;
+
+  - set_last_position p:POSITION <-
+  (
+    last_position := p;
+  );
+
+  - create (p1, p2 :POSITION) :SELF <-
+  (
+    clone.make (p1, p2)
+  );
+
+  - make (p1, p2 :POSITION) :SELF <-
+  (
+    position := p1;
+    last_position := p2;
+    count := count + 1;
+    Self
+  );
+
+  //
+  //
+  //
+
+  - my_copy:SELF <- Self;
+
+  //
+  // Execute.
+  //
+
+  - remove; // NOP
+
+  - execute:INSTR <-
+  ( + result :INSTR;
+    is_coverage.if {
+      result := Self;
+    } else {
+      count := count - 1;
+    };
+    result
+  );
+
+  - genere buffer:STRING <-
+  (
+    (seq_num = -1).if {
+      seq_num := next_seq_num;
+      next_seq_num := next_seq_num + 1;
+      all_coverage.add_last Self;
+    };
+    buffer.append "++lisaac_coverage_table[";
+    seq_num.append_in buffer;
+    buffer.append "]";
+  );
+
+  //
+  // Display.
+  //
+
+  - display buffer:STRING <-
+  (
+    buffer.append "coverage";
+  );

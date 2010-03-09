@@ -51,6 +51,8 @@ Section Public
 
   - is_check_local:INTEGER;
 
+  + last_position :POSITION;
+
   //
   // Constructor
   //
@@ -88,6 +90,23 @@ Section Public
     code := c;
   );
 
+  - set_last_position p:POSITION <-
+  (
+    last_position := p;
+    ((is_coverage) && {! p.prototype.is_lip}).if {
+      (coverage_all_lists = NULL).if {
+        coverage_all_lists := FAST_ARRAY(POSITION).create 16192;
+      };
+      coverage_all_lists.add_last position;
+      coverage_all_lists.add_last p;
+    };
+  );
+
+Section LISAAC
+
+  - coverage_all_lists :FAST_ARRAY(POSITION) <-
+  ( coverage_all_lists := FAST_ARRAY(POSITION).create 16192 );
+
 Section Public
 
   - is_affect:POSITION <-
@@ -112,7 +131,7 @@ Section Public
   );
 
   - insert_code_coverage_hook last_position:POSITION in lst:FAST_ARRAY(ITM_CODE) <-
-  [
+  [ // TODO: Mildred: remove this slot
     -? { lst != NULL };
   ]
   (
@@ -171,6 +190,9 @@ Section Public
       };
     };
     // Append code.
+    is_coverage.if {
+      list_current.add_last (COV_INSTR.create (position, last_position));
+    };
     (code.lower).to (code.upper) do { j:INTEGER;
       i := code.item j.to_run;
       list_current.add_last i;

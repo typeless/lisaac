@@ -130,13 +130,13 @@ my %all_starts;                 # Array of block id indexed by filename, start l
 my %all_stops;                  # Array of block id indexed by filename, stop line and column
 
 sub common_dir {
-    my $prefix = shift;
-    for (@_) {
-        while (! /^$prefix/) {
-          $prefix =~ s|/[^/]+/?$||;
-        }
+  my $prefix = shift;
+  for (@_) {
+    while (! /^$prefix/) {
+      $prefix =~ s|^(.*/)?[^/]+/?$|$1|;
     }
-    return $prefix;
+  }
+  return $prefix;
 }
 
 sub phtml {
@@ -166,6 +166,7 @@ sub new_block {
       'filename',       $proto_file,    # File name
       'id',             $id,            # File id (simple file name)
       'count',          0,              # How many blocks in the file
+      'living',         0,              # How many living blocks
       'covered',        0,              # How many covered blocks
       'blocks',         []              # List of all block ids
     }
@@ -182,7 +183,8 @@ sub new_block {
       'start',          [$start_line, $start_col],      # Start line and column
       'stop',           [$stop_line,  $stop_col],       # Stop line and column
       'filename',       $proto_file,                    # Proto filename
-      'count',          0                               # How many time executed
+      'count',          0,                              # How many time executed
+      'alive',          0                               # If the block is alive
     };
     $all_starts{$proto_file}[$start_line][$start_col] = $block_id;
     $all_stops {$proto_file}[$stop_line] [$stop_col]  = $block_id;
@@ -196,7 +198,16 @@ sub new_block {
   return $block_id;
 }
 
+sub is_excluded {
+  my ($file) = @_;
+  foreach my $exclude (@excludes) {
+    return 1 if ($file =~ m/$exclude/);
+  }
+  return 0;
+}
+
 sub process_files {
+  my $current_file;
   foreach my $filename (@_) {
     my $FILE;
     if ($filename ne '-') {
@@ -207,23 +218,55 @@ sub process_files {
     my $lineno=0;
     while (my $line = <$FILE>) {
       $lineno++;
+      unless ($lineno % 1000) {
+        print "...On the ${lineno}th line in $filename\n";
+      }
       next if substr($line, 0, 1) eq '#';
       chop $line;
       @_ = split(':', $line);
       my $line_type = shift @_;
-      if ($line_type eq "COV" or $line_type eq "CODE") {
+      if ($line_type eq "FILE") {
+        $current_file = join(':', @_);
+      } elsif ($line_type eq "LIST") {
+        my $start_line = shift @_;
+        my $start_col  = shift @_;
+        my $stop_line  = shift @_;
+        my $stop_col   = shift @_;
+        my $proto_file = $current_file;
+        next if is_excluded ($proto_file);
+        my $block_id = new_block($start_line, $start_col, $stop_line, $stop_col, $proto_file);
+      } elsif ($line_type eq "COVERAGE") {
+        my $cov_count  = shift @_;
+        my $start_line = shift @_;
+        my $start_col  = shift @_;
+        my $stop_line  = shift @_;
+        my $stop_col   = shift @_;
+        my $proto_file = $current_file;
+        next if is_excluded ($proto_file);
+        my $block_id = new_block($start_line, $start_col, $stop_line, $stop_col, $proto_file);
+        if (not $all_blocks{$block_id}->{alive}) {
+          $all_blocks{$block_id}->{alive} = 1;
+          $all_files{$proto_file}->{living}++;
+        }
+        if ($cov_count) {
+          if (not $all_blocks{$block_id}->{count}) {
+            $all_files{$proto_file}->{covered}++;
+          }
+          $all_blocks{$block_id}->{count} += $cov_count;
+        }
+      } elsif ($line_type eq "COV" or $line_type eq "CODE") {
         my $start_line = shift @_;
         my $start_col  = shift @_;
         my $stop_line  = shift @_;
         my $stop_col   = shift @_;
         my $proto_file = join(':', @_);
-        my $skip       = 0;
-        foreach my $exclude (@excludes) {
-          $skip = ($proto_file =~ m/$exclude/);
-        }
-        next if $skip;
+        next if is_excluded ($proto_file);
         my $block_id = new_block($start_line, $start_col, $stop_line, $stop_col, $proto_file);
         if ($line_type eq "COV") {
+          if (not $all_blocks{$block_id}->{alive}) {
+            $all_blocks{$block_id}->{alive} = 1;
+            $all_files{$proto_file}->{living}++;
+          }
           if (not $all_blocks{$block_id}->{count}) {
             $all_files{$proto_file}->{covered}++;
           }
@@ -250,11 +293,15 @@ sub generate_html {
   while (my ($id, $file) = each(%all_files)) {
     my $html_file = "coverage_".$file->{id}.".html";
     $vars_index->{files}->[$i++] = {
-      shortname         => phtml(substr($file->{filename}, length($common_dir)+1)),
-      block_count       => $file->{count},
-      block_covered     => $file->{covered},
-      percent_covered   => sprintf("% 3.2f", 100 * $file->{covered}/$file->{count}),
-      url               => phtml($html_file)
+      shortname              => phtml(substr($file->{filename}, length($common_dir))),
+      block_count            => $file->{count},
+      block_living           => $file->{living},
+      block_covered          => $file->{covered},
+      block_dead             => $file->{count} - $file->{living},
+      percent_covered        => sprintf("% 3.2f", $file->{count}  ? (100 * $file->{covered}/$file->{count})  : 100),
+      percent_covered_living => sprintf("% 3.2f", $file->{living} ? (100 * $file->{covered}/$file->{living}) : 0),
+      percent_covered_dead   => sprintf("% 3.2f", $file->{count}  ? (100 * ($file->{count} - $file->{living})/$file->{count}) : 0),
+      url                    => phtml($html_file)
     };
     open SRC, '<', $file->{filename};
     my $source_code;
@@ -263,19 +310,32 @@ sub generate_html {
       $lineno++;
       my @characters = split //, $line;
       my $colno = 0;
+      $source_code .= '<br /><span lineno="'.$lineno.'"></span>';
       foreach my $char (@characters) {
         my $stop  = $all_stops {$file->{filename}}[$lineno][$colno];
         my $start = $all_starts{$file->{filename}}[$lineno][$colno];
+        my $after = "";
         if ($start){
           my @classes = ('block');
+          my $extra = "";
           if ($all_blocks{$start}->{count}) {
             $classes[@classes] = 'covered';
-          } else {
+            $after='<span coveragecount="'.$all_blocks{$start}->{count}.'"></span>';
+          } elsif ($all_blocks{$start}->{alive}) {
             $classes[@classes] = 'not-covered';
+          } else {
+            $classes[@classes] = 'dead';
           }
-          $source_code .= '<span class="'.join(' ', @classes).'">'
+          $source_code .= '<span class="'.join(' ', @classes).'"'.$extra.'>'
         }
-        $source_code .= phtml($char);
+        if ($char eq ' ') {
+          $source_code .= "&nbsp;";
+        } elsif ($char eq "\t") {
+          $source_code .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        } else {
+          $source_code .= phtml($char);
+        }
+        $source_code .= $after;
         if ($stop){
           $source_code .= '</span>'
         }
@@ -301,7 +361,7 @@ sub generate_html {
 sub generate_summary {
   while (my ($id, $file) = each(%all_files)) {
     my $proto_file = $file->{filename};
-    print substr($proto_file, length($common_dir)+1);
+    print substr($proto_file, length($common_dir));
     my $percent = 100 * $file->{covered}/$file->{count};
     printf(": % 3.2f%% covered", $percent);
     print " ($file->{covered}/$file->{count})\n"
@@ -356,18 +416,33 @@ __END__
       <thead>
         <tr>
           <th>File</th>
-          <th colspan="6">Coverage</th>
+          <th colspan="5">Whole Code Coverage</th>
+          <th colspan="5">Living Code Coverage</th>
+          <th colspan="5">Dead code</th>
         </tr>
       </thead>
       <tbody>
 [% FOREACH file IN files %]
         <tr>
           <td><a href="[% file.url %]">[% file.shortname %]</a></td>
+          <!-- whole code -->
           <td class="numeric">[% file.percent_covered %]%</td>
           <td><div class="progressbar"><div style="width: [% file.percent_covered %]px;"></div></div></td>
-          <td class="left">[% file.block_covered %]</td>
+          <td class="right">[% file.block_covered %]</td>
           <td>/</td>
-          <td class="right">[% file.block_count %]</td>
+          <td class="left">[% file.block_count %]</td>
+          <!-- living code -->
+          <td class="numeric">[% file.percent_covered_living %]%</td>
+          <td><div class="progressbar"><div style="width: [% file.percent_covered_living %]px;"></div></div></td>
+          <td class="right">[% file.block_covered %]</td>
+          <td>/</td>
+          <td class="left">[% file.block_living %]</td>
+          <!--  dead code -->
+          <td class="numeric">[% file.percent_covered_dead %]%</td>
+          <td><div class="progressbar"><div style="width: [% file.percent_covered_dead %]px;"></div></div></td>
+          <td class="right">[% file.block_dead %]</td>
+          <td>/</td>
+          <td class="left">[% file.block_count %]</td>
         </tr>
 [% END %]
       </tbody>
@@ -385,15 +460,38 @@ __END__
     <title>Code coverage for [% shortname %]</title>
     <style>
       .covered {
+        background-color: palegreen;
+      }
+      [coveragecount]:before {
+        font-size: 0.7em;
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+        vertical-align: middle;
+        content: attr(coveragecount);
         background-color: lightgreen;
+        border: solid thin darkgreen;
+        -moz-border-radius: 0.25em;
+      }
+      [lineno]:after {
+        content: attr(lineno) ": ";
+        color: grey;
+        display: block;
+        float: left;
+        width: 5em;
+        text-align: right;
+        vertical-align: bottom;
+        padding-right: .5em;
       }
       .not-covered {
-        background-color: coral;
+        background-color: tomato;
+      }
+      .dead {
+        background-color: lightgrey;
       }
     </style>
   </head>
   <body>
     <h1>Code coverage for [% shortname %]</h1>
-    <pre>[% code %]</pre>
+    <code>[% code %]</code>
   </body>
 </html>
