@@ -481,6 +481,9 @@ __END__
         text-align: right;
         vertical-align: bottom;
         padding-right: .5em;
+        /* Get the line numbers aligned with the lines */
+        position: relative;
+        top: .25em;
       }
       .not-covered {
         background-color: tomato;
