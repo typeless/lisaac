@@ -105,6 +105,12 @@ Section Public
         warning_error (position,"No argument for `compiler_version' method.");
       };
       LISAAC.show_version;
+    }.elseif {name = ALIAS_STR.slot_add_flag} then {
+      str ?= val;
+      (str = NULL).if {
+        semantic_error (position,"String argument needed.");
+      };
+      list_flags.add_last (str.value);
     }.elseif {name = ALIAS_STR.slot_path} then {
       str ?= val;
       (str = NULL).if {

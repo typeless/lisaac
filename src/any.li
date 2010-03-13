@@ -127,6 +127,8 @@ Section Public
   - is_statistic:BOOLEAN;
   - is_quiet:BOOLEAN;
 
+  - is_warn_null :BOOLEAN <- ( is_warn_null := LIP_CODE.has_flag "warn-null" );
+
   //
   //
   //

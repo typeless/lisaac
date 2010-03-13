@@ -68,7 +68,7 @@ Section Public
 	PUSH.create p context ctext first FALSE
       );
     };
-    lst.add_last CALL_NULL;
+    lst.add_last (CALL_NULL.create p);
   );
 
 Section Public

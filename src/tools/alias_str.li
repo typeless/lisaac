@@ -178,6 +178,7 @@ Section Public
   - slot_get_integer  :STRING_CONSTANT := "get_integer";
   - slot_get_string   :STRING_CONSTANT := "get_string";
   - slot_is_cop       :STRING_CONSTANT := "is_cop";
+  - slot_add_flag     :STRING_CONSTANT := "add_flag";
 
   - c_void           :STRING_CONSTANT := "void";
   - c_struct         :STRING_CONSTANT := "struct __";
@@ -485,6 +486,7 @@ Section Public
     list.add slot_get_integer;
     list.add slot_get_string;
     list.add slot_is_cop;
+    list.add slot_add_flag;
 
     // Type C :
     list.add c_void;

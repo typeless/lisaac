@@ -32,11 +32,31 @@ Section Inherit
 
   + parent_instr:Expanded INSTR;
 
+Section Private
+
+  - warned_list :FAST_ARRAY(POSITION) <-
+  (
+    warned_list := FAST_ARRAY(POSITION).create_with_capacity 8
+  );
+
+  - warned :BOOLEAN <- warned_list.fast_has position;
+
 Section Public
 
   - my_copy:SELF <- Self;
 
   - is_necessary:BOOLEAN;
+
+  - create p:POSITION :SELF <-
+  ( + result :SELF;
+    is_warn_null.if {
+      result := clone;
+      result.set_position p;
+    } else {
+      result := SELF;
+    };
+    result
+  );
 
   //
   // Remove
@@ -69,6 +89,10 @@ Section Public
     };
     buffer.append code;
     is_necessary := TRUE;
+    ((is_warn_null) && {! warned}).if {
+      warning_error (position, "Possible call on NULL");
+      warned_list.add_last position;
+    };
   );
 
   //

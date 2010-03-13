@@ -266,6 +266,12 @@ Section Public
   (
     is_all_warning := TRUE;
   );
+
+  - w_null <-
+  // Warn of every possible NULL call
+  (
+    add_flag "warn-null";
+  );
   
   //
   // Optimization.

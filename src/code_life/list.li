@@ -296,7 +296,7 @@ Section Public
       (new_expr != NULL).if {
         put new_expr to index;
         index := index + 1;
-        (new_expr = CALL_NULL).if {
+        ( + null:CALL_NULL; (null ?= new_expr) != NULL ).if {
           // Delete all ...
           {index <= upper}.while_do {
             item index.remove;
