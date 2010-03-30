@@ -673,7 +673,7 @@ Section Public
   );
 
   //
-  // Agents based features:
+  // High Level control Structure:
   //
 
   - foreach action:{V; } <- do_all action;
@@ -987,3 +987,16 @@ Section Public
   //    -? { lower <= upper + 1 };
   //  ];
 
+
+  //
+  // Debug
+  //
+
+  - inspect : STRING <-
+  ( + res : STRING;
+     res := STRING.create 4096;
+     res.append "[ ";
+    foreach { el : V; res.append "'"; res.append (el.to_string); res.append "' , ";};
+    res.append "]";
+    res
+  );
