@@ -363,6 +363,18 @@ Section Public
     +? {Result.in_range Self to upper};
   ];
 
+
+   - random_between lower:SELF and  upper:SELF :SELF <-
+  // Random number between `lower' to `upper'.
+  (
+    lower + (upper-lower).random_upper
+  )
+  [
+    +? {Result.in_range lower to upper};
+  ];
+
+
+
   //
   // Looping.
   //

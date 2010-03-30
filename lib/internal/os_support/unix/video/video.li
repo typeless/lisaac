@@ -28,7 +28,7 @@ Section Header
 
   - lip      <-
   (
-    add_lib "-lX11";
+    add_lib "-lX11 -L/usr/X11R6/lib/";
   );
 
   - external :=
