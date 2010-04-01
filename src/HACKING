@@ -196,9 +196,9 @@ implementations.
 
 # `NODE` #
 
-- NODE (dispatcher)
-    - NODE_TYPE (dispatcher)
-    - NODE_STYLE (dispatcher)
+- `NODE` (`dispatcher`)
+    - `NODE_TYPE` (`dispatcher`)
+    - `NODE_STYLE` (`dispatcher`)
 
 A `NODE` is a slot call site that need dispatching.
 
