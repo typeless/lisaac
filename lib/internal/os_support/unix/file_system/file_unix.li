@@ -19,102 +19,119 @@
 //                     http://isaacproject.u-strasbg.fr/                     //
 ///////////////////////////////////////////////////////////////////////////////
 Section Header
-
+  
   + name    := FILE_UNIX;
 
-  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag";
-
+  - copyright   := "2003-2005 Jérome Boutet, 2003-2007 Benoit Sonntag, 2009 Nicolas Boulay";
+  
   - comment := "File management";
-
+  
+ // 
+ // "getconf LFS_CFLAGS" for 64 bits off_t file offset is needed in the compiler command line to have:
+ // -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+ // 
+ 
+  - external := `
+ /*FILE_UNIX*/ 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+  `;
+    
 Section Inherit
-
+  
   + parent_entry_unix:Expanded ENTRY_UNIX;
-
+  
   + parent_file:Expanded FILE;
-
-Section Private
-
-  + stream:POINTER; // Unix file pointer (FILE *).
+  
+Section Private  
+  
+  + stream:INTEGER_32 := -1; // Unix file descripter (int).
 
 Section Public
-
+    
   //
   // Physical implementation.
   //
-
-  - is_open:BOOLEAN <- stream != NULL;
-
-  - size:UINTEGER_32 <-
+  
+  - is_open:BOOLEAN <- stream != -1;
+  
+  - size:INTEGER_64 <-
   ( + pe:NATIVE_ARRAY(CHARACTER);
-    + result:UINTEGER_32;
+    + result:INTEGER_64; //off_t type
     pe := path.to_external;
-    `{ struct stat t; stat(@pe,&t)`;
-      result := `t.st_size`:UINTEGER_32;
+    `{ struct stat t; stat(@pe,&t)`;		  
+      result := `t.st_size`:INTEGER_64;
     `}`;
     result
   );
-
-  - cursor:UINTEGER_32 <-
-  ( + str:POINTER;
-    str := stream;
-    `ftell((FILE *)@str)`:UINTEGER_32
-  );
-
-  - set_cursor n:UINTEGER_32 <-
+  
+  - cursor:INTEGER_64 <-
   [
     ...
-    -? {stream != NULL};
-    -? {n <= size};
+    -? {stream != -1};
   ]
-  ( + str:POINTER;
-    str := stream;
-    `fseek((FILE*)(@str),@n,SEEK_SET)`;
+  ( + str:INTEGER;    
+    str := stream;    
+    `lseek(@str,0,SEEK_CUR)`:INTEGER_64
   );
-
+  
+  - set_cursor n:INTEGER_64 <-
+  [
+    ...
+    -? {stream != -1};
+    -? {n <= size};
+    -? {n >= 0};
+  ]
+  ( + str:INTEGER;    
+    str := stream;    
+    `lseek((@str),@n,SEEK_SET)`;
+  );    
+  
   - open:BOOLEAN <-
   [
-    -? {stream = NULL};
+    -? {stream = -1};
   ]
-  ( + pa:NATIVE_ARRAY(CHARACTER);
-
+  ( + pa:NATIVE_ARRAY(CHARACTER);    
+        
     pa := path.to_external;
-    stream := `fopen((char*)@pa,"r+b")`:(POINTER);
-    stream != NULL
-  );
+    stream := `open((char*)@pa,O_RDWR)`:(INTEGER_32);         
+    stream != -1
+  ); 
 
   - open_read_only:BOOLEAN <-
-  ( + pa:NATIVE_ARRAY(CHARACTER);
+  ( + pa:NATIVE_ARRAY(CHARACTER);    
     pa := path.to_external;
-    stream := `fopen((char*)@pa,"rb")`:(POINTER);
-    stream != NULL
-  );
-
+    stream := `open((char*)@pa,O_RDONLY)`:(INTEGER_32);
+    stream != -1
+  ); 
+  
   - close <-
   [
-    -? {stream != NULL};
+    -? {stream != -1};
   ]
-  ( + str:POINTER;
-
-    str := stream;
-    `fclose((FILE*)(@str))`;
-    stream := NULL;
+  ( + str:INTEGER;
+        
+    str := stream;    
+    `close(@str)`;        
+    stream := -1;
   );
-
-Section FILE
-
-  - physical_read buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
-  // return size read or 0 if end of input (-1 on error => exception ?)
-  ( + str:POINTER;
-    str := stream;
-    `fread((void *)(@buf),(size_t)(1), (size_t)(@s),(FILE*)(@str))`:(INTEGER)
+    
+Section FILE  
+  
+  - physical_read buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER_64 :INTEGER_64 <-
+  // return size read or 0 if end of input (-1 on error)
+  ( + str:INTEGER;    
+    str := stream;    
+    `read((@str),(@buf),(size_t)(@s))`:(INTEGER_64)
   );
-
-  - physical_write buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER :INTEGER <-
-  // return size read or 0 if end of input (-1 on error => exception ?)
-  ( + str:POINTER;
-    str := stream;
-    `fwrite((void *)(@buf),(size_t)(1), (size_t)(@s),(FILE*)(@str))`:(INTEGER)
+  
+  - physical_write buf:NATIVE_ARRAY(UINTEGER_8) size s:INTEGER_64 :INTEGER_64 <-
+  // return size read or 0 if end of input (-1 on error)
+  ( + str:INTEGER;
+    str := stream;      
+    `write((@str),(@buf),(size_t)(@s))`:(INTEGER_64)
   );
+  
 
-
-
+  
