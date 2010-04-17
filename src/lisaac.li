@@ -799,6 +799,8 @@ Section Public
       STD_ERROR.put_string "\n";
       print "  Null call score      : " stat null_counter for late_binding_counter;
       print "  Polymorphic call     : " stat polymorphic_counter for late_binding_counter;
+      print "  Call on Expanded     : " stat late_binding_expanded_counter for late_binding_counter;
+      print "  Call on Self         : " stat late_binding_self_counter     for late_binding_counter;
       //
       print "  Recursivity function : "
       stat (PROFIL.counter_recursivity_function) for (PROFIL.counter_function);

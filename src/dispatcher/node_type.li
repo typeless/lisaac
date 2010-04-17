@@ -57,6 +57,15 @@ Section Public
     expr := e;
     data := d;
     late_binding_counter := late_binding_counter + 1;
+    ((e.static_type.is_expanded) || {e.static_type.raw = type_boolean}).if {
+      late_binding_expanded_counter := late_binding_expanded_counter + 1; 
+    } else {
+      + self:READ_LOCAL;
+      self ?= e;
+      ((self != NULL) && {self.variable.name = ALIAS_STR.variable_self}).if {
+        late_binding_self_counter := late_binding_self_counter + 1;
+      };
+    };
   );
 
   //

@@ -89,6 +89,8 @@ Section Public
   //
 
   - late_binding_counter:INTEGER;
+  - late_binding_expanded_counter:INTEGER;
+  - late_binding_self_counter:INTEGER;
 
   - null_counter:INTEGER;
 

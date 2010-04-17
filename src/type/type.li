@@ -595,6 +595,29 @@ Section Public
               };
             };
           };
+          (
+            (!parse_type_c "char") && {!parse_type_c "short"} && {!parse_type_c "int"} &&
+            {!parse_type_c "long"} && {!parse_type_c "float"} && {!parse_type_c "double"} &&
+            {!parse_type_c "void"}
+          ).if {            
+            output_glob.append "__";
+            output_glob.append intern_name;
+            output_glob.add_last ' ';
+            output_glob.append intern_name;
+            output_glob.add_last '_';
+            output_glob.append ";\n";
+            output_glob.append "#define ";
+            output_glob.append intern_name;
+            output_glob.append "__ (&";
+            output_glob.append intern_name;
+            output_glob.append "_)\n";
+            output_glob.append "#define __";
+            output_glob.append intern_name;
+            output_glob.append "__ ";
+            id_counter_without_type.append_in output_glob;
+            id_counter_without_type := id_counter_without_type + 1;
+            output_glob.append "\n\n";
+          };
         } else {
           output_decl.append "/* ";
           output_decl.append intern_name;
@@ -1290,4 +1313,21 @@ Section TYPE,PROTOTYPE
       type_parent.verify_cyclic_inheritance ref;
       idx := idx + 1;
     };
+  );
+  
+Section Private
+    
+  - parse_type_c t:ABSTRACT_STRING :BOOLEAN <-
+  ( + idx,idx2:INTEGER;
+    + result:BOOLEAN;
+    idx := type_c.first_substring_index t;    
+    (idx != 0).if {
+      ((idx=1) || {!type_c.item (idx - 1).is_letter_or_digit} || {!type_c.item (idx - 1) != '_').if {
+        idx2 := idx + type_c.count;        
+        result := (
+          (idx2>type_c.upper) || {!type_c.item idx2.is_letter_or_digit} || {!type_c.item idx2 != '_'}
+        );
+      };
+    };
+    result
   );
