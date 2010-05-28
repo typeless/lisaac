@@ -50,6 +50,7 @@ Section Private
 Section Public
 
   + param_count:INTEGER;
+  // param count
 
   - set_param n:INTEGER <-
   (
@@ -57,12 +58,14 @@ Section Public
   );
 
   + subtype_list:HASHED_SET(TYPE);
+  // inherited type ?
 
   + default:TYPE_FULL;
 
   + size:INTEGER;
 
   - position:POSITION <- prototype.position;
+  // position in source code
 
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   (
@@ -74,6 +77,7 @@ Section Public
   //
 
   + last_pass_binding:INTEGER;
+  // depend pass count
 
   - is_late_binding:BOOLEAN <- pass_count = last_pass_binding;
 
@@ -89,6 +93,7 @@ Section Public
   + itm_type:ITM_TYPE_SIMPLE;
 
   + prototype:PROTOTYPE;
+  // prototype associated
 
   - type_c:STRING_CONSTANT <- prototype.type_c;
 

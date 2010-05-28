@@ -24,7 +24,8 @@ Found in `ANY`.
 - `list_main:LIST` is the list of the `main()` function.
 
 - `profil_current:PROFIL`: the profil being executed in the current execution
-  pass
+  pass. 
+%PA : c'est quoi PROFIL 
 
 - `seq_list:FAST_ARRAY(LIST)`: the list hierarchy during the execute pass.
   First comes the containing lists and then the contained lists. This is sort of
