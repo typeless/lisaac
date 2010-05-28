@@ -66,6 +66,7 @@ Section Public
   + last_slot:ITM_SLOT;
 
   - add_slot s:ITM_SLOT <-
+  // add slot `s' to slot list, updating `first_slot' and `last_slot' if needeed
   (
     slot_list.fast_put s to (s.name);
     (first_slot = NULL).if {
@@ -77,6 +78,7 @@ Section Public
   );
 
   - search_parent n:STRING_CONSTANT :BOOLEAN <-
+  // return TRUE if `n' is a parent
   ( + slot:ITM_SLOT;
     + result:BOOLEAN;
 
@@ -185,6 +187,7 @@ Section Public
   + idf_generic_list:FAST_ARRAY(ITM_TYPE_PARAMETER);
 
   - append_filename buffer:STRING <-
+  // ?
   (
     (path_begin != 1).if {
       buffer.append "...";
@@ -210,6 +213,7 @@ Section Public
   //
 
   - create f:STRING_CONSTANT name n:STRING_CONSTANT generic_count c:INTEGER :SELF <-
+  // create prototype named `n' with `c' generic prototype
   ( + result:SELF;
     result := clone;
     result.make f name n generic_count c;
@@ -217,6 +221,7 @@ Section Public
   );
 
   - make f:STRING_CONSTANT name n:STRING_CONSTANT generic_count c:INTEGER <-
+  // create prototype named `n' with `c' generic prototype
   [
     -? {! prototype_dico.fast_has f};
     -? {n != NULL};
@@ -273,6 +278,7 @@ Section Public
   //
 
   - depend <-
+  // Compute a step of depend
   ( + slot_main:SLOT;
     + self_main:EXPR;
     + base:NODE;
@@ -445,6 +451,7 @@ Section Public
   );
 
   - shorter_out buf:STRING <-
+  // Generating documentation (shorter)
   ( + title:STRING_CONSTANT;
     + s:ITM_SLOT;
     put name to buf like (ALIAS_STR.short_title);
@@ -505,6 +512,7 @@ Section Public
 Section PROTOTYPE
 
   - get_slot_main:SLOT <-
+  // Verify if slot main exists and return it
   ( + result:SLOT;
     + s:ITM_SLOT;
 
@@ -528,6 +536,10 @@ Section PROTOTYPE
     result
   );
 
+
+  //
+  // Shorter
+  //
   - shorter_get_all_slot_in lst:FAST_ARRAY(ITM_SLOT) <-
   ( + s:ITM_SLOT;
     + ps:ITM_TYPE_SIMPLE;
@@ -820,6 +832,7 @@ Section PROTOTYPE
 Section Private
 
   - protopath_from_path filename:ABSTRACT_STRING :STRING_CONSTANT <-
+  // return lisaac format prototype path from filename path `filename'
   ( + strip_end :INTEGER;
     is_lip.if {
       // *.lip
@@ -851,6 +864,7 @@ Section Private
   );
 
   - name_last n:INTEGER :STRING_CONSTANT <-
+  // get the last name prototype
   [
     -? { n > 0 };
   ]
@@ -886,6 +900,7 @@ Section Private
   - insert_prototype <- insert_prototype_start 1;
 
   - insert_prototype_start start:INTEGER <-
+   // Find canonical name
   ( + i:INTEGER;
     + proto:PROTOTYPE;
 

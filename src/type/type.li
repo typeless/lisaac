@@ -1034,7 +1034,7 @@ Section TYPE
     + is_only:BOOLEAN;
 
 
-    //call_path.print; ' '.print; n.print; '\n'.print;
+    "Load Prototype : ".print;call_path.print; ' '.print; n.print; '\n'.print;
 
     result := dico_name_to_prototype.fast_reference_at n;
     (result = NULL).if {
@@ -1162,7 +1162,7 @@ Section TYPE
       POSITION.send_error;
     };
 
-    //result.filename.print; '\n'.print; '\n'.print;
+    result.filename.print; '\n'.print; '\n'.print;
 
     result
   );
@@ -1322,7 +1322,7 @@ Section Private
     + result:BOOLEAN;
     idx := type_c.first_substring_index t;    
     (idx != 0).if {
-      ((idx=1) || {!type_c.item (idx - 1).is_letter_or_digit} || {!type_c.item (idx - 1) != '_').if {
+      ((idx=1) || {!type_c.item (idx - 1).is_letter_or_digit} || {!type_c.item (idx - 1) != '_'}).if {
         idx2 := idx + type_c.count;        
         result := (
           (idx2>type_c.upper) || {!type_c.item idx2.is_letter_or_digit} || {!type_c.item idx2 != '_'}
