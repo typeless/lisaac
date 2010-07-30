@@ -290,7 +290,8 @@ sub generate_html {
     files       => [],
   };
   my $i = 0;
-  while (my ($id, $file) = each(%all_files)) {
+  foreach my $id (sort (keys(%all_files))) {
+    my $file = $all_files{$id};
     my $html_file = "coverage_".$file->{id}.".html";
     $vars_index->{files}->[$i++] = {
       shortname              => phtml(substr($file->{filename}, length($common_dir))),
@@ -359,7 +360,8 @@ sub generate_html {
 }
 
 sub generate_summary {
-  while (my ($id, $file) = each(%all_files)) {
+  foreach my $id (sort (keys(%all_files))) {
+    my $file = $all_files{$id};
     my $proto_file = $file->{filename};
     print substr($proto_file, length($common_dir));
     my $percent = 100 * $file->{covered}/$file->{count};
@@ -368,9 +370,19 @@ sub generate_summary {
   }
 }
 
+# sub sort_all_files {
+#   my %tmp = %all_files;
+#   %all_files = ();
+#   foreach my $key (sort (keys(%tmp))) {
+#     $all_files{$key} = $tmp{$key};
+#   }
+# }
+
+
 process_files(@cov_files);
 
 if ($gen_html) {
+  print "Generate HTML ...\n";
   generate_html();
 }
 
