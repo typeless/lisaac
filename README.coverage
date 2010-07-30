@@ -1,0 +1,72 @@
+Coverage tool for Lisaac
+========================
+
+What kind of code coverage does it measure?
+-------------------------------------------
+
+The coverage tool included in the Lisaac compiler measures the instruction
+coverage only. That is, it measures instruction lists and blocs executed.
+Everything inside braces (), curly brackets {} and brackets [] is measured.
+
+Desicion coverage is not implemented. When a slot is called, there is no measure
+of the decision branches. Desision branches corresponds to the dynamic type of
+the receiver (dispatching).
+
+Another limitation is that expressions alone are not measured. If you define a
+slot just using an expression, without including it in braces (), then it is not
+measured.
+
+How to mesure the instruction coverage of my project?
+-----------------------------------------------------
+
+First, you have to compile your project with the `-coverage` flag. This will
+generate a file `.cov` along with your executable. This file contains all the
+information about the structure of the code. Basically, it contains the position
+for all lists in your code.
+
+When the executable is run, it will append to this .cov file. For each list, it
+will write the number of times the list was executed.
+
+You can then use the `licoverage` tool to interpret this file and generate an
+HTML report.
+
+If you compiled your program with a `-o` option being a relative path, the
+coverage file will also be looked relatively to the current directory. If when
+you are testing your executable you are not in the same directory, it is likely
+the `.cov` file will be different. To solve this, just put an absolute path.
+
+`.cov` file format
+------------------
+
+The `.cov` file format is line based, lines are separated by '\n'. Each line
+start with an identifier followed immediatly by a colon ':'. The identifier
+specify the content of the line.
+
+- `FILE:<filename>`: All following lines apply on filename `<filename>`
+
+- `LIST:<n>:<n>:<n>:<n>`: Declare the existance of a block of code. The
+  parameters are in order:
+
+    - The line number of the opening brace
+    - The column number of the opening brace
+    - The line number of the closing brace
+    - The column number of the closing brace
+
+- `COVERAGE:<n>:<n>:<n>:<n>:<n>`: Code coverage information about a list. The
+  parameters are in order:
+
+    - The number of times the code block was executed
+    - The four numbers identifying the list in the current file, identical of
+      what was specified in `LIST`.
+
+TODO
+----
+
+- Implement decision coverage
+
+- Implement expresion coverage
+
+- If returns or exceptions are implemented in Lisaac, make sure that the
+  instructions after the return are not marked as covered. This can be done by
+  marking all possible return points in `LIST` and inserting the coverage
+  instruction for each segment (before each return point).
