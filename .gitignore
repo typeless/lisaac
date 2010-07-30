@@ -11,6 +11,10 @@
 /lisaac.c
 /install_lisaac
 /install_lisaac.exe
+/lisaac-cov
+/lisaac-cov.c
+/lisaac-cov.cov
+/lisaac-cov.cov.orig
 /l
 /l.c
 /doc/

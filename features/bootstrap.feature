@@ -12,6 +12,7 @@ Feature: Bootstrapping
       printf '#define LISAAC_DIRECTORY "%s"\n' "`pwd`"
       """
 
+  @bootstrap
   Scenario:
     Given I am in "tmp/"
     When  I run lisaac ../src/make.lip -compiler -optim -o lisaac1

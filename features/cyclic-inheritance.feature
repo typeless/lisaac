@@ -3,8 +3,7 @@ Feature: Cyclic inheritance
   I want to detect cyclin inheritance and tell the programmer this is an error
 
   Background:
-    Given Lisaac is available
-    And   I am in an empty directory
+    Given I am in an empty directory
 
   Scenario: Basic
     Given a file "cyclic.li":
@@ -42,7 +41,7 @@ Feature: Cyclic inheritance
           tell_me;
         );
       """
-    When I run lisaac main
+    When I compile main.li
     Then it should fail
     And the output should contain
       """

@@ -182,6 +182,7 @@ clean:
 	-$(RM) -rf bootstrap
 	-$(RM) -f make.lip
 	-$(RM) -f install_lisaac
+	-$(RM) -f lisaac-cov.c lisaac-cov.cov lisaac-cov lisaac-cov.cov.orig
 	-$(RM) -f bin/path.h bin/shorter.c bin/shorter bin/lisaac
 	-$(RM) -f src/path.h src/shorter.c src/shorter src/lisaac src/lisaac.c
 	-$(RM) -f path.h shorter shorter.c lisaac lisaac.c
@@ -194,6 +195,23 @@ clean-spaces:
 
 src/HACKING.html: src/HACKING Markdown.pl
 	$(MARKDOWN_CMDLINE)
+
+### Code coverage ###
+
+lisaac-cov: path.h bin/lisaac
+	bin/lisaac src/make.lip -compiler -optim -coverage -o "`pwd`/$@"
+	cp lisaac-cov.cov lisaac-cov.cov.orig
+
+cov-clean:
+	-$(RM) -f lisaac-cov.cov
+	-cp lisaac-cov.cov.orig lisaac-cov.cov
+cov: lisaac-cov
+	-CUKE_LISAAC_NAME=lisaac-cov cucumber -f progress -t ~@bootstrap features/*.feature
+cov-report:
+	mkdir -p features/coverage-report
+	tools/licoverage --html -o features/coverage-report -e '\.lip$$' -e '/lib/' lisaac-cov.cov
+
+.PHONY: cov cov-clean cov-report
 
 ### Markdown ###
 

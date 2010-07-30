@@ -68,6 +68,30 @@ When /^I run ([^"].*)$/ do |commandline|
   When("I run \"#{commandline}\"")
 end
 
+When /^I compile ([a-z0-9_]+\.li) using ([a-z0-9_]+\.lip) with (.*)$/ do |li_file, lip_file, options|
+  lisaac_compile(li_file, lip_file, options)
+end
+
+When /^I compile ([a-z0-9_]+\.li) using ([a-z0-9_]+\.lip)$/ do |li_file, lip_file|
+  lisaac_compile(li_file, lip_file)
+end
+
+When /^I compile ([a-z0-9_]+\.li) with (.*)$/ do |li_file, options|
+  lisaac_compile(li_file, "", options)
+end
+
+When /^I compile ([a-z0-9_]+\.lip) with (.*)$/ do |lip_file, options|
+  lisaac_compile("", lip_file, options)
+end
+
+When /^I compile ([a-z0-9_]+\.li)$/ do |li_file|
+  lisaac_compile(li_file)
+end
+
+When /^I compile ([a-z0-9_]+\.lip)$/ do |lip_file|
+  lisaac_compile("", lip_file)
+end
+
 When /^I print the last command output$/ do
   puts @last_command_output;
 end

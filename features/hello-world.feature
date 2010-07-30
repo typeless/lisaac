@@ -3,10 +3,6 @@ Feature: Hello World
   As a Lisaac programmer
   I want to be able to compile a hello world
 
-  Background: Background title
-    Given lisaac/bin is in the PATH
-    And   make.lip is installed
-
   Scenario: Debug
     Given I am in an empty directory
     When I run pwd
@@ -32,7 +28,7 @@ Feature: Hello World
           );
       """
 
-    When I run lisaac hello
+    When I compile hello.li
     Then it should pass
     And  the output should contain
       """

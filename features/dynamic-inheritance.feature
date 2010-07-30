@@ -1,9 +1,5 @@
 Feature: Dynamic Inheritance
 
-  Background:
-    Given lisaac/bin is in the PATH
-    And   make.lip is installed
-
   Scenario:
     Given I am in an empty directory
     And   a file "hello.li":
@@ -62,7 +58,7 @@ Feature: Dynamic Inheritance
         );
       """
 
-    When I run lisaac hello
+    When I compile hello.li
     Then it should pass
 
     When I run ./hello

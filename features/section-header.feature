@@ -25,9 +25,7 @@ Feature: Section Header
     - default value
 
   Background:
-    Given lisaac/bin is in the PATH
-      And make.lip is installed
-      And I am in an empty directory
+    Given I am in an empty directory
 
   Scenario: Missing Section Header
     Given a file "main.li"
@@ -41,7 +39,7 @@ Feature: Section Header
 
       """
 
-     When I run lisaac main
+     When I compile main.li
      Then it should fail
       And the output should contain
       """
@@ -61,7 +59,7 @@ Feature: Section Header
 
       """
 
-     When I run lisaac main
+     When I compile main.li
      Then it should fail
       And the output should contain
       """
@@ -98,7 +96,7 @@ Feature: Section Header
 
       """
 
-     When I run lisaac main
+     When I compile main.li
      Then it should pass
       And the output should contain
       """

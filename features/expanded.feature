@@ -11,9 +11,7 @@ Feature: Expanded Objects
     | Reference -> Reference | Copy reference                  |
 
   Background:
-    Given lisaac/bin is in the PATH
-      And make.lip is installed
-      And I am in an empty directory
+    Given I am in an empty directory
 
   Scenario:
     Given a file "aa.li"
@@ -93,7 +91,7 @@ Feature: Expanded Objects
         );
       """
 
-     When I run lisaac main
+     When I compile main.li
      Then it should pass
 
      When I run ./main
