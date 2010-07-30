@@ -1039,7 +1039,7 @@ Section TYPE
     + is_only:BOOLEAN;
 
 
-    "Load Prototype : ".print;call_path.print; ' '.print; n.print; '\n'.print;
+    // "Load Prototype : ".print;call_path.print; ' '.print; n.print; '\n'.print;
 
     result := dico_name_to_prototype.fast_reference_at n;
     (result = NULL).if {
@@ -1167,7 +1167,7 @@ Section TYPE
       POSITION.send_error;
     };
 
-    result.filename.print; '\n'.print; '\n'.print;
+    // result.filename.print; '\n'.print; '\n'.print;
 
     result
   );
