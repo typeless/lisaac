@@ -1323,14 +1323,19 @@ Section TYPE,PROTOTYPE
 Section Private
     
   - parse_type_c t:ABSTRACT_STRING :BOOLEAN <-
+  // Return TRUE if `type_c' contains the word `t' and `t' is not followed or
+  // does not follow an identifier character [A-Za-z0-9_]
   ( + idx,idx2:INTEGER;
     + result:BOOLEAN;
-    idx := type_c.first_substring_index t;    
+    idx := type_c.first_substring_index t;
     (idx != 0).if {
-      ((idx=1) || {!type_c.item (idx - 1).is_letter_or_digit} || {!type_c.item (idx - 1) != '_'}).if {
-        idx2 := idx + type_c.count;        
+      // t was found
+      ((idx=1) || {!type_c.item (idx - 1).is_letter_or_digit} || {type_c.item (idx - 1) != '_'}).if {
+        // t starts the identifier
+        idx2 := idx + t.count;
         result := (
-          (idx2>type_c.upper) || {!type_c.item idx2.is_letter_or_digit} || {!type_c.item idx2 != '_'}
+          // and t ends the identifier
+          (idx2>type_c.upper) || {!type_c.item idx2.is_letter_or_digit} || {type_c.item idx2 != '_'}
         );
       };
     };
