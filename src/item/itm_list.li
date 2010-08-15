@@ -34,7 +34,7 @@ Section Inherit
 
 Section Public
 
-  // BSBS: OPTIM : Dans 95% des cas, les list sont sans local (il faudrait spécialiser)
+  // BSBS: OPTIM : Dans 95% des cas, les list sont sans local (il faudrait spï¿½cialiser)
   // Mais pb avec le parser...
 
   //
@@ -50,6 +50,8 @@ Section Public
   + is_check_name:BOOLEAN;
 
   - is_check_local:INTEGER;
+
+  + last_position :POSITION;
 
   //
   // Constructor
@@ -88,6 +90,23 @@ Section Public
     code := c;
   );
 
+  - set_last_position p:POSITION <-
+  (
+    last_position := p;
+    ((is_coverage) && {! p.prototype.is_lip}).if {
+      (coverage_all_lists = NULL).if {
+        coverage_all_lists := FAST_ARRAY(POSITION).create 16192;
+      };
+      coverage_all_lists.add_last position;
+      coverage_all_lists.add_last p;
+    };
+  );
+
+Section LISAAC
+
+  - coverage_all_lists :FAST_ARRAY(POSITION) <-
+  ( coverage_all_lists := FAST_ARRAY(POSITION).create 16192 );
+
 Section Public
 
   - is_affect:POSITION <-
@@ -110,6 +129,34 @@ Section Public
     };
     result
   );
+
+  - insert_code_coverage_hook last_position:POSITION in lst:FAST_ARRAY(ITM_CODE) <-
+  [ // TODO: Mildred: remove this slot
+    -? { lst != NULL };
+  ]
+  (
+    is_coverage.if {
+      //warning_error2 (position, last_position, "ITM_LIST.insert_code_coverage_hook");
+      string_tmp.copy "lisaac_coverage_hook(";
+      position.code.append_in string_tmp;
+      string_tmp.append ",";
+      last_position.code.append_in string_tmp;
+      string_tmp.append ")";
+      lst.add_first ( // TODO: Mildred: optimize (ALIAS_ARRAY)
+        ITM_EXTERNAL.create position text (ALIAS_STR.get string_tmp)
+      );
+      output_coverage.append "CODE:";
+      position     .line  .append_in output_coverage; output_coverage.add_last ':';
+      position     .column.append_in output_coverage; output_coverage.add_last ':';
+      last_position.line  .append_in output_coverage; output_coverage.add_last ':';
+      last_position.column.append_in output_coverage; output_coverage.add_last ':';
+      output_coverage.append (position.prototype.filename);
+      output_coverage.add_last '\n';
+    };
+  );
+
+  - insert_code_coverage_hook last_position:POSITION <-
+    insert_code_coverage_hook last_position in code;
 
   //
   // Runnable.
@@ -143,6 +190,9 @@ Section Public
       };
     };
     // Append code.
+    is_coverage.if {
+      list_current.add_last (COV_INSTR.create (position, last_position));
+    };
     (code.lower).to (code.upper) do { j:INTEGER;
       i := code.item j.to_run;
       list_current.add_last i;

@@ -175,6 +175,7 @@ Section Public
   - slot_is_statistic :STRING_CONSTANT := "is_statistic";
   - slot_is_quiet     :STRING_CONSTANT := "is_quiet";
   - slot_is_library   :STRING_CONSTANT := "is_library";
+  - slot_is_coverage  :STRING_CONSTANT := "is_coverage";
   - slot_get_integer  :STRING_CONSTANT := "get_integer";
   - slot_get_string   :STRING_CONSTANT := "get_string";
   - slot_is_cop       :STRING_CONSTANT := "is_cop";
@@ -483,6 +484,7 @@ Section Public
     list.add slot_is_statistic;
     list.add slot_is_quiet;
     list.add slot_is_library;
+    list.add slot_is_coverage;
     list.add slot_get_integer;
     list.add slot_get_string;
     list.add slot_is_cop;

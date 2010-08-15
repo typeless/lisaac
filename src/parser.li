@@ -1938,6 +1938,10 @@ Section Private
     + group_sav:ITM_LIST;
     + arg:ITM_ARGUMENT;
     + result_id:STRING_CONSTANT;
+    + pos : POSITION;
+
+    read_space;
+    pos := current_position; // Get the position before consuming the tokens
 
     (read_this_keyword (ALIAS_STR.variable_self)).if {
       result := ITM_READ.create current_position name last_string;
@@ -1966,7 +1970,8 @@ Section Private
     }.elseif {(result := read_constant) != NULL} then {
     }.elseif {read_character '(' } then {
       group_sav := last_group;
-      last_group := ITM_LIST.create current_position;
+      // @bookmark Create list
+      last_group := ITM_LIST.create pos;
       result := last_group;
       last_group.set_code read_group;
       (read_character ')').if_false {
@@ -1976,7 +1981,8 @@ Section Private
     }.elseif {read_character '{' } then {
       short (ALIAS_STR.short_block) token (position-1) to position;
       group_sav := last_group;
-      last_group := ITM_LIST.create current_position;
+      // @bookmark Create block
+      last_group := ITM_LIST.create pos;
 
       save_context; // !! SAVE CONTEXT !!
 
@@ -2080,6 +2086,8 @@ Section Private
       e := ITM_RESULT.create e;
       result.add_last e;
     };
+    read_space;
+    last_group.set_last_position current_position;
     ALIAS_ARRAY(ITM_CODE).copy result
   );
 
@@ -2120,9 +2128,13 @@ Section Private
     + e:ITM_CODE;
     + result:ITM_LIST;
     + lst:FAST_ARRAY(ITM_CODE);
+    + pos : POSITION;
+
+    pos := current_position;
 
     (read_character '[').if {
-      result := last_group := ITM_LIST.create current_position;
+      // @bookmark: create contract
+      result := last_group := ITM_LIST.create pos;
       read_def_local;
 
       lst := ALIAS_ARRAY(ITM_CODE).new;
@@ -2142,9 +2154,13 @@ Section Private
 	};
       }.do_while {continue};
 
+      read_space;
+      result.set_last_position current_position;
+
       (! read_character ']').if {
 	warning_error (current_position,"Added ']'.");
       };
+
       e := ITM_PROTOTYPE.create current_position type (ITM_TYPE_SIMPLE.type_void);
       lst.add_last e;
       //

@@ -257,6 +257,7 @@ Section Private
     is_statistic       := LIP_CODE.get_boolean (ALIAS_STR.slot_is_statistic);
     is_quiet           := LIP_CODE.get_boolean (ALIAS_STR.slot_is_quiet);
     is_library         := LIP_CODE.get_boolean (ALIAS_STR.slot_is_library);
+    is_coverage        := LIP_CODE.get_boolean (ALIAS_STR.slot_is_coverage);
     //
     ((input_name = NULL) || {input_name.is_empty}).if {
       "ERROR: `input_file' is empty.\n".print;
@@ -489,6 +490,84 @@ Section Private
       \  print_char(car);                   \n\
       \} \n\n";
     };
+    is_coverage.if {
+      buf.append "char *__lisaac_proto_file_names[";
+      buf.append (PROTOTYPE.prototype_list.count.to_string);
+      buf.append "]={\n";
+      (PROTOTYPE.prototype_list.lower).to (PROTOTYPE.prototype_list.upper-1) do {
+        j:INTEGER;
+        proto := PROTOTYPE.prototype_list.item j;
+        buf.append "  \"";
+        buf.append (proto.filename);
+        buf.append "\",\n";
+      };
+      proto := PROTOTYPE.prototype_list.last;
+      buf.append "  \"";
+      buf.append (proto.filename);
+      buf.append "\"\n};\n\n";
+      title "CODE COVERAGE HOOKS" in buf;
+      buf.append "static int lisaac_coverage_block_info_length = ";
+      COV_INSTR.count.append_in output_code;
+      buf.append ";\nstatic struct { \n\
+        \  int proto_index;\n\
+        \  int start_line;\n\
+        \  int start_col;\n\
+        \  int stop_line;\n\
+        \  int stop_col;\n\
+        \} lisaac_coverage_block_info[";
+      COV_INSTR.count.append_in output_code;
+      buf.append "]={\n";
+      COV_INSTR.lower.to (COV_INSTR.upper) do { i:INTEGER;
+        + instr:COV_INSTR;
+        + p1, p2 :POSITION;
+        instr := COV_INSTR.item i;
+        (instr != NULL).if {
+          p1 := instr.position;
+          p2 := instr.last_position;
+          buf.append "  {";
+          p1.prototype.index.append_in buf;
+          buf.append ", ";
+          p1.line.append_in buf;
+          buf.append ", ";
+          p1.column.append_in buf;
+          buf.append ", ";
+          p2.line.append_in buf;
+          buf.append ", ";
+          p2.column.append_in buf;
+          buf.append "},\n";
+        } else {
+          buf.append "  {0, 0, 0, 0, 0} /* instr = NULL */,\n";
+        };
+      };
+      buf.remove_last 2;
+      buf.append "\n};\n\n";
+      buf.append
+        "static void lisaac_coverage_exit()\n\
+        \{\n\
+        \  int current_proto = -1;\n\
+        \  int i;\n\
+        \  \n\
+        \  \n\
+        \  FILE* f = fopen(lisaac_coverage_file, \"a\");\n\
+        \  for (i = 0; i < lisaac_coverage_block_info_length; ++i)\n\
+        \  {\n\
+        \    if (current_proto != lisaac_coverage_block_info[i].proto_index)\n\
+        \    {\n\
+        \      current_proto = lisaac_coverage_block_info[i].proto_index;\n\
+        \      fprintf (f, \"FILE:%s\\n\", __lisaac_proto_file_names[current_proto]);\n\
+        \    }\n\
+        \    fprintf (f, \"COVERAGE:%d:%d:%d:%d:%d\\n\",\n\
+        \      lisaac_coverage_table[i],\n\
+        \      lisaac_coverage_block_info[i].start_line,\n\
+        \      lisaac_coverage_block_info[i].start_col,\n\
+        \      lisaac_coverage_block_info[i].stop_line,\n\
+        \      lisaac_coverage_block_info[i].stop_col);\n\
+        \  }\n\
+        \  fflush(f);\n\
+        \  fclose(f);\n\
+        \}\n\
+        \\n";
+    };
   );
 
   - load_main_object <-
@@ -593,6 +672,10 @@ Section Public
     // Load Environment.
     //
     read_options;
+    is_coverage.if {
+      output_coverage := STRING.create_from_string
+        "# CODE:BEGIN_LINE:COL:END_LINE:COL:FILENAME\n";
+    };
     is_verbose.if {
       string_tmp.copy "\ninput  file: ";
       string_tmp.append input_name;
@@ -629,6 +712,10 @@ Section Public
       // ANSI argument command.
       (debug_level_option != 0).if {
         output_decl.append "#include <signal.h>\n";
+      };
+      is_coverage.if {
+        output_decl.append "#include <stdio.h>\n";
+        output_decl.append "#include <stdlib.h>\n";
       };
       output_decl.append
       "int arg_count;\n\
@@ -682,6 +769,20 @@ Section Public
       };
     };
 
+    // Coverage
+    is_coverage.if {
+      output_code.append "\
+        \\n/* Code Coverage Hooks */\n\
+        \static unsigned int  lisaac_coverage_table[";
+      COV_INSTR.count.append_in output_code;
+      output_code.append "];\n\
+        \static const char   *lisaac_coverage_file = \"";
+      output_code.append output_name;
+      output_code.append ".cov\";\n\
+        \static void lisaac_coverage_exit();\n\
+        \\n";
+    };
+
     // Extern source code.
     output_code.append "/* Source code */\n";
     PROFIL_LIST.genere_handler output_code;
@@ -699,6 +800,13 @@ Section Public
       };
     };
     output_code.append "{\n";
+    is_coverage.if {
+      output_code.append
+       "  if (atexit(lisaac_coverage_exit)) {\n\
+       \    fprintf(stderr, \"cannot set code coverage exit function\\n\");\n\
+       \    exit(EXIT_FAILURE);\n\
+       \  }\n";
+    };
     indent.append "  ";
 
     profil_current := NULL;
@@ -750,7 +858,47 @@ Section Public
     };
     FS_MIN.write file_output with output_code size (output_code.count);
     FS_MIN.close file_output;
-    //
+
+    is_coverage.if {
+      + current_proto :PROTOTYPE;
+      + k:INTEGER;
+      string_tmp2.clear;
+      k := ITM_LIST.coverage_all_lists.lower;
+      {k < ITM_LIST.coverage_all_lists.upper}.while_do {
+        + p1, p2 :POSITION;
+        p1 := ITM_LIST.coverage_all_lists.item (k);
+        p2 := ITM_LIST.coverage_all_lists.item (k+1);
+        ? { p1.prototype = p2.prototype };
+        (p1.prototype != current_proto).if {
+          current_proto := p1.prototype;
+          string_tmp2.append "FILE:";
+          string_tmp2.append (current_proto.filename);
+          string_tmp2.add_last '\n';
+        };
+        string_tmp2.append "LIST:";
+        p1.line.append_in string_tmp2;
+        string_tmp2.add_last ':';
+        p1.column.append_in string_tmp2;
+        string_tmp2.add_last ':';
+        p2.line.append_in string_tmp2;
+        string_tmp2.add_last ':';
+        p2.column.append_in string_tmp2;
+        string_tmp2.add_last '\n';
+        k := k + 2;
+      };
+      string_tmp.copy output_name;
+      string_tmp.append ".cov";
+      (! FS_MIN.make_file string_tmp).if {
+        STD_ERROR.put_string "Error: File ";
+        STD_ERROR.put_string string_tmp;
+        STD_ERROR.put_string " is not created !\n";
+        die_with_code exit_failure_code;
+      };
+      f := FS_MIN.open_write string_tmp;
+      FS_MIN.write f with string_tmp2 size (string_tmp2.count);
+      FS_MIN.close f;
+    };
+
     (is_graph).if {
       + p:PROFIL;
       (PROFIL_LIST.profil_list.lower).to (PROFIL_LIST.profil_list.upper) do { j:INTEGER;
