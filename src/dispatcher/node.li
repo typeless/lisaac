@@ -65,6 +65,17 @@ Section Public
   //
   // Extern Creation read.
   //
+  // When the following expression is used:
+  //    (receiver.slot (args, ...))
+  // Arguments:
+  //  p:POSITION          Source code position
+  //  s:SLOT              The corresponding slot from the static (PROTO?)TYPE
+  //  rec:EXPR            receiver, dispatching EXPR
+  //  my_self:EXPR        receiver, first argument (in case the receiver is an
+  //                      EXPR_MULTIPLE)
+  //  larg:ARRAY(EXPR)    Arguments. The first is the same as my_self
+  //  is_intern:BOOL      if the call is with the implicit Self reeiver
+  //
 
   - new_read p:POSITION slot s:SLOT receiver rec:EXPR
   self my_self:EXPR intern is_intern:BOOLEAN :NODE <-
@@ -214,20 +225,20 @@ Section Public
 
 Section Public
 
-  - position:POSITION <-
-  (
-    data.position
-  );
+  - position:POSITION <- data.position;
 
   + data:DTA;
+  // The DTA used to generate each branch
 
   + expr:EXPR;
+  // Dispatching expression: from it we infer the different possible branches
 
-  + first_code:LIST;
-  + first_type:TYPE;
-  + switch:SWITCH;
+  + first_code:LIST;	// first branch
+  + first_type:TYPE;	// first dispatching type
+  + switch:SWITCH;	// switch dispatching the different branches
 
   - count:INTEGER <-
+  // Count how many dispatching branch there is
   ( + result:INTEGER;
 
     (switch != NULL).if {

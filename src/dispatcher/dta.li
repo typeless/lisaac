@@ -131,6 +131,7 @@ Section Private
 
     name := slot.name;
     s := typ.get_local_slot name;
+    // Is the slot in the current prototype ? Yes: call ; No: lookup parent
     (s = NULL).if {
       // Lookup parent.
       // First, evaluate the parent slot in the EXPR r

@@ -103,11 +103,17 @@ Section Public
 Section ITM_READ, SLOT_DATA
 
   - to_run_with first_itm:ITM_CODE args larg:FAST_ARRAY(ITM_CODE) :EXPR <-
-  ( + rec:EXPR;
-    //
+  // Generic slot to run a READ given:
+  //    first_item  a receiver
+  //    larg        an argument list (stripped trom the receiver)
+  //
+  // Does the preprocessing job before calling `to_run_with_self`
+  (
+    + rec:EXPR;               // Receiver EXPR
+    + is_resend:BOOLEAN;      // If we resend the call to the parent slot
+    + implicit_self:BOOLEAN;  // Implicit call (Self receiver omitted)
     + itm_list:ITM_LIST;
     + itm_read:ITM_READ;
-    + is_resend,implicit_self:BOOLEAN;
 
     //
     // Compute `rec'.
@@ -119,26 +125,38 @@ Section ITM_READ, SLOT_DATA
       implicit_self := TRUE;
     } else {
       rec := first_itm.to_run_expr;
+      //
       // Resend detect.
+      //
+      // If we detect that the receiver is an ITM_READ and it has the name of
+      // a parent in the Section Inherit, then we consider this a resend.
       itm_list ?= first_itm;
       (itm_list != NULL).if {
-	itm_read ?= itm_list.code.first;
+        itm_read ?= itm_list.code.first;
       } else {
-	itm_read ?= first_itm;
+        itm_read ?= first_itm;
       };
       is_resend := (
-	(itm_read != NULL) &&
-	{position.prototype.search_parent (itm_read.name)}
+        (itm_read != NULL) &&
+        {position.prototype.search_parent (itm_read.name)}
       );
     };
     to_run_with_self (rec,implicit_self,is_resend) args larg
   );
 
   - to_run_with_self (r:EXPR,implicit_self,is_resend:BOOLEAN)
-  args larg:FAST_ARRAY(ITM_CODE) :EXPR <-
-  ( + args:FAST_ARRAY(EXPR);
-    + rec_type:TYPE;
-    + rec:EXPR;
+                args larg:FAST_ARRAY(ITM_CODE) :EXPR <-
+  // Continues the job of `to_run_with args`
+  //    r               receiver EXPR
+  //    implicit_self   if the Self receiver was omitted
+  //    is_resend       if the READ is a call resent to an inherited parent
+  //    larg            ITM_CODE of the arguments (except the receiver)
+  (
+    + args:FAST_ARRAY(EXPR);  // Contains all arguments converted to EXPR,
+                              // including the receiver
+    + rec_type:TYPE;      // Receiver type
+    + rec:EXPR;           // If the receiver is an EXPR_MULTIPLE, then we only
+                          // take the first value as dispatching receiver
     + em:EXPR_MULTIPLE;
     + pos_null:POSITION;
     //
