@@ -161,7 +161,7 @@ Section ITM_READ, SLOT_DATA
     + pos_null:POSITION;
     //
     + slot_msg:SLOT;
-    + is_block_value:BOOLEAN;
+    + is_block_value:BOOLEAN; // If we call the `value` slot on a block
     //
     + base:NODE;
 
@@ -288,6 +288,9 @@ Section Private
 
   - add_arg e:EXPR to idx:INTEGER
   in args:FAST_ARRAY(EXPR) for slot:SLOT block is_block_value:BOOLEAN <-
+  // Append `e` at the end of `args`, taking into accound that if e is an
+  // EXPR_MULTIPLE, all its elements are appended one by one. This slot will
+  // also check that the arguments respect the definition of `slot`.
   ( + em:EXPR_MULTIPLE;
     + count:INTEGER;
     + itm_arg:ITM_ARGUMENT;

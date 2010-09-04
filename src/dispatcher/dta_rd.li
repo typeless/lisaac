@@ -37,6 +37,7 @@ Section Inherit
 Section Public
 
   + is_intern:BOOLEAN;
+  // If the call is implicit (no receiver Self specified)
 
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + result:TYPE_FULL;
@@ -92,6 +93,7 @@ Section Public
 Section DTA_RD
 
   - get_expr_result:EXPR <-
+  // Get the tempoary result_expr given to NODE_STYLE that is going to fill it
   ( + result:EXPR;
 
     (slot.id_section.is_interrupt).if {

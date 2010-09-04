@@ -35,8 +35,10 @@ Section Inherit
 Section Public
 
   + result_expr:EXPR;
+  // Result of the NODe expression to fill in.
 
   + slot:SLOT;
+  // Dispatch on different versions of this slot
 
 Section NODE, DTA
 
@@ -45,6 +47,13 @@ Section NODE, DTA
   //
 
   - create (e:EXPR,sl:SLOT) with dta:DTA result r:EXPR :SELF <-
+  // Dispatch on a slot
+  //    e       Self value, not an EXPR_MULTIPLE (dispatching receiver)
+  //            necessary to query the slot_id that will give us the
+  //            dispatching value
+  //    sl      slot to dispatch
+  //    dta     the DTA
+  //    r       Result expression to fill
   ( + result:SELF;
 
     result := clone;
@@ -75,25 +84,35 @@ Section NODE, DTA
   //
 
   - update_link self_type:TYPE_FULL :BOOLEAN <-
+  // Updates the switch with the different possibilities of the slot.
+  // When a possibility is found, let `call_for self` do the call and return a
+  // LIST to insert in the switch case.
   [
     -? {self_type != NULL};
   ]
   ( + typ:TYPE;
+    + typ_id:TYPE_ID;
     + list:FAST_ARRAY(CASE);
     + case:CASE;
     + e:EXPR;
     + low,up,count:INTEGER;
 
     (slot.slot_id = NULL).if {
+      // The slot has no id, no dispatching to do
+      // If the call code wasn't yet written, do it
       (first_code = NULL).if {
-	first_type := TYPE_ID.get_index (slot.lower_style);
-	first_code := call_for first_type self self_type;
+	first_type := typ_id := TYPE_ID.get_index (slot.lower_style);
+	first_code := call_for typ_id self self_type;
       };
     } else {
+      // Dispatch for each version of the slot
       low := slot.lower_style;
       up  := slot.upper_style;
       count := up-low + 1;
       (switch = NULL).if {
+        // If there is no switch, create the SWITCH
+        // The dispatching is done on the slot_id that gives which version of
+        // the slot is currently active.
 	(slot.style = '-').if {
 	  e := slot.slot_id.read position;
 	  expr.remove;
@@ -102,13 +121,14 @@ Section NODE, DTA
 	};
 	switch := SWITCH.create Self with e size count;
       };
+      // Updates the switch if new branches appeared.
       list := switch.list;
       (list.count != count).if {
 	0.to (count-1) do { j:INTEGER;
-	  typ := TYPE_ID.get_index (j+low);
+	  typ := typ_id := TYPE_ID.get_index (j+low);
 
 	  ((j > list.upper) || {typ != list.item j.id}).if {
-	    case := CASE.create typ with (call_for typ self self_type);
+	    case := CASE.create typ with (call_for typ_id self self_type);
 	    list.add case to j;
 	  };
 	};
@@ -119,218 +139,260 @@ Section NODE, DTA
 
 Section Private
 
-  - call_for t:TYPE self type_self:TYPE_FULL :LIST <-
+  - call_for typ:TYPE_ID self type_self:TYPE_FULL :LIST <-
   [
     -? {type_self != NULL};
   ]
   ( + result:LIST;
-    + typ:TYPE_ID;
-    + call:CALL_SLOT;
-    + em:EXPR_MULTIPLE;
-    + rd:READ;
-    + wrt:WRITE;
-    + result_var:VARIABLE;
-    + new_larg:FAST_ARRAY(EXPR);
-    + slot_dta:SLOT_DATA;
-    + slot_cod:SLOT_CODE;
-    + idx:INTEGER;
-    + type:TYPE_FULL;
-    + my_profil:PROFIL;
-    + wrt_lst:FAST_ARRAY(WRITE);
-    + ctext:LOCAL;
-    + new_type_self:TYPE_FULL;
     + data_rd:DTA_RD;
     + cop_arg:EXPR;
-    + new_val:EXPR;
-    + val:EXPR;
-
-    result := LIST.create position;
+    + idx:INTEGER;
+    + slot_cod:SLOT_CODE;
 
     data_rd ?= data;
     ((type_self.prototype.style = '-') && {data_rd != NULL} && {! data_rd.is_intern}).if {
       cop_arg := data.self_arg.my_copy;
     };
 
-    typ ?= t;
     idx := typ.index;
     (idx = 0).if {
       // Data.
-      (cop_arg != NULL).if {
-        result.add_last (COP_LOCK.create position with cop_arg);
-      };
-      //
-      slot_dta := slot.slot_data;
-      slot_dta.init;
-      (slot.slot_data_list != NULL).if {
-	(slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { j:INTEGER;
-	  slot.slot_data_list.item j.init;
-	};
-      };
-      //
-      (result_expr.static_type.raw = TYPE_VOID).if {
-        // BSBS: Pourquoi tu produit quelque chose qui serre à rien ???
-	(slot_dta.style = '-').if {
-	  result.add_last (slot_dta.read position);
-	} else {
-	  result.add_last (slot_dta.read position with (expr.my_copy));
-	};
-      } else {
-	em ?= result_expr;
-	(em != NULL).if {
-	  (em.lower).to (em.upper - 1) do { j:INTEGER;
-	    rd ?= em.item j;
-	    ? {rd != NULL};
-	    result_var := rd.variable;
-	    result.add_last (new_write result_var with (expr,slot.slot_data_list.item j));
-	  };
-	  rd ?= em.last;
-	} else {
-	  rd ?= result_expr;
-        };
-
-        //(slot_dta.name == "storage").if {
-        /*
-        string_tmp.clear;
-        string_tmp.copy (type_self.raw.name);
-        string_tmp.add_last ' ';
-        string_tmp.append (t.name);
-        (data.slot != NULL).if {
-          string_tmp.add_last ' ';
-          string_tmp.append (data.slot.name);
-        };
-        result.add_last (
-          EXTERNAL_C.create position text (ALIAS_STR.get string_tmp) access NULL persistant TRUE type (TYPE_NULL.default)
-        );
-         */
-          /*
-          "Data : ".print; slot_dta.intern_name.print;
-          " dans ".print; type_self.raw.name.print;
-          (profil_current != NULL).if {
-            profil_current.name.print;
-          };
-          '\n'.print;
-          */
-        //};
-	result_var := rd.variable;
-	result.add_last (new_write result_var with (expr,slot_dta));
-      };
-      (cop_arg != NULL).if {
-        result.add_last (COP_UNLOCK.create position);
-      };
+      result := call_data_slot_self type_self cop cop_arg;
     } else {
       // Function.
-      slot_cod := slot.slot_code idx;
-      (slot_cod.id_section.is_inherit_or_insert).if {
-	new_larg := FAST_ARRAY(EXPR).create_with_capacity 1;
-	new_larg.add_last (data.self_arg.my_copy);
-      } else {
-	new_larg := data.get_argument;
-      };
-      type := new_larg.first.static_type;
-      ? {type != NULL};
-      //
-      (debug_level_option != 0).if {
-        // BSBS: Poser le PUSH avant le NODE
-	//(data.context = NULL).if {
-	//  ctext := context_main;
-        //} else {
-        (data.context = NULL).if {
-          crash_with_message "NODE_STYLE : data.context = NULL!\n";
-        };
-
-        ctext := data.context;
-	//};
-	result.add_last (
-	  PUSH.create position context ctext first FALSE
-        );
-      };
-      //
-      rd ?= new_larg.first;
-      ((rd != NULL) && {rd.variable.name = ALIAS_STR.variable_self}).if {
-        // Fix Self type for resend call (else it's fixed by NODE_TYPE)
-        new_type_self := type;
-      } else {
-	new_type_self := type_self;
-      };
-      /*
-      string_tmp.copy "// ";
-      new_type_self.display string_tmp;
-      string_tmp.append "  /  ";
-      type_self.display string_tmp;
-      result.add_last (
-        EXTERNAL_C.create (data.position)
-        text (ALIAS_STR.get string_tmp) access NULL persistant TRUE type (TYPE_VOID.default)
-      );
-      */
-      new_val := CAST.create new_type_self value (new_larg.first);
-      new_larg.put new_val to 0;
+      result := call_code_slot (slot.slot_code idx) self type_self cop cop_arg;
+    };
+    result
+  );
 
 
-      /*
-      (new_larg.lower+1).to (new_larg.upper) do { j:INTEGER;
-        ts ?= slot_cod.get_argument_type j;
-        ((ts != NULL) && {ts = ITM_TYPE_SIMPLE.type_self}).if {
-          (new_larg.item j.static_type != new_type_self).if {
-            new_type_self.print;
-            new_larg.item j.static_type.print;
-            ts.print;
-            string_tmp.clear;
-            (slot_cod.argument_list.lower).to (slot_cod.argument_list.upper) do { h:INTEGER;
-              slot_cod.argument_list.item h.append_in string_tmp;
-            };
-            string_tmp.print;
-            '\n'.print;
-            warning_error (position,"BUG");
-            semantic_error (new_larg.item j.position,"Type not compatible SELF.");
-          };
-          //new_val := CAST.create new_type_self value (new_larg.item j);
-          //new_larg.put new_val to j;
-        };
-      };
-      */
-      (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
-      //
-      (result_expr.static_type.raw = TYPE_VOID).if {
-        result.add_last (
-          CALL_SLOT.create position profil my_profil with wrt_lst cop cop_arg
-        );
-      } else {
-        call := CALL_SLOT.create position profil my_profil with wrt_lst cop NULL;
-        (cop_arg != NULL).if {
-          result.add_last (COP_LOCK.create position with cop_arg);
-          result.add_last call;
-          result.add_last (COP_UNLOCK.create position);
-        } else {
-          result.add_last call;
-        };
-	em ?= result_expr;
-	(em != NULL).if {
-	  (em.lower).to (em.upper) do { j:INTEGER;
-	    rd ?= em.item j;
-	    ? {rd != NULL};
-	    result_var := rd.variable;
-	    rd  := call.profil.result_list.item j.read position;
-	    wrt := result_var.write position value rd;
-            call.result_list.add_last (RESULT.create wrt);
-	  };
-	}.elseif {
-          (call.profil.result_list.count != 0) ||
-          {call.is_interrupt}
-        } then {
-          rd ?= result_expr;
-          result_var := rd.variable;
-          (call.is_interrupt).if {
-            //val := PROTOTYPE_CST.create position type (TYPE_NULL.default);
-            val := EXTERNAL_C.create position text "/* NODE_STYLE */"
-            access NULL persistant FALSE type (type_pointer.default);
-          } else {
-            val := call.profil.result_list.first.read position;
-          };
-          wrt := result_var.write position value val;
-          call.result_list.add_last (RESULT.create wrt);
-	};
+  - call_data_slot_self type_self:TYPE_FULL cop cop_arg:EXPR :LIST <-
+  // Read the data slot
+  ( + result:LIST;
+    + em:EXPR_MULTIPLE;
+    + rd:READ;
+    + result_var:VARIABLE;
+    + slot_dta:SLOT_DATA;
+
+    result := LIST.create position;
+
+    // COP Lock
+    (cop_arg != NULL).if {
+      result.add_last (COP_LOCK.create position with cop_arg);
+    };
+
+    // Initialize data slot (???)
+    slot_dta := slot.slot_data;
+    slot_dta.init;
+    (slot.slot_data_list != NULL).if {
+      (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { j:INTEGER;
+        slot.slot_data_list.item j.init;
       };
     };
+
+    (result_expr.static_type.raw = TYPE_VOID).if {
+      // The result is VOID. It is not going to be read, but nevertheless, we
+      // are going to read the data slot.
+      // BSBS: Pourquoi tu produit quelque chose qui serre à rien ???
+      (slot_dta.style = '-').if {
+        result.add_last (slot_dta.read position);
+      } else {
+        result.add_last (slot_dta.read position with (expr.my_copy));
+      };
+    } else {
+      // Usual case, result_expr type is not VOID
+      em ?= result_expr;
+      (em != NULL).if {
+        (em.lower).to (em.upper - 1) do { j:INTEGER;
+          rd ?= em.item j;
+          ? {rd != NULL};
+          result_var := rd.variable;
+          result.add_last (new_write result_var with (expr,slot.slot_data_list.item j));
+        };
+        rd ?= em.last;
+      } else {
+        rd ?= result_expr;
+      };
+
+      //(slot_dta.name == "storage").if {
+      /*
+      + t:TYPE;
+      t := typ;
+      string_tmp.clear;
+      string_tmp.copy (type_self.raw.name);
+      string_tmp.add_last ' ';
+      string_tmp.append (t.name);
+      (data.slot != NULL).if {
+        string_tmp.add_last ' ';
+        string_tmp.append (data.slot.name);
+      };
+      result.add_last (
+        EXTERNAL_C.create position text (ALIAS_STR.get string_tmp) access NULL persistant TRUE type (TYPE_NULL.default)
+      );
+       */
+        /*
+        "Data : ".print; slot_dta.intern_name.print;
+        " dans ".print; type_self.raw.name.print;
+        (profil_current != NULL).if {
+          profil_current.name.print;
+        };
+        '\n'.print;
+        */
+      //};
+      result_var := rd.variable;
+      result.add_last (new_write result_var with (expr,slot_dta));
+    };
+
+    // COP Unlock
+    (cop_arg != NULL).if {
+      result.add_last (COP_UNLOCK.create position);
+    };
+
+    result
+  );
+
+  - call_code_slot slot_cod:SLOT_CODE self type_self:TYPE_FULL cop cop_arg:EXPR :LIST <-
+  ( + result:LIST;                // Result list
+    + new_larg:FAST_ARRAY(EXPR);  // Argument list
+    + type:TYPE_FULL;             // Type of the receiver
+                                  // (difference with type_self ???)
+    + call:CALL_SLOT;
+    + em:EXPR_MULTIPLE;
+    + rd:READ;
+    + wrt:WRITE;
+    + result_var:VARIABLE;
+    + my_profil:PROFIL;
+    + wrt_lst:FAST_ARRAY(WRITE);
+    + ctext:LOCAL;
+    + new_type_self:TYPE_FULL;
+    + new_val:EXPR;
+    + val:EXPR;
+
+    result := LIST.create position;
+
+    // If this is an inheritance slot, then we don't want to get the arguments
+    // in dta for it is not for us but the final slot. So we create the
+    // argument list using the self_arg in DTA
+    // Mildred: TODO: Warning: what is self_arg is EXPR_MULTIPLE ??????
+    (slot_cod.id_section.is_inherit_or_insert).if {
+      new_larg := FAST_ARRAY(EXPR).create_with_capacity 1;
+      new_larg.add_last (data.self_arg.my_copy);
+    } else {
+      new_larg := data.get_argument;
+    };
+    type := new_larg.first.static_type;
+    ? {type != NULL};
+
+
+    //
+    // DEBUG OPTION
+    //
+    (debug_level_option != 0).if {
+      // BSBS: Poser le PUSH avant le NODE
+      //(data.context = NULL).if {
+      //  ctext := context_main;
+      //} else {
+      (data.context = NULL).if {
+        crash_with_message "NODE_STYLE : data.context = NULL!\n";
+      };
+
+      ctext := data.context;
+      //};
+      result.add_last (
+        PUSH.create position context ctext first FALSE
+      );
+    };
+
+
+    //
+    // Cast the receiver to a new SELF
+    //
+    rd ?= new_larg.first;
+    ((rd != NULL) && {rd.variable.name = ALIAS_STR.variable_self}).if {
+      // Fix Self type for resend call (else it's fixed by NODE_TYPE)
+      new_type_self := type;
+    } else {
+      new_type_self := type_self;
+    };
+    /*
+    string_tmp.copy "// ";
+    new_type_self.display string_tmp;
+    string_tmp.append "  /  ";
+    type_self.display string_tmp;
+    result.add_last (
+      EXTERNAL_C.create (data.position)
+      text (ALIAS_STR.get string_tmp) access NULL persistant TRUE type (TYPE_VOID.default)
+    );
+    */
+    new_val := CAST.create new_type_self value (new_larg.first);
+    new_larg.put new_val to 0;
+
+
+    /*
+    (new_larg.lower+1).to (new_larg.upper) do { j:INTEGER;
+      ts ?= slot_cod.get_argument_type j;
+      ((ts != NULL) && {ts = ITM_TYPE_SIMPLE.type_self}).if {
+        (new_larg.item j.static_type != new_type_self).if {
+          new_type_self.print;
+          new_larg.item j.static_type.print;
+          ts.print;
+          string_tmp.clear;
+          (slot_cod.argument_list.lower).to (slot_cod.argument_list.upper) do { h:INTEGER;
+            slot_cod.argument_list.item h.append_in string_tmp;
+          };
+          string_tmp.print;
+          '\n'.print;
+          warning_error (position,"BUG");
+          semantic_error (new_larg.item j.position,"Type not compatible SELF.");
+        };
+        //new_val := CAST.create new_type_self value (new_larg.item j);
+        //new_larg.put new_val to j;
+      };
+    };
+    */
+    (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
+    //
+    (result_expr.static_type.raw = TYPE_VOID).if {
+      result.add_last (
+        CALL_SLOT.create position profil my_profil with wrt_lst cop cop_arg
+      );
+    } else {
+      call := CALL_SLOT.create position profil my_profil with wrt_lst cop NULL;
+      (cop_arg != NULL).if {
+        result.add_last (COP_LOCK.create position with cop_arg);
+        result.add_last call;
+        result.add_last (COP_UNLOCK.create position);
+      } else {
+        result.add_last call;
+      };
+      em ?= result_expr;
+      (em != NULL).if {
+        (em.lower).to (em.upper) do { j:INTEGER;
+          rd ?= em.item j;
+          ? {rd != NULL};
+          result_var := rd.variable;
+          rd  := call.profil.result_list.item j.read position;
+          wrt := result_var.write position value rd;
+          call.result_list.add_last (RESULT.create wrt);
+        };
+      }.elseif {
+        (call.profil.result_list.count != 0) ||
+        {call.is_interrupt}
+      } then {
+        rd ?= result_expr;
+        result_var := rd.variable;
+        (call.is_interrupt).if {
+          //val := PROTOTYPE_CST.create position type (TYPE_NULL.default);
+          val := EXTERNAL_C.create position text "/* NODE_STYLE */"
+          access NULL persistant FALSE type (type_pointer.default);
+        } else {
+          val := call.profil.result_list.first.read position;
+        };
+        wrt := result_var.write position value val;
+        call.result_list.add_last (RESULT.create wrt);
+      };
+    };
+
     result
   );
 

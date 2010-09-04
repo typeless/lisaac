@@ -114,6 +114,10 @@ Section NODE, DTA
 Section Private
 
   - update_case type_self:TYPE_FULL :BOOLEAN <-
+  // Ask the dispatching expression `expr` for the list of possible dynamic
+  // types and create SWITCH branches accordingly by calling DTA.product. It
+  // will return a LIST that is stored in the SWITCH CASE. DTA deals with
+  // further dispatching (parent lookup)
   ( + typ_f:TYPE_FULL;
     + typ:TYPE;
     + lst_typ:TYPES_TMP;
@@ -186,6 +190,10 @@ Section Private
   );
 
   - update_depth self_type:TYPE_FULL :BOOLEAN <-
+  // Updates the DTA for each branch (DTA.update_branch) and give it a non NULL
+  // type_self. If type_self is NULL, it is computed as the dynamic type of
+  // each branch.
+  // The DTA is going to recursively call update_link on the NODEs it created.
   ( + result:BOOLEAN;
     + list:FAST_ARRAY(CASE);
     + new_type_self:TYPE_FULL;

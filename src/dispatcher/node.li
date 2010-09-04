@@ -171,6 +171,11 @@ Section Public
   //
   // Extern creation value block.
   //
+  // Dispatch a call to the `value` slot of a block
+  //    p     The position of the call
+  //    e     The naked receiver (dispatching expression)
+  //    larg  Arguments with the receiver (possibley as an EXPR_MULTIPLE) first
+  //
 
   - new_block p:POSITION receiver e:EXPR with larg:FAST_ARRAY(EXPR) :NODE <-
   ( + dta:DTA_BLOCK;

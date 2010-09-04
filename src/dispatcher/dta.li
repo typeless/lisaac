@@ -35,12 +35,17 @@ Section Inherit
 Section Public
 
   + result_expr:EXPR;
+  // Result from the expression that caused the dispatching.
+  // Either the prototype VOID or a READ on a tmp variable of the correct type
 
   + slot:SLOT;
+  // Slot called
 
   + self_arg:EXPR;
+  // Non dispatching receiver (can be EXPR_MULTIPLE)
 
   + context:LOCAL;
+  // The current profil context when the DTA was created
 
   //
   // Service
@@ -64,6 +69,14 @@ Section Public
 Section NODE_TYPE, DTA
 
   - product t:TYPE with e:EXPR self type_self:TYPE_FULL :LIST <-
+  // When a new dynamic type is found for a dispatching expression, this slot
+  // is called to produce the LIST inserted in the SWITCH. The DTA is
+  // responsible to accomplish the wanted action (READ, WRITE, CAST or call the
+  // value slot of a block). To do this, the DTA will need to create further
+  // NODEs.
+  //    t         dynamic type for this branch
+  //    e         dispatching expression of the calling node
+  //    type_self SELF or NULL
   ( + result:LIST;
 
     result := LIST.create (e.position);
@@ -77,6 +90,9 @@ Section NODE_TYPE, DTA
   );
 
   - update_branch l:LIST self type_self:TYPE_FULL :BOOLEAN <-
+  // Update the branch this DTA manages. What is does is recursively call
+  // update_link on the NODEs it created during lookup.
+  // type_self is necessary for the parents so they know what SELF is.
   [
     -? {type_self != NULL};
   ]
@@ -105,6 +121,7 @@ Section NODE_TYPE, DTA
 Section NODE_STYLE, SELF
 
   - get_argument:FAST_ARRAY(EXPR) <-
+  // Return the arguments for the call, including the non dispatching receiver.
   ( + result:FAST_ARRAY(EXPR);
 
     result := FAST_ARRAY(EXPR).create_with_capacity 1;
@@ -115,6 +132,8 @@ Section NODE_STYLE, SELF
 Section DTA
 
   - finalise typ:TYPE with (expr:EXPR,s:SLOT) in lst:LIST <-
+  // Finalize lookup algorithm. The last think to dispatch is the slot.
+  // NODE_STYLE will fill the result result_expr
   ( + node:NODE_STYLE;
 
     node := NODE_STYLE.create (expr.my_copy,s) with Self result result_expr;
