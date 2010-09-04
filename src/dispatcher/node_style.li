@@ -147,7 +147,6 @@ Section Private
     + data_rd:DTA_RD;
     + cop_arg:EXPR;
     + idx:INTEGER;
-    + slot_cod:SLOT_CODE;
 
     data_rd ?= data;
     ((type_self.prototype.style = '-') && {data_rd != NULL} && {! data_rd.is_intern}).if {
