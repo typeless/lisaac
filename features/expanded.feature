@@ -13,6 +13,7 @@ Feature: Expanded Objects
   Background:
     Given I am in an empty directory
 
+  @wip
   Scenario:
     Given a file "aa.li"
       """

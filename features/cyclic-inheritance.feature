@@ -5,6 +5,7 @@ Feature: Cyclic inheritance
   Background:
     Given I am in an empty directory
 
+  @wip
   Scenario: Basic
     Given a file "cyclic.li":
       """

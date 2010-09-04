@@ -20,7 +20,7 @@ Given /^I am in an empty directory$/ do
   FileUtils.cd(dir);
 end
 
-Given /^I am in the lisaac directory$/ do |dir|
+Given /^I am in the lisaac directory$/ do
   @oldcwd = FileUtils.pwd();
   FileUtils.cd($lisaac_path);
 end

@@ -1,0 +1,24 @@
+Testing
+=======
+
+Tests are executed using [cucumber](http://cukes.info). You'll need to install
+it to be able to run tests. On an unix machine where you have ruby gems
+installed, just run:
+
+    gem install cucumber
+
+From now on, you can run tgests by running:
+
+    make run-cucumber
+    make run-cucumber-wip
+    make rerun-cucumber
+
+The different targets do different things:
+
+* `run-cucumber`:     Run cucumber tests, not verbose
+* `rerun-cucumber`:   Run cucumber tests that failed at full verbosity
+* `run-cucumber-wip`: Run cucumber tests that represents features that are work
+                      in progress (scenarios taggede with @wip)
+
+Tests are in the directory `features/` and have the suffix `.feature`. The
+syntax is very simple.

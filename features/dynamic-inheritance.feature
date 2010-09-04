@@ -1,5 +1,6 @@
 Feature: Dynamic Inheritance
 
+  @wip
   Scenario:
     Given I am in an empty directory
     And   a file "hello.li":

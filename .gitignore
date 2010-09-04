@@ -20,3 +20,5 @@
 /doc/
 /bootstrap/
 /Markdown.pl
+/.cucumber-rerun.txt
+/tmp/

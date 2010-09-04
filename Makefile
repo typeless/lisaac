@@ -196,6 +196,38 @@ clean-spaces:
 src/HACKING.html: src/HACKING Markdown.pl
 	$(MARKDOWN_CMDLINE)
 
+### Cucumber tests ###
+
+run-cucumber-wip:
+	@echo
+	@echo "#########################################"
+	@echo "##  Run cucumber for work in progress  ##"
+	@echo "#########################################"
+	@echo
+	cucumber -w -f progress -t '~@bootstrap' -t '@wip' features/*.feature
+
+run-cucumber:
+	@echo
+	@echo "##########################"
+	@echo "##  Run cucumber tests  ##"
+	@echo "##########################"
+	@echo
+	cucumber -f progress -f rerun -o .cucumber-rerun.txt -t '~@bootstrap' -t '~@wip' features/*.feature
+
+rerun-cucumber:
+	@echo
+	@echo "##########################################"
+	@echo "##  Run cucumber scenarios that failed  ##"
+	@echo "##########################################"
+	@echo
+	@touch .cucumber-rerun.txt
+	@if [ -s .cucumber-rerun.txt ]; then \
+		cucumber @.cucumber-rerun.txt; \
+	fi
+	@-$(RM) -f .cucumber-rerun.txt
+
+.PHONY: run-cucumber run-cucumber-wip rerun-cucumber
+
 ### Code coverage ###
 
 lisaac-cov: path.h bin/lisaac
@@ -206,7 +238,7 @@ cov-clean:
 	-$(RM) -f lisaac-cov.cov
 	-cp lisaac-cov.cov.orig lisaac-cov.cov
 cov: lisaac-cov
-	-CUKE_LISAAC_NAME=lisaac-cov cucumber -f progress -t ~@bootstrap features/*.feature
+	-CUKE_LISAAC_NAME=lisaac-cov cucumber -f progress -f rerun -o .cucumber-rerun.txt -t '~@bootstrap' -t '~@wip' features/*.feature
 cov-report:
 	mkdir -p features/coverage-report
 	tools/licoverage --html -o features/coverage-report -e '\.lip$$' -e '/lib/' lisaac-cov.cov

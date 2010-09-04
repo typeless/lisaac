@@ -21,7 +21,7 @@ Feature: Execute contracts
   Background:
     Given I am in an empty directory
 
-  @fail
+  @fail @wip
   Scenario: simple contracts
     Given a file "simple.li"
       """

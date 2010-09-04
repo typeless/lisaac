@@ -5,12 +5,12 @@ Feature: Hello World
 
   Scenario: Debug
     Given I am in an empty directory
-    When I run pwd
-    And  I print the last command output
-    When I run which lisaac
-    And  I print the last command output
-    When I run echo $PATH
-    And  I print the last command output
+    #When I run pwd
+     #And I print the last command output
+     #And I run which lisaac
+     #And I print the last command output
+     #And I run echo $PATH
+     #And I print the last command output
 
   Scenario: Compile Hello World
     Given I am in an empty directory
