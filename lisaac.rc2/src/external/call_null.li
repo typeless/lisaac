@@ -64,7 +64,7 @@ Section Public
     } else {
       code := 
       "print_string(\"Call on NULL\\n\
-      \(Use `-D' option)\\n\"); \ 
+      \(Use `-debug' option)\\n\"); \ 
       \die_with_code(1)";
     };
     buffer.append code;

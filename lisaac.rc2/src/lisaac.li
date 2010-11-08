@@ -160,6 +160,9 @@ Section Private
           .when 'r' then {
             is_readable := TRUE;
           }
+          .when 'n' then {
+            is_all_call_null := TRUE;
+          }
           .when 'g' then {
             is_readable := is_graph := TRUE;
           };

@@ -67,7 +67,10 @@ Section Public
       lst.add_last (
 	PUSH.create p context ctext first FALSE
       );      
-    };    
+    };   
+    is_all_call_null.if {
+      warning_error (p,"Potential call on NULL here !");
+    };
     lst.add_last CALL_NULL;        
   );
   
