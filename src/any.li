@@ -115,6 +115,7 @@ Section Public
 
   - debug_level_option:INTEGER;
   - debug_with_code:BOOLEAN;
+  - compiler_debug_with_code:BOOLEAN <- debug_with_code;
 
   - is_all_warning:BOOLEAN;
 

@@ -203,6 +203,8 @@ run_test(){
   return $res
 }
 
+echo  $op_runcwd
+echo  $op_default
 
 if $op_default; then
   cd "`dirname "$0"`"
@@ -219,6 +221,7 @@ if $op_default; then
   success=()
   failed=()
   expected_failed=()
+	echo ici
   for f in tests/*; do
     if [ -d "$f" ]; then
       run_test "$f"

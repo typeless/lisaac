@@ -1,0 +1,14 @@
+Section Header
+
+  + name := CYCLIC;
+
+Section Inherit
+
+  - parent_object :MAIN <- SELF;
+
+Section Private
+
+  - tell_me <-
+  (
+    "I tell you".println;
+  );

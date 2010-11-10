@@ -974,7 +974,8 @@ Section Private
 	(last_section.is_mapping).if {
           object.set_mapping;
         }.elseif {last_section.is_external} then {
-          object.set_external;
+          semantic_error(current_position,"Section External is not yet implemented, sorry. You can turn arround with a .h and .c file. Use add_lip in section header to compile it."); 
+          //object.set_external;
 	}.elseif {
 	  (last_section.is_inherit_or_insert) &&
 	  {object.last_slot != NULL} &&

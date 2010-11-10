@@ -204,7 +204,7 @@ run-cucumber-wip:
 	@echo "##  Run cucumber for work in progress  ##"
 	@echo "#########################################"
 	@echo
-	cucumber -w -f progress -t '~@bootstrap' -t '@wip' features/*.feature
+	cucumber -v -w -f progress -t '~@bootstrap' -t '@wip' features/*.feature
 
 run-cucumber:
 	@echo
@@ -212,7 +212,7 @@ run-cucumber:
 	@echo "##  Run cucumber tests  ##"
 	@echo "##########################"
 	@echo
-	cucumber -f progress -f rerun -o .cucumber-rerun.txt -t '~@bootstrap' -t '~@wip' features/*.feature
+	cucumber -v -f progress -f rerun -o .cucumber-rerun.txt -t '~@bootstrap' -t '~@wip' features/*.feature
 
 rerun-cucumber:
 	@echo
