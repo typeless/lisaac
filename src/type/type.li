@@ -103,7 +103,7 @@ Section Public
 
   + intern_name:STRING_CONSTANT;
 
-  - name:STRING_CONSTANT <- prototype.name;
+  - name:STRING_CONSTANT [ { prototype.name != NULL } -? "Prototype name is NULL"; ]<- prototype.name;
 
   - hash_code:INTEGER <- intern_name.hash_code;
 

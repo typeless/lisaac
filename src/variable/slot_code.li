@@ -245,6 +245,7 @@ Section Public
       list_current.add_last result;
     };
     (profil_slot.result_list.count != nb_result_list).if {
+      //TODO  msg d'erreur plus clair
       string_tmp.copy "Incorrect value result (slot:";
       profil_slot.result_list.count.append_in string_tmp;
       string_tmp.append ", list:";

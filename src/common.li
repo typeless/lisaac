@@ -87,14 +87,14 @@ Section Public
     } else {
       lisaac_optim := "no";
     };
-/*
+
     "Built on:             ".print; compile_date.print; " ".print;
                                     compile_time.print; "\n".print;
     "Debug Level:          ".print; debug_level.print; debug_code.println;
     "Inline Level:         ".print; compiler_inlining_level.println;
     "Lisaac optimizations: ".print; lisaac_optim.println;
 
-    '\n'.print;*/
+    '\n'.print;
     (path_lisaac_builtin = path_lisaac).if {
       "Lisaac path:          ".print; path_lisaac.println;
     } else {

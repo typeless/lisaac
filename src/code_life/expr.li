@@ -76,6 +76,10 @@ Section Public
     + node:NODE;
     + args:FAST_ARRAY(EXPR);
     + ts:ITM_TYPE_SIMPLE;
+    + string_tmp2,string_tmp3 : STRING;
+
+    string_tmp3 := STRING.create 16;
+    string_tmp2 := STRING.create 16;
 
     ? {static_type != NULL};
     ? {t != NULL};
@@ -85,110 +89,159 @@ Section Public
     } else {
       ? {list_current != NULL};
       (static_type.is_export_to t).if {
-	// Auto-export.
-	local := static_type.get_temporary position;
-	instr := local.write position value Self;
-	list_current.add_last instr;
-	//
-	slot_name := ALIAS_STR.get (TYPE.last_cast_name);
-	slot_msg  := static_type.get_slot slot_name;
-	(slot_msg = NULL).if {
-	  string_tmp.clear;
-	  static_type.append_name_in string_tmp;
-	  string_tmp.append " -> ";
-	  t.append_name_in string_tmp;
-	  string_tmp.append ". Slot `";
-	  string_tmp.append slot_name;
-	  string_tmp.append "' not found in `";
-	  static_type.append_name_in string_tmp;
-	  string_tmp.append "'.";
-	  POSITION.put_error semantic text string_tmp;
-	  p.put_position;
-	  static_type.prototype.position.put_position;
-	  POSITION.send_error;
-	  //semantic_error p,string_tmp;
-	};
-	(slot_msg.argument_count != 1).if {
-	  semantic_error (slot_msg.position,"No argument for this slot.");
-	};
+        // Auto-export.
+        local := static_type.get_temporary position;
+        instr := local.write position value Self;
+        list_current.add_last instr;
+        //
+        slot_name := ALIAS_STR.get (TYPE.last_cast_name);
+        slot_msg  := static_type.get_slot slot_name;
+        (slot_msg = NULL).if {
+          string_tmp.clear;
+          static_type.append_name_in string_tmp;
+          string_tmp.append " -> ";
+          t.append_name_in string_tmp;
+          string_tmp.append ". Slot `";
+          string_tmp.append slot_name;
+          string_tmp.append "' not found in `";
+          static_type.append_name_in string_tmp;
+          string_tmp.append "'.";
+          POSITION.put_error semantic text string_tmp;
+          p.put_position;
+          static_type.prototype.position.put_position;
+          POSITION.send_error;
+          //semantic_error p,string_tmp;
+        };
+        (slot_msg.argument_count != 1).if {
+          semantic_error (slot_msg.position,"No argument for this slot.");
+        };
         ts ?= slot_msg.result_type;
-	((ts = NULL) || {ts.to_run_for (t.raw) != t}).if {
+        ((ts = NULL) || {ts.to_run_for (t.raw) != t}).if {
           string_tmp.copy "Type result `";
           slot_msg.result_type.append_in string_tmp;
-	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
-	  t.append_name_in string_tmp;
-	  string_tmp.append "').";
-	  POSITION.put_error semantic text string_tmp;
-	  slot_msg.position.put_position;
-	  position.put_position;
-	  POSITION.send_error;
-	};
-	//
-	rec  := local.read position;
-	node := NODE.new_read position slot slot_msg
+          string_tmp.append "' is incorrect (Used for auto-conversion to `";
+          t.append_name_in string_tmp;
+          string_tmp.append "').";
+          POSITION.put_error semantic text string_tmp;
+          slot_msg.position.put_position;
+          position.put_position;
+          POSITION.send_error;
+        };
+        //
+        rec  := local.read position;
+        node := NODE.new_read position slot slot_msg
         receiver rec self rec intern FALSE;
-	list_current.add_last node;
-	//
-	result := node.result_expr;
+        list_current.add_last node;
+        //
+        result := node.result_expr;
       }.elseif {t.is_import_to static_type} then {
         // Auto-import.
-	local := static_type.get_temporary position;
-	instr := local.write position value Self;
-	list_current.add_last instr;
-	//
-	slot_name := ALIAS_STR.get (TYPE.last_cast_name);
-	slot_msg  := t.get_slot slot_name;
-	(slot_msg = NULL).if {
-	  string_tmp.clear;
-	  t.append_name_in string_tmp;
-	  string_tmp.append " <- ";
-	  static_type.append_name_in string_tmp;
-	  string_tmp.append ". Slot `";
-	  string_tmp.append slot_name;
-	  string_tmp.append "' not found in `";
-	  t.append_name_in string_tmp;
-	  string_tmp.append "'.";
-	  POSITION.put_error semantic text string_tmp;
-	  p.put_position;
-	  t.prototype.position.put_position;
-	  POSITION.send_error;
-	  //semantic_error p,string_tmp;
-	};
-	(slot_msg.argument_count != 2).if {
-	  semantic_error (slot_msg.position,"Incorrect argument for this slot.");
-	};
+        local := static_type.get_temporary position;
+        instr := local.write position value Self;
+        list_current.add_last instr;
+        //
+        slot_name := ALIAS_STR.get (TYPE.last_cast_name);
+        slot_msg  := t.get_slot slot_name;
+        (slot_msg = NULL).if {
+          string_tmp.clear;
+          t.append_name_in string_tmp;
+          string_tmp.append " <- ";
+          static_type.append_name_in string_tmp;
+          string_tmp.append ". Slot `";
+          string_tmp.append slot_name;
+          string_tmp.append "' not found in `";
+          t.append_name_in string_tmp;
+          string_tmp.append "'.";
+          POSITION.put_error semantic text string_tmp;
+          p.put_position;
+          t.prototype.position.put_position;
+          POSITION.send_error;
+          //semantic_error p,string_tmp;
+        };
+        (slot_msg.argument_count != 2).if {
+          semantic_error (slot_msg.position,"Incorrect argument for this slot.");
+        };
         ts ?= slot_msg.result_type;
-	((ts = NULL) || {ts != ITM_TYPE_PARAMETER.type_self}).if {
-	  string_tmp.copy "Type result `";
+        ((ts = NULL) || {ts != ITM_TYPE_PARAMETER.type_self}).if {
+          string_tmp.copy "Type result `";
           slot_msg.result_type.append_in string_tmp;
-	  string_tmp.append "' is incorrect (Used for auto-conversion to `";
-	  t.append_name_in string_tmp;
-	  string_tmp.append "').";
-	  POSITION.put_error semantic text string_tmp;
-	  slot_msg.position.put_position;
-	  position.put_position;
-	  POSITION.send_error;
-	};
-	//
-	args := FAST_ARRAY(EXPR).create_with_capacity 2;
-	args.add_last (PROTOTYPE_CST.create position type t);
-	args.add_last (local.read position);
-	node := NODE.new_read position slot slot_msg
+          string_tmp.append "' is incorrect (Used for auto-conversion to `";
+          t.append_name_in string_tmp;
+          string_tmp.append "').";
+          POSITION.put_error semantic text string_tmp;
+          slot_msg.position.put_position;
+          position.put_position;
+          POSITION.send_error;
+        };
+        //
+        args := FAST_ARRAY(EXPR).create_with_capacity 2;
+        args.add_last (PROTOTYPE_CST.create position type t);
+        args.add_last (local.read position);
+        node := NODE.new_read position slot slot_msg
         receiver (args.first.my_copy) with args intern FALSE;
-	list_current.add_last node;
-	//
-	result := node.result_expr;
+        list_current.add_last node;
+        //
+        result := node.result_expr;
       } else {
-        // Type Error
-	string_tmp.copy "Type `";
-	t.append_name_in string_tmp;
-	string_tmp.append "' is invalid with `";
-	static_type.append_name_in string_tmp;
-	string_tmp.append "'.";
-	POSITION.put_error semantic text string_tmp;
-	p.put_position;
-        position.put_position;
-	POSITION.send_error;
+
+        "\nTyping incoherence between ".print;
+        (t.raw = TYPE_NULL).if {
+          "Type NULL (are your sure ???)".print;
+        } else {
+          t.prototype.filename.print;
+        };
+        " and ".print;
+
+        t.append_name_in string_tmp2;
+        static_type.append_name_in string_tmp3;
+       // string_tmp2.println;
+       // string_tmp3.println;
+
+
+        (static_type.raw = TYPE_VOID).if {
+          //static_type.prototype.filename.print; 
+          "Type VOID (no return type).".print;
+          '\n'.print;        
+
+          string_tmp.copy "Type `";
+          t.append_name_in string_tmp;	
+          string_tmp.append "' is invalid with `";
+          static_type.append_name_in string_tmp;
+          string_tmp.append "'.You probably forgot to define a return type or you forgot a ';'."; // Mettre la liste des cas ?
+          POSITION.put_error semantic text string_tmp;
+          p.put_position;
+          position.put_position;        
+          POSITION.send_error;      
+          // Difference between type_bloc and Profil_block is just a warning not an error
+        }.elseif  { { (string_tmp2.has_substring "PROFIL_BLOCK") && {string_tmp3.has_substring "TYPE_BLOCK"} } || 
+        { (string_tmp2.has_substring "TYPE_BLOCK") && {string_tmp3.has_substring "PROFIL_BLOCK"} } } then {
+          string_tmp.copy "warning : Type `";
+          t.append_name_in string_tmp;	
+          string_tmp.append "' is invalid with `";
+          static_type.append_name_in string_tmp;
+          string_tmp.append "'.";
+          //"You probably forgot to define a return type or you forgot a ';'.";
+          POSITION.put_error warning text string_tmp;
+          p.put_position;
+          position.put_position;        
+          POSITION.send_error; 
+        } else {
+          (static_type.raw = TYPE_NULL).if {
+            "Type NULL.".print;
+          } else {
+            static_type.prototype.filename.print;".\n".print;
+          };
+          string_tmp.copy "Type `";
+          t.append_name_in string_tmp;	
+          string_tmp.append "' is invalid with `";
+          static_type.append_name_in string_tmp;
+          string_tmp.append "'.";
+          //"You probably forgot to define a return type or you forgot a ';'.";
+          POSITION.put_error semantic text string_tmp;
+          p.put_position;
+          position.put_position;        
+          POSITION.send_error; 
+        };
       };
     };
     result

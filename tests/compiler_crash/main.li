@@ -1,16 +1,14 @@
-      Section Header
+Section Header
 
-        + name := CYCLIC;
+  + name := MAIN;
 
-      Section Inherit
+Section Inherit
 
-        - parent_object :MAIN <- SELF;
+  + parent_cyclic :Expanded CYCLIC;
 
-      Section Private
+Section Public
 
-        - tell_me <-
-        (
-          "I tell you".println;
-        );
-
- 
+  - main <-
+  (
+    tell_me;
+  );

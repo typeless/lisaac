@@ -59,4 +59,12 @@ Section Public
   );
 
 
+    - to limit_up:SELF do blc:{UINTEGER_8;} <-
+  // Classical loop from `Self' to `limit_up'
+  (
+    (Self <= limit_up).if {
+      blc.value Self;
+      (Self + 1).to limit_up do blc;
+    };
+  );
 
