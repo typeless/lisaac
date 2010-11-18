@@ -1190,6 +1190,14 @@ Section TYPE
       // Strict.
       mask_bit := TYPE_FULL.strict_bit | TYPE_FULL.default_strict_bit;
     };
+    ( ((mask_bit & TYPE_FULL.expanded_bit) & TYPE_FULL.strict_bit) = (TYPE_FULL.strict_bit | TYPE_FULL.expanded_bit) ).if {
+       (proto != NULL).if {
+          semantic_error (proto.position,"Your slot/prototype is Strict and Expanded at same time : it is forbiden");
+         } else {
+           "There's a problem !!".println;
+           };
+      };
+     //{ ((mask_bit & TYPE_FULL.expanded_bit) & TYPE_FULL.strict_bit) = (TYPE_FULL.strict_bit | TYPE_FULL.expanded_bit) } -? "Expanded and Strict type";
     default := TYPE_FULL.create Self with mask_bit;
     prototype.init_slot_for Self;
     //

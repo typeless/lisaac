@@ -1,3 +1,0 @@
-(${test expression}).if {
-  ${cursor}
-};

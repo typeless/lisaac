@@ -74,6 +74,9 @@ Section Public
       // Block Detect.
       j := args.lower;
       {(j <= args.upper) && {(typ = NULL) || {! typ.raw.is_block}}}.while_do {
+         (args.item j.static_type = NULL).if {
+             args.item j.debug_display;
+           };
         typ := args.item j.static_type;
         (typ.raw.is_block).if {
           typ_list := TYPES_TMP.new;
