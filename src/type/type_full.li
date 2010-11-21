@@ -85,13 +85,20 @@ Section TYPE
   ( + strtmp : STRING;
     the_parent_type := typ;
     flag := code;
-  //   { (is_expanded && {is_strict}).print; is_expanded -> (! is_strict)} -? "In TYPE_FULL : TYPE is expanded and strict.";
-  /*    (is_expanded -> (! is_strict)).if {
-        //warning_error (raw.position,"Expanded AND Strict");
-        (raw.prototype != NULL).if {
-          "Expanded AND Strict, and raw.prototype is null".println;
-        };
-      };*/
+     (is_expanded && {is_strict}).if { 
+        semantic_error (raw.position,"There's an object or a slot which use a Strict slot or object as Expanded. A Strict Object/slot can't be Expanded.");
+      };
+     { /*(raw.prototype != NULL).if {
+        raw.prototype.position.put_error warning text "in contract :";
+        raw.prototype.position.put_position;
+        raw.prototype.position.send_error;
+        }; */ //DEBUG
+      is_expanded -> (! is_strict)
+     } 
+     -?
+     "In TYPE_FULL : TYPE is expanded and strict.";
+     
+
     );
 
 Section Public

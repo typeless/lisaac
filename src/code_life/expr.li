@@ -215,13 +215,13 @@ Section Public
           // Difference between type_bloc and Profil_block is just a warning not an error
         }.elseif  { { (string_tmp2.has_substring "PROFIL_BLOCK") && {string_tmp3.has_substring "TYPE_BLOCK"} } || 
         { (string_tmp2.has_substring "TYPE_BLOCK") && {string_tmp3.has_substring "PROFIL_BLOCK"} } } then {
-          string_tmp.copy "warning : Type `";
+          string_tmp.copy "PROFIL_BLOCK/TYPE_BLOCK error : Type `";
           t.append_name_in string_tmp;	
           string_tmp.append "' is invalid with `";
           static_type.append_name_in string_tmp;
           string_tmp.append "'.";
           //"You probably forgot to define a return type or you forgot a ';'.";
-          POSITION.put_error warning text string_tmp;
+          POSITION.put_error semantic text string_tmp;
           p.put_position;
           position.put_position;        
           POSITION.send_error; 

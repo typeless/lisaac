@@ -159,7 +159,6 @@ Section Public
   //
   // Looping.
   //
-
   - to limit_up:SELF do blc:{SELF;} <-
   // Classical loop from `Self' to `limit_up'
   (
