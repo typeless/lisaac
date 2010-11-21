@@ -67,15 +67,13 @@ Section Public
   );
 
   - make p:POSITION base rec:EXPR index idx:EXPR value v:EXPR <-
-  ( + var : VARIABLE;
+  ( 
     position := p;
     receiver := rec;
     index    := idx;
     value    := v;
     //
-    var := variable;
-    {var != NULL} -? "variable is NULL";
-    var.add_write Self;
+    variable.add_write Self;
   );
 
   - my_copy:SELF <-
