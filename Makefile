@@ -15,6 +15,8 @@
 #   You should have received a copy of the GNU General Public License       
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.   
 
+export LISAAC_DIRECTORY=$(shell pwd)
+
 DIST_PRJ=lisaac
 DIST_VER=0.4.0
 DIST_NAME=$(DIST_PRJ)-$(DIST_VER)
