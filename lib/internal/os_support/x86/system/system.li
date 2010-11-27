@@ -42,7 +42,7 @@ unsigned char ___video_text=1;
   /* BEGIN CODE */" \
   : "=m"(eax),"=m"(ebx),"=m"(ecx),"=m"(edx),"=m"(esi),"=m"(edi) \
   : /* no input */ \
-  : "eax","edx","ecx","ebx","esi","edi", "memory");
+  : "eax","edx","ecx","esi","edi", "memory") /*ebx removed, if not gcc error, why ??*/
 
 #define __END_INTERRUPT__ asm volatile (\
  "/* END CODE */  \n\
@@ -58,7 +58,7 @@ unsigned char ___video_text=1;
  /* END INTERRUPT */" \
  : /* no output */    \
  : "m"(eax),"m"(ebx),"m"(ecx),"m"(edx),"m"(esi),"m"(edi) \
- : "eax","edx","ecx","ebx","esi","edi", "memory");
+ : "eax","edx","ecx","esi","edi", "memory")
 int __bss_stop;
 `;
   
