@@ -161,7 +161,7 @@ Section Private
       } else {
         ("\nERROR: `" + lib + "' library for GCC not found.\n").print;
         run "rm __tmp__.c";
-        die_with_code exit_failure_code;
+        //die_with_code exit_failure_code;
       };    
     };
   );
