@@ -59,8 +59,9 @@ Section Public
   // To execute a `system_command_line' as for example, "ls -l" on UNIX.
   // The `Result' depends of the actual operating system. As an exemple,
   // this `execute' feature is under UNIX the equivalent of a `system' call.
-  (
+  ( 
     ? { system_command_line != NULL};
+     system_command_line.println;
     basic_system_execute_command (system_command_line.to_external)
   );
 
