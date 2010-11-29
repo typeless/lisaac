@@ -129,6 +129,7 @@ Section Public
   - is_quiet:BOOLEAN;
 
   - is_warn_null :BOOLEAN <- ( is_warn_null := LIP_CODE.has_flag "warn-null" );
+  - is_no_os :BOOLEAN <- (is_no_os := LIP_CODE.has_flag slot_no_os);
 
   - backend:BACKEND := BACKEND;
 
