@@ -715,7 +715,7 @@ Section Public
       \#define _LARGEFILE64_SOURCE\n";
 
       // ANSI argument command.
-      (debug_level_option != 0).if {
+      ((debug_level_option != 0) && {! is_no_os}).if {
         output_decl.append "#include <signal.h>\n";
       };
       is_coverage.if {
@@ -763,7 +763,7 @@ Section Public
     (is_java).if_false {
       (debug_level_option != 0).if {
         output_code.append "/* Debug Manager */\n";
-        (is_ansi).if {
+        ((is_ansi) && {! is_no_os}).if {
           output_code.append "void interrupt_signal(int sig);\n";
         };
         output_code.append

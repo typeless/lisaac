@@ -180,6 +180,7 @@ Section Public
   - slot_get_string   :STRING_CONSTANT := "get_string";
   - slot_is_cop       :STRING_CONSTANT := "is_cop";
   - slot_add_flag     :STRING_CONSTANT := "add_flag";
+  - slot_no_os        :STRING_CONSTANT := "no_os";
 
   - c_void           :STRING_CONSTANT := "void";
   - c_struct         :STRING_CONSTANT := "struct __";

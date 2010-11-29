@@ -367,6 +367,12 @@ Section Public
   (
     is_coverage := TRUE;
   );
+
+  - no_os <-
+  (
+   is_no_os := TRUE;
+  );
+
   
   //
   // Information.
