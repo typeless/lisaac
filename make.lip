@@ -46,7 +46,7 @@ Section Private
   + is_cop:BOOLEAN;     // Correct value after compilation.
   + is_library:BOOLEAN; // For build a lisaac library C
   + is_coverage:BOOLEAN;// Generate coverage information
-	+ is_no_os:BOOLEAN;
+  + is_no_os:BOOLEAN; // Generate no include with unix/windows dependency
   + execute_back_end:BOOLEAN := TRUE;
   + execute_status_code:INTEGER := 0;
 
@@ -370,9 +370,9 @@ Section Public
   );
 
   - no_os <-
-	// generate code without os relative includes
+  // generate code without os relative includes
   (
-   is_no_os := TRUE;
+   add_flag "no_os";
   );
 
   

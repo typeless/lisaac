@@ -490,6 +490,7 @@ Section Public
     list.add slot_get_string;
     list.add slot_is_cop;
     list.add slot_add_flag;
+    list.add slot_no_os;
 
     // Type C :
     list.add c_void;

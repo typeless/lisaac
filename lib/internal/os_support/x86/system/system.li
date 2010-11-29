@@ -466,9 +466,9 @@ Section Public
   //
   
   - make <-
-  (   
+  (   + tmp : STRING_CONSTANT;
 
-    "System".print;
+    "Registering interuptions\n".print;
     new_interrupt exception_01 to 01h;       
     new_interrupt exception_0d to 0Dh;
 
@@ -513,9 +513,11 @@ Section Public
     new_interrupt mode_text to 30h;
     
     // IRQ cascade on:
+    "IRQ cascade ON\n".print;
     irq_on 2;
     
     // STI
+    "Interupts On\n".print;
     interrupt_on;    
   );
   
