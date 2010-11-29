@@ -394,7 +394,7 @@ Section Private
       // Signal manager.
       //
 
-      (is_ansi).if {
+      ((is_ansi) && {! is_no_os}).if {
 	buf.append
 	"/* Unix Signal manager: */\n\
 	\void interrupt_signal(int sig)  \n\

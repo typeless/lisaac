@@ -308,7 +308,7 @@ Section Public
         cmd := "arg = parg";
       } else {
         string_tmp.clear;
-        (debug_level_option != 0).if {
+        ((debug_level_option != 0) && {! is_no_os}).if {
           string_tmp.copy "signal(SIGINT,interrupt_signal);\n  ";
         };
         string_tmp.append
