@@ -41,6 +41,8 @@ Section Public
   // Basic features:
   //
 
+  - size : UINTEGER_32;
+
   - object_size:INTEGER := 0; // For detect error.
 
   - element_sizeof:INTEGER <-
@@ -66,7 +68,7 @@ Section Public
 
     capacity := nb_elements * element_sizeof;
     //p := `malloc(@capacity)`:POINTER;
-    p := MEMORY.alloc_dynamic (capacity.to_uinteger_32);
+    p := MEMORY.alloc_dynamic (capacity.to_uinteger_cpu);
     result := CONVERT(POINTER,NATIVE_ARRAY_VOLATILE(V)).on p;
     result
   )
@@ -83,12 +85,27 @@ Section Public
   ( + result:NATIVE_ARRAY_VOLATILE(V);
 
     result:=calloc_intern nb_elements;
+    size := nb_elements;
     result.clear_all (nb_elements-1);
     result
   )
   [ ...
     +? {Result.all_default (nb_elements-1)};
   ];
+
+
+  
+  - copy_at adres:UINTEGER_32 : NATIVE_ARRAY_VOLATILE(V) <-
+  ( + capa : UINTEGER_32;
+    + p,adr :POINTER;
+    + result : NATIVE_ARRAY_VOLATILE(V);
+    p := to_pointer;
+    adr := adres.to_pointer;
+    capa := size*element_sizeof; //  element count by element size
+    `memcpy( @adr, @p, @capa)`;
+    result := CONVERT(POINTER,NATIVE_ARRAY_VOLATILE(V)).on adr;
+    result
+  );
 
   - realloc old_nb_elts:INTEGER with new_nb_elts:INTEGER :NATIVE_ARRAY_VOLATILE(V) <-
   // Assume Current is a valid NATIVE_ARRAY_VOLATILE in range

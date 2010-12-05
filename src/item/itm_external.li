@@ -62,6 +62,8 @@ Section Public
     + exp1,exp2,exp3:EXPR;
     + left,right:EXPR;
     + type:TYPE_FULL;
+    + tmpstr : STRING;
+
 
     extern.is_integer.if {
       num := extern.to_integer;

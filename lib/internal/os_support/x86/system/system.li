@@ -103,7 +103,7 @@ Section Public
     capacity := (capacity + REGISTER.ax + 1024) << 10;
     
     */
-/* // Pose trop de problème à la compil
+ // Pose trop de problème à la compil
 
    // BUG COMPIL !!! Line #74 Column #27 in PUT_TO (.../src/external/put_to.li). Call On NULL
     all_memory := CONVERT(POINTER,NATIVE_ARRAY_VOLATILE(INTEGER_8)).on get_begin_memory; 
@@ -118,11 +118,11 @@ Section Public
       all_memory.force_put 0 to ((capacity.to_uinteger_64.to_uinteger_32) + 1); // Cache invalidation for old x86 generation
       //`print_char('0')`;
     }.do_until {byte != ~all_memory.item (capacity.to_uinteger_64.to_uinteger_32)};
-    */
+    
     `/*BSBS MEM*/`;
     
-    //capacity
-    8388608 // 8Mb
+    capacity
+    //8388608 // 8Mb
   );
   
   // Other Features

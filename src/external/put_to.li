@@ -47,10 +47,14 @@ Section Public
 
   - variable:VARIABLE <-
   ( + typ_gen:TYPE_GENERIC;
-    //"Rentré ici".println;
 
     typ_gen ?= receiver.static_type.raw;
     { typ_gen != NULL } -? "Type generic is NULL";
+    (typ_gen = NULL).if {
+      print_runtime_stack;
+      "Lisaac Compiler bug in PUT_TO.variable. Use a debug version of the compiler for more information\n".print;
+      die_with_code 1;
+      };
     typ_gen.native_array_variable
   );
 
@@ -73,6 +77,19 @@ Section Public
     index    := idx;
     value    := v;
     //
+    (variable = NULL).if {
+      "at ".print;
+      position.put_error warning text "put to error in put_to";
+      position.put_position;
+      position.send_error;
+      "Receiver : ".print; receiver.debug_display;
+      "Index : ".print;index.debug_display;
+      "Value : ".print;value.debug_display;
+
+      print_runtime_stack;
+      "Lisaac Compiler bug in PUT_TO.make. Use a debug version of the compiler for more information\n".print;
+      die_with_code 1;
+      };
     variable.add_write Self;
   );
 
