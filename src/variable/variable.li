@@ -186,16 +186,25 @@ Section Public
 
   - reset_last_write w:WRITE <-
   (
+    position.put_error warning text "in variable.reset_last_write : deffered";
+    position.put_position;
+    position.send_error;
     deferred;
   );
 
   - set_write w:WRITE <-
   (
+    position.put_error warning text "in variable.set_write : deffered";
+    position.put_position;
+    position.send_error;
     deferred;
   );
 
   - set_read <-
   (
+     position.put_error warning text "in variable.set_write : deffered";
+    position.put_position;
+    position.send_error;
     deferred;
   );
 
