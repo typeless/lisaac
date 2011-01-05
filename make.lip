@@ -156,7 +156,7 @@ Section Private
       };    
     } else {
       run "echo \"int main(){ return(1); }\" > __tmp__.c";    
-      (run ("clang __tmp__.c -o __tmp__ " + lib + " 2> /dev/null") = 0).if {
+      (run ("gcc __tmp__.c -o __tmp__ " + lib + " 2> /dev/null") = 0).if {
         lib_gcc := lib_gcc + " " + lib;
         run "rm __tmp__.c __tmp__";
       } else {
@@ -222,9 +222,9 @@ Section Private
       };
       option_gcc := option_gcc + " -U_FORTIFY_SOURCE ";
       (is_library).if {
-        execute_fail ("clang -Qunused-arguments " + output_file + output_extension + " -c " + option_gcc);
+        execute_fail ("gcc  " + output_file + output_extension + " -c " + option_gcc);
       } else {
-        execute_fail ("clang -Qunused-arguments " + output_file + output_extension + " -o " + output_file + option_gcc + lib_gcc);
+        execute_fail ("gcc  " + output_file + output_extension + " -o " + output_file + option_gcc + lib_gcc);
       };
     } else {
       ("Written: " + output_file + output_extension + "\n").print;
