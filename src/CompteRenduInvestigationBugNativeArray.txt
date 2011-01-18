@@ -1,0 +1,6 @@
+Compte rendu investigations sur bug NativeArray :
+
+- Le bug survient lors d'un appel sur reset_last_write dans le proto VARIABLE L 193. Celui ci est défini comme deferred.
+- VARIABLE est le père de LOCAL et SLOT_DATA. Dans ces deux proto fils de VARIABLE, le slot reset_last_write est correctement défini
+- La création de ce VARIABLE dans le graphe de code survient dans TYPE_GENERIC Line #245 Column #52 code :  native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first);
+

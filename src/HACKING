@@ -428,3 +428,248 @@ The parser
 
 Common things for command lines. This is used by `LISAAC` and `SHORTER` to
 display help and compiler version.
+
+
+# General TREE #
+
+- ANY_OPTION (compiler_any
+shorter_any)
+    - ANY
+        - ALIASER_LOCAL
+        - CASE (code_life)
+        - COMMON
+        - ITM_OBJECT (item)
+            - INSTR (code_life)
+                - CALL_SLOT (code_life)
+                - COP_LOCK (code_life)
+                - COP_UNLOCK (code_life)
+                - COV_INSTR (code_life)
+                - EXPR (code_life)
+                    - CAST (code_life)
+                    - EXPR_MULTIPLE (code_life)
+                    - READ (code_life)
+                        - READ_GLOBAL (code_life)
+                        - READ_LOCAL (code_life)
+                        - READ_SLOT (code_life)
+
+                    - RESULT (code_life)
+                    - CONSTANT (constant)
+                        - CHARACTER_CST (constant)
+                        - INTEGER_CST (constant)
+                        - NATIVE_ARRAY_CHARACTER_CST (constant)
+                        - PROTOTYPE_CST (constant)
+                        - REAL_CST (constant)
+                        - STRING_CST (constant)
+
+                    - EXPR_BINARY (external/arithmetic)
+                        - EXPR_ADD (external/arithmetic)
+                        - EXPR_AND (external/arithmetic)
+                        - EXPR_DIV (external/arithmetic)
+                        - EXPR_MOD (external/arithmetic)
+                        - EXPR_MUL (external/arithmetic)
+                        - EXPR_OR (external/arithmetic)
+                        - EXPR_SHIFT_L (external/arithmetic)
+                        - EXPR_SHIFT_R (external/arithmetic)
+                        - EXPR_SUB (external/arithmetic)
+                        - EXPR_XOR (external/arithmetic)
+
+                    - EXPR_UNARY (external/arithmetic)
+                        - EXPR_NEG (external/arithmetic)
+                        - EXPR_NOT (external/arithmetic)
+
+                    - EXPR_BINARY_CMP (external/comparison)
+                        - EXPR_EQUAL (external/comparison)
+                        - EXPR_INF (external/comparison)
+                        - EXPR_INF_EQ (external/comparison)
+                        - EXPR_NOT_EQUAL (external/comparison)
+                        - EXPR_SUP (external/comparison)
+                        - EXPR_SUP_EQ (external/comparison)
+
+                    - EXTERNAL_C (external)
+                    - GET_TYPE_ID (external)
+                    - IS_EXPANDED (external)
+                    - ITEM (external)
+                    - EXPR_BINARY_LOGIC (external/logic)
+                        - EXPR_AND_LOGIC (external/logic)
+                            - EXPR_AND_AND_LOGIC (external/logic)
+
+                        - EXPR_OR_LOGIC (external/logic)
+                            - EXPR_OR_OR_LOGIC (external/logic)
+
+
+                    - EXPR_UNARY_LOGIC (external/logic)
+                        - EXPR_NOT_LOGIC (external/logic)
+
+                    - SIZE_OF (external)
+
+                - LIST (code_life)
+                - LOOP (code_life)
+                - LOOP_END (code_life)
+                - NOP (code_life)
+                - PUSH (code_life)
+                - SWITCH (code_life)
+                - WRITE (code_life)
+                    - WRITE_GLOBAL (code_life)
+                    - WRITE_LOCAL (code_life)
+                    - WRITE_SLOT (code_life)
+                    - PUT_TO (external)
+
+                - NODE (dispatcher)
+                    - NODE_STYLE (dispatcher)
+                    - NODE_TYPE (dispatcher)
+
+                - CALL_NULL (external)
+                - FORALL_DATA (external)
+                - PUT_TO (external)
+
+            - DTA (dispatcher)
+                - DTA_CAST (dispatcher)
+                - DTA_RD (dispatcher)
+                    - DTA_RD_ARGS (dispatcher)
+                        - DTA_BLOCK (dispatcher)
+
+
+                - DTA_WR_CODE (dispatcher)
+                - DTA_WR_VALUE (dispatcher)
+
+            - ITM_ARGUMENT (item)
+                - ITM_ARG (item)
+                - ITM_ARGS (item)
+
+            - ITM_CODE (item)
+                - ITM_BINARY (item)
+                - ITM_BLOCK (item)
+                - ITM_CONSTANT (item)
+                    - ITM_CHARACTER (item)
+                    - ITM_NUMBER (item)
+                    - ITM_PROTOTYPE (item)
+                    - ITM_REAL (item)
+                    - ITM_STRING (item)
+
+                - ITM_EXPRESSION (item)
+                - ITM_EXTERN (item)
+                    - ITM_EXTERNAL (item)
+                    - ITM_EXTERNAL_TYPE (item)
+
+                - ITM_LDOTS (item)
+                - ITM_LIST (item)
+                - ITM_LIST_IDF (item)
+                - ITM_OLD (item)
+                - ITM_OPERATOR (item)
+                - ITM_READ (item)
+                    - ITM_READ_ARG1 (item)
+                    - ITM_READ_ARG2 (item)
+                    - ITM_READ_ARGS (item)
+
+                - ITM_RESULT (item)
+                - ITM_WRITE (item)
+                    - ITM_WRITE_CAST (item)
+                    - ITM_WRITE_CODE (item)
+                    - ITM_WRITE_VALUE (item)
+
+
+            - ITM_LOCAL (item)
+            - LIP_CODE (lip)
+                - LIP_AFFECT (lip)
+                - LIP_BINARY (lip)
+                - LIP_CALL (lip)
+                - LIP_IF (lip)
+                - LIP_LIST (lip)
+                - LIP_SLOT_CODE (lip)
+                - LIP_SLOT_DATA (lip)
+                - LIP_UNARY (lip)
+                - LIP_VALUE (lip)
+
+            - ARGUMENT (variable)
+            - NAMED (variable)
+                - ITM_SLOT (item)
+                    - ITM_SLOT_OPERATOR (item)
+                    - SLOT (variable)
+                        - SLOT_CODE (variable)
+                        - SLOT_CODE (variable)
+                        - SLOT_DATA (variable)
+                        - SLOT_DATA (variable)
+
+
+                - PROTOTYPE (type)
+                - VARIABLE (variable)
+                    - LOCAL (variable)
+                    - SLOT_DATA (variable)
+
+
+
+        - ITM_TYPE (item)
+            - ITM_TYPE_MONO (item)
+                - ITM_TYPE_BLOCK (item)
+                - ITM_TYPE_GENERIC_ELT (item)
+                - ITM_TYPE_SIMPLE (item)
+                    - ITM_TYPE_PARAMETER (item)
+                    - ITM_TYPE_STYLE (item)
+                        - ITM_TYPE_GENERIC (item)
+
+
+
+            - ITM_TYPE_MULTI (item)
+
+        - LIP_CONSTANT (lip)
+            - LIP_BOOLEAN (lip)
+            - LIP_INTEGER (lip)
+            - LIP_STRING (lip)
+
+        - LISAAC
+        - PARSER
+        - PROFIL
+            - PROFIL_BLOCK
+            - PROFIL_SLOT
+
+        - PROFIL_LIST
+        - SHORTER
+        - ALIAS_ARRAY (tools)
+        - ALIAS_STR (tools)
+        - BACKEND (tools)
+            - BACKEND_C (tools)
+            - BACKEND_JAVA (tools)
+
+        - COUPLE (tools)
+        - COUPLED (tools)
+        - POSITION (tools)
+        - TYPES (tools)
+            - TYPES_TMP (tools)
+
+        - TYPE (type)
+            - PROFIL_BLOCK
+            - TYPE_BLOCK (type)
+            - TYPE_CONTEXT (type)
+            - TYPE_GENERIC (type)
+            - TYPE_ID (type)
+            - TYPE_NULL (type)
+            - TYPE_VOID (type)
+
+        - TYPE_FULL (type)
+        - LOCAL_SEQ (variable)
+        - SECTION_ (variable)
+
+
+- PARAMETER_TO_TYPE
+    - DTA_RD (dispatcher)
+        - DTA_RD_ARGS (dispatcher)
+            - DTA_BLOCK (dispatcher)
+
+
+    - PROFIL
+        - PROFIL_BLOCK
+        - PROFIL_SLOT
+
+    - TYPE (type)
+        - PROFIL_BLOCK
+        - TYPE_BLOCK (type)
+        - TYPE_CONTEXT (type)
+        - TYPE_GENERIC (type)
+        - TYPE_ID (type)
+        - TYPE_NULL (type)
+        - TYPE_VOID (type)
+
+
+- SLIM_ARRAY (tools)
+- TABLE (tools)
+
