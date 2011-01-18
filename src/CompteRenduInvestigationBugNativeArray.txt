@@ -3,4 +3,8 @@ Compte rendu investigations sur bug NativeArray :
 - Le bug survient lors d'un appel sur reset_last_write dans le proto VARIABLE L 193. Celui ci est défini comme deferred.
 - VARIABLE est le père de LOCAL et SLOT_DATA. Dans ces deux proto fils de VARIABLE, le slot reset_last_write est correctement défini
 - La création de ce VARIABLE dans le graphe de code survient dans TYPE_GENERIC Line #245 Column #52 code :  native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first);
+- Si l'on remplace VARIABLE par LOCAL, cela semble marcher, mais un problème apparait lorsqu'on utilise des variables locales dans un block :
+This block is extern context sensitive (with `curetat' local variable).
+Line 32 column 56 in AGENTEST(...ts/Jeu_Julien/SpaceChampTest/agentest.li):
+    etat3 :=  STATE(AGENTTESTER).create "Etat 3" action { x:AGENTTESTER; curetat := 3; "Etat 3\n".print; };
 
