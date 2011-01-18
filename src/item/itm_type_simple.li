@@ -84,7 +84,7 @@ Section Public
   ( + result:TYPE_FULL;
     + path:STRING_CONSTANT;
 
-    position := p.position;
+    //position := p.position;// Provoque le bug... qu'on cherche à débuguer... génial..
 
     (Self = type_null).if {
       result := TYPE_NULL.default;

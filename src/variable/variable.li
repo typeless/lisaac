@@ -45,8 +45,8 @@ Section Public
 
 
     (Self.same_dynamic_type VARIABLE).if {  print_runtime_stack;"Création d'un VARIABLE !!".print;'\n'.print;crash_with_message "Création d'une variable : pas bon\n";};
-    (Self.same_dynamic_type LOCAL).if {  print_runtime_stack;"Création d'un LOCAL !!".print;'\n'.print;};
-    (Self.same_dynamic_type SLOT_DATA).if {  print_runtime_stack;"Création d'un SLOT_DATA !!".print;'\n'.print;};
+    (Self.same_dynamic_type LOCAL).if {  "Création d'un LOCAL !!".print;'\n'.print;};
+    (Self.same_dynamic_type SLOT_DATA).if {  "Création d'un SLOT_DATA !!".print;'\n'.print;};
 
     result := clone;
     result.make p name n type t;

@@ -239,10 +239,10 @@ Section Public
       (itm_typ.name = ALIAS_STR.prototype_native_array) ||
       {itm_typ.name = ALIAS_STR.prototype_native_array_volatile} 
     ).if {
-       itm_typ.position.put_error warning text "put to error in type_generic ; Affectation variable native_array_variable ";
-      itm_typ.position.put_position;
-      itm_typ.position.send_error; // BUG tracking
-      native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first);
+      // itm_typ.position.put_error warning text "put to error in type_generic ; Affectation variable native_array_variable ";
+     // itm_typ.position.put_position;
+     // itm_typ.position.send_error; // BUG tracking
+      native_array_variable := SLOT_DATA.create (proto.position) name intern_name type (gen.first);
       paper_list.add_last Self;
     };
 
