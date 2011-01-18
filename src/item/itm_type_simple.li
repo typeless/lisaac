@@ -55,6 +55,8 @@ Section ITM_TYPE_SIMPLE
 
 Section Public
 
+  + position : POSITION;//BUG : to remove
+
   - type_null:ITM_TYPE_SIMPLE := ITM_TYPE_SIMPLE.get (ALIAS_STR.variable_null);
   - type_void:ITM_TYPE_SIMPLE := ITM_TYPE_SIMPLE.get (ALIAS_STR.variable_void);
   - type_self:ITM_TYPE_SIMPLE := ITM_TYPE_PARAMETER.create (ALIAS_STR.prototype_self);
@@ -81,6 +83,8 @@ Section Public
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + result:TYPE_FULL;
     + path:STRING_CONSTANT;
+
+    position := p.position;
 
     (Self = type_null).if {
       result := TYPE_NULL.default;

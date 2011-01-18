@@ -234,14 +234,14 @@ Section Public
     string_tmp.replace_all ' ' with '_';
     string_tmp.replace_all '.' with '_';
     intern_name := ALIAS_STR.get_intern string_tmp;
-    "[debug Put_to error on native_array] Nom du type : '".print;itm_typ.name.print;"'\n".print; // BUG
+    "[debug Put_to error on native_array] Nom du type : '".print;itm_typ.print;"'\n".print;string_tmp.println; // BUG
     (
       (itm_typ.name = ALIAS_STR.prototype_native_array) ||
       {itm_typ.name = ALIAS_STR.prototype_native_array_volatile} 
     ).if {
-       proto.position.put_error warning text "put to error in type_generic ; Affectation variable native_array_variable ";
-      proto.position.put_position;
-      proto.position.send_error; // BUG tracking
+       itm_typ.position.put_error warning text "put to error in type_generic ; Affectation variable native_array_variable ";
+      itm_typ.position.put_position;
+      itm_typ.position.send_error; // BUG tracking
       native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first);
       paper_list.add_last Self;
     };
