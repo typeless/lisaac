@@ -113,9 +113,6 @@ bin/path.h:
 path.h src/path.h:
 	@echo "#define LISAAC_DIRECTORY \"`pwd`\"" > $@
 
-make.lip: make.lip.sample
-	ln -s $< $@
-
 #
 # Compiler and Shorter
 #
@@ -146,7 +143,7 @@ install: bin/lisaac bin/shorter
 	mkdir -p $(DESTDIR)$(DOC)$(HTML)
 	cp bin/lisaac  $(DESTDIR)$(BIN) 
 	cp bin/shorter  $(DESTDIR)$(BIN)
-	cp make.lip.sample  $(DESTDIR)$(LIB)/make.lip
+	cp make.lip  $(DESTDIR)$(LIB)/make.lip
 	cp -rf lib/  $(DESTDIR)$(LIB)
 	cp -rf lib_os/  $(DESTDIR)$(LIB)
 	cp -rf doc/html/ $(DESTDIR)$(DOC)$(HTML)
@@ -182,7 +179,6 @@ distclean: clean
 
 clean:
 	-$(RM) -rf bootstrap
-	-$(RM) -f make.lip
 	-$(RM) -f install_lisaac
 	-$(RM) -f lisaac-cov.c lisaac-cov.cov lisaac-cov lisaac-cov.cov.orig
 	-$(RM) -f bin/path.h bin/shorter.c bin/shorter bin/lisaac
