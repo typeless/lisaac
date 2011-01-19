@@ -26,7 +26,7 @@ Section Header
 
 
   - author  := "Sonntag Benoit (bsonntag@loria.fr)";
-  - comment := "Aliser collection.";
+  - comment := "Aliaser collection.";
 
 Section Inherit
 

@@ -1645,6 +1645,8 @@ Section Private
           };
           genericity.add_last t;
         }.do_while {read_character ','};
+         warning_error (current_position,"On va tomber sur deferred...");
+          
         genericity := ALIAS_ARRAY(ITM_TYPE_MONO).alias genericity;
         result     := ITM_TYPE_GENERIC.get nam style styl with genericity;
         (read_character ')').if_false {

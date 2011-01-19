@@ -1,0 +1,31 @@
+Section Header
+
+  + name      := BLOCARRAY;
+  - copyright := "2011  - Pierre-Alexandre Voye";
+  - author    := "Pierre-Alexandre Voye";
+  - comment   := "COMMENT";
+
+Section Inherit
+
+  + parent_object : OBJECT := OBJECT;
+
+Section Private
+
+Section Public
+
+  - lstblock : FAST_ARRAY({INTEGER;INTEGER}) :=  FAST_ARRAY({INTEGER;INTEGER}).create 3;
+
+  - main <-
+  ( + a , b ,c : {INTEGER;INTEGER};
+    a := { a:INTEGER; a+1};
+    b := { a:INTEGER; a+2};
+    c := { a:INTEGER; a+3};
+    lstblock.put a to 1;
+    lstblock.put b to 2;
+    lstblock.put c to 3;
+
+    
+    (lstblock.item 1.value 4 = 5).println;
+
+  );
+
