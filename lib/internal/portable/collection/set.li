@@ -83,7 +83,7 @@ Section Public
     deferred;
   )
   [ ...
-    "Added." +? {fast_has e};
+    "Element e was not added." +? {fast_has e};
     "Not in then added." +? {(! Old fast_has e) -> (count = Old count + 1)};
     "In then not added." +? {(Old fast_has e) -> (count = Old count)};
   ];

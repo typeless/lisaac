@@ -34,8 +34,10 @@ Section Inherit
 
 Section Public
 
+  
   - hash_code:INTEGER <-
   (
+
     deferred;
     0
   );
