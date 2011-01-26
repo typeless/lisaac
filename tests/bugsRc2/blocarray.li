@@ -22,7 +22,7 @@ Section Public
     c := { a:INTEGER; a+3};
     lstblock.put a to 1;
     lstblock.put b to 2;
-    lstblock.put c to 3;
+    lstblock.put c to 0;
 
     
     (lstblock.item 1.value 4 = 5).println;

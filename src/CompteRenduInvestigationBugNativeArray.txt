@@ -1,10 +1,58 @@
 Compte rendu investigations sur bug NativeArray :
 
-- Le bug survient lors d'un appel sur reset_last_write dans le proto VARIABLE L 193. Celui ci est défini comme deferred.
+- Le bug survient lors d'un appel sur reset_last_write dans le proto VARIABLE L 193 lors des executing pass. Celui ci est défini comme deferred.
 - VARIABLE est le père de LOCAL et SLOT_DATA. Dans ces deux proto fils de VARIABLE, le slot reset_last_write est correctement défini
 - La création de ce VARIABLE dans le graphe de code survient dans TYPE_GENERIC Line #245 Column #52 code :  native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first);
-- Si l'on remplace VARIABLE par LOCAL, cela semble marcher, mais un problème apparait lorsqu'on utilise des variables locales dans un block :
+- Si l'on remplace VARIABLE par LOCAL, cela peut marcher (parfois, voire le code AGENT fourni avec le mail), mais un problème apparait lorsqu'on utilise des variables locales dans un block :
 This block is extern context sensitive (with `curetat' local variable).
 Line 32 column 56 in AGENTEST(...ts/Jeu_Julien/SpaceChampTest/agentest.li):
     etat3 :=  STATE(AGENTTESTER).create "Etat 3" action { x:AGENTTESTER; curetat := 3; "Etat 3\n".print; };
+
+Questions :
+A quoi correspondent les prototypes LOCAL et SLOT_DATA ? Pourquoi un variable de ARRAY est forcément l'un des deux ? Est-ce qu"il n'y aurai pas un oubli de possibilité de tableau de blocs, sachant qu'un bloc peut embarquer des variables autres que locales ?
+
+Le test blocarray.li est dans GIT/compiler/tests/bugsRc2 continue à bugguer. Note pour Matt : J'ai fait comme tu m'as dit, j'ai bien vérifié et corrigé les index dans le test et ça ne change rien
+
+-----
+
+J'investigue maintenant en assumant le fait que je remplace VARIABLE par LOCAL dans TYPE_GENERIC Line #245 Column #52 (rappel de l'appel :  native_array_variable := VARIABLE.create (proto.position) name intern_name type (gen.first); deviens :  native_array_variable := LOCAL.create (proto.position) name intern_name type (gen.first); )
+
+
+Avec le test blocarray, survient une nouvelle erreur :
+Line #41 Column #12 in ITM_TYPE_MONO (.../src/item/itm_type_mono.li).
+    deferred;
+            ^
+================ TOP ===============
+Slot deferred.
+
+Cette erreur est provoquée par le code blocarray suivant : 
+Line 16 column 43 in BLOCARRAY(.../tests/bugsRc2/blocarray.li):
+  - lstblock : FAST_ARRAY({INTEGER;INTEGER}) :=  FAST_ARRAY({INTEGER;INTEGER}).create 3;
+
+Bref, à la création du FAST_ARRAY...
+
+le deferred survient sur un appel de hash_code qui est effectué dans le parser : 
+Line #1650 Column #65 in PARSER (.../src/parser.li).
+        genericity := ALIAS_ARRAY(ITM_TYPE_MONO).alias genericity;
+
+Ce qui étonnant c'est que appel dans le parser arrive très souvent et ne provoque pas d'erreur. J'ai l'impression que c'est un peu casse gueule.
+J'ai tenté de virer le deffered et de rajouter un index propre qui s'incrémente et ya un contrat qui pète un peu plus loin :
+
+Line #74 Column #30 in ALIAS_ARRAY (.../src/tools/alias_array.li).
+        bucket.fast_add result;
+                              ^
+Line #86 Column #15 in SET (.../lib/internal/portable/collection/set.li).
+    "Added." +? {fast_has e};
+               ^
+Line #137 Column #44 in STRING_CONSTANT (.../lib/standard/string/string_constant.li).
+  - Self:SELF '+?' test:{BOOLEAN} <- test +? Self;
+                                            ^
+================ TOP ===============
+Added.
+
+
+
+
+
+
 

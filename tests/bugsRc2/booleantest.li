@@ -1,0 +1,24 @@
+Section Header
+
+  + name      := BOOLEANTEST;
+  - copyright := "2011  - Pierre-Alexandre Voye";
+  - author    := "Pierre-Alexandre Voye";
+  - comment   := "COMMENT";
+
+Section Inherit
+
+  + parent_object : OBJECT := OBJECT;
+
+Section Private
+
+Section Public
+
+
+  - main <-
+  (
+    + a : BOOLEAN;
+    a := BOOLEAN.clone;
+
+  );
+
+
