@@ -1,0 +1,9 @@
+Document: lisaac
+Title: Lisaac Documentation
+Author: Benoît Sonntag <benoit.sonntag@lisaac.org>
+Abstract: These PDFs describe what lisaac is, which concepts
+ it is based on and how to develop with it.
+Section: Programming
+
+Format: PDF
+Files: /usr/share/doc/lisaac-doc/pdf/*.pdf.gz

@@ -1,17 +1,24 @@
-lisaac (1:0.39~rc1-0.1) unstable; urgency=low
+lisaac (1:0.39~rc1-1) unstable; urgency=low
 
-  * Non-maintainer upload
+  [ Jonathan Michalon ]
   * New upstream release
     + Lots of various improvements, huge gap between versions.
     + Reuse Makefile of previous packaging since the new one is interactive
   * Switch to short debian/rules
   * Provide doc-base integration with debian/lisaac-doc.doc-base
   * Update makefile.patch
-  * Add new patch fixing typo in source code (lintian warning) 
+  * Add new patch fixing typo in source code (lintian warning)
   * Update URL in debian/watch and debian/control (Closes: #612824)
   * Bump Standards-Version to 3.9.1
 
- -- Jonathan Michalon <johndescs@gmail.com>  Tue, 19 Oct 2010 13:39:15 +0200
+  [ Picca Frédéric-Emmanuel ]
+  * activate the watch file
+  * remove comments from the debian/rules file
+  * regenerate the patch queue with gbp-pq
+  * re-add the lisaac-mode file
+  * do not load automatically the lisaac-mode (Closes: #593535)
+
+ -- Picca Frédéric-Emmanuel <picca@synchrotron-soleil.fr>  Sun, 27 Mar 2011 11:34:25 +0200
 
 lisaac (1:0.13.1-3) unstable; urgency=low
 
