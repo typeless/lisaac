@@ -1,7 +1,7 @@
 Source: lisaac
 Section: devel
 Priority: optional
-Maintainer: picca frederic <picca@synchrotron-soleil.fr>
+Maintainer: Picca Frédéric-Emmanuel <picca@synchrotron-soleil.fr>
 Uploaders: Xavier Oswald <xoswald@debian.org>, Aurélien GÉRÔME <ag@debian.org>
 Build-Depends: debhelper (>= 7), gcc (>= 4.1)
 Standards-Version: 3.9.1
