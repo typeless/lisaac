@@ -1,2 +1,3 @@
 version=3
-http://isaacproject.u-strasbg.fr/download/lisaac-(.*)\.tar\.gz
+# disabled since we got a forbidden...
+#http://lisaac.org/download/lisaac-(.*)\.tar\.gz

@@ -2,15 +2,15 @@ Source: lisaac
 Section: devel
 Priority: optional
 Maintainer: picca frederic <picca@synchrotron-soleil.fr>
-Uploaders: Xavier Oswald <x.oswald@free.fr>, Aurélien GÉRÔME <ag@debian.org>
-Build-Depends: debhelper (>= 5.0.0), gcc (>= 4.1), quilt, emacs22 | emacsen
-Standards-Version: 3.8.0
-Homepage: http://isaacproject.u-strasbg.fr/
+Uploaders: Xavier Oswald <xoswald@debian.org>, Aurélien GÉRÔME <ag@debian.org>
+Build-Depends: debhelper (>= 7), gcc (>= 4.1)
+Standards-Version: 3.9.1
+Homepage: http://lisaac.org/
 DM-Upload-Allowed: yes
 
 Package: lisaac
 Architecture: any
-Depends: ${shlibs:Depends}, lisaac-common, gcc(>= 4.1)
+Depends: ${shlibs:Depends}, ${misc:Depends}, lisaac-common, gcc(>= 4.1)
 Recommends: lisaac-doc
 Suggests: lisaac-mode
 Description: Object-oriented language base on prototype
@@ -32,22 +32,26 @@ Description: Object-oriented language base on prototype
 
 Package: lisaac-common
 Architecture: all
+Depends: ${misc:Depends}
 Description: Arch-independent part for lisaac
  Lisaac is a small prototype-based programming language.
  .
  This package contains the libraries needed by the Lisaac compiler.
+ They are grouped in four categories, intra, standard, unstable and extra.
 
 Package: lisaac-doc
 Section: doc
 Architecture: all
+Depends: ${misc:Depends}
 Description: Documentation for lisaac
  Lisaac is a small prototype-based programming language.
  .
  This package contains the documentation in html format.
+ Your are also provided with a pdf smart and complete documentation.
 
 Package: lisaac-mode
 Architecture: all
-Depends: emacs22 | emacsen
+Depends: ${misc:Depends}, emacs23 | emacsen
 Enhances: lisaac
 Description: Emacs mode for editing Lisaac programs
  Lisaac is a small prototype-based programming language.

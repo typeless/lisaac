@@ -1,94 +1,15 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
 
-include /usr/share/quilt/quilt.make
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
 
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
 
-CFLAGS = -g
+%:
+	dh  $@
 
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	touch configure-stamp
-
-build: patch build-arch build-indep
-
-build-arch: build-arch-stamp
-build-arch-stamp: configure-stamp 
-ifeq (,$(filter $(shell dpkg-architecture -qDEB_BUILD_ARCH), alpha amd64 ia64))
-	$(MAKE) CFLAGS="$(CFLAGS)"
-else
-	@echo "************************************************************************" >&2
-	@echo "* Sorry, this package is not supposed to work on 64-bit architectures! *" >&2
-	@echo "************************************************************************" >&2
-	@false
-endif
-	touch build-arch-stamp
-
-build-indep: build-indep-stamp
-build-indep-stamp: configure-stamp 
-	touch build-indep-stamp
-
-clean: clean-patched unpatch
-clean-patched:
-	dh_testdir
-	dh_testroot
-	$(MAKE) clean DESTDIR=$(CURDIR)/debian/tmp
-	rm -f build-arch-stamp
-	rm -f build-indep-stamp
-	dh_clean 
-
-install: install-indep install-arch
-install-indep:
-	dh_testdir
-	dh_testroot
-	dh_clean -k -i 
-	dh_installdirs -i
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
-	[ ! -f $(CURDIR)/debian/tmp/usr/share/lisaac/lib/clean  ] || rm  --verbose $(CURDIR)/debian/tmp/usr/share/lisaac/lib/clean
-	[ ! -f $(CURDIR)/debian/tmp/usr/share/lisaac/lib_os/clean  ] || rm  --verbose $(CURDIR)/debian/tmp/usr/share/lisaac/lib_os/clean
-	[ ! -f $(CURDIR)/debian/tmp/usr/share/lisaac/lib/number/essai  ] || rm --verbose $(CURDIR)/debian/tmp/usr/share/lisaac/lib/number/essai
-	dh_install -i --sourcedir=debian/tmp
-
-install-arch:
-	dh_testdir
-	dh_testroot
-	dh_clean -k -s 
-	dh_installdirs -s
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
-	dh_install -s --sourcedir=debian/tmp
-	dh_installman
-
-binary-common:
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installemacsen
-	dh_installexamples
-	dh_link
-	dh_strip
-	dh_compress 
-	dh_fixperms
-	dh_makeshlibs
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary-indep: build-indep install-indep
-	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
-
-binary-arch: build-arch install-arch
-	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
-
-binary: binary-arch binary-indep
-.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure

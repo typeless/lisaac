@@ -1,3 +1,30 @@
+lisaac (1:0.39~rc1-0.1) unstable; urgency=low
+
+  * Non-maintainer upload
+  * New upstream release
+    + Lots of various improvements, huge gap between versions.
+    + Reuse Makefile of previous packaging since the new one is interactive
+  * Switch to short debian/rules
+  * Provide doc-base integration with debian/lisaac-doc.doc-base
+  * Update makefile.patch
+  * Add new patch fixing typo in source code (lintian warning) 
+  * Update URL in debian/watch and debian/control (Closes: #612824)
+  * Bump Standards-Version to 3.9.1
+
+ -- Jonathan Michalon <johndescs@gmail.com>  Tue, 19 Oct 2010 13:39:15 +0200
+
+lisaac (1:0.13.1-3) unstable; urgency=low
+
+  * debian/control:
+    - Change my mail address
+    - Bump Standards-Version to 3.8.4
+    - Update Build-Depends on debhelper 7
+    - Update Depends on emacs23 instead of emacs22 (Closes: #571568)
+  * Update debian/compat to 7
+  * Switch to dpkg-source 3.0 (quilt) format
+
+ -- Xavier Oswald <xoswald@debian.org>  Mon, 01 Mar 2010 23:51:44 +0100
+
 lisaac (1:0.13.1-2) unstable; urgency=low
 
   * Add myself to Uploaders with the team's agreement.

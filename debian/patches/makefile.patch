@@ -1,48 +1,85 @@
-Index: lisaac-0.13.1/Makefile
-===================================================================
---- lisaac-0.13.1.orig/Makefile	2008-08-02 09:38:49.000000000 +0200
-+++ lisaac-0.13.1/Makefile	2008-08-02 09:39:53.000000000 +0200
-@@ -54,12 +54,13 @@
- #  bug tracker system: https://gna.org/bugs/?func=additem&group=isaac
- #  mail to: Xavier Oswald <x.oswald@free.fr>
+Make the makefile suitable for packaging.
+--- a/Makefile
++++ b/Makefile
+@@ -1,31 +1,66 @@
+-#                   This file is part of Lisaac compiler.
+-#                     http://isaacproject.u-strasbg.fr/
+-#                    LSIIT - ULP - CNRS - INRIA - FRANCE
++#	           This file is part of Lisaac compiler.
++#	             http://isaacproject.u-strasbg.fr/
++#	            LSIIT - ULP - CNRS - INRIA - FRANCE
+ #
+ #   This program is free software: you can redistribute it and/or modify    
+ #   it under the terms of the GNU General Public License as published by    
+ #   the Free Software Foundation, either version 3 of the License, or       
+-#   (at your option) any later version.                                    
+-#                                                                           
+-#   This program is distributed in the hope that it will be useful,         
+-#   but WITHOUT ANY WARRANTY; without even the implied warranty of          
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           
+-#   GNU General Public License for more details.                            
+-#                                                                           
++#   (at your option) any later version.	                            
++#	                                                                   
++#   This program is distributed in the hope that it will be useful,	 
++#   but WITHOUT ANY WARRANTY; without even the implied warranty of	  
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the	   
++#   GNU General Public License for more details.	                    
++#	                                                                   
+ #   You should have received a copy of the GNU General Public License       
+ #   along with this program.  If not, see <http://www.gnu.org/licenses/>.   
  
--LIB=/usr/lib/lisaac
++
 +LIB=/usr/share/lisaac
- EXAMPLE=/examples
- HTML=/html
- BIN=/usr/bin
- MAN=/usr/share/man/man1
--DOC=/usr/share/doc/lisaac
++EXAMPLE=/examples
++HTML=/html
++PDF=/pdf
++BIN=/usr/bin
++MAN=/usr/share/man/man1
 +DOC=/usr/share/doc/lisaac-doc
 +EMACS=/usr/share/emacs/site-lisp/lisaac-mode
- DESTDIR=
++DESTDIR=
++
  CC=gcc
  CFLAGS=-O2
-@@ -81,23 +82,21 @@
- 	mkdir -p $(DESTDIR)$(MAN)
- 	mkdir -p $(DESTDIR)$(DOC)$(HTML)
- 	mkdir -p $(DESTDIR)$(DOC)$(EXAMPLE)
-+	mkdir -p $(DESTDIR)$(EMACS)
- 	cp bin/lisaac  $(DESTDIR)$(BIN) 
- 	cp bin/shorter  $(DESTDIR)$(BIN)
- 	cp path.li  $(DESTDIR)$(LIB)
- 	cp -rf lib/  $(DESTDIR)$(LIB)
- 	cp -rf lib_os/  $(DESTDIR)$(LIB)
-+	cp -rf lib_html/* $(DESTDIR)$(DOC)$(HTML)
- 	cp -rf example/* $(DESTDIR)$(DOC)$(EXAMPLE)
+ 
+-all: install_lisaac
+-	./install_lisaac
++all: bin/lisaac.c
++	@echo "#define LISAAC_DIRECTORY \"$(DESTDIR)$(LIB)\"" > bin/path.h
++	$(CC) $(CFLAGS) bin/lisaac.c -o bin/lisaac
++
++install:
++	mkdir -p $(DESTDIR)$(LIB)
++	mkdir -p $(DESTDIR)$(BIN)
++	mkdir -p $(DESTDIR)$(MAN)
++#	mkdir -p $(DESTDIR)$(DOC)$(HTML)
++	mkdir -p $(DESTDIR)$(DOC)$(PDF)
++	mkdir -p $(DESTDIR)$(DOC)$(EXAMPLE)
++#	mkdir -p $(DESTDIR)$(EMACS)
++	cp bin/lisaac  $(DESTDIR)$(BIN)
++#	cp bin/shorter  $(DESTDIR)$(BIN)
++#	cp path.li  $(DESTDIR)$(LIB)
++	cp -rf lib/  $(DESTDIR)$(LIB)
++	cp make.lip.sample $(DESTDIR)$(LIB)/make.lip
++#	this seems really too unstable to be packed
++	rm -rf $(DESTDIR)$(LIB)/lib/unstable/freetype
++#	cp -rf lib_os/  $(DESTDIR)$(LIB)
++#	cp -rf lib_html/* $(DESTDIR)$(DOC)$(HTML)
++	cp -rf example/* $(DESTDIR)$(DOC)$(EXAMPLE)
 +	rm -rf $(DESTDIR)$(DOC)$(EXAMPLE)/shootout
- 	cp -rf shorter/  $(DESTDIR)$(LIB)
- 	cp -rf manpage/*.gz  $(DESTDIR)$(MAN)
-+	cp -f editor/emacs/lisaac-mode.el $(DESTDIR)$(EMACS)
- 	#$(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML) 
++	rm -rf $(DESTDIR)$(DOC)$(EXAMPLE)/gui/clock/.avoir.txt.swp
++#	cp -rf shorter/      $(DESTDIR)$(LIB)
++	cp -rf doc/man/*.gz  $(DESTDIR)$(MAN)
++	cp -rf doc/pdf/*     $(DESTDIR)$(DOC)$(PDF)
++#	cp -f editor/emacs/lisaac-mode.el $(DESTDIR)$(EMACS)
++#	$(DESTDIR)$(BIN)/shorter -r -f html lib -o $(DESTDIR)$(DOC)$(HTML)
+ 
+-install_lisaac:
+-	$(CC) $(CFLAGS) install_lisaac.c -o install_lisaac
  
  clean:
- 	rm -rf bin/lisaac
- 	rm -rf bin/shorter
- 	rm -rf bin/path.h
--	rm -rf $(DESTDIR)$(BIN)/lisaac
--	rm -rf $(DESTDIR)$(BIN)/shorter
--	rm -rf $(DESTDIR)$(LIB)
--	rm -rf $(DESTDIR)$(DOC)
--	rm -rf $(DESTDIR)$(MAN)/lisaac.1.gz
--	rm -rf $(DESTDIR)$(MAN)/shorter.1.gz
+-	rm -f install_lisaac
+ 	rm -f bin/shorter.c bin/path.h bin/lisaac bin/shorter
+ 	rm -f src/shorter src/path.h
+ 	rm -rf doc/html

@@ -1,0 +1,12 @@
+Fix small typo spotted by lintian
+--- a/bin/lisaac.c
++++ b/bin/lisaac.c
+@@ -4267,7 +4267,7 @@
+ __li__U __string_700={__li__U__,8," style ["};
+ __li__U __string_701={__li__U__,2,"] "};
+ __li__U __string_702={__li__U__,36,"BUG ALIASER_LOCAL.add_var_size Error"};
+-__li__U __string_703={__li__U__,16,"/* PERSISTANT */"};
++__li__U __string_703={__li__U__,16,"/* PERSISTENT */"};
+ __li__U __string_704={__li__U__,2,")("};
+ __li__U __string_705={__li__U__,2,"))"};
+ __li__U __string_706={__li__U__,8,"(void *)"};
