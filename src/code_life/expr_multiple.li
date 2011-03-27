@@ -37,7 +37,7 @@ Section Inherit
 Section Public
   
   + expr_list:FAST_ARRAY(EXPR);
-  
+    
   - cardinality:INTEGER <- expr_list.count;
   
   - static_type:TYPE_FULL <-

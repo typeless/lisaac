@@ -55,7 +55,7 @@ Section Private
   
   - init p:ABSTRACT_STRING :G_EXPR <-
   ( + cur_dir:DIRECTORY;
-    + f:STD_FILE;
+    + f:FILE;
     // Read picture file.
     
     cur_dir := FILE_SYSTEM;
@@ -70,7 +70,7 @@ Section Private
         f ?= e;        
         (f != NULL).if {
           ai_file := AI_FILE.clone;
-          picture := BITMAP(PIXEL_24).create (10,10);	
+          picture := BITMAP(PIXEL_24).create_size (10,10);	
           ai_file.fill_bitmap f in picture scale 1.5;	
           f.close;
         };
@@ -78,7 +78,7 @@ Section Private
     };
     (picture = NULL).if {
       // Error manager.
-      picture := BITMAP(PIXEL_24).create (100,80);
+      picture := BITMAP(PIXEL_24).create_size (100,80);
       picture.color (picture.red);
       picture.print "Error: Not found !" to (2,2);
     };
@@ -135,7 +135,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (540,150);
+    VIDEO.make_size (540,160);
         
     //init "./";
     // Screen definition.

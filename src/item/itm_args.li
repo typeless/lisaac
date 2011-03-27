@@ -64,12 +64,11 @@ Section Public
   //
   // Running.
   //
-/*
+
   - item idx:INTEGER :ITM_TYPE_MONO <- 
   ( ? {idx.in_range 0 to upper};
     type.item idx
   );
-  */
   
   - to_run_in arg_lst:FAST_ARRAY(LOCAL) for p:PARAMETER_TO_TYPE <-
   ( + t:TYPE_FULL;
@@ -112,12 +111,12 @@ Section Public
     (name.lower).to (name.upper - 1) do { j:INTEGER;      
       buffer.append (name.item j);
       buffer.add_last ':';
-      type.item j.display buffer;
+      type.item j.append_in buffer;
       buffer.add_last ',';
     };
     buffer.append (name.last);
     buffer.add_last ':';
-    type.last.display buffer;    
+    type.last.append_in buffer;    
     buffer.add_last ')';
   );
   
@@ -140,27 +139,4 @@ Section Public
     buf.add_last ')';
   );
   
-  //
-  // Comparaison.
-  //
-  
-  - is_equal other:ITM_ARGUMENT <-
-  ( + o:ITM_ARGS;
-    + err:STRING_CONSTANT;
-    ? {other != Self};
-    
-    o ?= other;
-    (o = NULL).if {
-      err := "Invariance number vector argument invalid.";
-    }.elseif {name != o.name} then {
-      err := "Invariance name argument invalid.";
-    }.elseif {type != o.type} then {
-      err := "Invariance type argument invalid.";
-    };
-    (err != NULL).if {
-      POSITION.put_error semantic text err;
-      position.put_position;
-      (other.position).put_position;
-      POSITION.send_error;
-    };
-  );
+

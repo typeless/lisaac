@@ -152,9 +152,10 @@ Section Public
     rectangle_fill (x_min,py1+1) to (x_max,y_max);
     rectangle_fill (x_min,py0) to (px0-1,py1);
     rectangle_fill (px1+1,py0) to (x_max,py1);    
+    //
     draw_graph;
-    RULER_HORIZONTAL.refresh;
-    RULER_VERTICAL.refresh;
+    //RULER_HORIZONTAL.refresh;
+    //RULER_VERTICAL.refresh;    
   );
 
   //
@@ -164,7 +165,7 @@ Section Public
   - receive msg:EVENT <-
   ( + evt_keyboard:EVENT_KEYBOARD;    
     + evt_mouse:EVENT_MOUSE;
-    
+  
     evt_keyboard ?= msg;    
     (evt_keyboard != NULL).if {
       keyboard_event (evt_keyboard.key);
@@ -174,6 +175,7 @@ Section Public
     (evt_mouse != NULL).if {
       mouse_event evt_mouse;
     };    
+    
   );
   
   - keyboard_event key:UINTEGER_16 <-
@@ -194,24 +196,24 @@ Section Public
     win := DESK.get_object (evt.x_current,evt.y_current);
     (win != Self).if {      
       DESK.receive evt;
-    } else {
+    } else {      
       clipping_off;
       (evt.left_up).if {
         x0 := x1 := evt.x_relative;
         y0 := y1 := evt.y_relative;        
       };
       (evt.left).if {        
-        set_mode mode_xor;
+        //set_mode mode_xor;
         rectangle (x0,y0) to (x1,y1) color 40_80_80h;
         x1 := evt.x_relative;
         y1 := evt.y_relative;        
         rectangle (x0,y0) to (x1,y1) color 40_80_80h;
-        set_mode mode_copy;
-      };
-      (evt.left_down).if {
-        set_mode mode_xor;
+        //set_mode mode_copy;
+      };      
+      (evt.left_down).if {              
+        //set_mode mode_xor;
         rectangle (x0,y0) to (x1,y1) color 40_80_80h;        
-        set_mode mode_copy;
+        //set_mode mode_copy;
         // Action.
         (x0 > x1).if {
           tmp := x0;
@@ -283,7 +285,7 @@ Section Public
         } else {
           SELECT.remove;
         };
-      };
+      };      
     };
   );
   

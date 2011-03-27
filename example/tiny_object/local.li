@@ -59,14 +59,14 @@ Section Public
   // Run.  
   //
   
-  + dynamic_type:CLASS;
+  + the_dynamic_type:CLASS;
   
-  - set_dynamic_type c:CLASS <-
+  - set_the_dynamic_type c:CLASS <-
   [
     ? {c.is_sub_type type};
   ]
   (
-    dynamic_type := c;
+    the_dynamic_type := c;
   );
   
   //

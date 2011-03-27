@@ -53,7 +53,7 @@ Section Public
     result
   );
   
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_32).create 2048;
   
   //
   // Width / Height
@@ -71,7 +71,7 @@ Section Public
   - init p:ABSTRACT_STRING :G_EXPR <-
   ( + entry:ENTRY;
     + fmt:FORMAT_IMG;
-    + f:STD_FILE;
+    + f:FILE;
     + w,h:INTEGER;
     
     string_tmp.copy p;
@@ -91,7 +91,7 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP(PIXEL_24).create (w,h);
+    bitmap := BITMAP(PIXEL_24).create_size (w,h);
     fmt.put_image_in bitmap;    
     f.close;
     TIMER.add_client Self;
@@ -107,7 +107,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (width_min+64,height_min+64);
+    VIDEO.make_size (width_min+64,height_min+64);
     DESK.make VIDEO with (
       G_OUT.create "Rotozoom" justify (G_OUT.center) / init "./"
     );        
@@ -145,11 +145,12 @@ Section Public
         ply := ply - aax;
         col := bitmap.get_color_hard ((plx>>16) & 0FFh,(ply>>16) & 0FFh);
         bmp_line.put col to x;
-      };      
-      line_h_hard (0,y) until width image bmp_line offset 0;
+      };            
+      line_h (0,y) until width image bmp_line; // offset 0;
       px := px + ax; //+ sin.item zoom;
       py := py + ay; // + sin.item zoom;
     };        
+    
   );
   
   //
@@ -170,10 +171,11 @@ Section Public
     };
     
     evt_time ?= msg;    
-    (evt_time != NULL).if {
+    ((evt_time != NULL) && {evt_time.destination = NULL}).if {
       angle := angle + 1;
       zoom := zoom + 2;
       refresh;
     };    
+    
   );
 

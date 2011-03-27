@@ -79,7 +79,7 @@ Section Public
     + val:EXPR;   
     + req_list:FAST_ARRAY(WRITE);
     //? { variable.require_first != NULL };
-    
+    /* BSBS: A REVOIR
     ((variable.require_first = NULL) && {!variable.type.is_expanded}).if {
       variable.intern_name.print; '\n'.print;
       "style [".print; variable.style.print; "]\n".print;
@@ -88,7 +88,7 @@ Section Public
       //die_with_code 0;
       //crash_with_message "BUG READ : require_first = NULL";
     };
-    
+    */
     (variable.require_first != NULL).if {
       val := variable.require_first.value;
       (val.is_constant).if {
@@ -98,7 +98,7 @@ Section Public
 	  j := req_list.lower;
 	  {(j > req_list.upper) || {result = NULL}}.until_do {
 	    val := req_list.item j.value;
-	    ((! val.is_constant) || {result !== val}).if {
+	    ((! val.is_constant) || {result !~= val}).if {
 	      result := NULL;
 	    };
 	    j := j + 1;
@@ -132,22 +132,10 @@ Section Public
     + val:EXPR;
     + s:SLOT_DATA;
     + l:LOCAL;
-    + wrt:WRITE;
-    + tmp_type:TYPES_TMP;
+    + wrt:WRITE;    
     //+ old_loop_invariant:LOOP;
-    
-    // Simplify type.
-    ((! variable.is_static) && {! variable.type.is_strict}).if {
-      tmp_type := TYPES_TMP.new;
-      variable.get_type tmp_type;
-      (tmp_type.first = TYPE_NULL).if {
-        tmp_type.remove_first;
-      };      
-      (tmp_type.count = 1).if {        
-        variable.set_type (tmp_type.first.default.to_strict);        
-      };
-      tmp_type.free;
-    };
+        
+    simplify_type variable;
     
     //
     s ?= variable;

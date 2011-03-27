@@ -95,7 +95,7 @@ Section Public
   (
     (is_java).if_false {
       output_decl.append 
-      "// NULL\n\
+      "/* NULL */\n\
       \#ifndef NULL\n\
       \#define NULL ((void *)0)\n\
       \#endif\n\n";

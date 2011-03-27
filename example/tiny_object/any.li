@@ -41,7 +41,7 @@ Section Public
   - program:HASHED_DICTIONARY(CLASS,STRING_CONSTANT) := 
   HASHED_DICTIONARY(CLASS,STRING_CONSTANT).create;  
   
-  - class_main:CLASS;
+  - class_master:CLASS;
   
   //
   // Error manager.
@@ -134,7 +134,7 @@ Section Public
   - keyword_inherit:STRING_CONSTANT := "Inherit";
   - keyword_print:STRING_CONSTANT   := "print";
   - keyword_new:STRING_CONSTANT     := "New";
-  - keyword_main:STRING_CONSTANT    := "main";
+  - keyword_master:STRING_CONSTANT  := "master";
   - keyword_this:STRING_CONSTANT    := "This";
   
   //
@@ -158,7 +158,7 @@ Section Private
     result.fast_add keyword_inherit;
     result.fast_add keyword_print;
     result.fast_add keyword_new;
-    result.fast_add keyword_main;
+    result.fast_add keyword_master;
     result.fast_add keyword_this;
     result
   );

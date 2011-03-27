@@ -71,8 +71,8 @@ Section Public
     (operator)
     .when '|' then { result := lv |   rv; }
     .when '&' then { result := lv &   rv; }
-    .when '=' then { result := lv ==  rv; }
-    .when 'E' then { result := lv !== rv; }
+    .when '=' then { result := lv ~=  rv; }
+    .when 'E' then { result := lv !~= rv; }
     .when '>' then { result := lv >   rv; }
     .when '<' then { result := lv <   rv; }
     .when 'S' then { result := lv >=  rv; }

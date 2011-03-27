@@ -106,6 +106,8 @@ Section Public
   - prototype_n_a_character   :STRING_CONSTANT := "NATIVE_ARRAY__CHARACTER";
   - prototype_n_a_n_a_character:STRING_CONSTANT := 
   "NATIVE_ARRAY__NATIVE_ARRAY__CHARACTER";
+  - prototype_system_io       :STRING_CONSTANT := "SYSTEM_IO";
+  - prototype_lip             :STRING_CONSTANT := "LIP";
   
   - variable_self          :STRING_CONSTANT := "Self";  
   - variable_context       :STRING_CONSTANT := "__pos";
@@ -152,12 +154,15 @@ Section Public
   - slot_if           :STRING_CONSTANT := "if";
   - slot_else         :STRING_CONSTANT := "else";  
   - slot_print        :STRING_CONSTANT := "print";
-  - slot_exit         :STRING_CONSTANT := "exit";
+  - slot_die_with_code:STRING_CONSTANT := "die_with_code";
   - slot_run          :STRING_CONSTANT := "run";
+  - slot_help_command :STRING_CONSTANT := "help_command";
+  - slot_compiler_version:STRING_CONSTANT := "compiler_version";
   - slot_path         :STRING_CONSTANT := "path";
   - slot_front_end    :STRING_CONSTANT := "front_end";
   - slot_back_end     :STRING_CONSTANT := "back_end";
   - slot_input_file   :STRING_CONSTANT := "input_file";
+  - slot_output_file  :STRING_CONSTANT := "output_file";
   - slot_debug_level  :STRING_CONSTANT := "debug_level";
   - slot_debug_with_code:STRING_CONSTANT := "debug_with_code";
   - slot_is_all_warning:STRING_CONSTANT := "is_all_warning";
@@ -166,6 +171,7 @@ Section Public
   - slot_is_java      :STRING_CONSTANT := "is_java";
   - slot_is_statistic :STRING_CONSTANT := "is_statistic";
   - slot_is_quiet     :STRING_CONSTANT := "is_quiet";    
+  - slot_is_library   :STRING_CONSTANT := "is_library";    
   - slot_get_integer  :STRING_CONSTANT := "get_integer";
   - slot_get_string   :STRING_CONSTANT := "get_string";
   - slot_is_cop       :STRING_CONSTANT := "is_cop";
@@ -199,6 +205,8 @@ Section Public
   - short_comment_line       :STRING_CONSTANT := "comment_line";
   - short_comment_slot_line  :STRING_CONSTANT := "comment_slot_line";
   - short_comment_header_line:STRING_CONSTANT := "comment_header_line";
+  - short_comment_new_line_slot  :STRING_CONSTANT := "comment_new_line_slot";
+  - short_comment_new_line_extern:STRING_CONSTANT := "comment_new_line_extern";
   - short_comment     :STRING_CONSTANT := "comment";
   - short_slot        :STRING_CONSTANT := "slot";
   - short_slot_call   :STRING_CONSTANT := "slot_call";
@@ -272,7 +280,7 @@ Section Public
     } else {
       result ?= tmp;      
     };
-    ? {result == str};
+    ? {result ~= str};
     result
   );
   
@@ -284,7 +292,7 @@ Section Public
       tmp_name.copy str;    
       tmp_name.append "__";    
     } else {
-      tmp_name.copy "__";
+      tmp_name.copy "li__";
     };
     count_variable := count_variable + 1;
     v:=count_variable;
@@ -392,8 +400,11 @@ Section Public
     list.add prototype_integer_32;
     list.add prototype_integer_16;
     list.add prototype_integer_8;
+    //
     list.add prototype_n_a_character;
     list.add prototype_n_a_n_a_character;    
+    list.add prototype_system_io;
+    list.add prototype_lip;
     
     // Les variables de base :
     list.add variable_self;    
@@ -442,12 +453,15 @@ Section Public
     list.add slot_if;
     list.add slot_else;    
     list.add slot_print;
-    list.add slot_exit;
+    list.add slot_die_with_code;
+    list.add slot_help_command;
+    list.add slot_compiler_version;
     list.add slot_run;
     list.add slot_path;
     list.add slot_front_end;
     list.add slot_back_end;
     list.add slot_input_file;
+    list.add slot_output_file;
     list.add slot_debug_level;
     list.add slot_debug_with_code;
     list.add slot_is_all_warning;
@@ -456,6 +470,7 @@ Section Public
     list.add slot_is_java;
     list.add slot_is_statistic;
     list.add slot_is_quiet;
+    list.add slot_is_library;    
     list.add slot_get_integer;
     list.add slot_get_string;
     list.add slot_is_cop;    
@@ -485,6 +500,8 @@ Section Public
     list.add short_comment_line;
     list.add short_comment_slot_line;
     list.add short_comment_header_line;
+    list.add short_comment_new_line_slot;
+    list.add short_comment_new_line_extern;
     list.add short_comment;
     list.add short_slot;
     list.add short_slot_call;

@@ -33,7 +33,17 @@ Section Inherit
   - parent_any_option:ANY_OPTION := ANY_OPTION;
   
 Section Public
-  
+    
+  - last_index_str (n:ABSTRACT_STRING,c:CHARACTER) :INTEGER <-
+  // BSBS: A Mettre dans STRING.
+  ( + result:INTEGER;
+    result := n.upper;
+    {(result < n.lower) || {n.item result = c}}.until_do {
+      result := result-1;
+    };
+    result
+  );
+    
   //
   // Invariant loop system.
   //
@@ -57,15 +67,15 @@ Section Public
   // Display debug tools.
   //
     
-  + object_id:INTEGER <- 
+  + object_id:INTEGER <-  
   ( + result:INTEGER;
     - object_counter:INTEGER; 
     
-    result := object_counter;
+    result := object_counter;      
     object_counter := object_counter + 1;
     object_id := result
   );
-
+  
   //
   // Compiler Options.
   //
@@ -91,12 +101,15 @@ Section Public
   - is_verbose:BOOLEAN <- (verbose_level != 0);
   
   - is_readable:BOOLEAN;
+  - is_graph:BOOLEAN;
   
   //
   // Other flags.
   //
   
   - is_cop:BOOLEAN;
+  
+  - is_library:BOOLEAN;
   
   - is_copy_local:BOOLEAN;
   
@@ -107,12 +120,15 @@ Section Public
   - new_depend_pass <-
   (    
     modify_count := modify_count + 1;
-    //(pass_count > 50).if {
+    //(pass_count > 60).if {
     //  crash;
     //};
   );
   
-  - new_execute_pass <- new_depend_pass;
+  - new_execute_pass <- 
+  (
+    new_depend_pass;
+  );
   
   - is_executing_pass:BOOLEAN;
   
@@ -147,6 +163,14 @@ Section Public
   - list_main:LIST;
   - context_main:LOCAL;
   
+  - profil_main:PROFIL_SLOT := // BSBS: A REVOIR (a uniformiser ((graph)))
+  ( + result:PROFIL_SLOT;
+    
+    result := PROFIL_SLOT.clone; 
+    result.alloc_profil_main;
+    result
+  );  
+  
   - list_current:LIST;
   
   - current_list_level:INTEGER;
@@ -172,24 +196,24 @@ Section Public
       
   - output_decl:STRING := STRING.create 60000;
   - output_glob:STRING := STRING.create 10000;
-  - output_code:STRING := STRING.create 4000000;
+  - output_code:STRING := STRING.create 4_000_000;
   
   - title txt:STRING_CONSTANT in buf:STRING <-
   (
-    buf.append "\n//";
+    buf.append "\n/*";
     3.to 28 do { j:INTEGER;
       buf.add_last '=';      
     };
-    buf.append "//\n// ";
+    buf.append "*/\n/* ";
     buf.append txt;
     (txt.count+5).to 28 do { j:INTEGER;
       buf.add_last ' ';
     };
-    buf.append " //\n//";
+    buf.append " */\n/*";
     3.to 28 do { j:INTEGER;
       buf.add_last '=';      
     };
-    buf.append "//\n\n";
+    buf.append "*/\n\n";
   );
   
   
@@ -293,9 +317,36 @@ Section Public
   // Path directory and command front end.
   //
   
+  - input_path:STRING_CONSTANT;
+  
   - path_file:FAST_ARRAY(STRING_CONSTANT) := 
   FAST_ARRAY(STRING_CONSTANT).create_with_capacity 3000;
-
+  - path_begin:INTEGER := 1;
+  
+  - path_lisaac:STRING_CONSTANT <-
+  ( + path:NATIVE_ARRAY(CHARACTER);
+    + path_str :STRING;
+    + j:INTEGER;
+    //COMMAND_LINE.executable_name.print; '\n'.print;
+    // Load LISAAC_DIRECTORY.
+    path_str := ENVIRONMENT.get_environment_variable "LISAAC_DIRECTORY";
+    (path_str != NULL).if {
+      string_tmp.copy path_str;
+    } else {
+      path := `LISAAC_DIRECTORY`:NATIVE_ARRAY(CHARACTER);
+      string_tmp.clear;
+      j := 0;
+      {path.item j != '\0'}.while_do {
+	string_tmp.add_last (path.item j);
+	j := j + 1;
+      };
+    };
+    ((string_tmp.last != '/') && {string_tmp.last != '\\'}).if {
+      string_tmp.add_last '/';
+    };
+    path_lisaac := ALIAS_STR.get string_tmp
+  );
+  
   //
   // Alias type.
   //
@@ -320,4 +371,49 @@ Section Public
   
   - last_position:POSITION;
 
+  - load_lip file_lip:ABSTRACT_STRING <-
+  ( + path_lip:STRING_CONSTANT;
+    + is_good:BOOLEAN;
+    + count:INTEGER;
+
+    string_tmp.clear;
+    {      
+      string_tmp.append file_lip;
+      path_lip := ALIAS_STR.get string_tmp;      
+      (is_good := PARSER.read_lip path_lip).if_false {      
+        string_tmp.copy path_lip;
+        string_tmp.remove_last (file_lip.count);
+        string_tmp.append "../";
+        count := count + 1;
+      };
+    }.do_while {(count < 5) && {! is_good}};
+    (is_good).if_false {
+      string_tmp.copy path_lisaac;
+      string_tmp.append "make.lip";
+      path_lip := ALIAS_STR.get string_tmp;
+      (is_good := PARSER.read_lip path_lip).if_false {      
+        "File `".print;
+        path_lip.print;
+        "' not found !\nIncorrect installation.\n".print;
+        die_with_code exit_failure_code;
+      };      
+    };            
+    {LIP_CODE.list_parent.is_empty}.until_do {
+      path_lip := LIP_CODE.list_parent.first;
+      LIP_CODE.list_parent.remove_first;      
+      (path_lip.is_empty).if {
+        string_tmp.copy path_lisaac;
+        string_tmp.append "make.lip";
+        path_lip := ALIAS_STR.get string_tmp;
+      };
+      (PARSER.read_lip path_lip).if_false {      
+        "File `".print;
+        path_lip.print;
+        "' not found ! (see `*.lip')\n".print;          
+        die_with_code exit_failure_code;
+      };
+    };
+    // Auto-load 'lisaac' variable.
+    LIP_CODE.put_string path_lisaac to (ALIAS_STR.variable_lisaac);    
+  );
 

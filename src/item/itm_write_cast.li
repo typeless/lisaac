@@ -73,7 +73,7 @@ Section Public
       typ_cast := ts.to_run_for profil_slot; 
     };
     (verify).if {
-      (typ_cast.affect_with (val.static_type)).if {
+      ((typ_cast.affect_with (val.static_type)) && {! val.static_type.is_generic}).if {
 	warning_error (position,"`?=' is not necessary, use `:='.");
       };
     };

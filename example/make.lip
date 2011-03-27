@@ -23,26 +23,14 @@
 
 Section Inherit
   
-  + parent:STRING := "../make.lip";
+  + parent:STRING; // by default, inherite from main `make.lip'
 
 Section Private
   
   - example_path <-
   // Example path.
   ( 
-    path (lisaac + "example/su_doku/");
-    path (lisaac + "example/tetris/");
-    path (lisaac + "example/fouronline/");
-    path (lisaac + "example/shell/");
-    path (lisaac + "example/gui/calculator/");
-    path (lisaac + "example/gui/viewer/");
-    path (lisaac + "example/gui/about/");
-    path (lisaac + "example/gui/clock/");
-    path (lisaac + "example/gui/desktop/");
-    path (lisaac + "example/gui/mpg2/");
-    path (lisaac + "example/demomaker/fire/");
-    path (lisaac + "example/demomaker/glass/");
-    path (lisaac + "example/demomaker/rotozoom/");
+    path "*"; 
   );
     
   //

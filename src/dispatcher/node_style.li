@@ -142,6 +142,7 @@ Section Private
     + data_rd:DTA_RD;
     + cop_arg:EXPR;
     + new_val:EXPR;
+    + val:EXPR;
     
     result := LIST.create position;
     
@@ -248,7 +249,7 @@ Section Private
       ((rd != NULL) && {rd.variable.name = ALIAS_STR.variable_self}).if {
         // Fix Self type for resend call (else it's fixed by NODE_TYPE)        
         new_type_self := type;               
-      } else {
+      } else {        
 	new_type_self := type_self;
       };
       /*
@@ -262,7 +263,31 @@ Section Private
       );
       */
       new_val := CAST.create new_type_self value (new_larg.first);
-      new_larg.put new_val to 0;
+      new_larg.put new_val to 0;            
+      
+      
+      /*
+      (new_larg.lower+1).to (new_larg.upper) do { j:INTEGER;        
+        ts ?= slot_cod.get_argument_type j;
+        ((ts != NULL) && {ts = ITM_TYPE_SIMPLE.type_self}).if {
+          (new_larg.item j.static_type != new_type_self).if {
+            new_type_self.print;
+            new_larg.item j.static_type.print;
+            ts.print;
+            string_tmp.clear;
+            (slot_cod.argument_list.lower).to (slot_cod.argument_list.upper) do { h:INTEGER;
+              slot_cod.argument_list.item h.append_in string_tmp;              
+            };
+            string_tmp.print; 
+            '\n'.print;
+            warning_error (position,"BUG");
+            semantic_error (new_larg.item j.position,"Type not compatible SELF.");
+          };
+          //new_val := CAST.create new_type_self value (new_larg.item j);
+          //new_larg.put new_val to j;
+        };
+      };
+      */            
       (my_profil, wrt_lst) := slot_cod.get_profil new_larg self new_type_self;
       //      
       (result_expr.static_type.raw = TYPE_VOID).if {	
@@ -294,10 +319,14 @@ Section Private
         } then {
           rd ?= result_expr;
           result_var := rd.variable;	    
-          (call.is_interrupt).if_false {
-            rd  := call.profil.result_list.first.read position;
+          (call.is_interrupt).if {
+            //val := PROTOTYPE_CST.create position type (TYPE_NULL.default);
+            val := EXTERNAL_C.create position text "/* NODE_STYLE */" 
+            access NULL persistant FALSE type (type_pointer.default);
+          } else {
+            val := call.profil.result_list.first.read position;
           };
-          wrt := result_var.write position value rd;
+          wrt := result_var.write position value val;
           call.result_list.add_last (RESULT.create wrt); 
 	};	
       };      

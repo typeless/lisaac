@@ -31,7 +31,7 @@ Section Private
   - bitmap:ABSTRACT_BITMAP := 
   ( + result:ABSTRACT_BITMAP;
     
-    result := BITMAP(PIXEL_24).create (90,30);
+    result := BITMAP(PIXEL_24).create_size (90,30);
     result.color (result.red);
     result.print "No image" to (10,10);
     result
@@ -49,7 +49,7 @@ Section Private
   
   - open_directory n:ABSTRACT_STRING <-
   // n is the name of the directory of the images
-  ( + file:STD_FILE;
+  ( + file:FILE;
     + dir:DIRECTORY;
     + i:INTEGER;
     + e:ENTRY;
@@ -68,7 +68,7 @@ Section Private
           i := i + 1;
         };
         
-        list.bubble_sort;
+        list.bubble_sort_with { (e1,e2:ABSTRACT_STRING); e1 ~> e2};
         /*
         (list.lower).to (list.upper) do { j:INTEGER;
           list.item j.print; '\n'.print;
@@ -85,7 +85,7 @@ Section Private
     };
   );
   
-  - fill_with_file f:STD_FILE <-
+  - fill_with_file f:FILE <-
   ( + bmp:FORMAT_IMG;
     ? {f != NULL};
     f.open;
@@ -95,7 +95,7 @@ Section Private
     bmp := FORMAT_BMP.create_with buffer;
     (bmp != NULL).if {      
       ((bmp.width != bitmap.width) || {bmp.height != bitmap.height}).if {
-        bitmap.make (bmp.width,bmp.height);	  
+        bitmap.make_size (bmp.width,bmp.height);	  
       };      
       bmp.put_image_in bitmap;
       ((page != NULL) && {page.parent != NULL} && {page.width != width_min}).if {
@@ -114,7 +114,7 @@ Section Private
   );
     
   - previous_picture <-
-  ( + file:STD_FILE;    
+  ( + file:FILE;    
         
     // Back
     (file_index != 0).if {
@@ -125,7 +125,7 @@ Section Private
   );
   
   - next_picture <-
-  ( + file:STD_FILE;    
+  ( + file:FILE;    
         
     // next picture of directory :)
     (file_index != list.upper).if {
@@ -178,7 +178,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (980,800);
+    VIDEO.make_size (980,800);
             
     // Screen definition.
     DESK.make VIDEO with init;

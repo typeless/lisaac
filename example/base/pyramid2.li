@@ -114,6 +114,8 @@ Section Private
     };
     result
   );  
+       
+Section Public
 
   - print <-
   // Display the pyramid to the standart output.
@@ -132,8 +134,6 @@ Section Private
       blanks.add_last ' ';
     };
   );
-       
-Section Public
   
   - main <-
   ( + size: INTEGER;

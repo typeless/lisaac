@@ -33,7 +33,7 @@ Section Public
   
   - main <-
   (
-    VIDEO.make (130,30);    
+    VIDEO.make_size (130,30);    
     DESK.make VIDEO with run;
   );
   

@@ -97,7 +97,7 @@ Section Public
   ( + this:LOCAL;
     // Fix dynamic type for This.
     this := get_local keyword_this;
-    this.set_dynamic_type t;
+    this.set_the_dynamic_type t;
     // Execute instr.
     (expr_list.lower).to (expr_list.upper) do { i:INTEGER;
       expr_list.item i.run;

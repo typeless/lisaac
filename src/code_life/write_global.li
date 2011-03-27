@@ -78,7 +78,7 @@ Section Public
   
   - genere buffer:STRING <-
   ( 
-    global.receiver_type.add_genere_list;
+    TYPE.add_genere_global global;
     (quiet_generation).if_false {
       buffer.append (global.intern_name);
       //

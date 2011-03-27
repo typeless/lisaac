@@ -311,7 +311,7 @@ Section Public
     name        := n;
     is_result   := r;
     intern_name := ALIAS_STR.get_intern n; 
-           
+            
     ((t.is_expanded) && {! t.is_expanded_c}).if {
       type := t + TYPE_FULL.expanded_ref_bit;
     } else {
@@ -320,25 +320,12 @@ Section Public
     style := c;
     
     (is_static).if {      
-      tmp := TYPES_TMP.new;      
+      tmp := TYPES_TMP.new;            
       tmp.add (t.raw);      
-      type_list := tmp.to_types;
+      type_list := tmp.to_types;                  
     } else {
       type_list := TYPES_TMP.types_empty;
-    };
-    
-    (
-      + tb:TYPE_BLOCK;
-      
-      tb ?= type.raw;
-      ((tb != NULL) && {name = ALIAS_STR.variable_self}).if {
-        "************ ERROR : ".print;
-        intern_name.print;
-        " ************\n".print;
-        crash_with_message "ERROR TYPE BLOCK!!!!";
-      };
-    );    
-    
+    };    
   );
   
   - my_copy:LOCAL <-
@@ -385,8 +372,9 @@ Section VARIABLE
   
   - new_write p:POSITION with r:EXPR value v:EXPR :WRITE <-
   [ -? {r = NULL}; ]
-  (
-    WRITE_LOCAL.create p with v in Self
+  ( + result:WRITE;
+    result := WRITE_LOCAL.create p with v in Self;    
+    result    
   );
   
   /*

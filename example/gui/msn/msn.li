@@ -48,7 +48,7 @@ Section Public
     + action_send:{G_IN; };
     
     // Init window.
-    VIDEO.make (640,400);
+    VIDEO.make_size (640,400);
     
     action_send := { in:G_IN;
       history.text.append (in.text);

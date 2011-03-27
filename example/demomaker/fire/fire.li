@@ -61,9 +61,11 @@ Section Public
     result
   );
   
+  - background:ABSTRACT_BITMAP;  
+  
   - bg:FAST_ARRAY2(UINTEGER_8);
     
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_32).create 2048;
   
   //
   // Width / Height
@@ -80,6 +82,7 @@ Section Public
   - init:G_EXPR <-
   ( 
     // Initialization bitmap.    
+    background := BITMAP(PIXEL_32).create_size (width_min,height_min);
     bg := FAST_ARRAY2(UINTEGER_8).create (width_min>>2,height_min>>2+2);
     TIMER.add_client Self;
     G_RAW.create (Self.fix_height.fix_width)
@@ -93,7 +96,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (width_min+64,height_min+64);
+    VIDEO.make_size (width_min+64,height_min+64);
     DESK.make VIDEO with (
       G_OUT.create "Fire" justify (G_OUT.center) / init      
     );        
@@ -116,20 +119,23 @@ Section Public
   ( + color:UINTEGER_32;
    
     clipping (x0,y0) to (x1,y1);
-       
-    (bg.lower2).to (bg.upper2-2) do { y:INTEGER;
-      (bg.lower1).to (bg.upper1) do { x:INTEGER;        
-        color := palette.item (bg.item (x,y));
-        bmp_line.put color to (x<<2);        
-        bmp_line.put color to (x<<2+1);        
-        bmp_line.put color to (x<<2+2);        
-        bmp_line.put color to (x<<2+3);        
+    
+    (is_new).if {
+      (bg.lower2).to (bg.upper2-2) do { y:INTEGER;
+        (bg.lower1).to (bg.upper1) do { x:INTEGER;        
+          color := palette.item (bg.item (x,y));
+          bmp_line.put color to (x<<2);        
+          bmp_line.put color to (x<<2+1);        
+          bmp_line.put color to (x<<2+2);        
+          bmp_line.put color to (x<<2+3);        
+        };
+        background.line_h_hard (0,y<<2)   until x_max image bmp_line offset 0;
+        background.line_h_hard (0,y<<2+1) until x_max image bmp_line offset 0;
+        background.line_h_hard (0,y<<2+2) until x_max image bmp_line offset 0;
+        background.line_h_hard (0,y<<2+3) until x_max image bmp_line offset 0;
       };
-      line_h_hard (0,y<<2) until x_max image bmp_line offset 0;
-      line_h_hard (0,y<<2+1) until x_max image bmp_line offset 0;
-      line_h_hard (0,y<<2+2) until x_max image bmp_line offset 0;
-      line_h_hard (0,y<<2+3) until x_max image bmp_line offset 0;
     };
+    put_bitmap background to (0,0);
   );
   
   //
@@ -150,10 +156,12 @@ Section Public
     };
     
     evt_time ?= msg;    
-    (evt_time != NULL).if {      
+    ((evt_time != NULL) && {evt_time.destination = NULL}).if {      
       step_time;
       step_time;
+      is_new := TRUE;
       refresh;
+      is_new := FALSE;
     };    
   );
   
@@ -175,3 +183,5 @@ Section Public
       };      
     };        
   );
+    
+  - is_new:BOOLEAN;

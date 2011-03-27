@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private
   
-  - dico:FAST_ARRAY(ITM_TYPE_GENERIC) := FAST_ARRAY(ITM_TYPE_GENERIC).create_with_capacity 32;
+  - dico_tg:FAST_ARRAY(ITM_TYPE_GENERIC) := FAST_ARRAY(ITM_TYPE_GENERIC).create_with_capacity 32;
 
   - create n:STRING_CONSTANT style s:STRING_CONSTANT with lt:FAST_ARRAY(ITM_TYPE_MONO) :SELF <-
   ( + result:SELF;
@@ -61,21 +61,21 @@ Section Public
   ( + result:SELF;
     + idx:INTEGER;
     
-    idx := dico.lower;
+    idx := dico_tg.lower;
     {
-      (idx <= dico.upper) && {
-	(dico.item idx.name      != n ) || 
-	{dico.item idx.style     != s } || 
-	{dico.item idx.list_type != lt}
+      (idx <= dico_tg.upper) && {
+	(dico_tg.item idx.name      != n ) || 
+	{dico_tg.item idx.style     != s } || 
+	{dico_tg.item idx.list_type != lt}
       }
     }.while_do {
       idx := idx + 1;
     };    
-    (idx <= dico.upper).if {
-      result ?= dico.item idx;
+    (idx <= dico_tg.upper).if {
+      result ?= dico_tg.item idx;
     } else {
       result := create n style s with lt;
-      dico.add_last result;
+      dico_tg.add_last result;
     };
     result
   );
@@ -85,6 +85,7 @@ Section Public
     + t:TYPE_FULL;
     + j:INTEGER;    
     + result:TYPE_FULL;
+    + path:STRING_CONSTANT;
     
     lst := ALIAS_ARRAY(TYPE_FULL).new;
     j := list_type.lower;    
@@ -97,7 +98,12 @@ Section Public
       ALIAS_ARRAY(TYPE_FULL).free lst;
     } else {            
       lst := ALIAS_ARRAY(TYPE_FULL).alias lst;      
-      result := TYPE_GENERIC.get Self with lst;
+      (p != NULL).if {
+        path := p.position.prototype.filename;
+      } else {
+        path := input_path;
+      };      
+      result := TYPE_GENERIC.get (path,Self) with lst;
     };
     result
   );

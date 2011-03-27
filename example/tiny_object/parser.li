@@ -259,11 +259,11 @@ Section Private
     + slot:SLOT;
     {read_identifier}.while_do {
       slot := SLOT.create position name last_string;
-      (last_string = keyword_main).if {
-        (class_main != NULL).if {
-          semantic_error position message "Double main slot declaration.";
+      (last_string = keyword_master).if {
+        (class_master != NULL).if {
+          semantic_error position message "Double master slot declaration.";
         };
-        class_main := current_class;
+        class_master := current_class;
       };
       (read_character '=').if_false {
         warning_error position message "Added `='.";

@@ -64,7 +64,7 @@ Section Public
   // Comparaison.
   //
   
-  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <-    
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-    
   ( + s:SELF;
     s ?= other;
     (s != NULL) && {text = s.text}
@@ -88,7 +88,7 @@ Section Public
   - display buffer:STRING <-
   (
     buffer.add_last '\'';
-    buffer.append text;
+    buffer.append text;        
     buffer.add_last '\'';
     display_ref buffer;
   );

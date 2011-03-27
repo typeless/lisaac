@@ -20,7 +20,7 @@ Section Header
   
 Section Inherit
   
-  - parent_any:ANY := ANY;
+  - parent_any_mpg2:ANY_MPG2 := ANY_MPG2;
   
 Section Public 
   
@@ -28,7 +28,7 @@ Section Public
   
 Section Private
   
-  - my_write (file:STD_FILE,buf:FAST_ARRAY(UINTEGER_8),len:INTEGER) <-
+  - my_write (file:FILE,buf:FAST_ARRAY(UINTEGER_8),len:INTEGER) <-
   (
     outfile.write buf from 0 size len;
   );
@@ -37,7 +37,7 @@ Section Private
   - obfr:FAST_ARRAY(UINTEGER_8) := FAST_ARRAY(UINTEGER_8).create obfrsize;
   - optr:INTEGER;
 
-  - outfile:STD_FILE; 
+  - outfile:FILE; 
   - outname:STRING := STRING.create 256;
   
   - openfile <-
@@ -74,7 +74,7 @@ Section Public
     (output_type = 0).if {
       
       (screen = NULL).if {
-	screen := BITMAP(PIXEL_24).create (horizontal_size,vertical_size);
+	screen := BITMAP(PIXEL_24).create_size (horizontal_size,vertical_size);
       };      
       output src bitmap screen;
     } else {      

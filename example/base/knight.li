@@ -144,7 +144,9 @@ Section Private
     };
     result
   );
-
+  
+Section Public
+  
   - print <-
   // Display the cheesboard.
   ( + separator:STRING;
@@ -166,9 +168,7 @@ Section Private
       separator.print;
     };
   );
-  
-Section Public
-  
+    
   - main <-
   ( + size, line, column:INTEGER;
     

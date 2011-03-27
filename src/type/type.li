@@ -36,7 +36,11 @@ Section Inherit
   
   - parent_parameter_to_type:Expanded PARAMETER_TO_TYPE;
   
-Section TYPE
+Section PROFIL_LIST
+  
+  - is_alias_struct:BOOLEAN := TRUE; 
+  
+Section Private
   
   - dico_type:HASHED_DICTIONARY(TYPE,STRING_CONSTANT) := 
   HASHED_DICTIONARY(TYPE,STRING_CONSTANT).create;
@@ -104,31 +108,22 @@ Section Public
   // Get.
   //
     
-  - get itm_typ:ITM_TYPE_SIMPLE :TYPE_FULL <-  
+  - get (path:STRING_CONSTANT,itm_typ:ITM_TYPE_SIMPLE) :TYPE_FULL <-  
   ( + result:TYPE_FULL;    
     + base:TYPE;
     + styl:STRING_CONSTANT;    
     + proto:PROTOTYPE;
     
     + r:TYPE;
-            
-    proto := load_prototype (itm_typ.name) generic_count 0;            
+        
+    proto := load_prototype (path,itm_typ.name) generic_count 0;
     base := dico_type.fast_reference_at (proto.filename);
     (base = NULL).if {          
       base := TYPE.clone;
       dico_type.fast_put base to (proto.filename);
-      base.make itm_typ with proto;
-      
-      (base.default.the_parent_type != base).if {      
-        "C'est ici que ca commence!!!\n".print;
-        IO.read_character;
-      };
+      base.make itm_typ with proto;      
     };
-    //        
-    (base.default.the_parent_type != base).if {      
-      "Oui, il est bien bidon!!!\n".print;
-      IO.read_character;
-    };
+    //            
     styl := itm_typ.style;
     (styl = NULL).if {                 
       result := base.default;
@@ -140,12 +135,7 @@ Section Public
       };
     };
     
-    r := result.the_parent_type;
-    (r != base).if {
-      "the_parent_type est bidon!!!\n".print;
-      IO.read_character;
-    };    
-    
+    r := result.the_parent_type;    
     result
   );
   
@@ -272,8 +262,16 @@ Section Public
     (j <= slot_run.upper).if {
       result := slot_run.item j;
     } else {
+      /*
+      (n == "__init_page").if {
+        "TYPE: get_slot_local : ".print;
+        prototype.filename.print; ' '.print; prototype.print;
+        '\n'.print;
+      };
+      */
       itm_slot := prototype.slot_list.fast_reference_at n;
-      (itm_slot != NULL).if {	
+      (itm_slot != NULL).if {	        
+        verify_itm_slot_parent itm_slot;
 	result := SLOT.create itm_slot type Self;
 	slot_run.add_last result;		
       };
@@ -282,20 +280,33 @@ Section Public
   );  
     
   - get_path_slot n:STRING_CONSTANT :SLOT <-
-  ( + result:SLOT;
+  ( + result,r:SLOT;
     + j:INTEGER;
     + it:ITM_TYPE_MONO;
+    + t:TYPE_FULL;
     
     j := slot_run.lower;
-    {result = NULL}.while_do {
-      ? {j <= slot_run.upper}; 
-      ? {slot_run.item j.id_section.is_inherit_or_insert};
+    {
+      (result = NULL) && 
+      {j <= slot_run.upper} && // BSBS NE doit jamais arriv
+      {slot_run.item j.id_section.is_inherit_or_insert} // BSBS NE doit jamais arriv
+    }.while_do {      
       it ?= slot_run.item j.result_type;
-      result := it.to_run_for Self.get_slot n;
+      t := it.to_run_for Self;    
+      result := t.get_slot n;
       j := j + 1;
     };
-    ? {result != NULL};
-    slot_run.item (j-1)
+    (result != NULL).if {
+      r := slot_run.item (j-1);
+    } else {
+      "TYPE : ".print;
+      print; 
+      ':'.print;
+      n.print; 
+      '\n'.print;
+      crash;
+    };
+    r
   );
   
   //
@@ -341,6 +352,7 @@ Section Public
   //
   
   - genere_list:FAST_ARRAY(TYPE) := FAST_ARRAY(TYPE).create_with_capacity 128;
+  - genere_list_global:FAST_ARRAY(SLOT_DATA) := FAST_ARRAY(SLOT_DATA).create_with_capacity 256;
   
   - add_genere_list <-
   ( 
@@ -351,11 +363,18 @@ Section Public
     };
   );
   
+  - add_genere_global s:SLOT_DATA <-
+  ( 
+    (genere_list_global.fast_first_index_of s > genere_list_global.upper).if { // BSBS: a revoir !!
+      genere_list_global.add_last s;
+    };
+  );    
+  
   - genere_all_struct <-
-  (
+  ( 
     TYPE_NULL.genere_typedef;    
     (genere_list.lower).to (genere_list.upper) do { j:INTEGER;            
-      genere_list.item j.genere_typedef;      
+      genere_list.item j.genere_typedef_struct;      
     };
     TYPE_NULL.genere_struct;
     (genere_list.lower).to (genere_list.upper) do { j:INTEGER;            
@@ -365,6 +384,10 @@ Section Public
       TYPE_CONTEXT.genere_typedef;
       TYPE_CONTEXT.genere_struct;
     };
+    (genere_list_global.lower).to (genere_list_global.upper) do { j:INTEGER;
+      // In global.
+      genere_list_global.item j.genere output_glob;
+    };    
   );
   
   - id_counter_with_type:INTEGER    := 4;
@@ -382,6 +405,65 @@ Section Public
   
   + detect_recursivity_generation:BOOLEAN;
   
+  //
+  // Detect Alias.
+  //
+
+  + alias_slot:SLOT_DATA;
+  
+  - alias_type:TYPE <- alias_slot.type.raw;
+  
+  - detect_alias <-
+  (
+    (dico_type.lower).to (dico_type.upper) do { j:INTEGER;
+      dico_type.item j.detect_alias_struct;
+    };      
+  );
+
+  - detect_alias_struct <-
+  [
+    -? {is_alias_struct};
+  ]
+  ( + slot:SLOT;    
+    + i,nb:INTEGER;
+    + action:{SLOT_DATA; };    
+    
+    (! is_late_binding).if {
+      ((alias_slot = NULL) && {slot_run != NULL}).if {
+        
+        action := { s:SLOT_DATA;       
+          ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
+            (nb = 0).if {
+              ((s.type.is_expanded) && {s.type.raw.type_c = NULL}).if {
+                alias_slot := s;
+              };
+            } else {
+              alias_slot := NULL;
+            };
+            nb := nb + 1;          
+          };
+        };
+        
+        i := slot_run.lower;
+        {(i <= slot_run.upper) && {nb < 2}}.while_do {    
+          slot := slot_run.item i;
+          ((slot.style = '+') && {slot.lower_style = 0}).if {
+            (slot.slot_data_list != NULL).if {
+              (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
+                action.value (slot.slot_data_list.item k);
+              };
+            };
+            action.value (slot.slot_data);      
+          };
+          i := i + 1;
+        };   
+      };
+      ((alias_slot != NULL) && {alias_slot.ensure_count = 0}).if {      
+        alias_slot := NULL;
+      };         
+    };
+  );
+  
   - genere_struct <-
   ( + slot_data:SLOT_DATA;    
     + slot:SLOT;
@@ -390,8 +472,9 @@ Section Public
     + tg:TYPE_GENERIC;
     + count_slot:SLOT_DATA;
     + storage_slot:SLOT_DATA;
-        
-    ((slot_run.is_empty) || {slot_run.first != NULL}).if {                        
+    
+    
+    ((slot_run.is_empty) || {slot_run.first != NULL}).if {                                    
       (detect_recursivity_generation).if {
         string_tmp.copy "Compiler limit: Cyclic depending structure definition for ";
         append_name_in string_tmp;
@@ -399,20 +482,25 @@ Section Public
         semantic_error (position,string_tmp);
       };
       detect_recursivity_generation := TRUE;
+            
       // Depending.
       (slot_run.lower).to (slot_run.upper) do { j:INTEGER;
-	slot := slot_run.item j;
+        slot := slot_run.item j;
+        
 	((slot.style = '+') && {slot.lower_style = 0}).if {
-          action := { s:SLOT_DATA;
+          action := { s:SLOT_DATA;            
 	    (
 	      (
 		(s.ensure_count > 0) || 
 		{s.id_section.is_mapping}
 	      ) && 
 	      {s.type.raw != Self} &&
-	      {(s.type.is_expanded) || {s.type.raw.is_block}}
+	      {
+                (s.type.raw.is_block) ||
+                {is_far_expanded (s.type)}
+              }
             ).if {	                    
-              s.type.raw.genere_struct;                           
+              s.type.raw.genere_struct;                                         
             };
 	  };
 	  (slot.slot_data_list != NULL).if {
@@ -448,28 +536,9 @@ Section Public
 	  ((slot_data != NULL) && {slot_data.ensure_count > 0}).if {
 	    add_slot_struct slot_data;
 	  };
-	} else {	    
-	  // In global.
-	  (slot.lower_style = 0).if {
-	    action := { s:SLOT_DATA;
-	      (s.ensure_count > 0).if {
-		s.genere output_glob;
-	      };
-	    };
-	    (slot.slot_data_list != NULL).if {
-	      (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
-		action.value (slot.slot_data_list.item k);
-	      };
-	    };
-	    action.value (slot.slot_data);
-	  };
-	  slot_data := slot.slot_id;
-	  ((slot_data != NULL) && {slot_data.ensure_count > 0}).if {
-	    slot_data.slot_id.genere output_glob;
-	  };
 	};
       };
-      
+            
       (
 	(prototype.name = ALIAS_STR.prototype_native_array) || 
 	{prototype.name = ALIAS_STR.prototype_native_array_volatile}
@@ -482,9 +551,10 @@ Section Public
 	    tab := slot_size.item j;
 	    // BSBS: A tester sont utilité !
 	    (! tab.is_empty).if {
-	      semantic_error ((tab.first.position),"Slot is not possible with a type C");
+	      semantic_error (tab.first.position,"Slot is not possible with a type C");
 	    };	  
           };
+
           (is_java).if_false {            
             ((name = ALIAS_STR.prototype_true) || 
             {name = ALIAS_STR.prototype_false}).if {
@@ -493,14 +563,17 @@ Section Public
               output_decl.append "__ ";
               output_decl.add_last ((name = ALIAS_STR.prototype_true).to_character);
               output_decl.add_last '\n';            
-            }.elseif {is_late_binding} then {	    
-              semantic_error ((tab.first.position),"Late binding is not possible with a type C");
-            };            
+            } else {           
+              genere_typedef_type_c;
+              (is_late_binding).if {	    
+                semantic_error (tab.first.position,"Late binding is not possible with a type C");
+              };            
+            };
           };
         } else {	  
-          output_decl.append "// ";
+          output_decl.append "/* ";
           output_decl.append intern_name;
-          output_decl.add_last '\n';
+          output_decl.append " */\n";
           (is_java).if {
             output_decl.append "static private int __";
             output_decl.append intern_name;
@@ -510,15 +583,15 @@ Section Public
             output_decl.append intern_name;
             output_decl.append "__ ";
           };
-	  string_tmp.clear;
+          string_tmp.clear;                    
 	  (is_late_binding).if {	  
 	    id_counter_with_type.append_in output_decl;	  
             id_counter_with_type := id_counter_with_type + 1;
             (prototype.style != '-').if {
-              string_tmp.append "  unsigned long __id;\n";
+              string_tmp.append "  unsigned int __id;\n";
             };
 	    (prototype.is_mapping).if {	    
-	      semantic_error ((prototype.position),	    
+	      semantic_error (prototype.position,	    
 	      "Late binding is not possible with `mapping' object.");
 	    };
 	  } else {	  
@@ -553,7 +626,7 @@ Section Public
 	    tab.clear;
 	  };            
 	  	  
-	  (Self = type_block).if {
+          (Self = type_block).if {            
 	    string_tmp.append "  void *self;\n";
 	  };
 	  
@@ -617,7 +690,7 @@ Section Public
               output_decl.append "super();\n";
             };
             output_decl.append "  };\n};\n";  
-          } else {            
+          }.elseif {alias_slot = NULL} then {                        
             output_decl.append "struct ";
             output_decl.append intern_name;
             output_decl.append "_struct {\n";
@@ -669,28 +742,53 @@ Section Public
     };    
   );
   
-  - genere_typedef <-
+  - genere_typedef_type_c <-  
   ( + tg:TYPE_GENERIC;              
-    
     (
       (prototype.name = ALIAS_STR.prototype_native_array) || 
       {prototype.name = ALIAS_STR.prototype_native_array_volatile}
     ).if {
       tg ?= Self;
-      tg.generic_list.first.raw.genere_typedef;
+      tg.generic_list.first.raw.genere_typedef_type_c;
     } else {      
-      output_decl.append "typedef ";
-      (type_c != NULL).if {        
-        output_decl.append type_c;
-      } else {
-        output_decl.append "struct ";
-        output_decl.append intern_name;
-        output_decl.append "_struct";
-      };
+      output_decl.append "typedef ";      
+      output_decl.append type_c;      
       output_decl.append " __";
       output_decl.append intern_name;	  
-      output_decl.append ";\n";      
+      output_decl.add_last ';';            
+      output_decl.add_last '\n';
     };    
+  );
+  
+  - genere_typedef_struct <-
+  ( + tg:TYPE_GENERIC;              
+    + t:TYPE;
+        
+    (
+      (prototype.name = ALIAS_STR.prototype_native_array) || 
+      {prototype.name = ALIAS_STR.prototype_native_array_volatile}
+    ).if {
+      tg ?= Self;
+      tg.generic_list.first.raw.genere_typedef_struct;
+    }.elseif {type_c = NULL} then {        
+      output_decl.append "typedef ";      
+      t := Self;        
+      {t.alias_slot = NULL}.until_do {
+        t := t.alias_type;
+      };              
+      output_decl.append "struct ";
+      output_decl.append (t.intern_name);
+      output_decl.append "_struct";        
+      output_decl.append " __";
+      output_decl.append intern_name;	  
+      output_decl.add_last ';';      
+      (alias_slot != NULL).if {        
+        output_decl.append " /* ALIAS with ";
+        output_decl.append (alias_type.intern_name);
+        output_decl.append " */";
+      };
+      output_decl.add_last '\n';
+    };
   );
     
 Section Private  
@@ -820,7 +918,7 @@ Section Public
   
   - is_block:BOOLEAN := FALSE;
   
-  - Self:SELF '==' Right 60 other:TYPE :BOOLEAN <- (Self = other);
+  - Self:SELF '~=' Right 60 other:TYPE :BOOLEAN <- (Self = other);
   
   - is_sub_type other:TYPE :BOOLEAN <-
   ( + result:BOOLEAN;
@@ -861,13 +959,19 @@ Section Public
   
 Section TYPE
 
-  - load_prototype n:STRING_CONSTANT generic_count gen_count:INTEGER :PROTOTYPE <-
+  - load_prototype (call_path:STRING_CONSTANT,n:STRING_CONSTANT) 
+  generic_count gen_count:INTEGER :PROTOTYPE <-
   ( + j,idx_path,idx_name,idx_name_old,idx_path_old:INTEGER;
     + entry:POINTER; 
     + result:PROTOTYPE;
-    + path,found:STRING_CONSTANT;
+    + path,found,cur_found:STRING_CONSTANT;
     + cn,cp:CHARACTER;
     + read_char:{};
+    + stat,found_index,cur_index:INTEGER;
+    + is_only:BOOLEAN;
+    
+    
+    //call_path.print; ' '.print; n.print; '\n'.print;
     
     result := dico_name_to_prototype.fast_reference_at n;        
     (result = NULL).if {
@@ -889,8 +993,10 @@ Section TYPE
         };
       };
       j := path_file.lower;      
-      {(j > path_file.upper) || {result != NULL}}.until_do {      
-        path := path_file.item j;            
+      is_only := TRUE;
+      {(j > path_file.upper) || {stat = 2}}.until_do {      
+        path := path_file.item j;                                    
+        cur_found := NULL;
         idx_name := n.upper;
         idx_path := path.upper-3; // ".li"
         {
@@ -899,15 +1005,15 @@ Section TYPE
           idx_name := idx_name - 1;
           idx_path := idx_path - 1;
         }.do_while {
-          (idx_name >= n.lower) && 
+          (idx_name >= n.lower)    && 
           {idx_path >= path.lower} && 
           {cn = cp}
-        };
+        };        
         ((idx_name < n.lower) && {cn = cp}).if {
           ((idx_path < path.lower) || {path.item idx_path = '/'}).if {
-            found := path;            
+            cur_found := path;            
           };
-        }.elseif {(cn = '*') && {cp = '/'}} then {        
+        }.elseif {(cn = '*') && {cp = '/'}} then {                  
           idx_name_old := idx_name+1;
           idx_path_old := idx_path+1;
           {(idx_name >= n.lower) && {idx_path >= path.lower}}.while_do {          
@@ -930,38 +1036,56 @@ Section TYPE
             idx_path := idx_path - 1;                
           };
           (idx_name < n.lower).if {
-            found := path;
+            cur_found := path;
           };
-        };        
-        (found != NULL).if {          
-          result := PROTOTYPE.prototype_dico.fast_reference_at found;
-          (result = NULL).if {
-            entry := FS_MIN.open_read found;
-            ((entry != NULL) /*&& {entry.is_file}*/).if {
-              // Load prototype.
-              FS_MIN.close entry;
-              result := PROTOTYPE.create found name n generic_count gen_count;
-              PARSER.go_on result;              
-            } else {
-              string_tmp.copy "Cannot open `";
-              string_tmp.append found;
-              string_tmp.append "'.";
-              semantic_error (last_position,string_tmp);
+        }.elseif {stat = 1} then {
+          stat := 2;
+        };
+        (cur_found != NULL).if {
+          cur_index := cur_found.first_difference_index call_path;
+          (stat = 0).if {
+            stat := 1;
+            found := cur_found;
+            found_index := cur_index;            
+          } else {
+            is_only := FALSE;
+            (cur_index > found_index).if {
+              found := cur_found;
+              found_index := cur_index;            
             };
           };
-          dico_name_to_prototype.add result to n;      
-        };
+        };        
         j := j + 1;
       };
-      (result = NULL).if {
+      
+      (stat = 0).if {
         string_tmp.copy n;
-        string_tmp.append " is not found.";
+        string_tmp.append " is not found.\n";
         POSITION.put_error semantic text string_tmp;
         (list_current != NULL).if {
           list_current.position.put_position;
         };
         POSITION.send_error;
-      };	
+      } else {      
+        result := PROTOTYPE.prototype_dico.fast_reference_at found;
+        (result = NULL).if {
+          entry := FS_MIN.open_read found;
+          (entry != NULL).if {
+            // Load prototype.
+            FS_MIN.close entry;
+            result := PROTOTYPE.create found name n generic_count gen_count;
+            PARSER.go_on result;
+          } else {
+            string_tmp.copy "Cannot open `";
+            string_tmp.append found;
+            string_tmp.append "'.";
+            semantic_error (last_position,string_tmp);
+          };
+        };
+        (is_only).if {
+          dico_name_to_prototype.add result to n;
+        };
+      };      
     };
     (result.generic_count != gen_count).if {        
       //crash;      
@@ -974,6 +1098,9 @@ Section TYPE
       };
       POSITION.send_error;
     };
+    
+    //result.filename.print; '\n'.print; '\n'.print;
+    
     result
   );
   
@@ -1061,5 +1188,66 @@ Section TYPE, TYPE_FULL
     result
   );
   
+Section Private
   
+  - is_far_expanded t:TYPE_FULL :BOOLEAN <-
+  // BSBS: Met en non recurssif!!
+  ( + tg:TYPE_GENERIC;
+    + result:BOOLEAN;
+    (t.is_expanded).if {
+      result := TRUE;
+    }.elseif {
+      (t.raw.prototype.name = ALIAS_STR.prototype_native_array) || 
+      {t.raw.prototype.name = ALIAS_STR.prototype_native_array_volatile}
+    } then {
+      tg ?= t.raw;
+      result := is_far_expanded (tg.generic_list.first);
+    };
+    result
+  );
   
+Section TYPE,PROTOTYPE
+  
+  - verify_itm_slot_parent ref:ITM_SLOT <-
+  ( + idx:INTEGER;
+    + type_parent:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
+    + other:ITM_SLOT;
+    
+    idx := slot_run.lower;
+    {
+      (idx <= slot_run.upper) && 
+      {slot_run.item idx.id_section.is_inherit_or_insert}  
+    }.while_do {      
+      ts ?= slot_run.item idx.result_type;
+      type_parent := ts.to_run_for Self.raw;	
+      other := type_parent.prototype.slot_list.fast_reference_at (ref.name);
+      (other != NULL).if {
+        ref.is_equal_profil other;        
+      };
+      type_parent.verify_itm_slot_parent ref;
+      idx := idx + 1;
+    };
+  );
+  
+  - verify_cyclic_inheritance ref:TYPE <-
+  ( + idx:INTEGER;
+    + type_parent:TYPE;
+    + ts:ITM_TYPE_SIMPLE;
+    + s:SLOT;
+    
+    idx := slot_run.lower;
+    {
+      (idx <= slot_run.upper) && 
+      {slot_run.item idx.id_section.is_inherit_or_insert}  
+    }.while_do {      
+      s := slot_run.item idx;
+      ts ?= s.result_type;
+      type_parent := ts.to_run_for Self.raw;	
+      (type_parent = ref).if {
+        semantic_error (s.position,"Static cyclic inheritance.");
+      };
+      type_parent.verify_cyclic_inheritance ref;
+      idx := idx + 1;
+    };
+  );

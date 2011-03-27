@@ -50,12 +50,12 @@ Section Public
   + slot_value:SLOT_DATA;
   
   - inc_id <-
-  (
+  (    
     slot_value.set_ensure_count (slot_value.ensure_count + 1);
   );
   
   - dec_id <-
-  (
+  (   
     slot_value.set_ensure_count (slot_value.ensure_count - 1);
     ? {slot_value.ensure_count >= 0};
   );  
@@ -90,10 +90,16 @@ Section Public
     + rd:READ_LOCAL;
     + a_list:FAST_ARRAY(TYPE_FULL);
     + r_list:FAST_ARRAY(TYPE_FULL);
-    + stack_top:INTEGER;
+    + old_stack_top,old_bottom_index:INTEGER;
+    + old_context:LOCAL;
+    
+    (is_graph).if {
+      set_call := HASHED_DICTIONARY(INTEGER,PROFIL).create;
+      set_back := HASHED_SET(PROFIL).create;
+    };    
     
     list := base.list;
-    stack_top := stack_local .upper + 1;
+    //stack_top := stack_local .upper + 1;
         
     PROFIL_LIST.add Self;
     type_self   := ITM_TYPE_SIMPLE.type_self.to_run_for profil_slot; 
@@ -126,7 +132,8 @@ Section Public
     old_list   := list_current;
     profil_current := Self;
     list_current := LIST.create (list.position);    
-    ITM_OBJECT.clean_bottom_index;
+    
+    (old_stack_top,old_bottom_index,old_context) := ITM_OBJECT.push_context;
     // Add context debug.
     (debug_level_option != 0).if {      
       context := TYPE_CONTEXT.default.new_local (list.position) 
@@ -156,7 +163,7 @@ Section Public
     a_list := ALIAS_ARRAY(TYPE_FULL).alias a_list;
     //
     code := list_current;    
-    //
+    //        
     result := list.to_run_expr;
     // Result.
     r_list := ALIAS_ARRAY(TYPE_FULL).new;
@@ -179,12 +186,10 @@ Section Public
     };    
     result.remove; // BSBS: Il y a un petit gachi...
     r_list := ALIAS_ARRAY(TYPE_FULL).alias r_list;
-    //
-    (ITM_OBJECT.bottom_index <= stack_local.upper).if {
-      context_extern := ITM_OBJECT.context_extern;
-    };    
-    to_type_block  := TYPE_BLOCK.get_direct a_list and_result r_list;
-    stack_local.remove_since stack_top;
+    //        
+    context_extern := ITM_OBJECT.context_extern;    
+    to_type_block  := TYPE_BLOCK.get_direct a_list and_result r_list;    
+    ITM_OBJECT.pop_context (old_stack_top,old_bottom_index,old_context);
     //
     NODE.set_node_list old_node_list;        
     profil_current := old_profil;
@@ -260,7 +265,7 @@ Section Public
     
   - is_block:BOOLEAN := TRUE;
 
-  - Self:SELF '==' Right 60 other:TYPE :BOOLEAN <- 
+  - Self:SELF '~=' Right 60 other:TYPE :BOOLEAN <- 
   ( 
     other = to_type_block
   );
@@ -317,7 +322,7 @@ Section Public
   
   - genere_struct <-
   (
-    // Nothing.
+    to_type_block.genere_struct;
   );
          
   //
@@ -357,7 +362,7 @@ Section Public
   ( + result:BOOLEAN;
     + t:TYPE_BLOCK;
         
-    result := Self == other;
+    result := Self ~= other;
     (result).if_false {
       t ?= other;
       result := (

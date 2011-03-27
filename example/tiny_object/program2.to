@@ -35,7 +35,7 @@ E Inherit B, C (
   ( |
     "redefine D in E".print;
   )
-  main =
+  master =
   ( |
     f_e;
   )

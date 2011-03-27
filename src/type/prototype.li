@@ -88,19 +88,34 @@ Section Public
   
   - init_slot_for typ:TYPE <-
   ( + cur:ITM_SLOT;
+    + slot:SLOT;
+    + slot_code:SLOT_CODE;
+    + old_profil_current:PROFIL;
             
     // Parent.
+    //last_position := position;
     cur := first_slot;
-    {(cur != NULL) && {cur.id_section.is_inherit_or_insert}}.while_do {      
+    {(cur != NULL) && {cur.id_section.is_inherit_or_insert}}.while_do {            
       typ.slot_run.add_last (SLOT.create cur type typ);
+      typ.verify_cyclic_inheritance typ;
+      typ.verify_itm_slot_parent cur;
       cur := cur.next;
     };
     // Mapping.
-    (is_mapping).if {
+    ((is_mapping) || {is_external}).if {
       {cur != NULL}.while_do {
-	(cur.id_section.is_mapping).if {
-	  ? {cur.style = '+'};
-	  typ.slot_run.add_last (SLOT.create cur type typ);
+	((cur.id_section.is_mapping) || {cur.id_section.is_external}).if {         
+          typ.verify_itm_slot_parent cur;
+          slot := SLOT.create cur type typ;
+          typ.slot_run.add_last slot;
+          (cur.id_section.is_external).if {
+            slot_code ?= slot;
+            (slot_code != NULL).if {
+              old_profil_current := profil_current;
+              slot_code.get_profil NULL self (typ.default);
+              profil_current := old_profil_current;
+            };
+          };
 	};
 	cur := cur.next;
       };
@@ -114,10 +129,17 @@ Section Public
   + type_style:STRING_CONSTANT; // Reference / Expanded / Strict.
   
   + is_mapping:BOOLEAN;
-
+  
+  + is_external:BOOLEAN;
+  
   - set_mapping <-
   (
     is_mapping := TRUE;
+  );
+
+  - set_external <-
+  (
+    is_external := TRUE;
   );
   
   - set_type_style s:STRING_CONSTANT <- 
@@ -154,6 +176,16 @@ Section Public
   
   + idf_generic_list:FAST_ARRAY(ITM_TYPE_PARAMETER);
   
+  - append_filename buffer:STRING <-
+  (
+    (path_begin != 1).if {
+      buffer.append "...";
+    };
+    path_begin.to (filename.upper) do { j:INTEGER;
+      buffer.add_last (filename.item j);
+    };    
+  );
+  
   //
   // Default value.
   //
@@ -177,7 +209,7 @@ Section Public
   );
   
   - make f:STRING_CONSTANT name n:STRING_CONSTANT generic_count c:INTEGER <-
-  ( //+ file:STD_FILE;
+  ( //+ file:FILE;
     //+ entry:ENTRY;
     + file:POINTER;
     + sz,idx:INTEGER;
@@ -230,15 +262,17 @@ Section Public
     + self_main:EXPR;
     + base:NODE;
     + pass_count_depend:INTEGER;
+    + pass_recur:BOOLEAN;
     + i:INSTR;
     + cmd:STRING_CONSTANT;
+    + exec:{};
     
     + buf:STRING;
 
     //
     // Creation list execution.
-    //    
-    list_current := LIST.create position;
+    //        
+    list_main := list_current := LIST.create position;
     (debug_level_option != 0).if {
       // Debug mode : Add context local.
       context_main := TYPE_CONTEXT.default.new_local position 
@@ -278,8 +312,7 @@ Section Public
     list_current.add_last base;
         
     // Result.    
-    list_current.add_last (INTEGER_CST.create position value 0 type (type_integer.default)); 
-    list_main := list_current;
+    list_current.add_last (INTEGER_CST.create position value 0 type (type_integer.default));     
             
     //
     // Detect life code.
@@ -312,39 +345,47 @@ Section Public
     //
     // Evaluation.
     //
+    VARIABLE.check_variable_block;    
     (is_quiet).if_false {
       STD_ERROR.put_string "Executing pass: ";
     };
     pass_count_depend := pass_count;
-    
+    exec := {
+      {        
+        modify_count := 0;
+        null_counter := 0;
+        (is_quiet).if_false {
+          STD_ERROR.put_string ".";            
+        };
+        pass_count := pass_count + 1;            
+      
+        SWITCH.reset_switch_new_pass;
+      
+        PROFIL_LIST.execute_pass;      
+      
+        (SWITCH.switch_new_pass).if {
+          new_execute_pass;	
+        };                
+        (modify_count != 0).if {                    
+          pass_recur := TRUE;          
+        };
+      }.do_while {modify_count != 0};      
+    };
     // First pass (recursive)    
     is_executing_pass := TRUE;            
-    (is_quiet).if_false {
-      STD_ERROR.put_string "*";
-    };
-    pass_count := pass_count + 1;
-    PROFIL_LIST.execute_pass_recursive;
-    // End first pass.    
     {
-      modify_count := 0;
-      null_counter := 0;
       (is_quiet).if_false {
-	STD_ERROR.put_string ".";            
-      };
-      pass_count := pass_count + 1;            
-      
-      SWITCH.reset_switch_new_pass;
-      
-      PROFIL_LIST.execute_pass;      
-      
-      (SWITCH.switch_new_pass).if {
-	new_execute_pass;	
-      };
-      
-    }.do_while 
-    //{pass_count < 40};
-    {modify_count != 0};
-    
+        STD_ERROR.put_string "*";
+      };      
+      pass_count := pass_count + 1;
+      PROFIL_LIST.execute_pass_recursive;      
+      pass_recur := FALSE;
+      // End first pass.          
+      exec.value;      
+      (pass_recur).if_false {      
+        exec.value;
+      };      
+    }.do_while {pass_recur};
     (is_quiet).if_false {
       STD_ERROR.put_string " (";
       STD_ERROR.put_integer (pass_count - pass_count_depend);
@@ -453,10 +494,10 @@ Section PROTOTYPE
     {  
       ((s.id_section.is_public) && {s.name = ALIAS_STR.slot_main}).if {	
 	(s.result_type != ITM_TYPE_SIMPLE.type_void).if {
-	  semantic_error ((s.position),"Unix mode: Not value return.");
+	  semantic_error (s.position,"Unix mode: Not value return.");
 	};
 	(s.argument_count != 1).if {
-	  semantic_error ((s.position),"Unix mode: Not argument list.");
+	  semantic_error (s.position,"Unix mode: Not argument list.");
 	};	
 	result := type_input.get_slot (s.name);
       };
@@ -513,7 +554,7 @@ Section PROTOTYPE
     };    
   );
         
-  - shorter_table lst:FAST_ARRAY(ITM_SLOT) select sel:BLOCK 
+  - shorter_table lst:FAST_ARRAY(ITM_SLOT) select sel:{ITM_SLOT; BOOLEAN}
   title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first_cur:BOOLEAN;
     + s:ITM_SLOT; 
@@ -564,7 +605,7 @@ Section PROTOTYPE
     };    
   );
   
-  - shorter_detail lst:FAST_ARRAY(ITM_SLOT) select sel:BLOCK 
+  - shorter_detail lst:FAST_ARRAY(ITM_SLOT) select sel:{ITM_SLOT; BOOLEAN}
   title t:STRING_CONSTANT in buf:STRING <-
   ( + is_first:BOOLEAN;
     + s:ITM_SLOT;
@@ -586,7 +627,8 @@ Section PROTOTYPE
         string_tmp2.clear;
         s.pretty_name_in string_tmp2;
         put string_tmp2 to buf like (ALIAS_STR.short_slot_title);
-        string_tmp.copy (s.position.prototype.filename);
+        string_tmp.clear;
+        s.position.prototype.append_filename string_tmp;        
         string_tmp.append " line #";
         s.position.line.append_in string_tmp;
         put string_tmp to buf like (ALIAS_STR.short_prototype_path);                

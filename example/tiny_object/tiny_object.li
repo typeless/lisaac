@@ -79,7 +79,7 @@ Section Public
   - main <-
   ( + file_input:POINTER;
     + sz:INTEGER;
-    + slot_main:SLOT;
+    + slot_master:SLOT;
         
     read_options;
         
@@ -112,9 +112,9 @@ Section Public
       program.item i.print_vft;
     };        
     "Execute...\n".print;
-    (class_main = NULL).if {
-      semantic_error (program.first.position) message "Slot main is needed.";
+    (class_master = NULL).if {
+      semantic_error (program.first.position) message "Slot master is needed.";
     };
-    slot_main := class_main.get_slot keyword_main;    
-    slot_main.run (class_main);
+    slot_master := class_master.get_slot keyword_master;    
+    slot_master.run (class_master);
   );

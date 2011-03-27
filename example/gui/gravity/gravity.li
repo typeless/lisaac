@@ -60,7 +60,7 @@ Section Public
     };
     //TIMER.add_client Self;
     // Init window.
-    VIDEO.make (1024+20,768+20);
+    VIDEO.make_size (1024+20,768+20);
     DESK.make VIDEO with (
       G_OUT.create "Gravity" justify (G_OUT.center) / G_RAW.create (Self.fix_height.fix_width)
     );        

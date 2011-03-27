@@ -97,16 +97,16 @@ Section Public
   - run <-
   ( + slot:SLOT;
     
-    (receiver.dynamic_type = NULL).if {
+    (receiver.the_dynamic_type = NULL).if {
       semantic_error position message "Call on NULL.";
     };
     
     (is_vft).if {
       // -- VFT --
-      slot := receiver.dynamic_type.vft.item index;
+      slot := receiver.the_dynamic_type.vft.item index;
       // -- VFT --
     } else {  
-      slot := receiver.dynamic_type.get_slot message;
+      slot := receiver.the_dynamic_type.get_slot message;
       (slot = NULL).if {
         string_tmp.copy "Message '";
         string_tmp.append message;
@@ -115,7 +115,7 @@ Section Public
         semantic_error position message string_tmp;
       };      
     };
-    slot.run (receiver.dynamic_type);
+    slot.run (receiver.the_dynamic_type);
   );
   
   //

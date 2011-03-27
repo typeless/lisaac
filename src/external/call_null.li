@@ -58,7 +58,7 @@ Section Public
   ( + code:STRING_CONSTANT;
     (debug_level_option != 0).if {
       code := 
-      "stack_print(top_context); \
+      "lisaac_stack_print(top_context); \
       \print_string(\"Call on NULL\\n\"); \
       \die_with_code(1)";
     } else {

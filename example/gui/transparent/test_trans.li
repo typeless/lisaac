@@ -36,7 +36,7 @@ Section Public
   ( + action_trans:{G_BUTTON;};
     
     // Init window.
-    VIDEO.make (640,400);
+    VIDEO.make_size (640,480); //(640,400);
     
     action_trans := { b:G_BUTTON;
       + w:G_WIN_OUT_TRANS_TEST;

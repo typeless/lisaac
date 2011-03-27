@@ -66,7 +66,7 @@ Section Public
       semantic_error position message "Type mismatch.";
     };
     // Execute.
-    local.set_dynamic_type type;
+    local.set_the_dynamic_type type;
   );
   
   //

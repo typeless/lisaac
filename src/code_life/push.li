@@ -66,7 +66,7 @@ Section Public
     ? {v != NULL};
     (v = NULL).if {
       crash_with_message "PUSH";
-    };
+    };    
     position := pos;
     context := v;
     is_first := f;    
@@ -126,9 +126,9 @@ Section Public
         
     idf := ALIASER_LOCAL.push Self; 
     (is_first).if {      
-      buffer.append "push_first(&";
+      buffer.append "lisaac_push_first(&";
     } else {
-      buffer.append "push(&";
+      buffer.append "lisaac_push(&";
     };
     buffer.append idf;
     buffer.add_last ',';
@@ -142,10 +142,11 @@ Section Public
     id.append_in buffer;
     buffer.add_last ')';    
     
-    buffer.append "; // L";
+    buffer.append "; /* L";
     position.line.append_in buffer;
     buffer.add_last ' ';
     buffer.append (position.prototype.name);    
+    buffer.append "*/";
   );
 
   //

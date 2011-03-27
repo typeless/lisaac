@@ -45,6 +45,7 @@ Section Public
   //
   
   - create p:POSITION slot sl:SLOT self arg:EXPR value v:EXPR :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;
@@ -128,7 +129,7 @@ Section NODE_TYPE, DTA
     result
   );    
   
-Section DTA_RD  
+Section DTA
   
   - finalise typ:TYPE with (expr:EXPR,s:SLOT) in lst:LIST <- 
   ( + new_value:EXPR;

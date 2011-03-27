@@ -18,7 +18,7 @@ Section Header
   
 Section Inherit
   
-  - parent_any:ANY := ANY;
+  - parent_any_mpg2:ANY_MPG2 := ANY_MPG2;
   
 Section Private
   
@@ -40,7 +40,7 @@ Section Public
   //  
   
   // bit input 
-  - infile:STD_FILE;
+  - infile:FILE;
      
   // sequence header and quant_matrix_extension() 
   - intra_quantizer_matrix:NATIVE_ARRAY(INTEGER);

@@ -34,7 +34,7 @@ CHILD_A Inherit PARENT (
     a.function_2;
   )
 
-  main =
+  master =
   ( b:PARENT |
     b = New CHILD_A;
     "--- b.function_1 ---".print;

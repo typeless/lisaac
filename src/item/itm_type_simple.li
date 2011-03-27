@@ -78,17 +78,23 @@ Section Public
     result
   );
   
-  + to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
+  - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + result:TYPE_FULL;   
+    + path:STRING_CONSTANT;
     
     (Self = type_null).if {
       result := TYPE_NULL.default;
     }.elseif {Self = type_void} then {
       result := TYPE_VOID.default;
     } else {
-      result := TYPE.get Self;
+      (p != NULL).if {
+        path := p.position.prototype.filename;
+      } else {
+        path := input_path;
+      };      
+      result := TYPE.get (path,Self);
     };
-    /*to_run_for :=*/ result  // BSBS: A tester pour les perfs.
+    result 
   );
   
   - append_in buffer:STRING <-

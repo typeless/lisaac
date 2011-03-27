@@ -56,17 +56,27 @@ Section Private
     + new_dir:{G_BUTTON; };
     + background:G_RAW;
     + directory:DIRECTORY;
-    
+    - select_static:{ABSTRACT_STRING; };
+    - typ_static:ABSTRACT_STRING;
+    select_static := select;
+    typ_static := typ;
+       
     new_dir := { b:G_BUTTON;
       + name:G_OUT;      
       name ?= b.root;      
       path.text.keep_head (path.text.fast_last_index_of '/');
       path.text.append (name.text);            
-      scan_directory_filter typ action_select select
+      scan_directory_filter typ_static action_select select_static
       directory_widget dir_w file_widget fil_w path_widget path;
     };
     
-    directory ?= FILE_SYSTEM.get_entry (path.text).open;
+    directory ?= FILE_SYSTEM.get_entry (path.text);
+    (directory.open).if_false {
+      "Directory : ".print;
+      directory.path.print; 
+      " not open!\n".print;
+      die_with_code 0;
+    };
     path.text.copy (directory.path);
     path.text.add_last '/';
     path.refresh;
@@ -83,7 +93,7 @@ Section Private
           path.text.keep_head (path.text.fast_last_index_of '/');
           path.text.append (name.text);          
           path.refresh;
-          select.value (path.text);
+          select_static.value (path.text);
         };
         (file = NULL).if {
           file := bt;
@@ -113,6 +123,8 @@ Section Public
   action_select select:{ABSTRACT_STRING; } action_ok ok:{ABSTRACT_STRING; } <-
   ( + win:G_WIN_OUT;    
     + body:G_EXPR;    
+    - ok_static:{ABSTRACT_STRING; };
+    ok_static := ok;
 
     dir_w := G_WIN_IN.create (160,240) with (G_RAW.create (G_OUT.create ""));
     fil_w := G_WIN_IN.create (160,240) with (G_RAW.create (G_OUT.create ""));
@@ -140,7 +152,7 @@ Section Public
         + p:G_WIN_OUT;
         p ?= b.parent;          
         p.close;
-        ok.value (path.text);          
+        ok_static.value (path.text);          
       } |
       G_BUTTON.create (G_OUT.create "Cancel" justify (G_OUT.center)) action { b:G_BUTTON;
         + p:G_WIN_OUT;
@@ -153,6 +165,7 @@ Section Public
     };
     win := G_WIN_OUT.create "Open" with body;        
     win.open_by DESK;
+        
     scan_directory_filter suffix action_select select directory_widget dir_w 
     file_widget fil_w path_widget path;
   );
@@ -184,10 +197,10 @@ Section Public
     current_directory.append "/TravCUT";
     
     // Init window.
-    VIDEO.make (800,600);
+    VIDEO.make_size (800,600);
     
     action_not_yet_implemented := { bt:G_BUTTON;     
-      /*+ w:G_WIN_OUT;
+      + w:G_WIN_OUT;
       + g:AREA;
       
       g := bt.parent;
@@ -199,7 +212,7 @@ Section Public
         w.close;
       };
       message_not_yet_implemented;
-      */
+      
     };
 
     // Align Window :
@@ -250,25 +263,23 @@ Section Public
             '\n'.print;
           } action_ok 
           { name:ABSTRACT_STRING;
-            + f:STD_FILE;
+            + f:FILE;
             + e:ENTRY;
       
             e := FILE_SYSTEM.get_entry name;
             (e = NULL).if {
               "Error file!\n".print;
-            } else {
-              f ?= e.open;
-              (f = NULL).if {
+            } else {              
+              (! e.open).if {
                 "Error open\n".print;
               } else {
-                /*
+                f ?= e;                
                 (FORMAT_BCT.load f).if {
                   f.close;
                   page.refresh;
                 } else {
                   "Error format\n".print;
                 };
-                */
               };
             };
           };
@@ -373,7 +384,7 @@ Section Public
     
     // Screen definition.
     DESK.make VIDEO with (             
-      menu_bar / (
+      menu_bar  / (
         tools_bar | (
           RULER_HORIZONTAL.create / (
             RULER_VERTICAL.create | G_WIN_IN.create (320,200) with page

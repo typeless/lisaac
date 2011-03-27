@@ -85,9 +85,6 @@ Section TYPE
   (
     the_parent_type := typ;
     flag := code;       
-    ((raw != NULL) && {raw.name != NULL} && {raw.name == "INTEGER"} && {! is_expanded}).if {
-      crash;
-    };
     ? {is_expanded -> (! is_strict)};
   );
   
@@ -121,12 +118,13 @@ Section Public
   
   - is_expanded_c:BOOLEAN <- (is_expanded) && {raw.type_c != NULL};
   
-  - Self:SELF '==' Right 60 other:TYPE_FULL :BOOLEAN <-
-  (
-    (Self = other) || {(raw = other.raw) && {(flag & 01111b) = (other.flag & 01111b)}}
+  - Self:SELF '==' Right 60 other:E :BOOLEAN <-  
+  ( + same:SELF;
+    same ?= other;    
+    (same != NULL) && {
+      (Self = same) || {(raw = same.raw) && {(flag & 01111b) = (same.flag & 01111b)}}
+    }
   );
-  
-  - Self:SELF '!==' Right 60 other:TYPE_FULL :BOOLEAN <- ! (Self == other);
   
   - append_name_in buffer:STRING <-
   (
@@ -243,7 +241,7 @@ Section Public
       }.elseif {is_expanded} then {
         // A: Expanded.
         result := 
-        ((other.is_strict)    && {raw == other.raw      }) ||
+        ((other.is_strict)    && {raw ~= other.raw      }) ||
         {(raw = type_boolean) && {other.is_sub_type Self}} ||
         {(raw = type_pointer) && {other.raw = TYPE_NULL }};	  
       } else {

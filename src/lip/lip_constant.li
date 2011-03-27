@@ -116,7 +116,7 @@ Section Public
     result
   );
   
-  - Self:SELF '=='  other:LIP_CONSTANT :LIP_CONSTANT <-
+  - Self:SELF '~='  other:LIP_CONSTANT :LIP_CONSTANT <-
   ( + result:LIP_CONSTANT;
     + s:SELF;
     s ?= other;
@@ -146,7 +146,7 @@ Section Public
     result
   );
   
-  - Self:SELF '!==' other:LIP_CONSTANT :LIP_CONSTANT <-
+  - Self:SELF '!~=' other:LIP_CONSTANT :LIP_CONSTANT <-
   ( + result:LIP_CONSTANT;
     + s:SELF;
     s ?= other;

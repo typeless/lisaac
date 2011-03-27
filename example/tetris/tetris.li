@@ -209,7 +209,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (300,520);
+    VIDEO.make_size (300,520);
     DESK.make VIDEO with (
       G_OUT.create "Tetris" justify (G_OUT.center) / init      
     );        
@@ -249,8 +249,8 @@ Section Public
         };
       };
     };
-    line (0,6*25) to (x_max,6*25) color red;
-    line (0,9*25) to (x_max,9*25) color blue;
+    //line (0,6*25) to (x_max,6*25) color red;
+    //line (0,9*25) to (x_max,9*25) color blue;
     
     // Game info.
     rectangle_fill (0,475) to (249,475+13) color gray;
@@ -309,7 +309,7 @@ Section Public
   - timer_event evt:EVENT_TIMER <-
   ( + speed:UINTEGER_32;    
     
-    ia;
+//    ia;
     
     delay := delay + evt.delay;
     speed := 10 - (level >> 1); 
@@ -601,7 +601,7 @@ Section Public
     + m1,m2,m3,m4,m5:INTEGER;
     + result:BOOLEAN;
     
-    screen_after.copy screen_ia;
+    screen_after.copy_collection screen_ia;
     py := put_ia pr pos px;
     (py != -1).if {
       // Evaluation.      

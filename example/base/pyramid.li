@@ -148,6 +148,8 @@ Section Private
       elem.put case_empty to (indice (line,(col-line+1)));
     };
   ); // clear_column
+  	 
+Section Public
   
   - print <-
   ( + line,col:INTEGER;
@@ -168,8 +170,6 @@ Section Private
     };
     '\n'.print;
   );
-	 
-Section Public
   
   - main <-
   ( 

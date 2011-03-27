@@ -25,7 +25,6 @@ Section Header
   - copyright := "2003-2008 Sonntag Benoit";
 
   - author    := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
-  - comment   := "The main prototype";
 
 Section Inherit
 
@@ -33,7 +32,7 @@ Section Inherit
 
 Section Public
   
-  - load file:STD_FILE :BOOLEAN <-
+  - load file:FILE :BOOLEAN <-
   ( + buf:FAST_ARRAY(UINTEGER_8);
     + pos,length:INTEGER;
     + result:BOOLEAN;

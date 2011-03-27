@@ -157,7 +157,27 @@ Section Public
       .when 17 then { // LIST.item index:INTEGER :E
         not_yet_implemented;
       }
-      .when 18 to 31 then { // FREE
+      .when 18 then { // compiler_inlining_level -> INTEGER.
+	result := INTEGER_CST.create position value inline_level type (type_integer.default);
+      }
+      .when 19 then { // compiler_optimization -> BOOLEAN.
+        (is_optimization).if {          
+          result := PROTOTYPE_CST.create position type (type_true.default);	
+        } else {
+          result := PROTOTYPE_CST.create position type (type_false.default);	
+        };	
+      }
+      .when 20 then { // compiler_built_on -> STRING_CONSTANT.        
+        string_tmp.clear;
+        SYSTEM.get_current_date.append_in string_tmp;
+        string_tmp.add_last ' ';
+        SYSTEM.get_current_time.append_in string_tmp;
+	result := STRING_CST.create position text (ALIAS_STR.get string_tmp) length (string_tmp.count);
+      }
+      .when 21 then { // forall_data action:{ E; } 
+        //result := forall_data_product;
+      }
+      .when 22 to 31 then { // FREE
         syntax_error (position,"Free external lisaac code.");
       };
     } else {
@@ -168,3 +188,14 @@ Section Public
     result
   );
   
+Section Private
+  
+  //
+  // Reflexivity
+  //
+  
+  - forall_data_product:EXPR <-
+  ( + type:TYPE_FULL;
+    type := profil_slot.argument_list.first.type;
+    
+  );

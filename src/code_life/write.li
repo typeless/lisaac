@@ -23,7 +23,6 @@ Section Header
   + name        := WRITE;
 
   - copyright   := "2003-2007 Benoit Sonntag";
-
   
   - author      := "Sonntag Benoit (bsonntag@loria.fr)";
   - comment     := "Write local, global or slot";
@@ -67,7 +66,7 @@ Section Public
   
   - variable:VARIABLE <-
   (
-    deferred;
+    deferred;    
     NULL
   );
   
@@ -76,7 +75,7 @@ Section Public
     variable.type
   );
   
-  + value : EXPR;
+  + value:EXPR;
 
   - set_value new:EXPR <-
   (
@@ -118,11 +117,11 @@ Section Public
     + read:READ;
     + val:INSTR;
     + slot:SLOT_DATA;
-    //+ old_loop_invariant:LOOP;
     
     ? { variable != NULL };
     ? { value    != NULL };
     
+    simplify_type variable;
     //debug_display;
     
     slot ?= variable;
@@ -185,7 +184,6 @@ Section Public
   (
     variable.unwrite Self;
     value.remove;
-    //free_allocation_memory;
   );
   
   //
@@ -254,8 +252,4 @@ Section Public
       buffer.add_last '>';
     };
   );
-  
-
-
-
 

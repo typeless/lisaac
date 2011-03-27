@@ -61,7 +61,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (400,64);
+    VIDEO.make_size (400,400);
     DESK.make VIDEO with (
       (win := G_OUT.create "Monitor" justify (G_OUT.center).fix_height) / init
     );        

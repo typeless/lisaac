@@ -18,7 +18,7 @@ Section Header
   
 Section Inherit
   
-  - parent_any:ANY := ANY;
+  - parent_any_mpg2:ANY_MPG2 := ANY_MPG2;
   
 Section Public
 

@@ -43,6 +43,7 @@ Section Public
   //
   
   - create p:POSITION slot sl:SLOT self arg:EXPR code v:ITM_CODE :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;
@@ -78,7 +79,7 @@ Section Public
   // Service
   //
     
-Section DTA_RD  
+Section DTA  
   
   - finalise typ:TYPE with (expr:EXPR,s:SLOT) in lst:LIST <- 
   ( + id:PROTOTYPE_CST;

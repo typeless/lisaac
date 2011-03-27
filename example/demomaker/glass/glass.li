@@ -45,8 +45,8 @@ Section Public
   
   - mask:FAST_ARRAY2(XY);
   
-  - x_origin:INTEGER;
-  - y_origin:INTEGER;
+  - x_ori:INTEGER;
+  - y_ori:INTEGER;
 
   - x_inc:INTEGER := 2;
   - y_inc:INTEGER := 2;
@@ -74,7 +74,7 @@ Section Public
     }.do_while {a < REAL.pi*2};
   );
   
-  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_24).create 2048;
+  - bmp_line:ABSTRACT_BMP_LINE := BMP_LINE(PIXEL_32).create 2048;
   
   //
   // Width / Height
@@ -92,7 +92,7 @@ Section Public
   - init p:ABSTRACT_STRING :G_EXPR <-
   ( + entry:ENTRY;
     + fmt:FORMAT_IMG;
-    + f:STD_FILE;
+    + f:FILE;
     + w,h:INTEGER;
     
     // Initialization bitmap.
@@ -112,8 +112,8 @@ Section Public
     };
     w := fmt.width;
     h := fmt.height;
-    bitmap := BITMAP(PIXEL_24).create (w,h);
-    background := BITMAP(PIXEL_24).create (width_min,height_min);
+    bitmap := BITMAP(PIXEL_32).create_size (w,h);
+    background := BITMAP(PIXEL_32).create_size (width_min,height_min);
     fmt.put_image_in bitmap;    
     compute_mask;
     f.close;
@@ -130,7 +130,7 @@ Section Public
   - main <-
   (     
     // Init window.
-    VIDEO.make (width_min+64,height_min+64);
+    VIDEO.make_size (width_min+64,height_min+64);
     DESK.make VIDEO with (
       G_OUT.create "Glass" justify (G_OUT.center) / init "./"
     );        
@@ -155,21 +155,23 @@ Section Public
 
     clipping (x0,y0) to (x1,y1);
     
-    0.to height by (bitmap.height) do { y:INTEGER;
-      0.to width by (bitmap.width) do { x:INTEGER;
-        background.put_bitmap bitmap to (x,y);
+    (is_new).if {
+      0.to height by (bitmap.height) do { y:INTEGER;
+        0.to width by (bitmap.width) do { x:INTEGER;
+          background.put_bitmap bitmap to (x,y);
+        };
       };
+      
+      0.to (size-1) do { y:INTEGER;      
+        0.to (size-1) do { x:INTEGER;        
+          px := (x_ori + mask.item (x,y).x) & 0FFh;
+          py := (y_ori + mask.item (x,y).y) & 0FFh;
+          col := bitmap.get_color_hard (px,py);
+          bmp_line.put col to x;
+        };      
+        background.line_h_hard (x_ori,y_ori+y) until (x_ori+size-1) image bmp_line offset 0;
+      };        
     };
-    
-    0.to (size-1) do { y:INTEGER;      
-      0.to (size-1) do { x:INTEGER;        
-        px := (x_origin + mask.item (x,y).x) & 0FFh;
-        py := (y_origin + mask.item (x,y).y) & 0FFh;
-        col := bitmap.get_color_hard (px,py);
-        bmp_line.put col to x;
-      };      
-      background.line_h_hard (x_origin,y_origin+y) until (x_origin+size-1) image bmp_line offset 0;
-    };        
     put_bitmap background to (0,0);
   );
   
@@ -191,15 +193,19 @@ Section Public
     };
     
     evt_time ?= msg;    
-    (evt_time != NULL).if {
-      x_origin := x_origin + x_inc;
-      y_origin := y_origin + y_inc;
-      ((x_origin <= 0) || {x_origin >= width - size}).if {
+    ((evt_time != NULL) && {evt_time.destination = NULL}).if {
+      x_ori := x_ori + x_inc;
+      y_ori := y_ori + y_inc;
+      ((x_ori <= 0) || {x_ori >= width - size}).if {
         x_inc := -x_inc;
       };
-      ((y_origin <= 0) || {y_origin >= height - size}).if {
+      ((y_ori <= 0) || {y_ori >= height - size}).if {
         y_inc := -y_inc;
       };      
+      is_new := TRUE;
       refresh;
+      is_new := FALSE;
     };    
   );
+  
+  - is_new:BOOLEAN;

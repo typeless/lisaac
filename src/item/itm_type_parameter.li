@@ -29,14 +29,19 @@ Section Header
  
 Section Inherit
   
-  + parent_itm_type:Expanded ITM_TYPE_SIMPLE;
+  + parent_itm_type_simple:Expanded ITM_TYPE_SIMPLE;
   
 Section Public
   
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + result:TYPE_FULL;
         
-    result := p.parameter_to_type Self;    
+    result := p.parameter_to_type Self;        
+    (result = NULL).if {
+      string_tmp.copy "Cannot resolve type for type parameter ";
+      append_in string_tmp;
+      semantic_error(p.position, string_tmp);
+    };
     result
   );
   

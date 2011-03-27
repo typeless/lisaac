@@ -30,7 +30,7 @@ Section Header
     
 Section Inherit
   
-  + parent_dta:Expanded DTA_RD;
+  + parent_dta_rd:Expanded DTA_RD;
   
 Section Public
   
@@ -45,9 +45,8 @@ Section Public
   - parameter_to_type p:ITM_TYPE_PARAMETER :TYPE_FULL <-
   ( + result:TYPE_FULL;
     + idx:INTEGER;
-        
-    // For Genericity.
-    result := self_arg.static_type.raw.parameter_to_type p;
+    // For Genericity.    
+    result := slot.receiver_type.parameter_to_type p;
     (result = NULL).if {
       // For Self + type parametric.
       idx := slot.get_index_argument_type p;
@@ -63,6 +62,7 @@ Section Public
   //
   
   - create p:POSITION call sl:SLOT with args:FAST_ARRAY(EXPR) intern flag:BOOLEAN :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;

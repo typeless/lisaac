@@ -85,11 +85,11 @@ Section Public
   // Comparaison.
   //
     
-  - Self:SELF '==' Right 60 other:EXPR :BOOLEAN <-
+  - Self:SELF '~=' Right 60 other:EXPR :BOOLEAN <-
   ( + same:SELF;
     
     same ?= other;
-    (same != NULL) && {left == same.left} && {right == same.right}
+    (same != NULL) && {left ~= same.left} && {right ~= same.right}
   );  
   
   //
@@ -190,6 +190,9 @@ Section Public
     ((left.static_type.raw = TYPE_NULL) && {right.static_type.raw.is_block}).if {
       buffer.add_last '0';
     } else {
+      (left.static_type.raw.is_block).if {
+        buffer.append "(long)";
+      };
       left.genere buffer;
       (left.static_type.raw.is_block).if {
 	buffer.append ".__id";
