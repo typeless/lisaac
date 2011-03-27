@@ -1,2 +1,2 @@
-makefile.patch
-typo-lisaac-c.patch
+0001-typo-lisaac-c.patch
+0002-debian-fix-the-makefile.patch
