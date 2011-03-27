@@ -62,93 +62,91 @@ Section Public
     + typ:TYPE_FULL;
     + typ_block:PROFIL_BLOCK;
     + typ_list:TYPES_TMP;
-    + pro_list:FAST_ARRAY(PROFIL_SLOT);    
+    + pro_list:FAST_ARRAY(PROFIL_SLOT);
     + is_new:BOOLEAN;
-        
-    // Block Detect.
-    j := args.lower;
-    {(j <= args.upper) && {(typ = NULL) || {! typ.raw.is_block}}}.while_do {
-      typ := args.item j.static_type;
-      (typ.raw.is_block).if {
-	typ_list := TYPES_TMP.new;
-	args.item j.get_type typ_list;
-	(typ_list.first = TYPE_NULL).if {
-	  (typ_list.count > 1).if {
-	    typ_block ?= typ_list.second;
-	  } else {
-	    typ := NULL;
-	  };
-	} else {
-	  typ_block ?= typ_list.first;
-	};
-	typ_list.free;
-      };
-      j := j + 1;
-    };
-
-    (typ_block != NULL).if {
-      pro_list := typ_block.profil_list;
-      i := pro_list.lower;
-      {(i <= pro_list.upper) && {result = NULL}}.while_do {
-	pro := pro_list.item i;
-	(
-	  (pro.slot = Self) && {
-	    (pro.type_self = NULL) || {pro.type_self == type_self}
-	  } // BSBS: il fo aussi tester les args comme plus bas...
-	).if {
-	  result := pro; // Rmq. : It's limit for dispatching (See...)
-	};
-	i := i + 1;
-      };
-            
-      (result = NULL).if {
-	result := PROFIL_SLOT.clone;	
-	result.set_context_sensitive;
-	typ_block.profil_list.add_last result;
-	is_new := TRUE;	
-      };
-    } else {	    
-      // Select classic Profil (no block).
-     /* 
-      (name == "__infix_equal_equal").if {
-        "SELF : ".print;
-        type_self.raw.print; 
-        ' '.print;
-        args.second.static_type.raw.print;
-        (type_self.raw.name == "STRING_CONSTANT").if {
-          crash;
+    
+    (args = NULL).if {
+      // For auto-load external section.
+      result := PROFIL_SLOT.clone;		
+      profil.add_last result;
+      is_new := TRUE;
+    } else {
+      // Block Detect.
+      j := args.lower;
+      {(j <= args.upper) && {(typ = NULL) || {! typ.raw.is_block}}}.while_do {
+        typ := args.item j.static_type;
+        (typ.raw.is_block).if {
+          typ_list := TYPES_TMP.new;
+          args.item j.get_type typ_list;
+          (typ_list.first = TYPE_NULL).if {
+            (typ_list.count > 1).if {
+              typ_block ?= typ_list.second;
+            } else {
+              typ := NULL;
+            };
+          } else {
+            typ_block ?= typ_list.first;
+          };
+          typ_list.free;
         };
-        '\n'.print;
+        j := j + 1;
       };
-      */
-      j := profil.lower;      
-      {(j <= profil.upper) && {result = NULL}}.while_do {
-	pro := profil.item j;					
-	((pro.type_self = NULL) || {pro.type_self == type_self}).if {
-	  result := pro;
-	  i := args.lower + 1;
-	  {(i <= args.upper) && {result != NULL}}.while_do {
-	    typ := args.item i.static_type;
-	    loc := pro.argument_list.item i;	    	    
-	    (
-	      (loc != NULL) && 
-	      {(typ.is_expanded) || {loc.type.is_expanded       }} && 
-	      {typ !== loc.type} && {loc.type.raw != type_boolean}
-	    ).if {
-	      result := NULL;	      	      	      
-	    };
-	    i := i + 1;    
-	  };
-	};
-	j := j + 1;
-      };
-      (result = NULL).if {	
-	result := PROFIL_SLOT.clone;		
-	profil.add_last result;
-	((id_section.is_external) && {profil.count > 1}).if {
-	  semantic_error (position,"Polymorphic External slot is not possible.");
-	};
-	is_new := TRUE;
+      
+      (typ_block != NULL).if {
+        pro_list := typ_block.profil_list;
+        i := pro_list.lower;
+        {(i <= pro_list.upper) && {result = NULL}}.while_do {
+          pro := pro_list.item i;
+          (
+            (pro.slot = Self) && {
+              (pro.type_self = NULL) || {pro.type_self == type_self}
+            } // BSBS: il fo aussi tester les args comme plus bas...
+          ).if {
+            result := pro; // Rmq. : It s limit for dispatching (See...)
+          };
+          i := i + 1;
+        };
+        
+        (result = NULL).if {
+          result := PROFIL_SLOT.clone;	
+          result.set_context_sensitive;
+          typ_block.profil_list.add_last result;
+          is_new := TRUE;	
+        };
+      } else {	    
+        // Select classic Profil (no block).
+        (id_section.is_external).if {
+          result := profil.first;
+        } else {
+          j := profil.lower;      
+          {(j <= profil.upper) && {result = NULL}}.while_do {
+            pro := profil.item j;          
+            ((pro.type_self = NULL) || {pro.type_self == type_self}).if {
+              result := pro;          
+              i := args.lower + 1;          
+              {(i <= args.upper) && {result != NULL}}.while_do {
+                loc := pro.argument_list.item i;	    	    
+                (
+                  (loc != NULL) && {loc.require_first != NULL} &&	     
+                  {args.item i.static_type != loc.require_first.value.static_type} &&
+                  {loc.type.raw != type_boolean}
+                ).if {                            
+                  result := NULL;	      	      	      
+                };
+                i := i + 1;    
+              };          
+            };
+            j := j + 1;
+          };
+        };
+        (result = NULL).if {	
+          result := PROFIL_SLOT.clone;		
+          profil.add_last result;
+          ((id_section.is_external) && {profil.count > 1}).if {
+            semantic_error (position,"Polymorphic External slot is not possible.");
+          };
+          is_new := TRUE;
+        };
       };
     };
     (is_new).if {            

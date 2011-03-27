@@ -58,6 +58,7 @@ Section Public
   //
   
   - create p:POSITION call sl:SLOT self arg:EXPR intern flag:BOOLEAN :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;

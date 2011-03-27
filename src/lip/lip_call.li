@@ -67,12 +67,13 @@ Section Public
   
   - run <-
   ( + slot:LIP_SLOT_CODE;
-    + val,rec:LIP_CONSTANT;
-    + str:LIP_STRING;
+    + val,rec:LIP_CONSTANT;    
+    + str:LIP_STRING;    
     + int:LIP_INTEGER;
     + path:STRING_CONSTANT;
     + is_rec:BOOLEAN;
     + idx:INTEGER;
+    
     
     (receiver != NULL).if {
       rec := receiver.run_expr;
@@ -90,7 +91,7 @@ Section Public
       rec.print;      
     }.elseif {name = ALIAS_STR.slot_die_with_code} then {      
       int ?= val;
-      (int = NULL).if {
+      (int = NULL).if {        
         semantic_error (position,"Integer argument needed.");
       };
       die_with_code (int.value);
@@ -98,12 +99,12 @@ Section Public
       (val != NULL).if {
         warning_error (position,"No argument for `help_command' method.");
       };
-      LISAAC.show_help;
+      LISAAC.print_help;
     }.elseif {name = ALIAS_STR.slot_compiler_version} then {
       (val != NULL).if {
-        warning_error (position,"No argument for `compiler_version' method.");
+        warning_error (position,"No argument for `version' method.");
       };
-      LISAAC.show_version;
+      LISAAC.print_version;
     }.elseif {name = ALIAS_STR.slot_path} then {
       str ?= val;
       (str = NULL).if {

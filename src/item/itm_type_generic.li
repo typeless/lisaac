@@ -85,6 +85,7 @@ Section Public
     + t:TYPE_FULL;
     + j:INTEGER;    
     + result:TYPE_FULL;
+    + path:STRING_CONSTANT;
     
     lst := ALIAS_ARRAY(TYPE_FULL).new;
     j := list_type.lower;    
@@ -97,7 +98,12 @@ Section Public
       ALIAS_ARRAY(TYPE_FULL).free lst;
     } else {            
       lst := ALIAS_ARRAY(TYPE_FULL).alias lst;      
-      result := TYPE_GENERIC.get Self with lst;
+      (p != NULL).if {
+        path := p.position.prototype.filename;
+      } else {
+        path := input_path;
+      };      
+      result := TYPE_GENERIC.get (path,Self) with lst;
     };
     result
   );

@@ -42,6 +42,7 @@ Section PROFIL_LIST
   );
   
 Section Public
+  
   - propagation_external <-
   (
     (external_present).if_false {
@@ -82,7 +83,7 @@ Section Public
   (
     set_call := HASHED_DICTIONARY(INTEGER,PROFIL).create;
     set_back := HASHED_SET(PROFIL).create;
-    name := "main";
+    name := "main";    
   );
   
   - set_external_present b:BOOLEAN <-
@@ -355,15 +356,19 @@ Section Public
   
   - execute_recursive <-
   ( + old_list_current:LIST;    
+    + old_profil_current:PROFIL;
     
     (stat = -1).if {
       count_intern_call := count_intern_call + 1;            
       (count_intern_call = 1).if {	  	  
-	old_list_current   := list_current;
-	//
+        old_list_current   := list_current;
+        old_profil_current := profil_current;
+        //
+        profil_current := Self;
 	execute 3;
 	//	
-	list_current   := old_list_current;
+        list_current   := old_list_current;
+        profil_current := old_profil_current;
 	? {code != NULL};      
 	(count_intern_call = 1).if {	  
           stat := 0;
@@ -387,9 +392,16 @@ Section Public
     search_and_convert_tail_recursive;    
     
     code ?= code.execute; 
-    
-    // BSBS: Netoyer les result pas utile
-    
+    /* BSBS: Nettoyer les result ...
+    (result_list.lower).to (result_list.upper) do { i:INTEGER;
+      (result_list.item i.intern_name == "Result_2__5MPI").if {
+        result_list.item i.ensure_count.print; '\n'.print;
+      };
+      (result_list.item i.ensure_count = 0).if {       
+        result_list.put NULL to i;
+      };
+    };
+    */
     LOCAL_SEQ.clear;
     
     seq_call_and_loop := seq_call_and_loop + 1;
@@ -407,6 +419,13 @@ Section Public
       //{(cop_argument = NULL) || {! result_list.is_empty}}
     ).if {
       stat := stat | inlining_bit;      
+    };
+    (
+      (is_external) && 
+      {argument_list.first != NULL} && 
+      {argument_list.first.ensure_count = 0}
+    ).if {
+      argument_list.put NULL to 0;
     };
   );
   
@@ -641,6 +660,11 @@ Section Private
     } else {
       buffer.append "Inlinable.";
     };
+    (is_context_sensitive).if {
+      buffer.append " CONTEXT!";
+    } else {
+      buffer.append " NO CONTEXT!";
+    };
     buffer.append " */\n";
   );
   
@@ -651,6 +675,7 @@ Section Private
     (argument_list.lower).to (argument_list.upper) do { j:INTEGER;
       v := argument_list.item j;
       (v != NULL).if {
+        v.type.display buffer;
 	v.display_type buffer;
 	buffer.add_last ',';
       };
@@ -670,6 +695,7 @@ Section Private
   ( + ts:TYPE_FULL;
     
     ts := v.type;
+    
     ts.genere_declaration buffer;
     buffer.add_last ' ';
     ts.genere_star_declaration buffer;	

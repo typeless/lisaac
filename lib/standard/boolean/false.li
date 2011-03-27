@@ -116,8 +116,6 @@ Section Public
   //
   
   - to_string:STRING       <- "0".to_string;
-
-  - to_abstract_string:ABSTRACT_STRING <- "FALSE";
   
   - to_integer:INTEGER     <- 0;
   

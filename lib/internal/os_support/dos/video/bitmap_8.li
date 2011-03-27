@@ -26,8 +26,6 @@ Section Header
   
   - comment     := "Bitmap 8 bits";
   
-  - category    := MICRO;
-  
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr), Jerome Boutet (boutet@loria.fr)";
   
@@ -46,7 +44,7 @@ Section Private
   //
   
   // Mapping memory bitmap.
-  + image:FAST_ARRAY[BMP_LINE_8];
+  + image:FAST_ARRAY(BMP_LINE_8);
   
   - get_line y:INTEGER :BMP_LINE <-
   (
@@ -62,7 +60,7 @@ Section Private
     width  := w;
     height := h;
     //bytes_per_line:=(w * PIXEL_8.size + 7)>>3;
-    image := FAST_ARRAY[BMP_LINE_8].create h;
+    image := FAST_ARRAY(BMP_LINE_8).create h;
     0.to (image.upper) do { y:INTEGER;
       image.put (BMP_LINE_8.create w) to y;
     };
@@ -74,7 +72,7 @@ Section Private
     
     width  := w;
     height := h;    
-    image := FAST_ARRAY[BMP_LINE_8].create h;
+    image := FAST_ARRAY(BMP_LINE_8).create h;
     offset:=offset_begin;
     0.to (image.upper) do { y:INTEGER;
       image.put (BMP_LINE_8.create w at offset) to y;

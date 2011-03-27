@@ -127,7 +127,6 @@ Section Public
   - slot_external     :STRING_CONSTANT := "external";
   - slot_default      :STRING_CONSTANT := "default";
   - slot_type         :STRING_CONSTANT := "type";
-  - slot_help         :STRING_CONSTANT := "help";
   - slot_version      :STRING_CONSTANT := "version";
   - slot_date         :STRING_CONSTANT := "date";
   - slot_comment      :STRING_CONSTANT := "comment";
@@ -164,7 +163,6 @@ Section Public
   - slot_back_end     :STRING_CONSTANT := "back_end";
   - slot_input_file   :STRING_CONSTANT := "input_file";
   - slot_output_file  :STRING_CONSTANT := "output_file";
-  - slot_output_extension:STRING_CONSTANT := "output_extension";
   - slot_debug_level  :STRING_CONSTANT := "debug_level";
   - slot_debug_with_code:STRING_CONSTANT := "debug_with_code";
   - slot_is_all_warning:STRING_CONSTANT := "is_all_warning";
@@ -173,6 +171,7 @@ Section Public
   - slot_is_java      :STRING_CONSTANT := "is_java";
   - slot_is_statistic :STRING_CONSTANT := "is_statistic";
   - slot_is_quiet     :STRING_CONSTANT := "is_quiet";    
+  - slot_is_library   :STRING_CONSTANT := "is_library";    
   - slot_get_integer  :STRING_CONSTANT := "get_integer";
   - slot_get_string   :STRING_CONSTANT := "get_string";
   - slot_is_cop       :STRING_CONSTANT := "is_cop";
@@ -243,9 +242,6 @@ Section Public
   - short_file_list_item      :STRING_CONSTANT := "file_list_item";
   - short_file_list_end       :STRING_CONSTANT := "file_list_end";
   
-  - extension_c       :STRING_CONSTANT := ".c";
-  - extension_java    :STRING_CONSTANT := ".java";
-  
   - is_integer n:STRING_CONSTANT :BOOLEAN <-
   (
     (n = prototype_uinteger_64) ||
@@ -296,7 +292,7 @@ Section Public
       tmp_name.copy str;    
       tmp_name.append "__";    
     } else {
-      tmp_name.copy "__";
+      tmp_name.copy "li__";
     };
     count_variable := count_variable + 1;
     v:=count_variable;
@@ -431,7 +427,6 @@ Section Public
     list.add slot_external;
     list.add slot_default;
     list.add slot_type;
-    list.add slot_help;
     list.add slot_version;
     list.add slot_date;
     list.add slot_comment;
@@ -465,9 +460,8 @@ Section Public
     list.add slot_path;
     list.add slot_front_end;
     list.add slot_back_end;
-    list.add slot_output_file;
-    list.add slot_output_extension;
     list.add slot_input_file;
+    list.add slot_output_file;
     list.add slot_debug_level;
     list.add slot_debug_with_code;
     list.add slot_is_all_warning;
@@ -476,6 +470,7 @@ Section Public
     list.add slot_is_java;
     list.add slot_is_statistic;
     list.add slot_is_quiet;
+    list.add slot_is_library;    
     list.add slot_get_integer;
     list.add slot_get_string;
     list.add slot_is_cop;    
@@ -517,7 +512,7 @@ Section Public
     list.add short_warning;
     list.add short_identifier;
     list.add short_identifier_slot;
-
+    
     list.add short_prototype_comment_light;
     list.add short_prototype_comment;
     
@@ -539,10 +534,7 @@ Section Public
     list.add short_directory_list_end;
     list.add short_file_list_begin;
     list.add short_file_list_item;
-    list.add short_file_list_end;
-
-    list.add extension_c;
-    list.add extension_java;
+    list.add short_file_list_end; 
 
     // Operator '=' and '!=' :
     operator_equal     := operator slot_infix name symbol_equal;

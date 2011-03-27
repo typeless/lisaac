@@ -107,8 +107,6 @@ Section Public
   //
   
   - to_string:STRING       <- "1".to_string; // BSBS: A revoir ...
-
-  - to_abstract_string:ABSTRACT_STRING <- "TRUE";
   
   - to_integer:INTEGER     <- 1;
   

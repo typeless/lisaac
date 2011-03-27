@@ -73,21 +73,30 @@ Section Public
   - add_first i:INSTR <-
   (
     expr_list.add_first i;
+    
+    verify_once;
+    
   );
   
   - add_last i:INSTR <- 
   (
     expr_list.add_last i;
+    
+    verify_once;
+    
   );  
   
   - add e:INSTR to idx:INTEGER <-
   (
     expr_list.add e to (idx-1);
+    
+    verify_once;
+    
   );
   
   - put e:INSTR to idx:INTEGER <-
   (
-    expr_list.put e to (idx-1);
+    expr_list.put e to (idx-1);        
   );  
 
   - remove_last <-
@@ -97,6 +106,10 @@ Section Public
   
   - remove_index idx:INTEGER <-
   (
+    ((list_current = Self) && {idx != index}).if {
+      "LIST.remove_index ! ".print; idx.print; '/'.print; index.print; ' '.print; print;  '\n'.print;
+    };
+    
     expr_list.remove (idx-1);
   );
     
@@ -116,6 +129,9 @@ Section Public
     ? {e != NULL};
     expr_list.add e to (index - 1);
     index := index + 1;
+    
+    verify_once;
+    
   );
 
   - insert e:INSTR to idx:INTEGER <-
@@ -125,6 +141,9 @@ Section Public
     (idx <= index).if {
       index := index + 1;
     };
+    
+    verify_once;
+    
   );
   
   //
@@ -148,7 +167,7 @@ Section Public
   (
     new_depend_pass;
     position  := p;
-    expr_list := FAST_ARRAY(INSTR).create_with_capacity 2;
+    expr_list := FAST_ARRAY(INSTR).create_with_capacity 2;    
   );
 
   - my_copy:SELF <-
@@ -158,6 +177,9 @@ Section Public
     (lower).to (upper) do { j:INTEGER;
       result.add_last (item j.my_copy);
     };
+    
+    verify_once;
+    
     result
   );
 
@@ -167,7 +189,7 @@ Section Public
 
   - remove <-
   (     
-    (lower).to (upper) do { j:INTEGER;
+    (lower).to (upper) do { j:INTEGER;      
       item j.remove;
     };    
   );
@@ -199,12 +221,18 @@ Section Public
     } else {              
       result := Self;
     };    
+    
+    verify_once;
+    
     result    
   );  
     
   - execute_case <-  
   ( + new_expr:INSTR; 
     + old_list_current:LIST;
+    
+    + old_expr:INSTR;
+    + old_index:INTEGER;
     
     //
     seq_list.add_last Self; 
@@ -216,12 +244,38 @@ Section Public
        
     // Execute expression list.
     ? {index = 0};
+    
+    //"LIST BEG : ".print; print; '\n'.print;
+    
     index := lower;
     {index <= upper}.while_do {            
       old_seq_or_and := seq_or_and;                  
+      
+      old_expr := item index;
+      old_index := index;
+      
       new_expr := item index.execute;      
       (new_expr != NULL).if {	
+        
+        ((index = old_index) && {index > 1} && {item (old_index-1) = new_expr}).if {
+          `*((unsigned int *)@old_expr)`:INTEGER_32.print; 
+          '\n'.print;
+          old_expr.debug_display;
+          "\nDevient\n".print;
+          new_expr.debug_display;
+          semantic_error (new_expr.position,"ICI");
+        };        
+        
         put new_expr to index;        
+                
+        (verify_once).if_false {
+          old_index.print; '-'.print;
+          index.print; '\n'.print;
+          print; '\n'.print;
+          debug_display;
+          crash;
+        };
+        
         index := index + 1;        
         (new_expr = CALL_NULL).if {
           // Delete all ...
@@ -234,6 +288,8 @@ Section Public
 	remove_index index;
       };                  
     };
+    
+    //"LIST END : ".print; print; '\n'.print;
       
     // Last.    
     old_seq_or_and := seq_or_and;            
@@ -244,6 +300,8 @@ Section Public
     //
     seq_list.remove_last;    
     seq_inline := seq_inline + 1;
+        
+    verify_once;
   );
   
 Section Public
@@ -316,8 +374,21 @@ Section Public
   
 Section Private  
   
+  - verify_once:BOOLEAN <-
+  ( + result:BOOLEAN;
+    result := TRUE;
+    (lower).to (upper - 1) do { j:INTEGER;
+      ((item j = item (j+1)) && {item j != NOP} && {item j != CALL_NULL}).if {
+        result := FALSE;
+        "ERROR LIST: Violation once. ".print;
+        j.print; '\n'.print;
+      };
+    };
+    result
+  );
+  
   - genere_body buffer:STRING <-
-  ( + old_count,j:INTEGER;
+  ( + old_count,j:INTEGER;    
     j := lower;
     {j <= upper}.while_do {
       buffer.append indent;
@@ -338,36 +409,16 @@ Section Private
     
     (! tab.is_empty).if {
       (tab.lower).to (tab.upper) do { j:INTEGER;
-	loc := tab.item j;	
+        loc := tab.item j;	
         loc.is_result.if_false {
           (loc.type.raw = TYPE_CONTEXT).if {
             context_counter := context_counter + 1;
           } else {
             local_counter := local_counter + 1;
-          };
-          /*
-          (
-            (loc.ensure_count != 0) && 
-            {profil_current != NULL} && 
-            {loc.type.raw != TYPE_CONTEXT}
-          ).if {            
-            i := profil_current.result_list.lower;
-            {
-              (i <= profil_current.result_list.upper) && 
-              {profil_current.result_list.item i != loc}
-            }.while_do {
-              i := i + 1;
-            };
-            (i > profil_current.result_list.upper).if {
-              
-              loc.intern_name.print;
-              ' '.print;
-              loc.ensure_count.print; 
-              '\n'.print;
-              
-            };
-          };
-          */
+          };          
+          //
+          simplify_type loc; // BSBS: Pas utile (c est un pb de result non utiliser)
+          //
           (((buf.count + loc.intern_name.count - cur) > 70) || {t != loc.type}).if {
             // New line
             (t != NULL).if {

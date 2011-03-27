@@ -149,8 +149,8 @@ Section SYSTEM,MEMORY
     ? {result != 0};
     result
   );
-
-Section Public //ISAAC  
+  
+Section ISAAC  
   
   - make <-
   // Isaac compatibility.

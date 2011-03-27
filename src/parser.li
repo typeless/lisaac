@@ -562,8 +562,8 @@ Section Private
     result
   );
   
-  //-- integer        -> number
-  //-- number         -> {'0'-'9'} ['d']
+  //-- integer        -> number 
+  //-- number         -> {'0'-'9'} ['d'] 
   //--                 | '0'-'9' {'0'-'9' | 'A'-'F' | 'a'-'f'} 'h'
   //--                 | {'0'-'7'} 'o'
   //--                 | {'0' | '1'} 'b'
@@ -681,12 +681,7 @@ Section Private
     }; 
     result    
   );
-
-  //-- escape         -> '\\' separator {separator} '\\'
-  //--                 | '\\' escape_seq
-  //--                 | '\\' integer '\\'
-  //-- escape_seq     -> 'a' | 'b'  | 'f' | 'n'  | 'r'  | 't'
-  //--                 | 'v' | '\\' | '?' | '\'' | '\"' | '0'
+  
   - read_escape_character <-
   ( + nothing:BOOLEAN;
     + val:INTEGER;
@@ -793,9 +788,7 @@ Section Private
     result
   );
   
-  //-- string         -> '\"' string_char '\"'
-  //-- string_char    -> escape
-  //--                 | ascii
+  //-- string         -> '\"' ascii_string '\"'
   - read_string:BOOLEAN <-
   ( + result:BOOLEAN;
     + old_pos:INTEGER;
@@ -865,7 +858,7 @@ Section Private
     result
   );
   
-  //-- operator       -> '!' | '@' | '#' | '$' | '%' | '^' | '&' | '<' | '|'
+  //-- operator       -> '!' | '@' | '#' | '$' | '%' | '^' | '&' | '<' | '|'  
   //--                 | '*' | '-' | '+' | '=' | '~' | '/' | '?' | '\' | '>'
   - read_operator:BOOLEAN <-
   ( + result:BOOLEAN;
@@ -960,7 +953,9 @@ Section Private
 	};	
 	last_section := SECTION_.get_name last_string;	
 	(last_section.is_mapping).if {
-	  object.set_mapping;
+          object.set_mapping;
+        }.elseif {last_section.is_external} then {
+          object.set_external;
 	}.elseif {
 	  (last_section.is_inherit_or_insert) && 
 	  {object.last_slot != NULL} && 
@@ -2464,7 +2459,7 @@ Section Private
 	    };
             
 	    ((! is_shorter) && {! is_shorter2}).if {	      
-	      (object.generic_count = 0).if {
+              (object.generic_count = 0).if {                
 		syntax_error (current_position,"Object can't be generic.");
 	      };
             };
@@ -2603,7 +2598,9 @@ Section Private
           warning_error (current_position,"Added '(' is needed.");
         };              
         {(instr := readlip_expr) != NULL}.while_do {
-          instr.run;
+          ((! is_shorter) && {! is_shorter2}).if {            
+            instr.run;
+          };
           (read_character ';').if_false {
             warning_error (current_position,"Added ';' is needed.");
           };
@@ -2675,7 +2672,7 @@ Section Private
           (read_symbol (ALIAS_STR.symbol_affect_immediate)).if {            
             (read_string).if_false {            
               syntax_error (current_position,"String needed.");            
-            };
+            };            
             string_tmp.copy (object.filename);
             {
               (!string_tmp.is_empty)    && 
@@ -2739,19 +2736,14 @@ Section Private
       (t = NULL).if {
         syntax_error (current_position,"type is incorrect.");
       };      
-      (! read_symbol (ALIAS_STR.symbol_affect_immediate)).if {
-        data := LIP_SLOT_DATA.create current_position name n value t argument FALSE;
-      } else {
+      data := LIP_SLOT_DATA.create current_position name n value t argument FALSE;
+      (read_symbol (ALIAS_STR.symbol_affect_immediate)).if {
         cst := readlip_expr_constant;
         (cst = NULL).if {
           syntax_error (current_position,"Incorrect expression.");
         };
-        (cst.name !== t.name).if {
-          syntax_error (current_position,"Incorrect expression type.");
-        };
-        data := LIP_SLOT_DATA.create current_position name n value cst argument FALSE;
-        //data.set_value cst;
-        //cst.free;
+        data.set_value cst;                
+        cst.free;
       };
     }.elseif {read_character '-'} then {
       // Function.
@@ -3219,10 +3211,13 @@ Section Public
       pos_cur := source.lower;
       pos_line:=1;
       pos_col :=0;
-
+      is_shorter := is_shorter2 := FALSE;
+      
       // Parse.
       readlip_program;
       //
+      is_shorter  := Old is_shorter;
+      is_shorter2 := Old is_shorter2;
       object := NULL; // Parser is Free (see require test...)
     }     
   );

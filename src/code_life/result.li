@@ -62,9 +62,19 @@ Section Public
   ( + wrt:WRITE;
     + rd:READ;
     rd  ?= write.value;
-    rd  := rd.variable.read_direct (rd.position) with NULL;   
-    wrt := write.variable.write (write.position) with NULL value rd;    
+    (rd = NULL).if {
+      wrt := write.variable.write (write.position) with NULL value (write.value.my_copy);    
+    } else {
+      rd  := rd.variable.read_direct (rd.position) with NULL;   
+      wrt := write.variable.write (write.position) with NULL value rd;    
+    };
     create wrt
+  );
+  
+  - execute:INSTR <-
+  (
+    write ?= write.execute;
+    Self
   );
   
   //

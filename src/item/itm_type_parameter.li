@@ -36,7 +36,7 @@ Section Public
   - to_run_for p:PARAMETER_TO_TYPE :TYPE_FULL <-
   ( + result:TYPE_FULL;
         
-    result := p.parameter_to_type Self;
+    result := p.parameter_to_type Self;        
     (result = NULL).if {
       string_tmp.copy "Cannot resolve type for type parameter ";
       append_in string_tmp;

@@ -118,7 +118,7 @@ Section Public
   
   - is_expanded_c:BOOLEAN <- (is_expanded) && {raw.type_c != NULL};
   
-  - Self:SELF '==' Right 60 other:OBJECT :BOOLEAN <-  
+  - Self:SELF '==' Right 60 other:E :BOOLEAN <-  
   ( + same:SELF;
     same ?= other;    
     (same != NULL) && {

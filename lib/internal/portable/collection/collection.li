@@ -533,7 +533,7 @@ Section Public
   // Looking and comparison:
   //
   
-  - Self:SELF '=='  Right 60 other:OBJECT :BOOLEAN <-
+  - Self:SELF '=='  Right 60 other:E :BOOLEAN <-
   // Do both collections have the same `lower', `upper', and
   // items?
   // The basic `=' is used for comparison of items.

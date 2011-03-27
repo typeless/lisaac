@@ -28,7 +28,7 @@ Section Private
   
   - src_path <-
   ( 
-    path ".";
+    path "./";
     path "tools/";
     path "type/";
     path "item/";
@@ -39,8 +39,8 @@ Section Private
     path "external/arithmetic/";
     path "external/comparison/";
     path "dispatcher/";
-    path "code_life/";
-    path "lip/";
+    path "code_life/";    
+    path "lip/";    
   );
   
   - compiler_path <-

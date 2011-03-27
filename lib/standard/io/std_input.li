@@ -40,7 +40,7 @@ Section Public
   
   - is_connected:BOOLEAN := TRUE;
   
-  - read_character :CHARACTER <-
+  - read_character:CHARACTER<-
   // Read character from stdin
   (
     push_back_flag.if {

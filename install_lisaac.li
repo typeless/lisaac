@@ -33,7 +33,7 @@ Section Inherit
   
 Section Private  
   
-  - is_release:BOOLEAN := FALSE;
+  - is_release:BOOLEAN := TRUE;
   
   //
   // Independance File System 
@@ -306,7 +306,7 @@ Section Private
       (shell.is_empty).if {
         "  Error : SHELL environment variable is empty !\n".print;
         system := system_unknown;
-      }.elseif {shell.has_substring "bash"} then {
+      }.elseif {(shell.has_substring "bash") || {shell.has_suffix "/sh"}} then {
         // Unix - bash
         file.append file_bashrc;
         system    := system_unix_bash;
@@ -354,12 +354,10 @@ Section Private
     "  System detect: ".print;
     system.print;
   );
-    
-  - install_variable <-    
-  ( + new_text  :STRING;
-            
-    (system != system_unknown).if {
-      title "Fix target variable in `make.lip'." count 5;
+  
+  - install_make_lip <-
+  (
+    (system != system_unknown).if {      
       (system = system_windows).if {
         ENVIRONMENT.execute_command "copy make.lip.sample make.lip";            
         update "make.lip" idf "  + target" with 
@@ -389,8 +387,14 @@ Section Private
         "  + lib_unstable:STRING := \"\";\n" confirmation FALSE;
       };
     };
-    '\n'.print;    
-        
+    '\n'.print;        
+  );
+  
+  - install_variable <-    
+  ( + new_text  :STRING;
+    
+    title "Fix target variable in `make.lip'." count 5;
+    install_make_lip;
     //
     // Installation environment variable
     //
@@ -589,7 +593,7 @@ Section Private
   
   - compile_file n:STRING_CONSTANT <-
   (         
-    string_tmp.copy "gcc -O2 bin/";
+    string_tmp.copy "gcc -U_FORTIFY_SOURCE -O2 bin/";
     string_tmp.append n;
     string_tmp.append ".c -o bin/";
     string_tmp.append n;
@@ -605,20 +609,26 @@ Section Private
     '\n'.print;
   );    
   
-  - compile_shorter <-
+  - compile_shorter is_root:BOOLEAN <-
   ( + rm,compile:STRING_CONSTANT;
     
     "  Compile `shorter' tools for your system (please wait ...)\n".print;
-    (system = system_windows).if {
-      rm := "del bin\\shorter.c";
-      compile := "bin\\lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
+    (is_root).if {      
+      compile := "lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Ibin/.";
     } else {
-      rm := "rm bin/shorter.c";
-      compile := "bin/lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
+      (system = system_windows).if {
+        rm := "del bin\\shorter.c";
+        compile := "bin\\lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
+      } else {
+        rm := "rm bin/shorter.c";
+        compile := "bin/lisaac src/make.lip -shorter -q -boost -o bin/shorter -gcc -Isrc/.";
+      };
     };
     (ENVIRONMENT.execute_command compile = 0).if {    
       "  Shorter ok!\n".print;      
-      ENVIRONMENT.execute_command rm; 
+      (rm != NULL).if {
+        ENVIRONMENT.execute_command rm; 
+      };
     } else {
       "  Sorry, `shorter' not ready...\n".print;
     };
@@ -634,20 +644,20 @@ Section Private
     string_tmp.clear;    
     (system = system_windows).if {
       ENVIRONMENT.execute_command "mkdir doc\\html";		
-      string_tmp.copy "bin\\shorter -d -f belinda lib\\standard -o doc\\html";
+      string_tmp.copy "bin\\shorter -d -f belinda -o doc\\html";
       // BSBS: A ajouter internal mais sur le meme run shorter
     } else {
-      ENVIRONMENT.execute_command "mkdir -p doc/html";		
-      string_tmp.copy "bin/shorter -d -f belinda lib/standard -o doc/html";
+      ENVIRONMENT.execute_command "mkdir -p doc/html";		      
+      string_tmp.copy "bin/shorter -d -f belinda -o doc/html";
     };      
     "  Execute: `".print;
     string_tmp.print;
     "'\t".print;
     (ENVIRONMENT.execute_command string_tmp = 0).if {
       "  OK\n\n\
-      \  Note: you'll find this documentation in `doc/html/index.html'".print;  
+      \  Note: you'll find this documentation in `doc/html/index.html'\n".print;  
     } else {
-      "  Fail!".print;
+      "  Fail!\n".print;
     };
   );
   
@@ -668,11 +678,14 @@ Section Private
         install_variable;      
         
         title "Compilation of Lisaac compiler." count 5; 
+        "*---------------------------------------------------------*\n\
+        \| Note: You need at least 768MB of memory.                |\n\
+        \*---------------------------------------------------------*\n".print;
         compile_file "lisaac";
         
         title "Compilation of Shorter tool." count 5; 
         
-        compile_shorter;
+        compile_shorter FALSE;
         
         "Welcome to the Lisaac World !                           \n\
         \=============================                           \n\
@@ -732,20 +745,26 @@ Section Private
   );
   
   - path_bin:ABSTRACT_STRING := "/usr/bin";
+  - path_lib:ABSTRACT_STRING := "/usr/lib/lisaac";
   - path_doc:ABSTRACT_STRING := "/usr/share/lisaac";
   - path_man:ABSTRACT_STRING := "/usr/share/man/man1";
   
   - ask_path msg:ABSTRACT_STRING default val:ABSTRACT_STRING :ABSTRACT_STRING <-
-  ( + result:ABSTRACT_STRING;
+  ( + result:STRING;
+    + car:CHARACTER;
     msg.print;
     " [".print;
     val.print;
-    "] ? ".print;
-    IO.read_word;
-    (IO.last_string.is_empty).if {
-      result := val;
-    } else {
+    "] ? (y/n) ".print;
+    car := IO.read_character;
+    IO.read_character;
+    (car.to_lower = 'y').if { 
+      result := val;      
+    } else {      
+      "\n  new path : ".print;
+      IO.read_word;      
       result := IO.last_string;
+      result.remove_first 1;
     };
     result
   );    
@@ -753,9 +772,16 @@ Section Private
   - system_install <-
   ( + path:ABSTRACT_STRING;
     + create:{ (ABSTRACT_STRING,ABSTRACT_STRING,ABSTRACT_STRING,BOOLEAN); };
+    
+    // path.h
+    string_tmp2.copy "#define LISAAC_DIRECTORY \"";
+    string_tmp2.append path_lib;
+    string_tmp2.append "\"\n";
+    update "bin/path.h" idf "#define LISAAC_DIRECTORY" 
+    with string_tmp2 confirmation FALSE;
+    // compile
     compile_file "lisaac";
-    compile_shorter;
-    build_lib;
+    //
     create := { (msg,cpy,dft:ABSTRACT_STRING,ask:BOOLEAN); 
       (ask).if {
         path := ask_path msg default dft;
@@ -768,11 +794,30 @@ Section Private
       string_tmp.copy cpy;
       string_tmp.append path;    
       execute string_tmp;            
-    };
+    };    
+    //
     create.value (" binary path","cp bin/lisaac ",path_bin,TRUE);
+    //
+    create.value (" library path","cp -rf lib ",path_lib,FALSE);
+    install_make_lip;
+    string_tmp.copy "cp make.lip ";
+    string_tmp.append path_lib;
+    string_tmp.append "/.";
+    string_tmp.print; '\n'.print;
+    execute string_tmp;
+    //
+    compile_shorter TRUE;
     create.value (NULL,"cp bin/shorter ",path_bin,FALSE);
+    //
+    create.value (" shorter's mode path","cp -rf shorter ",path_lib,FALSE);
+    build_lib;
     create.value ("Documentation path","cp -rf doc/html/* ",path_doc,TRUE);
+    //
     create.value ("Man path","cp -rf doc/man/* ",path_man,TRUE);
+    "\n*---------------------------------------------------------*\n\
+    \| Note: For Editor feature, please execute                |\n\
+    \|       `install_lisaac' in user mode.                    |\n\
+    \*---------------------------------------------------------*\n".print;
   );
     
 Section Public
@@ -799,7 +844,7 @@ Section Public
     (system != system_windows).if {
       choice := menu "Menu." text 
       "1- User installation.\n\
-      \2- System installation.\n\
+      \2- System installation (root).\n\
       \0- Exit." count 2;
       choice
       .when 1 then { 

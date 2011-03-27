@@ -108,15 +108,15 @@ Section Public
   // Get.
   //
     
-  - get itm_typ:ITM_TYPE_SIMPLE :TYPE_FULL <-  
+  - get (path:STRING_CONSTANT,itm_typ:ITM_TYPE_SIMPLE) :TYPE_FULL <-  
   ( + result:TYPE_FULL;    
     + base:TYPE;
     + styl:STRING_CONSTANT;    
     + proto:PROTOTYPE;
     
     + r:TYPE;
-            
-    proto := load_prototype (itm_typ.name) generic_count 0;            
+        
+    proto := load_prototype (path,itm_typ.name) generic_count 0;
     base := dico_type.fast_reference_at (proto.filename);
     (base = NULL).if {          
       base := TYPE.clone;
@@ -262,6 +262,13 @@ Section Public
     (j <= slot_run.upper).if {
       result := slot_run.item j;
     } else {
+      /*
+      (n == "__init_page").if {
+        "TYPE: get_slot_local : ".print;
+        prototype.filename.print; ' '.print; prototype.print;
+        '\n'.print;
+      };
+      */
       itm_slot := prototype.slot_list.fast_reference_at n;
       (itm_slot != NULL).if {	        
         verify_itm_slot_parent itm_slot;
@@ -273,20 +280,33 @@ Section Public
   );  
     
   - get_path_slot n:STRING_CONSTANT :SLOT <-
-  ( + result:SLOT;
+  ( + result,r:SLOT;
     + j:INTEGER;
     + it:ITM_TYPE_MONO;
+    + t:TYPE_FULL;
     
     j := slot_run.lower;
-    {result = NULL}.while_do {
-      ? {j <= slot_run.upper}; 
-      ? {slot_run.item j.id_section.is_inherit_or_insert};
+    {
+      (result = NULL) && 
+      {j <= slot_run.upper} && // BSBS NE doit jamais arriv
+      {slot_run.item j.id_section.is_inherit_or_insert} // BSBS NE doit jamais arriv
+    }.while_do {      
       it ?= slot_run.item j.result_type;
-      result := it.to_run_for Self.get_slot n;
+      t := it.to_run_for Self;    
+      result := t.get_slot n;
       j := j + 1;
     };
-    ? {result != NULL};
-    slot_run.item (j-1)
+    (result != NULL).if {
+      r := slot_run.item (j-1);
+    } else {
+      "TYPE : ".print;
+      print; 
+      ':'.print;
+      n.print; 
+      '\n'.print;
+      crash;
+    };
+    r
   );
   
   //
@@ -408,41 +428,40 @@ Section Public
     + i,nb:INTEGER;
     + action:{SLOT_DATA; };    
     
-    ((alias_slot = NULL) && {slot_run != NULL}).if {
-      
-      action := { s:SLOT_DATA;       
-        ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
-          (nb = 0).if {
-            ((s.type.is_expanded) && {s.type.raw.type_c = NULL}).if {
-              alias_slot := s;
+    (! is_late_binding).if {
+      ((alias_slot = NULL) && {slot_run != NULL}).if {
+        
+        action := { s:SLOT_DATA;       
+          ((s.ensure_count > 0) || {s.id_section.is_mapping}).if {          
+            (nb = 0).if {
+              ((s.type.is_expanded) && {s.type.raw.type_c = NULL}).if {
+                alias_slot := s;
+              };
+            } else {
+              alias_slot := NULL;
             };
-          } else {
-            alias_slot := NULL;
+            nb := nb + 1;          
           };
-          nb := nb + 1;          
         };
+        
+        i := slot_run.lower;
+        {(i <= slot_run.upper) && {nb < 2}}.while_do {    
+          slot := slot_run.item i;
+          ((slot.style = '+') && {slot.lower_style = 0}).if {
+            (slot.slot_data_list != NULL).if {
+              (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
+                action.value (slot.slot_data_list.item k);
+              };
+            };
+            action.value (slot.slot_data);      
+          };
+          i := i + 1;
+        };   
       };
-      
-      i := slot_run.lower;
-      {(i <= slot_run.upper) && {nb < 2}}.while_do {    
-        slot := slot_run.item i;
-        ((slot.style = '+') && {slot.lower_style = 0}).if {
-          (slot.slot_data_list != NULL).if {
-            (slot.slot_data_list.lower).to (slot.slot_data_list.upper) do { k:INTEGER;
-              action.value (slot.slot_data_list.item k);
-            };
-          };
-          action.value (slot.slot_data);      
-        };
-        i := i + 1;
-      };   
+      ((alias_slot != NULL) && {alias_slot.ensure_count = 0}).if {      
+        alias_slot := NULL;
+      };         
     };
-    (
-      (alias_slot != NULL) &&       
-      {! (is_late_binding -> alias_slot.type.raw.is_late_binding)}  
-    ).if {      
-      alias_slot := NULL;
-    };         
   );
   
   - genere_struct <-
@@ -530,7 +549,7 @@ Section Public
 	(type_c != NULL).if {
 	  0.to 4 do { j:INTEGER;
 	    tab := slot_size.item j;
-	    // BSBS: A tester sont utilitÃ© !
+	    // BSBS: A tester sont utilité !
 	    (! tab.is_empty).if {
 	      semantic_error (tab.first.position,"Slot is not possible with a type C");
 	    };	  
@@ -756,14 +775,14 @@ Section Public
       t := Self;        
       {t.alias_slot = NULL}.until_do {
         t := t.alias_type;
-      };        
+      };              
       output_decl.append "struct ";
       output_decl.append (t.intern_name);
       output_decl.append "_struct";        
       output_decl.append " __";
       output_decl.append intern_name;	  
       output_decl.add_last ';';      
-      (alias_slot != NULL).if {
+      (alias_slot != NULL).if {        
         output_decl.append " /* ALIAS with ";
         output_decl.append (alias_type.intern_name);
         output_decl.append " */";
@@ -940,13 +959,19 @@ Section Public
   
 Section TYPE
 
-  - load_prototype n:STRING_CONSTANT generic_count gen_count:INTEGER :PROTOTYPE <-
+  - load_prototype (call_path:STRING_CONSTANT,n:STRING_CONSTANT) 
+  generic_count gen_count:INTEGER :PROTOTYPE <-
   ( + j,idx_path,idx_name,idx_name_old,idx_path_old:INTEGER;
     + entry:POINTER; 
     + result:PROTOTYPE;
-    + path,found:STRING_CONSTANT;
+    + path,found,cur_found:STRING_CONSTANT;
     + cn,cp:CHARACTER;
     + read_char:{};
+    + stat,found_index,cur_index:INTEGER;
+    + is_only:BOOLEAN;
+    
+    
+    //call_path.print; ' '.print; n.print; '\n'.print;
     
     result := dico_name_to_prototype.fast_reference_at n;        
     (result = NULL).if {
@@ -968,8 +993,10 @@ Section TYPE
         };
       };
       j := path_file.lower;      
-      {(j > path_file.upper) || {result != NULL}}.until_do {      
-        path := path_file.item j;                            
+      is_only := TRUE;
+      {(j > path_file.upper) || {stat = 2}}.until_do {      
+        path := path_file.item j;                                    
+        cur_found := NULL;
         idx_name := n.upper;
         idx_path := path.upper-3; // ".li"
         {
@@ -978,15 +1005,15 @@ Section TYPE
           idx_name := idx_name - 1;
           idx_path := idx_path - 1;
         }.do_while {
-          (idx_name >= n.lower) && 
+          (idx_name >= n.lower)    && 
           {idx_path >= path.lower} && 
           {cn = cp}
-        };
+        };        
         ((idx_name < n.lower) && {cn = cp}).if {
           ((idx_path < path.lower) || {path.item idx_path = '/'}).if {
-            found := path;            
+            cur_found := path;            
           };
-        }.elseif {(cn = '*') && {cp = '/'}} then {        
+        }.elseif {(cn = '*') && {cp = '/'}} then {                  
           idx_name_old := idx_name+1;
           idx_path_old := idx_path+1;
           {(idx_name >= n.lower) && {idx_path >= path.lower}}.while_do {          
@@ -1009,32 +1036,29 @@ Section TYPE
             idx_path := idx_path - 1;                
           };
           (idx_name < n.lower).if {
-            found := path;
+            cur_found := path;
           };
-        };        
-        //"FOUND : ".print;
-        //found.print; '\n'.print;
-        (found != NULL).if {          
-          result := PROTOTYPE.prototype_dico.fast_reference_at found;
-          (result = NULL).if {
-            entry := FS_MIN.open_read found;            
-            ((entry != NULL) /*&& {entry.is_file}*/).if {
-              // Load prototype.
-              FS_MIN.close entry;
-              result := PROTOTYPE.create found name n generic_count gen_count;
-              PARSER.go_on result;              
-            } else {
-              string_tmp.copy "Cannot open `";
-              string_tmp.append found;
-              string_tmp.append "'.";
-              semantic_error (last_position,string_tmp);
+        }.elseif {stat = 1} then {
+          stat := 2;
+        };
+        (cur_found != NULL).if {
+          cur_index := cur_found.first_difference_index call_path;
+          (stat = 0).if {
+            stat := 1;
+            found := cur_found;
+            found_index := cur_index;            
+          } else {
+            is_only := FALSE;
+            (cur_index > found_index).if {
+              found := cur_found;
+              found_index := cur_index;            
             };
           };
-          dico_name_to_prototype.add result to n;      
-        };
+        };        
         j := j + 1;
       };
-      (result = NULL).if {
+      
+      (stat = 0).if {
         string_tmp.copy n;
         string_tmp.append " is not found.\n";
         POSITION.put_error semantic text string_tmp;
@@ -1042,7 +1066,26 @@ Section TYPE
           list_current.position.put_position;
         };
         POSITION.send_error;
-      };	
+      } else {      
+        result := PROTOTYPE.prototype_dico.fast_reference_at found;
+        (result = NULL).if {
+          entry := FS_MIN.open_read found;
+          (entry != NULL).if {
+            // Load prototype.
+            FS_MIN.close entry;
+            result := PROTOTYPE.create found name n generic_count gen_count;
+            PARSER.go_on result;
+          } else {
+            string_tmp.copy "Cannot open `";
+            string_tmp.append found;
+            string_tmp.append "'.";
+            semantic_error (last_position,string_tmp);
+          };
+        };
+        (is_only).if {
+          dico_name_to_prototype.add result to n;
+        };
+      };      
     };
     (result.generic_count != gen_count).if {        
       //crash;      
@@ -1055,6 +1098,9 @@ Section TYPE
       };
       POSITION.send_error;
     };
+    
+    //result.filename.print; '\n'.print; '\n'.print;
+    
     result
   );
   

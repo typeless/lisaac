@@ -1,7 +1,0 @@
-Section Header
-
-  + name := PROTO;
-
-Section Inherit
-
-  + parent :Expanded OBJECT;

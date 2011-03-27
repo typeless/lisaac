@@ -26,8 +26,6 @@ Section Header
   
   - comment     := "X11 - Event System";
   
-  - category    := MICRO;
-  
   - bibliography:= "http://IsaacOS.com";
   - author      := "Benoit Sonntag (bsonntag@loria.fr)";
   

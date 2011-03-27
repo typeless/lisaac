@@ -45,6 +45,7 @@ Section Public
   //
   
   - create p:POSITION slot sl:SLOT self arg:EXPR value v:EXPR :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;

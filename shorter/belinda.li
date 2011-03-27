@@ -107,7 +107,7 @@
   
   - index :=
   "<html><head><title>Lisaac Documentation</title></head>\n\
-  \<frameset cols=\"260,*\" border=\"3\" frameborder=\"yes\" \
+  \<frameset cols=\"300,*\" border=\"3\" frameborder=\"yes\" \
   \framespacing=\"5\" scrolling=\"auto\">\n\
   \  <frameset rows=\"50%,*\" border=\"3\" frameborder=\"yes\" \
   \framespacing=\"5\" scrolling=\"no\">\n\

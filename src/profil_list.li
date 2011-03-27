@@ -38,6 +38,8 @@ Section LISAAC
   
   - life_limit:INTEGER;
   
+  - life_limit_base:INTEGER;
+  
   - current:INTEGER;
   
   - swap i1:INTEGER with i2:INTEGER <-
@@ -50,9 +52,8 @@ Section LISAAC
   - clean <-
   (
     reduce_profil := profil_list.upper >= life_limit;
-    {profil_list.upper >= life_limit}.while_do {
-      profil_list.last.remove;	             
-      ! {profil_list.last.set_life_index (-1)};
+    {profil_list.upper >= life_limit}.while_do {      
+      profil_list.last.remove;	                             
       profil_list.remove_last;
     };
   );
@@ -63,8 +64,17 @@ Section Public
   
   - add p:PROFIL <-
   ( 
-    profil_list.add_last p;
-    p.set_life_index (profil_list.upper);
+    (p.is_external).if {
+      profil_list.add_first p;
+      life_limit_base := life_limit_base + 1;
+      p.set_life_index (profil_list.lower);
+      (profil_list.lower+1).to (profil_list.upper) do { i:INTEGER;
+        profil_list.item i.set_life_index i;
+      };
+    } else {
+      profil_list.add_last p;      
+      p.set_life_index (profil_list.upper);
+    };
   );
   
   - set_life p:PROFIL <-
@@ -134,7 +144,7 @@ Section Public
       profil_list.item i.reset_recursive;
     };
     VARIABLE.update;
-    life_limit := 0;
+    life_limit := life_limit_base;
     PROFIL.set_mode_recursive TRUE;
     profil_current := profil_slot := NULL;
     list_current   := NULL;          
@@ -149,7 +159,7 @@ Section Public
   - execute_pass <-
   (     
     VARIABLE.update;
-    life_limit := 0;
+    life_limit := life_limit_base;
     profil_slot := NULL;
     list_current   := NULL; 
     list_main.execute;      

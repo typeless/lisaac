@@ -45,12 +45,9 @@ Section Public
     
   - debug_level:INTEGER               <- `11`;
   - compiler_inlining_level:INTEGER   <- `18`;
-  - compiler_optimization:BOOLEAN     <- `19`;
+  - compiler_optimization:BOOLEAN     <- `19`; 
   - compiler_built_on:STRING_CONSTANT <- `20`;
-  - compiler_debug_with_code:BOOLEAN  <- `21`;
-  - compile_time:TIME                 <- TIME.create_csecond `22`;
-  - compile_date:DATE                 <- DATE.decode `23`;
-
+  
   - is_ansi:BOOLEAN := SYSTEM.is_ansi;
   
   //
@@ -112,7 +109,7 @@ Section Public
   // Common Function.
   //
   
-  - Self:SELF '=='  Right 60 other:OBJECT :BOOLEAN <- ( deferred; FALSE);
+  - Self:SELF '=='  Right 60 other:E :BOOLEAN <- ( deferred; FALSE);
   
   - Self:SELF '!==' Right 60 other:OBJECT :BOOLEAN <- (! (Self == other));
   
@@ -172,12 +169,13 @@ Section Public
 
   - to_string :STRING <- to_pointer.to_string;
 
-  - to_abstract_string :ABSTRACT_STRING <- to_string;
+  - print <- to_string.print;
 
-  - print <- to_abstract_string.print;
-
-  - println <- to_abstract_string.println;
-  
+  - println <- 
+  ( 
+    to_string.println; 
+  );
+    
   - dynamic_type:SELF <- SELF;
   
   - same_dynamic_type other:OBJECT :BOOLEAN <-
@@ -203,7 +201,7 @@ Section Public
   // Reflexivity.
   //
   
-  - forall_data action:{ E; } <- `24`;
+  - forall_data action:{ E; } <- `21`;
   
   //
   // The Guru section (Don't touch, don't use !)

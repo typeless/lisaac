@@ -117,6 +117,13 @@ Section Public
   
   - Self:SELF '>='  Right 60 other:SELF :BOOLEAN <- (Self > other) | (Self = other);
   
+  - Self:SELF '=='  Right 60 other:E :BOOLEAN <- 
+  ( + my_other:SELF;
+    
+    my_other := other;
+    Self = my_other
+  );
+  
   //
   // Switch case :
   //

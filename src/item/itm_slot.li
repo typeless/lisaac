@@ -410,5 +410,6 @@ Section Private
     (t.generic_count = 0).if {
       a := ITM_PROTOTYPE.create (v.position) type (ITM_TYPE_SIMPLE.get (t.name));            
     };
+        
     ITM_READ_ARG1.create (v.position) name n arg a
   );

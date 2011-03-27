@@ -117,7 +117,7 @@ Section Public
     msg_err.append " in ";
     msg_err.append (prototype.name);    
     msg_err.add_last '(';
-    msg_err.append (prototype.filename);
+    prototype.append_filename msg_err;
     msg_err.append "):\n";
     // Search begin line :
     src := prototype.source;
@@ -173,7 +173,7 @@ Section Public
       char := src.item pos;
       (char)
       .when '\\' then { string_tmp.add_last '\\'; }
-      .when '"' then { string_tmp.add_last '\\'; };
+      .when '\"' then { string_tmp.add_last '\\'; };
       string_tmp.add_last char;      
       pos := pos + 1;
     };    

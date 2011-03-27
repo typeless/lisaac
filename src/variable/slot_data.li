@@ -315,6 +315,9 @@ Section Public
     } else {
       type_list := TYPES_TMP.types_empty;
     };
+    ((type.raw.is_block) && {name != ALIAS_STR.slot_id} && {name != ALIAS_STR.slot_self}).if {      
+      list_variable_block.add_last Self;
+    };
     ? {type != NULL};            
   );
     
@@ -330,6 +333,7 @@ Section Public
     + old_list:LIST;
     + rd:ITM_READ_ARG1;
     + old_profil_current:PROFIL;
+    + old_profil_slot:PROFIL_SLOT;
    /* 
     string_tmp.copy "init : ";
     string_tmp.append name; 
@@ -339,7 +343,8 @@ Section Public
       // Context.      
       old_list := list_current;
       old_profil_current := profil_current;
-      profil_current := NULL;
+      old_profil_slot    := profil_slot;
+      profil_current := profil_slot := NULL;
       value_init := list_current := LIST.create position;      
       
       (Self = slot_id).if {
@@ -378,8 +383,9 @@ Section Public
       list_current.add_last wrt;    
       list_current.add_last (PROTOTYPE_CST.create position type (TYPE_VOID.default)); // BSBS:Alias
       
-      list_current := old_list;
+      list_current   := old_list;
       profil_current := old_profil_current;
+      profil_slot    := old_profil_slot;
     };
   );
   

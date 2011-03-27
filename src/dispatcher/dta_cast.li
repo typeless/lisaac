@@ -41,6 +41,7 @@ Section Public
   //
   
   - create p:POSITION type t:TYPE_FULL :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;
@@ -50,6 +51,7 @@ Section Public
   
   - make p:POSITION type t:TYPE_FULL <-
   (
+    position := p;
     result_expr := t.get_temporary_expr p;
     (profil_current = NULL).if {
       context := context_main;

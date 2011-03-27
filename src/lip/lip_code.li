@@ -185,3 +185,46 @@ Section Public
     NULL
   );
   
+  - call_front_end <-
+  ( + s:LIP_SLOT_CODE;    
+    // Executing `front_end':
+    s := LIP_CODE.get_method (ALIAS_STR.slot_front_end);
+    (s = NULL).if {
+      "Slot `front_end' not found in *.lip file.\n".print;
+      die_with_code exit_failure_code;
+    };
+    s.run_with NULL;        
+  );
+  
+  - init_path_file order:BOOLEAN <-
+  ( + k,i:INTEGER;
+    + p1,p2:STRING_CONSTANT;
+    
+    (order).if {
+      path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
+        b < a
+      };        
+    } else {
+      path_file.bubble_sort_with { (a,b:STRING_CONSTANT); 
+        b !< a
+      };        
+    };
+    k := path_file.upper;
+    path_begin := path_file.first.upper;
+    {k <= path_file.lower}.until_do {
+      p1 := path_file.item k;
+      p2 := path_file.item (k-1);
+      (p1 = p2).if {
+        path_file.remove k;
+      } else {
+        path_begin := path_begin.min (p1.upper);
+        i := p1.lower;
+        {(i < path_begin) && {p1.item i = p2.item i}}.while_do {
+          i := i + 1;
+        };
+        path_begin := i;
+      };
+      k := k - 1;
+    };
+    path_begin := (path_begin - 1).max 1;
+  );

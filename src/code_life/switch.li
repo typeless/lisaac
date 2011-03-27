@@ -63,6 +63,7 @@ Section Public
   //
   
   - create n:NODE with e:EXPR size s:INTEGER :SELF <-
+  [ -? {n.position != 0}; ]
   ( + result:SELF;
     
     result := clone;
@@ -71,8 +72,9 @@ Section Public
   );  
   
   
-  - make n:NODE with e:EXPR size s:INTEGER <-
+  - make n:NODE with e:EXPR size s:INTEGER <-  
   ( + first:CASE;
+    
     position := n.position;
     expr     := e;
     list     := FAST_ARRAY(CASE).create_with_capacity s;
@@ -116,7 +118,7 @@ Section Public
       expr.remove;
     };
     (list.lower).to (list.upper) do { j:INTEGER;
-      list.item j.code.remove;
+      list.item j.remove;
     };    
   );
   
@@ -169,7 +171,36 @@ Section Public
       };
       string_tmp.print;
       '\n'.print;
-      syntax_error (position,"*****SWITCH BUG********");
+      /*
+      string_tmp.clear;
+      profil_current.display string_tmp;
+      string_tmp.print;
+      
+      
+      ( + wrt2:WRITE;
+        + rd:READ;
+        + var:VARIABLE;
+        
+        rd ?= expr;
+        var := rd.variable;
+        wrt2 := var.require_first;
+        rd ?= wrt2.value;
+        var := rd.variable;
+        
+        wrt2 := var.require_first;
+        wrt2.debug_display;
+        "==============\n".print;
+        (var.require_list.lower).to (var.require_list.upper) do { i:INTEGER;
+          "==============\n".print;          
+          i.print; '\n'.print;
+          wrt2 := var.require_list.item i;
+          wrt2.debug_display;
+          (i = 2).if {
+            warning_error (wrt2.position,"ICI");
+          };
+        };
+      );*/
+      syntax_error (expr.position,"*****SWITCH BUG********");
     };
     
     //    
@@ -216,6 +247,9 @@ Section Public
       is_end := TRUE;
     }.elseif {count_empty = list.count} then { 
       result := expr.execute_unlink;
+      (list.lower).to (list.upper) do { j:INTEGER;
+        list.item j.remove;
+      };
       is_end := TRUE;
     };
     //
@@ -262,7 +296,7 @@ Section Public
   // Genere.
   //
   
-  - bug_count:INTEGER;
+  - count_bug:INTEGER;
   
   - genere buffer:STRING <-
   ( + lst:LIST;
@@ -274,7 +308,13 @@ Section Public
     + c1,c2:CASE;
     + lst_case:FAST_ARRAY(CASE);
     + cases:FAST_ARRAY(FAST_ARRAY(CASE));
-        
+    
+    buffer.append "/* ";
+    (list.lower).to (list.upper) do { i:INTEGER;      
+      list.item i.id.put_id buffer;
+      buffer.add_last ' ';
+    };
+    buffer.append "*/\n";
     (
       (list.first.id = TYPE_NULL) && 
       {debug_level_option = 0} && 
@@ -292,7 +332,6 @@ Section Public
       buffer.append "if (";
       //                        
       ((expr.static_type.raw.is_block) && {typ_first = TYPE_NULL}).if {        
-        buffer.append "/* ICI */";
         expr.genere buffer;
         is_genered := TRUE;
         buffer.append ".__id==0";
@@ -367,8 +406,30 @@ Section Public
             buffer.remove_last 1;              
             lst_case.first.genere buffer;                    
             buffer.append " break;\n";
-          };
+          } 
+          
+          // Debug...
+          else {
+            (lst_case.lower).to (lst_case.upper) do { i:INTEGER;              
+              buffer.append indent; 
+              buffer.append "case ";
+              lst_case.item i.id.put_id buffer;
+              buffer.append ": \n";          
+            };
+            buffer.remove_last 1;                          
+            buffer.append " break;\n";
+          };          
         };	      
+        // Debug...
+        (debug_level_option != 0).if {
+          buffer.append indent;
+          buffer.append "default:\n";
+          buffer.append indent;
+          buffer.append "lisaac_stack_print(top_context); \
+          \print_string(\"Call on twilight zone!!!\\n\"); \
+          \die_with_code(1);\n";
+        };
+        
         buffer.append indent;
         buffer.add_last '}';
       };

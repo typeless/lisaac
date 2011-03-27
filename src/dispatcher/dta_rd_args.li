@@ -62,6 +62,7 @@ Section Public
   //
   
   - create p:POSITION call sl:SLOT with args:FAST_ARRAY(EXPR) intern flag:BOOLEAN :SELF <-
+  [ -? {p != 0}; ]
   ( + result:SELF;
     
     result := clone;

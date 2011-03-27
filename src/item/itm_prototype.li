@@ -61,8 +61,7 @@ Section Public
   ( + t:TYPE_FULL;
     + result:EXPR;
         
-    last_position := position;                
-    t := type.to_run_for profil_slot;        
+    t := type.to_run_for profil_slot;            
     (t = NULL).if {
       string_tmp.copy "Type `";
       type.append_in string_tmp;

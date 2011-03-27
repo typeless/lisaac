@@ -121,7 +121,7 @@
 <!-- http://www.kate-editor.org/article/writing_a_kate_highlighting_xml_file -->
 <!-- Created By Anthony Pajot <Anthony.Pajot@etu.enseeiht.fr> -->
 <!-- thanks to Mildred for his additions -->	
-<language name="Lisaac v0.2" version="2.02" kateversion="2.3" section="Sources" extensions="*.li;*.lip" mimetype="text/x-li;text/x-lip" casesensitive="true" author="Anthony Pajot ( anthony.pajot@etu.enseeiht.fr )" license="GPL v2">
+<language name="Lisaac v0.2" version="2.02" kateversion="2.3" section="Sources" extensions="*.li" mimetype="text/x-li" casesensitive="true" author="Anthony Pajot ( anthony.pajot@etu.enseeiht.fr )" license="GPL v2">
     <highlighting>
         <contexts>
 		   <!--#################################################################
@@ -1140,7 +1140,6 @@
 			<!--############################################################-->
 			<!--le contexte pour les commentaires multi-lignes -->
 			<context name="comment" attribute="comment" fallthrough="true" fallthroughContext="#pop">
-				<RegExpr String="/[*]" context="comment" attribute="comment" endRegion="multiline_comment" />
 				<RegExpr String="[*]/" context="#pop" attribute="comment" endRegion="multiline_comment" />
 				<!--evalué que si la 1ere ne marche pas.-->
 				<RegExpr String="." context="#stay" />
@@ -1239,8 +1238,8 @@
     </highlighting>
     <general>
         <comments>
-            <comment name="singleLine" start="//" />
-			<!--<comment name="multiLine" start="/*" end="*/" />-->
+            <!--<comment name="singleLine" start="//" />
+			<comment name="multiLine" start="/*" end="*/" />-->
         </comments>
         <keywords casesensitive="1" additionalDeliminator="`"/>
     </general>

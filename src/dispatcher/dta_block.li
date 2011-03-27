@@ -52,6 +52,7 @@ Section Public
   );
   
   - make mod:TYPE_BLOCK with larg:FAST_ARRAY(EXPR) <-
+  [ -? {mod.position != 0}; ]
   (    
     (profil_current = NULL).if {
       context := context_main;
@@ -59,6 +60,7 @@ Section Public
       context := profil_current.context;
     };    
     model         := mod;
+    position      := mod.position;
     argument_list := larg;
     result_expr   := mod.get_expr_for (mod.position);    
   );

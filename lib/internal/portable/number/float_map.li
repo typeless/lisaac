@@ -24,7 +24,7 @@ Section Header
     
   - comment := "Mapping for REAL_xx.";
   
-Section Private
+Section PRIVATE
   
   - deferred <- crash_with_message "Slot deferred.";
   

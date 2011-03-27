@@ -164,8 +164,32 @@ Section Public
     } else {
       (other.count < i).if {
         result := FALSE;
+      } else {
+        result := item i < other.item i;
       };
-      result := item i < other.item i;
+    };
+    result
+  );
+  
+  - Self:SELF '!<' other:ABSTRACT_STRING :BOOLEAN <-
+  // Is Current less than `other' ? But, the `upper' to `lower' comparaison
+  ( + i1,i2: INTEGER;
+    + result:BOOLEAN;
+    
+    i1 := upper;
+    i2 := other.upper;
+    {(i1 < lower) || {i2 < other.lower} || {item i1 != other.item i2}}.until_do {
+      i1 := i1 - 1;
+      i2 := i2 - 1;
+    };
+    (i1 < lower).if {
+      result := i2 >= other.lower;
+    } else {
+      (i2 < other.lower).if {
+        result := FALSE;
+      } else {
+        result := item i1 < other.item i2;
+      };
     };
     result
   );
@@ -224,7 +248,7 @@ Section Public
     result
   );
   
-  - Self:SELF '==' Left 40 other:OBJECT :BOOLEAN <-
+  - Self:SELF '==' Left 40 other:E :BOOLEAN <-
   // Has Current the same text as `other' ?
   ( + same:ABSTRACT_STRING;
     same ?= other;
@@ -319,6 +343,27 @@ Section Public
   // Index of last occurrence of `c' at index upper or before index upper.
   (
     fast_last_index_of c
+  );
+  
+  - first_difference_index other:ABSTRACT_STRING :INTEGER <-
+  // First difference index with `other'.
+  // if `other' is equal `Self', return `upper' + 1
+  [ -? {other != NULL}; ]
+  ( + result:INTEGER;
+    
+    (Self = other).if {
+      result := upper + 1;
+    } else {
+      result := lower;
+      {
+        (result <= upper) && 
+        {result <= other.upper} && 
+        {item result = other.item result}
+      }.while_do {
+        result := result + 1;
+      };    
+    };
+    result
   );
   
   - has ch:CHARACTER :BOOLEAN <- storage.fast_has ch until (count - 1);
@@ -955,7 +1000,7 @@ Section Public
     result
   )
   [
-    +? {Result.count = Old count + other.count};
+    +? {Result.count = count + other.count};
   ];
     
   - as_lower:STRING <-
@@ -1257,10 +1302,10 @@ Section Public
     ? { (words.count) >= old_count };
   );
   
-  /*- get_new_iterator:ITERATOR(CHARACTER) <-
+  - get_new_iterator:ITERATOR(CHARACTER) <-
   (
     ITERATOR_ON_STRING(CHARACTER).create Self
-  );*/
+  );
   
   - same_string other:ABSTRACT_STRING :BOOLEAN <-
   // Do self and other have the same character sequence?
@@ -1276,8 +1321,6 @@ Section Public
   (
     STRING.create_from_string Self
   );
-
-  - to_abstract_string :ABSTRACT_STRING <- Self;
   
   - string_buffer:STRING := STRING.create 256; // Private, temporary once buffer.
   
@@ -1304,9 +1347,9 @@ Section Public
   );
   
   - println <-
+  [ -? {storage.item count = '\0'}; ]
   (
-    print;
-    '\n'.print;
+    to_external.println;
   );
   
   //
@@ -1322,6 +1365,5 @@ Section Public
     deferred;
     NULL
   );
-
 
 

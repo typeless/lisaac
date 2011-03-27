@@ -193,7 +193,20 @@ Section Private
       position.put_position;
       POSITION.send_error;
     };
-    
+    /*
+    (profil.name == "to__do__AAJH").if {
+      "HERE!\n".print;
+      (profil.is_inlinable).if {    
+        "YES!\n".print;
+      } else {
+        "NO\n".print;
+      };
+      profil.stat.print; ' '.print;
+      profil.link_count.print;
+      '\n'.print;
+      '\n'.print;
+    };
+    */
     (profil.is_inlinable).if {    
       (profil.link_count = 1).if {
         // 
@@ -280,7 +293,12 @@ Section Private
 	  };
 	};
       };
-    };            	          
+    };            	              
+    /* BSBS: A revoir avec pb `list' l.352 et `profil' pour result
+    (result_list.lower).to (result_list.upper) do { j:INTEGER;
+      result_list.item j.execute;
+    };
+    */
     (cop_argument != NULL).if {
       cop_argument := cop_argument.execute_link;
       (

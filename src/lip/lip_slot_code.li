@@ -40,7 +40,7 @@ Section Public
   + argument:LIP_SLOT_DATA;
     
   + code:LIP_CODE;
-    
+  
   + comment:STRING_CONSTANT;
   
   // + comment_chapter:STRING_CONSTANT;
@@ -61,8 +61,7 @@ Section Public
   // Creation.
   //
 
-  - create p:POSITION
-  section sec:STRING_CONSTANT
+  - create p:POSITION section sec:STRING_CONSTANT 
   name n:STRING_CONSTANT 
   argument arg:LIP_SLOT_DATA
   code c:LIP_CODE :LIP_SLOT_CODE <-
@@ -75,26 +74,21 @@ Section Public
       };      
     } else {    
       result := clone;
-      result.make     p
-             section  sec
-             name     n
-             argument arg
-             code     c;
+      result.make p section sec name n argument arg code c;      
     };
     result
   );
 
-  - make p:POSITION
-  section sec:STRING_CONSTANT
+  - make p:POSITION section sec:STRING_CONSTANT 
   name n:STRING_CONSTANT 
   argument arg:LIP_SLOT_DATA 
   code c:LIP_CODE <-
-  (
-    position       := p;
-    section        := sec;
-    name           := n;
-    argument       := arg;
-    code           := c;
+  ( 
+    position := p;
+    section := sec;
+    name := n;
+    argument := arg;    
+    code := c;        
     list_method.add_last Self;
   );
   
@@ -130,9 +124,6 @@ Section Public
   (
     "  -".print;
     name.print;
-    //string_tmp.copy name;
-    //string_tmp.replace_all '_' with '-';
-    //string_tmp.print;
     (argument != NULL).if {
       " <".print;
       argument.print;

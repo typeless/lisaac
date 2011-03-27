@@ -145,10 +145,11 @@ Section Public
   // Extern creation cast.
   //
   
-  - new_cast p:POSITION type typ:TYPE_FULL with val:EXPR :NODE <-
+  - new_cast p:POSITION type typ:TYPE_FULL with val:EXPR :NODE <-  
+  [ -? {p != 0}; ]
   ( + dta:DTA_CAST;
     + result:NODE_TYPE;
-    
+        
     dta := DTA_CAST.create p type typ;
     result := NODE_TYPE.create val with dta;
     //
@@ -213,7 +214,10 @@ Section Public
   
 Section Public  
   
-  - position:POSITION <- data.position;
+  - position:POSITION <- 
+  ( 
+    data.position
+  );
   
   + data:DTA;
   
@@ -267,7 +271,13 @@ Section Public
     };
     result
   );
-    
+  
+  - genere buffer:STRING <-
+  (
+    "Genere NODE!\n".print;
+    crash;
+  );
+  
   
 Section NODE, DTA  
 

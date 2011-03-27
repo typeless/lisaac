@@ -34,7 +34,7 @@ Section Inherit
   
 Section Public
   
-  - Self:SELF '=='  Right 60 other:OBJECT :BOOLEAN <- 
+  - Self:SELF '=='  Right 60 other:E :BOOLEAN <- 
   ( + result:BOOLEAN;
     + same:SELF;
     same ?= other;

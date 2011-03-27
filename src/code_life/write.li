@@ -121,6 +121,7 @@ Section Public
     ? { variable != NULL };
     ? { value    != NULL };
     
+    simplify_type variable;
     //debug_display;
     
     slot ?= variable;
@@ -251,8 +252,4 @@ Section Public
       buffer.add_last '>';
     };
   );
-  
-
-
-
 
