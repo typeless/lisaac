@@ -18,4 +18,5 @@
   (setq load-path
       (nconc load-path (list "/usr/share/emacs/site-lisp/lisaac-mode")))
   
-  (load "lisaac-mode"))
+  (autoload 'lisaac-mode "lisaac-mode"
+            "Major mode for editing typical Lisaac code." t))
