@@ -1,3 +1,2 @@
 version=3
-# disabled since we got a forbidden...
-#http://lisaac.org/download/lisaac-(.*)\.tar\.gz
+http://lisaac.org/download/lisaac-(.*)\.tar\.gz
