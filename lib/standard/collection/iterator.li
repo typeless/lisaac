@@ -85,7 +85,6 @@ Section Public
   [
     -? {inc != 0};
     -? {t != NULL};
-    -? {t.valid_index i};
   ]
   (
     increment := inc;
@@ -96,7 +95,7 @@ Section Public
 
   - make t:TRAVERSABLE(V) index i:INTEGER :SELF <-
   (
-    make t index i increment 1;
+    make t index i increment 1
   );
 
   //
@@ -110,6 +109,8 @@ Section Public
   - valid_next :BOOLEAN <- valid_relative (+increment);
   - valid_prev :BOOLEAN <- valid_relative (-increment);
   - valid_previous :BOOLEAN <- valid_prev;
+  - first :BOOLEAN <- ! valid_prev;
+  - last  :BOOLEAN <- ! valid_next;
 
   //
   // Move:
@@ -178,7 +179,8 @@ Section Public
     ? { ! valid };
   ];
 
-  - iterate b:{} <- { valid }.while_do { b.value; next; };
 
-  - iterate_v b:{V;} <- { valid }.while_do { b.value get; next; };
+  - loop b:{} <- { valid }.while_do { b.value; next; };
+
+  - loop_v b:{V;} <- { valid }.while_do { b.value get; next; };
 
