@@ -12,6 +12,18 @@ Install.
 
 Note for Windows/Dos: read our wiki at http://wiki.lisaac.org JBJB : A revoir!!!
 
+For those who want to install everything manually:
+
+    make bin/lisaac
+    make make.lip
+    echo "PATH=\"$(pwd)/bin:\$PATH\"; export PATH" >> /etc/profile.d/lisaac.sh
+    chmod +x /etc/profile.d/lisaac.sh
+
+Known Problems
+==============
+
+  * Doesn't work when lisaac is compiled with gcc optimizations
+
 Directory description.
 ======================
 

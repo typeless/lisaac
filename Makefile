@@ -47,7 +47,7 @@ HTML=/html
 DESTDIR?=
 
 CC=gcc
-CFLAGS=-O2
+CFLAGS=-O1
 
 default: user
 	@echo "###########################################################"
