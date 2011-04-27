@@ -47,7 +47,8 @@ HTML=/html
 DESTDIR?=
 
 CC=gcc
-CFLAGS=-O1
+CFLAGS=-O2 -fno-strict-overflow -Wstrict-overflow=5
+
 
 default: user
 	@echo "###########################################################"

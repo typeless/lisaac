@@ -289,7 +289,7 @@ Section Public
   // Full optimization (lisaac and gcc).
   (
     optim;
-    option_gcc := option_gcc + " -O2 -fomit-frame-pointer";
+    option_gcc := option_gcc + " -O2 -fno-strict-overflow -fomit-frame-pointer";
   );
   
   - i level:INTEGER <-
