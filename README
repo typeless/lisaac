@@ -22,7 +22,31 @@ For those who want to install everything manually:
 Known Problems
 ==============
 
-  * Doesn't work when lisaac is compiled with gcc optimizations
+  * Doesn't work when lisaac is compiled with gcc optimization -fstrict-overflow
+  
+  * The compiler can crash on a deferred slot when using empty ARRAYs.
+    
+    The deferred slot in in VARIABLE. The VARIABLE object is created by
+    TYPE_GENERIC for the NATIVE_ARRAY special case. This variable is used by the
+    PUT_TO and ITEM instructions.
+    
+    When an array is created empty (using for example FAST_ARRAY(E).create 0)
+    and the compiler can statically know that the array will be used empty for
+    the first time, it will crash.
+    
+    There are two workarounds:
+    
+      - When you create the array, create it with an element and remove it just
+        after
+      - Or create it with a capacity of 1. This can be done in the FAST_ARRAY
+        prototype directly if you don't know which array in your code triggered
+        this error.
+        
+  * Perhaps related to the previous error: code generation can sometimes
+    generate variables but don't declare them. This cause a C error. The cause
+    of this isn't known yet. The best way is to avoid writing code that might
+    trigger this error.
+
 
 Directory description.
 ======================

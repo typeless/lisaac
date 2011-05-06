@@ -1,3 +1,25 @@
+mildred-stable
+==============
+ * compiler: workaround: sometimes a variable read is generated but it is not
+   declared in the C source code. Now, every read makes sure the variable is
+   declared. This may be a little slower though. (grep for WORKAROUND)
+ * lib: workaround: don't trigger native array bug (see README and grep for
+   WORKAROUND)
+ * lib: deferred slots and crash now display the current dynamic type
+
+mildred-r3
+==========
+ * Only disable gcc optimization -fstrict-overflow
+
+mildred-r2
+==========
+ * Disable gcc -O2 optimizations as it makes compiler crash
+
+mildred-r1
+==========
+ * Code coverage
+ * Lot of things
+
 Version 0.39 rc1:
 =================
 2009/12/01

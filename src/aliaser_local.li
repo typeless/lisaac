@@ -25,7 +25,9 @@ Section Header
   - copyright := "2003-2009 Sonntag Benoit";
 
   - author    := "Sonntag Benoit (sonntag@icps.u-strasbg.fr)";
-  - comment   := "Aliaser local";
+  - comment   := "Aliaser local. Track which variables are generated in a \
+                 \function body so that they are all declared in the function. \
+                 \This is also used to determine if some locals can be reused.";
 
 Section Inherit
 
@@ -38,6 +40,7 @@ Section ALIASER_LOCAL,LIST
   - top_context:INTEGER;
 
   - var_size:FAST_ARRAY(FAST_ARRAY(LOCAL)) :=
+  // List of locals ordered by size in bytes.
   ( + result:FAST_ARRAY(FAST_ARRAY(LOCAL));
 
     result := FAST_ARRAY(FAST_ARRAY(LOCAL)).create_with_capacity 4;
@@ -52,6 +55,7 @@ Section Public
   - is_on:BOOLEAN := TRUE;
 
   - reset <-
+  // Reset state. Remove all locals from the list
   (
     (var_size.lower).to (var_size.upper) do { i:INTEGER;
       var_size.item i.clear;
@@ -69,6 +73,7 @@ Section Public
     ((is_on) && {loc.style = '+'}).if {
       loc2 := loc.my_alias;
       (loc2 = NULL).if {
+        // No alias
         loc2 := search_alias loc;
         (loc2 = loc).if {
           add_var_size loc;
