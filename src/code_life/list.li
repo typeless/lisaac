@@ -356,10 +356,9 @@ Section Public
 
     // Local.
     string_tmp.clear;
-    add_local (ALIASER_LOCAL.var_size.item 3) in string_tmp; // 64 bits
-    add_local (ALIASER_LOCAL.var_size.item 2) in string_tmp; // 32 bits
-    add_local (ALIASER_LOCAL.var_size.item 1) in string_tmp; // 16 bits
-    add_local (ALIASER_LOCAL.var_size.item 0) in string_tmp; //  8 bits
+    ALIASER_LOCAL.var_size.upper.downto (ALIASER_LOCAL.var_size.lower) do { s:INTEGER;
+      add_local (ALIASER_LOCAL.var_size.item s) in string_tmp;
+    };
     buffer.insert_string string_tmp to pos_local;
   );
 
