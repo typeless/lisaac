@@ -93,18 +93,24 @@ Section Public
 
   - read rd:READ_LOCAL :STRING_CONSTANT <-
   ( + loc,loc2:LOCAL;
-    + result:STRING_CONSTANT;
 
     loc := rd.local;
     loc2 := loc.my_alias;
     loc.unread rd;
     ((loc2 = NULL) || {! is_on}).if {
-      result := loc.intern_name;
+      loc2 := loc;
     } else {
       loc2.set_ensure_count (loc.ensure_count);
-      result := loc2.intern_name;
     };
-    result
+    // WORKAROUND: Mildred: Sometimes the READ is generated but there is no
+    // WRITE generated. This makes sure that the variable is always declared in
+    // the generated source code.
+    (loc2.style = '+').if {
+      add_var_size loc2.if {
+        warning_error2(rd.position, loc2.position, "Read an uninitialized variable");
+      };
+    };
+    loc2.intern_name
   );
 
   - push p:PUSH :STRING_CONSTANT <-
@@ -139,10 +145,11 @@ Section Public
 
 Section ALIASER_LOCAL, READ_LOCAL
 
-  - add_var_size v:LOCAL <-
+  - add_var_size v:LOCAL :BOOLEAN <-
   ( + tab:FAST_ARRAY(LOCAL);
     + j:INTEGER;
     + t:TYPE_FULL;
+    + added :BOOLEAN;
 
     ? {v.style = '+'};
 
@@ -160,14 +167,17 @@ Section ALIASER_LOCAL, READ_LOCAL
     };
     (j > tab.upper).if {
       tab.add_last v;
+      added := TRUE;
     } else {
       {(j <= tab.upper) && {tab.item j != v} && {tab.item j.type = t}}.while_do {
 	j := j + 1;
       };
       ((j > tab.upper) || {tab.item j != v}).if {
 	tab.add v to j;
+	added := TRUE;
       };
     };
+    added
   );
 
 Section Private
