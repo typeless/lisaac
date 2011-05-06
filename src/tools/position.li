@@ -182,6 +182,14 @@ Section Public
     };
     STRING.create_from_string string_tmp
   );
+  
+  - debug_println <-
+  (
+    msg_err.clear;
+    put_position;
+    msg_err.println;
+    msg_err.clear;
+  );
 
 Section Private
 

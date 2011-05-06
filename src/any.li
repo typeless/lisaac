@@ -497,6 +497,27 @@ Section Public
     LIP_CODE.put_string path_lisaac to (ALIAS_STR.variable_lisaac);
   );
 
+  - debug_print_execute_trace <-
+  (
+    (loop_list != NULL).if {
+      "======== LOOP LIST =========".println;
+      loop_list.position.debug_println;
+    };
+    (list_main != NULL).if {
+      "======== LIST MAIN =========".println;
+      list_main.position.debug_println;
+    };
+    (list_current != NULL).if {
+      "======= LIST CURRENT =======".println;
+      list_current.position.debug_println;
+    };
+    "========== BOTTOM ==========".println;
+    seq_list.lower.to (seq_list.upper) do { i:INTEGER;
+      seq_list.item i.position.debug_println;
+    };
+    "=========== TOP ============".println;
+  );
+
   //
   // Activate debug
   //

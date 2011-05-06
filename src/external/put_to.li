@@ -83,6 +83,10 @@ Section Public
 
   - remove <-
   (
+    warning_error (position, "PUT_TO.remove");
+    // ? { variable.dynamic_type = VARIABLE };
+    // This will crash every time (deferred slot in VARIABLE)
+    // warning (position, "Prevent crash, undo remove of PUT_TO");
     variable.unwrite Self;
     //
     receiver.remove;
