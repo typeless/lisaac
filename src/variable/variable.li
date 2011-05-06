@@ -186,23 +186,36 @@ Section Public
 
   - reset_last_write w:WRITE <-
   (
-    deferred;
+    warning_error2(w.position, w.value.position, "Deferred: reset_last_write WRITE");
+    debug_print_execute_trace;
+    w.debug_display;
+    // print_runtime_stack;
+    // deferred;
   );
 
   - set_write w:WRITE <-
   (
+    warning_error2(w.position, w.value.position, "Deferred: set_write WRITE");
+    w.debug_display;
     deferred;
   );
 
   - set_read <-
   (
+    "Deferred: set_read".println;
     deferred;
   );
 
-  - get_last_index:INTEGER <- deferred;
+  - get_last_index:INTEGER <-
+  (
+    "Deferred: get_last_index".println;
+    deferred;
+  );
 
   - get_last_value rec:EXPR :EXPR <-
   (
+    warning(rec.position, "Deferred: get_last_value EXPR");
+    rec.debug_display;
     deferred;
     NULL
   );
