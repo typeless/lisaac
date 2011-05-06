@@ -1,5 +1,8 @@
 mildred-stable
 ==============
+
+mildred-r4
+==========
  * compiler: workaround: sometimes a variable read is generated but it is not
    declared in the C source code. Now, every read makes sure the variable is
    declared. This may be a little slower though. (grep for WORKAROUND)
