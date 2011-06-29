@@ -1,0 +1,11 @@
+# kate: hl Tcl;
+
+hook pre-install {
+  global pkgdir
+  cd $pkgdir
+  file delete bin/path.h
+  exec make "LIB=[pwd]" bin/path.h make.lip bin/lisaac
+}
+
+link ".local/bin/lisaac" "bin/lisaac"
+
